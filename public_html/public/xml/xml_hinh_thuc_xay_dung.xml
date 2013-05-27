@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <item value="0" order="0" name="--Chọn hình thức hồ sơ--"/>
-  <item value="1" order="1" name="1. Xây dựng mới"/>
-  <item value="2" order="2" name="2. Cải tạo,sửa chữa"/>
-	<item value="3" order="3" name="3. Bổ sung"/>
-	<item value="4" order="4" name="4. Thay đổi"/>
-	<item value="5" order="5" name="5. Gia hạn"/>
+  <item value="1" order="1" name="Xây dựng mới"/>
+  <item value="2" order="2" name="Cải tạo,sửa chữa"/>
+	<item value="3" order="3" name="Bổ sung"/>
+	<item value="4" order="4" name="Thay đổi"/>
+	<item value="5" order="5" name="Gia hạn"/>
 </root>
