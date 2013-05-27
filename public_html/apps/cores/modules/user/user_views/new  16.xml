@@ -1,0 +1,21 @@
+<?xml encoding="utf-8"?>
+<!-- auto_lock_unlock.xml-->
+<rules>
+	<rule>
+		<lock>
+			<id>txtSoSoDo</id>
+			<record_type_code>TN01</record_type_code>
+		</lock>
+		<unlock>
+			<id>txtSoSoDo</id>
+			<record_type_code>TN03</record_type_code>
+		</unlock>
+	</rule>
+</rules>
+<!--
+Count unlock >= count lock
+//kiem tra
+
+-->
+		
+		

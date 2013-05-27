@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<line label="Thông tin giới thiệu về theme" cols="1">
+		<item type="TextboxArea" id="txtGioiThieu" name="Giới thiệu" allownull="no" validate="text" label="Giới thiệu:" defaul_value="" size="120" css="" view="true"/>
+	</line>
+	<line label="Danh mục mã vị trí" cols="1">
+		<item type="Textbox" id="txtvitri" name="Các vị trí" allownull="no" validate="text" label="Các vị trí:" defaul_value="" size="120" css="" view="true"/>
+	</line>
+</form>

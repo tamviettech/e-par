@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <display_all>
+        <list>
+            <!-- 3 item nay la bat buoc -->
+            <item type="primarykey" id="PK_RULE" />
+            <item type="checkbox" id="PK_RULE" size="5%"/>
+            <!-- ********************************************************* -->
+            <item type="text" id="C_NAME" name="Tên luật" size="45%"/>
+            <item type="text" id="C_BEGIN_DATE_DDMMYYYY" name="Áp dụng từ ngày" size="15%"/>
+            <item type="text" id="C_END_DATE_DDMMYYYY" name="Đến ngày" size="15%"/>
+            <item type="order" id="C_ORDER" name="Thứ tự" size="10%"/>
+            <item type="status" id="C_STATUS" name="Trạng thái" size="10%"/>
+        </list>
+    </display_all>
+</root>

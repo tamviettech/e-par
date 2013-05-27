@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!-- Đảo bảo mỗi task trong quy trình có một mã duy nhất -->
+<!-- task code phai viet HOA, chi su dung dau gach duoi -->
+<process code="TN01" name="Thừa kế quyền sử dụng đất đối với hộ gia đình, cá nhân" totaltime="10" version="1">
+
+	<step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1" role="TIEP_NHAN">
+		<case flow="basic">
+			<task code="TN01::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="1" next="TN01::BAN_GIAO"/>
+			<task code="TN01::BAN_GIAO" name="Bàn giao hồ sơ" time="0" next="TN01::PHAN_CONG"/>
+		</case>
+	</step>
+
+	<step order="2" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT xử lý hồ sơ" time="7" role="XU_LY">
+		<case flow="basic">
+			<task code="TN01::PHAN_CONG" name="Phân công thụ lý" time="0" next="TN01::THU_LY"/>
+			<task code="TN01::THU_LY" name="Thụ lý" time="6" next="TN01::TRINH_LANH_DAO"/>
+			<task code="TN01::TRINH_LANH_DAO" name="Duyệt hồ sơ trình lãnh đạo" time="1" next="TN01::KY_DUYET"/>
+		</case>
+		<case flow="alternative">
+			<task code="TN01::TU_CHOI" name="Từ chối hồ sơ" time="0" next="TN01::TRA_KET_QUA"/>
+		</case>
+		<case flow="alternative">
+			<task code="TN01::NV_YEU_CAU_BO_SUNG" name="Yêu cầu bổ sung" time="0" next="TN01::TRA_KET_QUA"/>
+		</case>
+		<case flow="alternative">
+			<task code="TN01::NV_YEU_CAU_CHUYENH_HO_SO" name="Yêu cầu chuyển hồ sơ" time="0" next="TN01::TRA_KET_QUA"/>
+		</case>
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Ký duyệt" time="2" role="DUYET">
+		<task code="TN01::KY_DUYET" name="Ký duyệt" time="2" next="TN01::TRA_KET_QUA"/>
+	</step>
+
+	<step order="4" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA">
+		<case flow="basic">
+			<task code="TN01::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL"/>
+		</case>
+		<case flow="alternative">
+			<task code="TN01::MC_YEU_CAU_BO_SUNG" name="Yêu cầu bổ sung hồ sơ" time="0" next="NULL"/>
+		</case>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

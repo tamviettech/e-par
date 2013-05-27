@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<process code="TN17" name="Đăng ký thế chấp bằng quyền sử dụng đất" totaltime="0.5" version="1" fee="0">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+        <task code="TN17::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN17::BAN_GIAO" single_user="true" />
+        <task code="TN17::BAN_GIAO" name="Bàn giao hồ sơ" time="0" next="TN17::XET_DUYET" single_user="true" />
+    </step>
+	
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý hồ sơ" time="3">
+        <task code="TN17::XET_DUYET" name="Xét duyệt hồ sơ" time="2" next="TN17::TRA_KET_QUA" single_user="true" />
+    </step>
+
+    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
+        <task code="TN17::TRA_KET_QUA" name="Trả kết quả" time="1" next="NULL" single_user="true"/>
+        <!-- next="NULL": Kết thúc quy trình -->
+    </step>
+</process>

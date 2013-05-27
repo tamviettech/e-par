@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng % -->
+        <item type="text" id="RN" name="TT" size="5%" align="right"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="15%" />
+        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="20%" />
+        <item type="text" id="C_RECEIVE_DATE" name="Ngày nhận" size="15%" />
+        <item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả" size="25%" />
+    </list>
+</root>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="STT" size="40" align="right"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="130"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="160"/>
+        <item type="text" id="C_RECEIVE_DATE_DDMMYYYY" name="Ngày tiếp nhận" size="150"/>
+        <item type="text" id="C_REJECTED_DATE_DDMMYYYY" name="Ngày từ chối" size="150"/>
+        <item type="text" id="C_REJECT_REASON" name="Lý do từ chối" size="150"/>
+    </list>
+    <total>
+    </total>
+    <sub_total>
+    </sub_total>
+</report>

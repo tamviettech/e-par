@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--I. Thông tin người khai  -->
+  <line label="I.Thông tin người khai  " cols="1">
+    <item type="TextboxName" id="txtName" name="Họ và tên người khai" allownull="no"  validate="text"   label="Họ và tên người khai: "  defaul_value=""  size="60" css="" Even="ConverUpperCase('txtName',this.value)" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDiaChi" name="Nơi thường trú/tạm trú" allownull="no"  validate="text"   label="Nơi thường trú/tạm trú: "  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtSoCMD" name="Số CMND/Hộ chiếu" allownull="yes"  validate="text"   label="Số CMND/Hộ chiếu:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtQuanHeVoiNguoiThayDoi" name="Quan hệ với người được thay đổi, cải chính, bổ sung hộ tịch" allownull="no"  validate="text"   label="Quan hệ với người được thay đổi, cải chính, bổ sung hộ tịch:"  defaul_value=""  size="60" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDangKyViec" name="Đăng ký việc(1)" allownull="no"  validate="text"   label="Đăng ký việc(1):"  defaul_value=""  size="60" css="" view = "true"/>
+  </line>
+
+  <!--II.Thông tin đăng ký-->
+  <line label="II.Cho người có tên dưới đây  " cols="2">
+    <item type="TextboxName" id="txtHoTenDangKy" name="Họ và tên người đăng ký" allownull="no"  validate="text"   label="Họ và tên: "  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtHoTenDangKy',this.value)" view = "true"/>
+    <item type="DropDownList" id="ddlSex" name="Giới tính" allownull="no"  validate="ddli" label="Giới tính "  defaul_value="0"  src_file="public/xml/xml_gioi_tinh.xml" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxDate" id="txtNgayThangNam" name="Ngày, tháng, năm sinh" allownull="yes"  validate="date"   label="Ngày, tháng, năm sinh:"  defaul_value=""  css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiSinh" name="Nơi sinh" allownull="yes"  validate="text"   label="Nơi sinh:"  defaul_value=""  size="60" css="" view = "true" />
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtDanToc" name="Dân tộc" allownull="yes"  validate="text"   label="Dân tộc :"  defaul_value="Kinh"  size="30" css="" view = "true"/>
+    <item type="Textbox" id="txtQuocGia" name="Quốc tịch" allownull="yes"  validate="text"   label="Quốc tịch :"  defaul_value="Việt Nam"  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiThuongtruDangKy" name="Nơi thường trú/tạm trú" allownull="no"  validate="text"   label="Nơi thường trú/tạm trú: "  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label=""  cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Thuộc phường/ xã" allownull="no"  validate="ddli" label="Thuộc phường/ xã:"  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDangKyTai" name="Đã đăng ký khai sinh tại " allownull="yes"  validate="text"   label="Đã đăng ký khai sinh tại :"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <!--<line label="" cols="1">
+    <item type="TextboxDate" id="txtNgayThangNam1" name="Ngày, tháng, năm sinh" allownull="yes"  validate="date"   label="Ngày, tháng, năm sinh:"  defaul_value=""  css="" view = "true"/>
+  </line>-->
+  <line label="" cols="2">
+    <item type="Textbox" id="txtTheoGiayKhaiSinhSo" name="Theo giấy khai sinh số" allownull="yes"  validate="text"   label="Theo giấy khai sinh số :"  defaul_value=""  size="30" css="" view = "true"/>
+    <item type="Textbox" id="txtQuyenSo" name="Quyển số" allownull="yes"  validate="text"   label="Quyển số:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  
+  <!--noi dung thay doi-->
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNoiDungXinThayDoi" name="Nội dung xin thay đổi, cải chính, bổ sung hộ tịch" allownull="no"  validate="text"   label="Nội dung xin thay đổi, cải chính, bổ sung hộ tịch:"  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtLyDo1" name="Lý do" allownull="yes"  validate="text"   label="Lý do "  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtYKien" name="Ý kiến của người được thay đổi họ tên; Thay đổi lại dân tộc  " allownull="yes"  validate="text"   label="Ý kiến của người được thay đổi họ tên; Thay đổi lại dân tộc:"  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+
+
+  <!--tai lieu kem theo don-->
+
+  <line label="Tài liệu kèm theo đơn" cols="1">
+    <item type="Checkbox" value="0" doc="yes"  id="ckbToKhaiTheomau" name="" allownull=""  validate="" title="Tờ khai theo mẫu" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" doc="yes"  id="ckbBanKhaiSinhcu" name="" allownull=""  validate="" title="Bản chính giấy khai sinh" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" doc="yes"  id="ckbbanSaoGiayKhaiSinhTuSoGoc" name="" allownull=""  validate="" title="Bản sao giấy khai sinh từ sổ gốc" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" doc="yes"  id="ckbBanPhoToCMD" name="" allownull=""  validate="" title="Bản photo chứng minh nhân dân" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" doc="yes"  id="ckbBanPhoToSoHoKhau" name="" allownull=""  validate="" title="Bản photo sổ hộ khẩu" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" doc="yes"  id="ckbBanSaoGiayKetHonBoMe" name="" allownull=""  validate="" title="Bản sao giấy kết hôn của bố mẹ" label="" view = "true"/>
+  </line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="6" doc="yes"  id="ckbBanSaoGiayKhaiSinhBoMe" name="" allownull=""  validate="" title="Bản sao giấy khai sinh của bố hoặc mẹ" label="" view = "true"/>
+	</line>
+  <line label="" cols="1" >
+    <item type="Checkbox" value="7"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true" />
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+
+	<!--le phi-->
+  <line label="Số biên lai và lệ phí" cols="1">
+    <item type="Textbox" id="txtSoBienLai" name="Số biên lai" allownull="yes"  validate="text"   label="Số biên lai:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtSoLuongBan" name="Số lượng bản" allownull="yes"  validate="text"   label="Số lượng bản:"  defaul_value="01"  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxMoney" id="txtCost" name="Lệ phí tạm thu" allownull="yes"  validate="text"   label="Lệ phí tạm thu:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+
+	<line label="Ghi chú:(1) Thay đổi, cải chính, bổ sung hộ tịch. Yêu cầu loại việc gì phải ghi rõ." cols="1">
+	</line>
+
+  
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<process code="TP01" name="Cấp lại bản chính giấy khai sinh" totaltime="3" version="1" fee="10.000">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="TP01::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TP01::BAN_GIAO" single_user="true" />
+		<task code="TP01::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="TP01::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step order="2" group="PHONG_TU_PHAP" name="Văn phòng tư pháp" time="1.5" role="XU_LY">
+		<task code="TP01::PHAN_CONG" name="Phân công thụ lý" time="0" next="TP01::THU_LY" single_user="true" />
+		<task code="TP01::THU_LY" name="Thụ lý" time="6" next="TP01::XET_DUYET"/>
+		<task code="TP01::XET_DUYET" name="Xét duyệt" time="1" next="TP01::KY_DUYET" single_user="true" />
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Ký duyệt" time="1">
+		<task code="TP01::KY_DUYET" name="Ký duyệt" time="0" next="TP01::THU_PHI" biz_done="true"/>
+	</step>
+	
+	<step order="4" group="BP_MOT_CUA" name="Thu phí" time="0" role="THU_PHI">
+		<task code="TP01::THU_PHI" name="Thu phí" time="0" next="TP01::TRA_KET_QUA" single_user="true"/>		
+	</step>
+	
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+		<task code="TP01::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

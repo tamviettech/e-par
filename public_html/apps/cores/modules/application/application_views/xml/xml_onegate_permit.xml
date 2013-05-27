@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <!-- Quan tri -->
+    <line label="Quản trị hồ sơ" cols="1">
+        <item type="Checkbox" value="1" id="QUAN_TRI_DANH_MUC_LOAI_HO_SO" name="" allownull="" validate="" title="Quản trị danh mục loại hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="1" id="QUAN_TRI_QUY_TRINH_XU_LY_HO_SO" name="" allownull="" validate="" title="Quản trị quy trình xử lý hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="1" id="QUAN_TRI_LUAT_CAN_LOC_HO_SO" name="" allownull="" validate="" title="Quản trị luật cản lọc hồ sơ" label="" view="true"/>
+    </line>
+    
+    <!-- Cap xã -->
+    <line label="Hồ sơ ở cấp xã" cols="1">
+        <item type="Checkbox" value="2" id="CHUYEN_LEN_HUYEN" name="" allownull="" validate="" title="Chuyển hồ sơ lên Huyện" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="XAC_NHAN_LIEN_THONG" name="" allownull="" validate="" title="Xác nhận hồ sơ liên thông" label="" view="true"/>
+    </line>
+
+    <!-- BP Mot cua -->
+    <line label="Tiếp nhận và trả kết quả" cols="1">
+        <item type="Checkbox" value="2" id="XAC_NHAN_HO_SO_NOP_QUA_INTERNET" name="" allownull="" validate="" title="Xác nhận hồ sơ nộp qua Internet" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="TIEP_NHAN" name="" allownull="" validate="" title="Tiếp nhận hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BO_SUNG" name="" allownull="" validate="" title="Bổ sung hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAN_GIAO" name="" allownull="" validate="" title="Bàn giao cho phòng chuyên môn" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="TRA_KET_QUA" name="" allownull="" validate="" title="Trả kết quả" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="IN_PHIEU_TIEP_NHAN" name="" allownull="" validate="" title="In lại phiếu tiếp nhận" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="THU_PHI" name="" allownull="" validate="" title="Thu phí, lệ phí" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="TRA_THONG_BAO_NOP_THUE" name="" allownull="" validate="" title="Trả thông báo nộp thuế cho công dân" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="NHAN_BIEN_LAI_NOP_THUE" name="" allownull="" validate="" title="Nhận biên lai nộp thuế" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="TRA_HO_SO_VE_XA" name="" allownull="" validate="" title="Trả hồ sơ về xã" label="" view="true"/>
+    </line>
+    <!-- End: BP Mot cua -->
+
+    <!-- Chuyen trach thue -->
+    <line label="Nghĩa vụ thuế" cols="1">
+        <item type="Checkbox" value="2" id="NOP_HO_SO_SANG_CHI_CUC_THUE" name="" allownull="" validate="" title="Nộp hồ sơ sang chi cục thuế" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="NHAN_THONG_BAO_CUA_CHI_CUC_THUE" name="" allownull="" validate="" title="Nhận thông báo của chi cục thuế" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="CHUYEN_THONG_BAO_THUE_VE_BP_MOT_CUA" name="" allownull="" validate="" title="Chuyển thông báo thuế về Một cửa" label="" view="true"/>
+    </line>
+    <!-- End: Chuyen trach thue -->
+
+    <!-- Phong nghiep vu -->
+    <line label="Xử lý nghiệp vụ" cols="1">
+        <item type="Checkbox" value="2" id="PHAN_CONG" name="" allownull="" validate="" title="Phân công thụ lý" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="PHAN_CONG_LAI" name="" allownull="" validate="" title="Thay đổi thụ lý" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="CHUYEN_HO_SO_LEN_SO" name="" allownull="" validate="" title="Chuyển hồ sơ lên Sở" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="NHAN_HO_SO_TU_SO" name="" allownull="" validate="" title="Nhận hồ sơ từ Sở" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="THU_LY" name="" allownull="" validate="" title="Thụ lý hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="THU_LY_HO_SO_LIEN_THONG" name="" allownull="" validate="" title="Thụ lý hồ sơ liên thông" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="YEU_CAU_THU_LY_LAI" name="" allownull="" validate="" title="Yêu cầu thụ lý lại" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" name="" allownull="" validate="" title="Chuyển yêu cầu xác nhận xuống xã" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="XET_DUYET" name="" allownull="" validate="" title="Xét duyệt hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="XET_DUYET_BO_SUNG" name="" allownull="" validate="" title="Xét duyệt hồ sơ bổ sung" label="" view="true"/>
+    </line>
+    <!-- End: Phong nghiep vu -->
+
+    <!-- Lanh dao don vi -->
+    <line label="Ký duyệt hồ sơ" cols="1">
+        <item type="Checkbox" value="2" id="KY_DUYET" name="" allownull="" validate="" title="Ký duyệt hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="Y_KIEN_LANH_DAO" name="" allownull="" validate="" title="Ý kiến chỉ đạo" label="" view="true"/>
+    </line>
+
+    <!-- Chung, tra cứu, báo cáo -->
+    <line label="Tra cứu, báo cáo" cols="1">
+        <item type="Checkbox" value="2" id="TRA_CUU" name="" allownull="" validate="" title="Tra cứu hồ sơ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAO_CAO" name="" allownull="" validate="" title="Xem báo cáo" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO" name="" allownull="" validate="" title="Theo dõi, giám sát toàn bộ hồ sơ" label="" view="true"/>
+    </line>
+    
+    
+</form>

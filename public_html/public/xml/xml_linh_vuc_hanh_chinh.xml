@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<item name="--Chọn lĩnh vực--" value="" />
+	<item value="LUAT_PHAP" name="Luật pháp" />
+	<item value="AN_NINH" name="An Ninh" />
+	<item value="QUOC_PHONG" name="Quốc phòng" />
+	<item value="TAI_NGUYEN_MOI_TRUONG" name="Tài nguyên môi trường" />
+	<item value="Y_TE" name="Y tế" />
+	<item value="GIAO_THONG_VAN_TAI" name="Giao thông vận tải" />
+	<item value="CAI_CACH_HANH_CHINH" name="Cải cách hành chính" />
+</root>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<process code="DT05" name="Gia hạn, điều chỉnh giấy phép xây dựng" totaltime="5" version="1" fee="10.000">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="DT05::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0.5" next="DT05::BAN_GIAO" single_user="true" />
+		<task code="DT05::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="DT05::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step code="" order="2" group="PHONG_QUAN_LY_DO_THI" name="Phòng quản lý đô thị" time="3" role="XU_LY">
+		<task code="DT05::PHAN_CONG" name="Phân công thụ lý" time="1" next="DT05::THU_LY" single_user="true" />
+		<task code="DT05::THU_LY" name="Thụ lý" time="10" next="DT05::XET_DUYET"/>
+		<task code="DT05::XET_DUYET" name="Xét duyệt" time="1" next="DT05::KY_DUYET" single_user="true" />
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Ký duyệt" time="1.5">
+		<task code="DT05::KY_DUYET" name="Ký duyệt" time="0" next="DT05::THU_PHI" biz_done="true"/>
+	</step>
+	
+	<step order="4" group="BP_MOT_CUA" name="Thu phí" time="0" role="THU_PHI">
+		<task code="DT05::THU_PHI" name="Thu phí" time="0" next="DT05::TRA_KET_QUA" single_user="true"/>		
+	</step>
+
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+		<task code="DT05::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

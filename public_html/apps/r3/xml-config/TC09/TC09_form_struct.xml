@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>  
+  <!--<line label="Thông tin cá nhân" cols="2">
+    <item type="TextboxName" id="txtName" name="Tên người đăng ký" allownull="no"  validate="text"   label="Tên tôi là:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)" view = "true"/>
+    <item type="DropDownList" id="ddlSex" name="Giới tính" allownull="no"  validate="ddli" label="Giới tính "  defaul_value="0"  src_file="public/xml/xml_gioi_tinh.xml" view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="TextboxDate" id="txtBirthday" name="Ngày sinh" allownull="yes"  validate="date"   label="Ngày sinh:"  defaul_value=""  css="" view = "true"/>
+    <item type="Textbox" id="txtNationality" name="Dân tộc" allownull="yes"  validate="text"   label="Dân tộc:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtIdentityCard" name="Số CMND" allownull="yes"  validate="number"   label="Số CMND:"  defaul_value="" size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtPlaceProvider" name="Nơi cấp" allownull="yes"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="30" css="" />
+    <item type="TextboxDate" id="txtDateProviderCard" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""  css="" />
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtAddPopulation" name="Nơi đăng ký hộ khẩu thường trú" allownull="no"  validate="text"   label="Nơi đăng ký hộ khẩu thường trú:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDiachi" name="Chỗ ở hiện tại" allownull="yes"  validate="text"   label="Chỗ ở hiện tại:"  defaul_value=""  size="30" css="" />
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtSoDienThoai" name="Điện thoại" allownull="yes"  validate="phone" label="Điện thoại:"  defaul_value=""  size="30" css="" />
+    <item type="Textbox" id="txtFax" name="Fax" allownull="yes"  validate="fax"   label="Fax:"  defaul_value=""  size="30" css="" />
+  </line>-->
+  <!--dang ky kinh doanh voi noi dung sau-->
+  <line label="Đăng ký kinh doanh với nội dung sau"  cols="1">
+    <item type="TextboxName" id="txtName" name="Tên hộ kinh doanh" allownull="no"  validate="text"   label="Tên hộ kinh doanh:"  defaul_value=""  size="80" css="" view = "true" Even="ConverUpperCase('txtName',this.value)"/>
+  </line>
+	<line label=""  cols="2">
+		<item type="Textbox" id="txtSoGCNDKKD" name="Giấy chứng nhận đăng ký kinh doanh số" allownull="no"  validate="text"   label="Giấy chứng nhận ĐKKD số:"  defaul_value="25A8"  size="30" css="" Even="ConverUpperCase('txtNameBusiness',this.value)" view = "true"/>
+		<item type="TextboxDate" id="txtDateProviderCard" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""  css="" />
+	</line>
+	
+  <line  label="" cols="1">
+    <item type="Textbox" id="txtDiaChi" name="Địa điểm kinh doanh" allownull="no"  validate="text"   label="Địa điểm kinh doanh:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <!--<line label=""  cols="1">
+    --><!--<item type="DropDownList" id="ddlProvince" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="xml_phuong_xa.xml"/>--><!--
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"/>
+  </line>-->
+  <line label="" cols="2">
+    <item type="Textbox" id="txtPhoneBusiness" name="Điện thoại" allownull="yes"  validate="text" label="Điện thoại:"  defaul_value=""  size="30" css="" />
+    <item type="Textbox" id="txtFaxBusiness" name="Fax" allownull="yes"  validate="fax"   label="Fax:"  defaul_value=""  size="30" css="" />
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtWork" name="Nội dung thay đổi đăng ký kinh doanh" allownull="no"  validate="text"   label="Nội dung thay đổi đăng ký kinh doanh:"  defaul_value=""  size="50" css=""/>
+  </line>
+  
+  
+  <!--nhóm nganh nghe-->
+  <!--<line label="Nhóm ngành nghề" cols="2" groupid="2">
+    <item type="Checkbox" value="0" id="ckbDichVuAnUong" name="" allownull=""  validate="" title="Dịch vụ ăn uống" view = "true"/>
+    <item type="Checkbox" value="1" id="ckbDaiLyGa" name="" allownull=""  validate="" title="Đại lý ga,xăng dầu" label="" view = "true"/>
+  </line>
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="2"   id="ckbBangDiaHinh" name="" allownull=""  validate="" title="Băng đĩa hình" label="" view = "true"/>
+    <item type="Checkbox" value="3"   id="ckbBanThuoc" name="" allownull=""  validate="" title="Bán thuốc" label="" view = "true"/>
+  </line>
+
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="4"  id="ckbInternet" name="" allownull=""  validate="" title="Dịch vụ Internet" label="" view = "true"/>
+    <item type="Checkbox" value="5"  id="ckbMuaBanDienThoai" name="" allownull=""  validate="" title="Mua bán, sửa chữa điện thoại" label="" view = "true"/>
+  </line>
+  
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="8"   id="ckbKaraoko" name="" allownull=""  validate="" title="Dịch cụ Karaoke, vũ trường, bar" label="" view = "true"/>
+    <item type="Checkbox" value="9"   id="ckbDVXoaBop" name="" allownull=""  validate="" title="Dịch vụ xoa bóp" label="" view = "true"/>
+  </line>
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="10"  id="ckbCoKhi" name="" allownull=""  validate="" title="Gia công cơ khí" label="" view = "true"/>
+    <item type="Checkbox" value="11"   id="ckbVangbac" name="" allownull=""  validate="" title="Hàng vàng, bạc" label="" view = "true"/>
+  </line>
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="12"  id="ckbHangMoc" name="" allownull=""  validate="" title="Hàng mộc" label="" view = "true"/>
+    <item type="Checkbox" value="13"  id="ckbVanTaiOto" name="" allownull=""  validate="" title="Hàng vận tải ô tô" label="" view = "true"/>
+  </line>
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="14"  id="ckbChuaBenh" name="" allownull=""  validate="" title="Khám chữa bệnh" label="" view = "true" />
+    <item type="Checkbox" value="15"  id="ckbluutru" name="" allownull=""  validate="" title="Lưu trú" label="" view = "true"/>
+  </line>
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="16"  id="ckbPhoTo" name="" allownull=""  validate="" title="Photocoppy" label="" view = "true"/>
+    <item type="Checkbox" value="17"   id="ckbRuouThuocLa" name="" allownull=""  validate="" title="Rượu, thuốc lá" label=""/>
+  </line>
+
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="18"   id="ckbSuaOto" name="" allownull=""  validate="" title="Sửa chữa ô tô" label="" view = "true"/>
+    <item type="Checkbox" value="19"  id="ckbTauDichVu" name="" allownull=""  validate="" title="Tầu, dịch vụ" label="" view = "true"/>
+  </line>
+
+  <line label="" cols="2" groupid="2">
+    <item type="Checkbox" value="20"   id="ckbVanPhongPham" name="" allownull=""  validate="" title="Văn phòng phẩm" label="" view = "true"/>
+    <item type="Checkbox" value="21"   id="ckbNganhHangKhac" name="" allownull=""  validate="" title="Ngành hàng khác" label="" view = "true"/>
+  </line>
+  <line label="" cols="1" groupid="2">
+    --><!--<item type="Checkbox" value="6"  id="ckbBanThuoc" name="" allownull=""  validate="" title="Bán thuốc" label="" view = "true"/>--><!--
+    <item type="Checkbox" value="7"  id="ckbCamDo" name="" allownull=""  validate="" title="Dịch vụ cầm đồ" label="" view = "true"/>
+  </line>-->
+  <!--<line label="" cols="1">
+    <item type="TextboxMoney" id="txtCapital" name="Vốn kinh doanh" allownull="no"  validate="text"   label="Vốn kinh doanh (đồng):"  defaul_value=""  size="30" css="" Even="formatCurrency('txtCapital',this.value)" view = "true"/>"
+  </line>-->
+
+<!--tai lieu kem theo don-->
+
+  <line label="Tài liệu kèm theo đơn" cols="1" groupid="3">
+
+    <item type="Checkbox" value="0" doc="yes"  id="ckbDKKDCu" name="" allownull=""  validate="" title="GCN Đăng ký kinh doanh cũ." view = "true"/>
+  </line>
+	<line label="" cols="1" groupid="3">
+		<item type="Checkbox" value="5" doc="yes"  id="ckbBanSaoCM" name="" allownull=""  validate="" title="Bản sao chứng minh thư nhân dân, hộ khẩu của chủ hộ đứng ra đăng ký kinh doanh." label="" view = "true"/>
+	</line>
+  <line label="" cols="1" groupid="3">
+    <item type="Checkbox" value="1" doc="yes"  id="ckbChungChiHanhNghe" name="" allownull=""  validate="" title="Chứng chỉ hành nghề của cơ quan có thẩm quyền cấp" label="" view = "true"/>
+  </line>
+  <line label="" cols="1" groupid="3">
+    <item type="Checkbox" value="2" doc="yes"  id="ckbQuyenSuDungDat" name="" allownull=""  validate="" title="Giấy xác nhận quyền sử dụng, sử hữu hợp pháp về địa điểm kinh doanh" label="" view = "true"/>
+  </line>
+  <line label="" cols="1" groupid="3">
+    <item type="Checkbox" value="3" doc="yes"  id="ckbXacNhanVon" name="" allownull=""  validate="" title="Giấy xác nhận vốn pháp định" label="" view = "true"/>
+  </line>
+  <line label="" cols="1" groupid="3">
+    <item type="Checkbox" value="4" id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css=""/>
+  </line>
+  
+  <!--le phi-->
+  <line label="" cols="1">
+    <item type="TextboxDate" id="txtDateResolve" name="Hẹn ngày giải quyết" allownull="yes"  validate="date"   label="Hẹn ngày giải quyết:"  defaul_value=""  css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtCost" name="Lệ phí thu" allownull="yes"  validate="text"   label="Lệ phí thu:(đồng)"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNote" name="Ghi chú" allownull="yes"  validate="text"   label="Ghi chú"  defaul_value=""  size="50" css=""/>
+  </line>
+  
+<!--button-->
+
+  
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

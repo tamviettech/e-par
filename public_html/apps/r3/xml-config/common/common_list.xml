@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <display_all>
+        <list>
+            <!-- 3 item nay la bat buoc -->
+            <item type="primarykey" id="PK_RECORD" />
+
+            <!-- ********************************************************* -->
+            <item type="text" id="RN" name="STT" size="2%"/>
+            <item type="checkbox" id="PK_RECORD" size="3%"/>
+            <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="10%"/>
+            <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" clickable="no" size="17%"/>          
+            <item type="text" id="C_RECEIVE_DATE" name="Ngày giờ tiếp nhận" clickable="no" size="10%"/>
+            <item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả" clickable="no" size="10%"/>
+            <item type="text" id="C_DOING_STEP_DAYS_REMAIN" name="Thời hạn" clickable="no" size="5%"/>
+            <item type="action" id="PK_RECORD" name="#" clickable="no" size="5%"/>
+        </list>
+    </display_all>
+</root>

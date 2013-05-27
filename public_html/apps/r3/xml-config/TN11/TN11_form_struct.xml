@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+
+  <line label="" cols="1">
+    <item type="TextboxName" id="txtName" name="Người nộp hồ sơ" allownull="no"  validate="text"   label="Người nộp hồ sơ: "  defaul_value=""  size="60" css="" Even="ConverUpperCase('txtName',this.value)" view = "true"/>
+  </line>  
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDiaChi" name="Địa chỉ" allownull="no"  validate="text"   label="Địa chỉ: "  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label=""  cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="yes"  validate="ddli" label="Phường/Xã:"  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtToChucKinhTeHoGiaDinhCaNhan" name="Tổ chức kinh tế hộ, gia đình,cá nhân" allownull="yes"  validate="text"   label="Tổ chức kinh tế hộ, gia đình,cá nhân: "  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label=""  cols="1">
+    <item type="Textbox" id="txtDiachiToChuc" name="Địa chỉ(tổ chức kinh tế, hộ gia đình, cá nhân)" allownull="yes"  validate="phone"   label="Địa chỉ(tổ chức kinh tế, hộ gia đình, cá nhân):"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>  
+  <line label=""  cols="1">
+    <item type="Textbox" id="txtDiaChiThuongTru" name="Địa chỉ thường trú" allownull="yes"  validate="text"   label="Địa chỉ thường trú:"  defaul_value=""  size="60" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtPlaceAdd" name="Địa chỉ thửa đất" allownull="no"  validate="text"   label="Địa chỉ khu đất: "  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDienTichKhuDat" name="Diện tích khu đất" allownull="yes"  validate="number"   label="Diện tích khu đất(m2): "  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtMucDichSuDung" name="Mục đích sử dụng đất" allownull="yes"  validate="text"   label="Mục đích sử dụng đất: "  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtThoihansudungdat" name="Thời hạn sử dụng đất" allownull="yes"  validate="text"   label="Thời hạn sử dụng đất: "  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label=""  cols="1">
+    <item type="Textbox" id="txtThanhPho" name="Thành phố" allownull="yes"  validate="text"   label="Thành phố: "  defaul_value="HOÀ BÌNH"  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac2" name="Nội dung đề nghị" allownull="yes"  validate="text"   label="Nội dung đề nghị:"  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+  <!--tai lieu kem theo don-->
+
+  <line label="Tài liệu kèm theo đơn" cols="1">
+    <item type="Checkbox" value="0" doc="yes"  id="ckbDonXinChuyenMucDichSuDungDat" name="" allownull=""  validate="" title="Đơn yêu cầu xoá đăng thế chấp QSDĐ (có xác nhận của đơn vị nhận thế chấp)" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" doc="yes"  id="ckbTrichLuc" name="" allownull=""  validate="" title="Bản chính và bản photo công chứng Giấy chứng nhận QSDĐ " label="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" doc="yes"  id="ckbSoluonghoso" name="" allownull=""  validate="" title="Số lượng: 01 bộ" label="" view = "true"/>
+  </line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="20" id="ckbTaiLieuKhac" name="" allownull="" validate="" title="Tài liệu khác" label="" view="true" />
+	</line>
+	<line label="" cols="1">
+		<item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes" validate="text" label="" defaul_value="" size="50" css="" view="true" />
+	</line>
+
+
+</form >

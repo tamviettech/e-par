@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--Thông tin kê khai-->
+  <line label="Người đứng ra tổ chức tang lễ" cols="1">
+    <item type="TextboxName" id="txtName" name="Họ tên người nộp hồ sơ" allownull="no"  validate="text"   label="Họ tên người nộp hồ sơ:"  defaul_value=""  size="60" css="" Even="ConverUpperCase('txtName',this.value)"  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDiaChi" name="Địa chỉ" allownull="yes"  validate="text"   label="Địa chỉ:"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Textbox" id="txtEmail" name="Mối quan hệ với người chết" allownull="yes"  validate="text"   label="Mối quan hệ với người chết"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+  <line label="Thông tin về người đang hưởng trợ cấp hàng tháng đã qua đời" cols="2">
+    <item type="TextboxName" id="txtName2" name="Họ tên" allownull="no"  validate="text"   label="Họ tên:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName2',this.value)"  view = "true"/>
+    <item type="TextboxDate" id="txtQuaDoi" name="Qua đời ngày" allownull="no"  validate="text"   label="Qua đời ngày:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTai" name="Tại" allownull="no"  validate="text"   label="Tại:"  defaul_value=""  size="80" css="" view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtGiayChungTu" name="Giấy chứng tử số" allownull="no"  validate="text"   label="Giấy chứng tử số:"  defaul_value=""  size="30" css="" view = "true"/>
+    <item type="TextboxDate" id="txtCapNgay" name="Cấp ngày" allownull="yes"  validate="text"   label="Cấp ngày:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiCap" name="Nơi cấp" allownull="no"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="60" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNoiDungTomTat" name="Nội dung đề nghị" allownull="no"  validate="text"   label="Nội dung đề nghị:"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+
+  <!--Tài liệu kèm theo-->
+
+  <line label="Tài liệu kèm theo" cols="1">
+    <item type="Checkbox" value="0" id="ckbGiayChungNhanThuongBinh" doc="yes"  name="" allownull=""  validate="" title="Đơn đề nghị hỗ trợ kinh phí mai táng đối tượng BTXH (Mẫu số 1a)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbGiayKhaiSinh" doc="yes" name="" allownull=""  validate="" title="Bản sao giấy chứng tử" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbDonTheoMauLDTB" doc="yes" name="" allownull=""  validate="" title="Giấy ủy quyền cho người đứng ra tổ chức mai táng" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" id="ckbGiaydichuyenhaicot" doc="yes" name="" allownull=""  validate="" title="Bản sao CMTND hoặc Sổ hộ khẩu của người tổ chức mai táng" label=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" id="ckbGiaydichuyenhaicot1" doc="yes" name="" allownull=""  validate="" title="Văn bản đề nghị của UBND phường, xã" label=""  view = "true"/>
+  </line>
+
+  <line label="" cols="1" >
+    <item type="Checkbox" value="3"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+
+
+  <!--button-->
+
+  <!--<line label="" cols="0">
+    <item type="Button" id="btnSave"  name="button" allownull="" validate=""  value="Ghi lại" ObjList="GetControl('Modules/XML/LDTB_130/LDTB_130.xml')"/>
+    
+    
+  </line>-->
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

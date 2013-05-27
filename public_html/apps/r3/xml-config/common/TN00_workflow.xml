@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!-- Đảm bảo mỗi task trong quy trình có một mã duy nhất -->
+<!-- task code phai viet HOA, chi su dung dau gach duoi -->
+<process code="TN00" name="Quy trình mặc định" totaltime="0" version="1">
+	<step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0" role="TIEP_NHAN">
+		<task code="TN00::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN00::TRA_KET_QUA"/>		
+	</step>	
+
+	<step order="4" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA">
+		<task code="TN00::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

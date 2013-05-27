@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <display_all>
+        <title>Danh sách loại danh mục</title>
+        <filter>
+            <line cols="1">
+                <item type="DropDownList" id="ddlListtype" name="Loại danh mục" allownull="no" validate="ddli" label="Loại danh mục " defaul_value="0"/>
+            </line>
+            <line cols="1">
+                <item type="Textbox" id="txt_filter" name="Lọc theo tên danh mục" label="Lọc theo tên loại danh mục" size="30"  />
+            </line>
+        </filter>
+        <list>
+            <!-- 3 item nay la bat buoc -->
+            <item type="primarykey" id="PK_APPLICATION" />
+            <item type="checkbox" id="PK_APPLICATION" size="5%"/>
+            <!-- ********************************************************* -->
+            <item type="text" id="C_CODE" name="Mã ứng dụng" size="20%"/>
+            <item type="text" id="C_NAME" name="Tên ứng dụng" size="45%"/>
+            <item type="order" id="C_ORDER" name="Thứ tự hiển thị" size="10%"/>
+            <item type="status" id="C_STATUS" name="Trạng thái" size="10%"/>
+        </list>
+    </display_all>
+    <display_single>
+        <line label="Thông tin cá nhân" cols="2">
+            <item type="TextboxName" id="txtName" name="Tên người đăng ký" allownull="no" validate="text" label="Tên tôi là:" defaul_value="" size="30" css="" Even="ConverUpperCase('txtName',this.value)" view="true"/>
+            <item type="DropDownList" id="ddlSex" name="Giới tính" allownull="no" validate="ddli" label="Giới tính " defaul_value="0" src_file="public/xml/xml_gioi_tinh.xml" view="true"/>
+        </line>
+		<xmldata>
+		</xmldata>
+    </display_single>
+</root>

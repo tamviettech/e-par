@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <!--Thông tin kê khai-->
+  <line label="Thông tin cá nhân" cols="2">
+    <item type="TextboxName" id="txtName" name="Họ tên người nộp hồ sơ" allownull="no"  validate="text"   label="Họ tên người nộp hồ sơ:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)"  view = "true"/>
+    <item type="Textbox" id="txtNamsinh" name="Năm sinh" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNguyenQuan" name="Nguyên quán" allownull="yes"  validate="text"   label="Nguyên quán:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTruQuan" name="Trú quán" allownull="yes"  validate="text"   label="Trú quán:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtNgayNhapNgu" name="Tham gia hoạt động kháng chiến từ ngày" allownull="yes"  validate="text"   label="Tham gia hoạt động kháng chiến từ ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+    <item type="Textbox" id="txtNgayKT" name="Đến ngày" allownull="yes"  validate="text"   label="Đến ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtSoNam" name="Số năm thực tế tham gia kháng chiến" allownull="yes"  validate="text"   label="Số năm thực tế tham gia kháng chiến:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="Khen thưởng tổng kết thành tích kháng chiến" cols="1">
+    <item type="Textbox" id="txtHCKC" name="Huân chương kháng chiến hạng" allownull="yes"  validate="text"   label="Huân chương kháng chiến hạng:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtHCchongPhap" name="Huân chương kháng chiến chống Pháp hạng" allownull="yes"  validate="text"   label="Huân chương kháng chiến chống Pháp hạng:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtHCchongMy" name="Huân chương kháng chiến chống Mỹ hạng" allownull="yes"  validate="text"   label="Huân chương kháng chiến chống Mỹ hạng:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtHuyChuongCT" name="Huy chương Chiến thắng hạng" allownull="yes"  validate="text"   label="Huy chương Chiến thắng hạng:"  defaul_value=""  size="90" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtHuyChuongPhap" name="Huy chương kháng chiến chống Pháp hạng" allownull="yes"  validate="text"   label="Huy chương kháng chiến chống Pháp hạng:"  defaul_value=""  size="90" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtHuyChuongMy" name="Huy chương khán chiến chống Mỹ hạng" allownull="yes"  validate="text"   label="Huy chương kháng chiến chống Mỹ hạng:"  defaul_value=""  size="90" css=""  view = "true"/>
+  </line>
+  
+  
+  <!--Tài liệu kèm theo-->
+  <line label="Tài liệu kèm theo" cols="1">
+    <item type="Checkbox" value="0" id="ckbGiayChungNhanThuongBinh" doc="yes" name="" allownull="" validate="" title="Bản khai cá nhân (mẫu số 9-KC1)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbHuanChuong" doc="yes" name="" allownull="" validate="" title="Bản sao Huân, Huy chương kháng chiến, Huy chương chiến thắng" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbGiayCN" doc="yes" name="" allownull="" validate="" title="Giấy chứng nhận về khen thưởng tổng kết thành tích kháng chiến và thời gian hoạt động kháng chiến của cơ quan thi đua - khen thưởng cấp huyện" label="" view="true" />ết
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" id="ckbTaiLieuKhac" name="" allownull="" validate="" title="Tài liệu khác" label="" view="true" />
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes" validate="text" label="" defaul_value="" size="50" css="" view="true" />
+  </line>
+
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

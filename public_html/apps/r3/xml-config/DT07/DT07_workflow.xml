@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<process code="DT07" name="Cấp phép đào đất, san tạo mặt bằng, bạt mái taluy" totaltime="20" version="1" fee="50.000">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+        <task code="DT07::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="DT07::BAN_GIAO" single_user="true" />
+        <task code="DT07::BAN_GIAO" name="Bàn giao hồ sơ" time="0" next="DT07::TRA_KET_QUA" single_user="true" />
+    </step>
+
+    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
+        <task code="DT07::TRA_KET_QUA" name="Trả kết quả" time="1" next="NULL" single_user="true"/>
+        <!-- next="NULL": Kết thúc quy trình -->
+    </step>
+</process>

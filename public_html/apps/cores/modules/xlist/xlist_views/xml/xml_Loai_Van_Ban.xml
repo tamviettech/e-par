@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<!--Chiều đi/đến của văn bản-->
+	<line label="Chiều đi/đến của văn bản" cols="1" groupid="1">
+		<item type="Checkbox" value="VBDEN" id="VBDEN" name="" allownull="" validate="" title="Văn bản đến " label="" view="true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="VBDI" id="VBDI" name="" allownull="" validate="" title="Văn bản đi" label="" view="true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="VBNOIBO" id="VBNOIBO" name="" allownull="" validate="" title="Văn bản nội bộ" label="" view="true"/>
+	</line>
+    <!--
+	<line label="" cols="1">
+		<item type="Checkbox" value="VBTRACUU" id="VBTRACUU" name="" allownull="" validate="" title="Lưu trữ và tra cứu" label="" view="true"/>
+	</line>
+    -->
+</form>

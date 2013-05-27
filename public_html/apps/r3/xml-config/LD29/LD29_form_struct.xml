@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--Thông tin kê khai-->
+  <line label="" cols="2">
+    <item type="TextboxName" id="txtName" name="Họ tên người nộp hồ sơ" allownull="no"  validate="text"   label="Họ tên người nộp hồ sơ:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)"  view = "true"/>
+    <item type="Textbox" id="txtNamsinh" name="Sinh ngày" allownull="yes"  validate="text"   label="Sinh ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNguyenQuan" name="Nguyên quán" allownull="yes"  validate="text"   label="Nguyên quán:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTruQuan" name="Trú quán" allownull="yes"  validate="text"   label="Trú quán:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNoiDungTomTat" name="Nêu hoàn cảnh cá nhân, gia đình, dạng đối tượng" allownull="no" validate="text" label="Nêu hoàn cảnh cá nhân, gia đình, dạng đối tượng:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  
+  
+  <!--Tài liệu kèm theo-->
+
+  <line label="Tài liệu kèm theo" cols="1">
+    <item type="Checkbox" value="0" id="ckbGiayChungNhanThuongBinh" doc="yes"  name="" allownull=""  validate="" title="Đơn nhận nuôi trẻ em mồ côi, bị bỏ rơi (Mẫu số 1b)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbGiayKhaiSinh" doc="yes" name="" allownull=""  validate="" title="Đơn đề nghị hưởng trợ cấp xã hội (Mẫu số 1)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" id="ckbGiaykhaisinhtreem2" doc="yes" name="" allownull=""  validate="" title="Giấy chứng tử của cha mẹ nếu là trẻ mồ côi cả cha và mẹ" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" id="ckbGiaykhaisinhtreem3" doc="yes" name="" allownull=""  validate="" title="Giấy thông báo hoặc xác nhận của cơ quan Công an hoặc Toà án về việc bố mẹ đang thi hành án phạt tù giam nếu trẻ em có cha và mẹ đang trong thời gian chấp hành hình phạt tự tại trại giam" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" id="ckbGiaykhasiinhtreem4" doc="yes" name="" allownull=""  validate="" title="Giấy chứng tử của cha hoặc mẹ, quyết định của toà án nhân dân cấp huyện, thành phố công nhận người còn lại mất tích nếu là trẻ mồ côi cha hoặc mẹ nhưng người còn lại bỏ đi mất tích" label=""  view = "true"/>
+  </line>
+ 
+  <line label="" cols="1">
+    <item type="Checkbox" value="6" id="ckbGiaydichuyenhaicot" doc="yes" name="" allownull=""  validate="" title="Sơ yếu lý lịch của trẻ em" label=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Checkbox" value="7" id="ckbBienbanxetduyet" doc="yes" name="" allownull=""  validate="" title="Biên bản xét duyệt đối tượng của Hội đồng xét duyệt cấp phường, xã (Mẫu số 2)" label=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Checkbox" value="8" id="ckbBansaosohokhau" doc="yes" name="" allownull=""  validate="" title="Bản sao sổ hộ khẩu của người nhận nuôi dưỡng" label=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Checkbox" value="9" id="ckbBansaosoyeu" doc="yes" name="" allownull=""  validate="" title="Sơ yếu lý lịch của cá nhân hoặc gia đình nhận nuôi dưỡng trẻ" label=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Checkbox" value="10" id="ckbBansaogiaykhaisinh" doc="yes" name="" allownull=""  validate="" title="Bản sao giấy khai sinh của trẻ em" label=""  view = "true"/>
+  </line>
+  
+
+  <line label="" cols="1" >
+    <item type="Checkbox" value="11"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+
+
+  <!--button-->
+
+ <!-- <line label="" cols="0">
+    <item type="Button" id="btnSave"  name="button" allownull="" validate=""  value="Ghi lại" ObjList="GetControl('Modules/XML/LDTB_128/LDTB_128.xml')"/>
+    
+    
+  </line>-->
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

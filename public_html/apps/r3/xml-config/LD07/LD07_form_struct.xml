@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--Thông tin kê khai-->
+  <line label="Thông tin cá nhân" cols="2">
+    <item type="TextboxName" id="txtName" name="Họ tên người có công" allownull="no"  validate="text"   label="Họ tên người có công:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)"  view = "true"/>
+    <item type="Textbox" id="txtNamsinh" name="Năm sinh" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtLa" name="Là (TB, BB, TNLS...)" allownull="yes"  validate="text"   label="Là (TB, BB, TNLS...):"  defaul_value=""  size="30" css=""  view = "true"/>
+    <item type="Textbox" id="txtTyle" name="Tỷ lệ thương tật" allownull="yes"  validate="text"   label="Tỷ lệ thương tật:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="2">
+    <item type="Textbox" id="txtSoHS" name="Số hồ sơ" allownull="yes"  validate="text"   label="Số hồ sơ:"  defaul_value=""  size="30" css=""  view = "true"/>
+    <item type="Textbox" id="txtSoSo" name="Số sổ" allownull="yes"  validate="text"   label="Số sổ:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDiaChi" name="Địa chỉ liên hệ" allownull="yes"  validate="text"   label="Địa chỉ liên hệ:"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtsoluong" name="Nơi đang quản lý và chi trả trợ cấp" allownull="yes"  validate="text"   label="Nơi đang quản lý và chi trả trợ cấp:"  defaul_value="Phòng nội vụ LĐTBXH TP HOÀ BÌNH"  size="50" css=""   view = "true"/>
+  </line>
+  <line label="Đề nghị Sở Lao động thương binh và xã hội cấp sổ ưu đãi  Giáo dục, đào tạo cho người có tên sau:" cols="1">
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxName" id="txtName2" name="Họ tên người được cấp ưu đãi" allownull="no"  validate="text"   label="Họ tên người được cấp ưu đãi:"  defaul_value=""  size="60" css="" Even="ConverUpperCase('txtName2',this.value)"  view = "true"/>
+  </line>
+    <line label="" cols="1">
+    <item type="Textbox" id="txtQuanHe" name="Quan hệ với người có công" allownull="yes"  validate="text"   label="Quan hệ với người có công:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+    <line label="" cols="1">
+      <item type="Textbox" id="txtHocTruong" name="Đang học tại trường" allownull="no"  validate="text"   label="Đang học tại trường:"  defaul_value=""  size="60" css="" Even=""  view = "true"/>
+    </line>
+    <line label="" cols="1">
+      <item type="Textbox" id="txtSoDT" name="Số điện thoại nhà trương" allownull="no"  validate="text"   label="Số điện thoại nhà trương:"  defaul_value=""  size="60" css="" Even=""  view = "true"/>
+    </line>
+    <line label="" cols="2">
+      <item type="TextboxDate" id="txtNgayBD" name="Khóa học từ ngày" allownull="no"  validate="text"   label="Khóa học từ ngày:"  defaul_value=""  size="30" css="" Even=""  view = "true"/>
+      <item type="TextboxDate" id="txtNgayKT" name="Đến ngày" allownull="no"  validate="text"   label="Đến ngày:"  defaul_value=""  size="30" css="" Even=""  view = "true"/>
+    </line>
+
+
+  <!--Tài liệu kèm theo-->
+
+  <line label="Tài liệu kèm theo" cols="1">
+    <item type="Checkbox" value="0" id="ckbTheThuongBinh" doc="yes"  name="" allownull=""  validate="" title="Tờ khai cấp sổ ưu đãi trong giáo dục đào tạo có xác nhận của UBND phường, xã" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbTheBenhBinh" doc="yes" name="" allownull=""  validate="" title="Bản gốc giấy xác nhận của nhà trường" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbCNGiaDinhLS" doc="yes" name="" allownull=""  validate="" title="Bản sao giấy báo nhập học" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbSoHoKhau" doc="yes" name="" allownull=""  validate="" title="Bản sao Giấy khai sinh" label=""  view = "true"/>
+  </line>
+    <line label="" cols="1">
+      <item type="Checkbox" value="2" id="ckbAnh" doc="yes" name="" allownull=""  validate="" title="Một ảnh 3x4" label=""  view = "true"/>
+    </line>
+  <line label="" cols="1" >
+    <item type="Checkbox" value="3"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+
+
+  <!--button-->
+
+ <!-- <line label="" cols="0">
+    <item type="Button" id="btnSave"  name="button" allownull="" validate=""  value="Ghi lại" ObjList="GetControl('Modules/XML/LDTB_133/LDTB_133.xml')"/>
+    
+    
+  </line>-->
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

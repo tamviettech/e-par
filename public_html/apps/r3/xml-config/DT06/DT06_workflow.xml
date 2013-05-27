@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<process code="DT06" name="Cấp phép sử dụng công trình công cộng" totaltime="15" version="1" fee="">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1" role="TIEP_NHAN">
+		<task code="DT06::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0.5" next="DT06::BAN_GIAO" single_user="true" />
+		<task code="DT06::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="DT06::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step code="" order="2" group="PHONG_QUAN_LY_DO_THI" name="Phòng quản lý đô thị" time="11" role="XU_LY">
+		<task code="DT06::PHAN_CONG" name="Phân công thụ lý" time="1" next="DT06::THU_LY" single_user="true" />
+		<task code="DT06::THU_LY" name="Thụ lý" time="10" next="DT06::XET_DUYET"/>
+		<task code="DT06::XET_DUYET" name="Xét duyệt" time="1" next="DT06::KY_DUYET" single_user="true" />
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Ký duyệt" time="3">
+		<task code="DT06::KY_DUYET" name="Ký duyệt" time="0" next="DT06::TRA_KET_QUA" biz_done="true"/>
+	</step>
+
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+		<task code="DT06::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

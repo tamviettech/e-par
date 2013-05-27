@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<process code="TN04B-1" name="Cấp Giấy CNQSDĐ, quyền sở hữu nhà ở và tài sản khác gắn liền với đất đối với trường hợp thửa đất không có tài sản gắn liền với đất hoặc có tài sản nhưng không có nhu cầu chứng nhận quyền sở hữu hoặc có tài sản nhưng thuộc quyền sở hữu (niêm yết 15 ngày )" totaltime="46" version="1" fee="0">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+        <task code="TN04B::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN04B::BAN_GIAO" single_user="true" />
+        <task code="TN04B::BAN_GIAO" name="Bàn giao hồ sơ" time="0" next="TN04B::PHAN_CONG" single_user="true" />
+    </step>
+	
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="VPĐKQSDĐ chuyển hồ sơ xuống phường, xã" time="3">
+        <task code="TN04B::PHAN_CONG" name="Phân công thụ lý" time="2" next="TN04B::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" single_user="true" />
+        <task code="TN04B::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" name="Chuyển yêu cầu xác nhận xuống xã" time="1" next="TN04B::XAC_NHAN_LIEN_THONG" single_user="true" />
+    </step>
+	
+	<step order="1" group="DIA_CHINH_CAP_XA" name="Xác nhận phường xã" time="20">
+        <task code="TN04B::XAC_NHAN_LIEN_THONG" name="Xác nhận hồ sơ liên thông" time="20" next="TN04B::THU_LY_HO_SO_LIEN_THONG" single_user="true" />
+    </step>
+	
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý tiếp hồ sơ" time="5">
+        <task code="TN04B::THU_LY_HO_SO_LIEN_THONG" name="Thụ lý hồ sơ liên thông" time="1" next="TN04B::XET_DUYET" single_user="true" />
+        <task code="TN04B::XET_DUYET" name="Xét duyệt" next="TN04B::NOP_HO_SO_SANG_CHI_CUC_THUE" single_user="true" time="4"/>
+    </step>
+	
+	<step code="NGHIA_VU_THUE" order="3" group="BP_THUE" name="Thực hiện nghĩa vụ thuế" time="3">
+		<task code="TN04B::NOP_HO_SO_SANG_CHI_CUC_THUE" name="Nộp hồ sơ sang cơ quan thuế" time="3" next="TN04B::NHAN_THONG_BAO_CUA_CHI_CUC_THUE" />
+		<task code="TN04B::NHAN_THONG_BAO_CUA_CHI_CUC_THUE" name="Nhận thông báo của cơ quan thuế" time="0" next="TN04B::CHUYEN_THONG_BAO_THUE_VE_BP_MOT_CUA" />
+		<task code="TN04B::CHUYEN_THONG_BAO_THUE_VE_BP_MOT_CUA" name="Chuyển thông báo của cơ quan thuế về bộ phận một cửa" time="0" next="TN04B::TRA_THONG_BAO_NOP_THUE" />
+	</step>
+	
+	<step code="TRA_THONG_BAO_THUE" order="4" group="BP_MOT_CUA" name="Trả thông báo thuế">
+		<task code="TN04B::TRA_THONG_BAO_NOP_THUE" name="Trả thông báo nộp thuế" time="0" next="TN04B::NHAN_BIEN_LAI_NOP_THUE" />
+		<task code="TN04B::NHAN_BIEN_LAI_NOP_THUE" name="Nhận biên lai nộp thuế" time="0" next="SAU_THUE::TN04B::XET_DUYET" />
+	</step>
+	
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD thẩm định" time="6">
+        <task code="SAU_THUE::TN04B::XET_DUYET" name="Xét duyệt sau nghĩa vụ thuế" time="6" next="TNMT::TN04B::XET_DUYET" single_user="true" />
+    </step>
+	
+	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT ký duyệt" time="5" role="XU_LY">
+		<task code="TNMT::TN04B::XET_DUYET" name="Xét duyệt" time="2" next="TN04B::KY_DUYET" single_user="true" />
+	</step>
+	
+	<step order="3" group="LANH_DAO_DON_VI" name="Lãnh đạo Thành phố ký duyệt" time="2">
+		<task code="TN04B::KY_DUYET" name="Ký duyệt" time="0" next="TNMT_VONG2::TN04B::XET_DUYET" biz_done="true"/>
+	</step>
+	
+	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT ký duyệt, bàn giao cho Một Cửa" time="1" role="XU_LY">
+		<task code="TNMT_VONG2::TN04B::XET_DUYET" name="Xét duyệt" time="1" next="TN04B::TRA_KET_QUA" single_user="true" />
+	</step>	
+
+    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
+        <task code="TN04B::TRA_KET_QUA" name="Trả kết quả" time="1" next="NULL" single_user="true"/>
+        <!-- next="NULL": Kết thúc quy trình -->
+    </step>
+</process>

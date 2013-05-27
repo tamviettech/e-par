@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rules>
+	<rule name="Từ chối mua bán, chuyển nhượng các hồ sơ đang đăng ký thế chấp">
+		<lock>
+			<id>txtPlaceAdd@@@@@@@@@@@@@</id>
+			<record_type_code>TN0111111</record_type_code>
+		</lock>
+		<unlock>
+			<id>txtPlaceAdd@@@@@@@@@@@@@@@</id>
+			<record_type_code>TN0331111</record_type_code>
+		</unlock>
+	</rule>
+</rules>	

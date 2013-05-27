@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<process code="TC07" name="Đăng ký thay đổi, bổ sung kinh doanh hộ cá thể" totaltime="9" version="1" fee="10.000">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="TC07::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TC07::BAN_GIAO" single_user="true" />
+		<task code="TC07::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="TC07::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step code="" order="2" group="PHONG_TAI_CHINH_KE_HOACH" name="Phòng tài chính kế hoạch" time="8" role="XU_LY">
+		<task code="TC07::PHAN_CONG" name="Phân công thụ lý" time="0" next="TC07::THU_LY" single_user="true" />
+		<task code="TC07::THU_LY" name="Thụ lý" time="6" next="TC07::XET_DUYET"/>
+		<task code="TC07::XET_DUYET" name="Xét duyệt" time="1" next="TC07::KY_DUYET" single_user="true" />
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Ký duyệt" time="1">
+		<task code="TC07::KY_DUYET" name="Ký duyệt" time="0" next="TC07::THU_PHI" biz_done="true"/>
+	</step>
+
+	<step order="4" group="BP_MOT_CUA" name="Thu phí" time="0" role="THU_PHI">
+		<task code="TC07::THU_PHI" name="Thu phí" time="0" next="TC07::TRA_KET_QUA" single_user="true"/>		
+	</step>
+	
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
+		<task code="TC07::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="50" align="right"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="120"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="150" />
+        <item type="text" id="C_CHARGE_DATE" name="Ngày thu" size="120"  />
+        <item type="text" id="C_FINAL_FEE" name="Số tiền" size="80" align="right" number_format="true"/>
+        <item type="text" id="C_FEE_DESCRIPTION" name="Diễn giải" size="230" />
+    </list>
+    <total>
+        <item colspan="4" name="Tổng cộng" align="right"/>
+        <item colspan="1" id="C_FINAL_FEE" align="right" number_format="true"/>
+    </total>
+    <sub_total group="C_SPEC_CODE" text="C_SPEC_NAME">
+		<item colspan="4" name="Tổng:" align="right"/>
+        <item colspan="1" id="C_FINAL_FEE" align="right" number_format="true"/>
+    </sub_total>
+</report>

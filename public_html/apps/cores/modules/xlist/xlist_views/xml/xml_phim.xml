@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<line label="Thông tin chi tiết" cols="1">
+		<item type="Textbox" id="txtXmlFileName" name="File XML môi tả cấu trúc văn bản" allownull="no" validate="text" label="Đạo diễn:" defaul_value="" size="30" css="" view="true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtTheLoai" name="Thể loại" allownull="no" validate="text" label="Thể loại:" defaul_value="" size="30" css="" view="true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtThoiLuong" name="Thời lượng" allownull="yes" validate="text" label="Thời lượng:" defaul_value="" size="30" css="" view="true"/>
+	</line>
+</form>

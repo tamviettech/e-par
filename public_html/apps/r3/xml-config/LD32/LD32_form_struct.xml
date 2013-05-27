@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <!--Thông tin kê khai-->
+  <line label="Kê khai thông tin người từ trần" cols="2">
+    <item type="TextboxName" id="txtName" name="Họ tên" allownull="no"  validate="text"   label="Họ tên:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)"  view = "true"/>
+    <item type="Textbox" id="txtNamsinh" name="Sinh ngày" allownull="yes"  validate="text"   label="Sinh ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNguyenQuan" name="Nguyên quán" allownull="yes"  validate="text"   label="Nguyên quán:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTruQuan" name="Trú quán" allownull="yes"  validate="text"   label="Trú quán:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDoiTuong" name="Thuộc đối tượng hưởng trợ cấp ưu đãi" allownull="yes"  validate="text"   label="Thuộc đối tượng hưởng trợ cấp ưu đãi (thương binh, bệnh binh, thân nhân LS:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtSo" name="Số sổ trợ cấp" allownull="yes"  validate="text"   label="Số sổ trợ cấp (nếu có):"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTyleSuyGiam" name="Tỷ lệ suy giảm khả năng Lao động" allownull="yes"  validate="text"   label="Tỷ lệ suy giảm khả năng Lao động:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxDate" id="txtNgayChet" name="Từ trần ngày" allownull="yes"  validate="text"   label="Từ trần ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtGiayKhaiTu" name="Giấy khai tử số" allownull="yes"  validate="text"   label="Giấy khai tử số:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="TextboxDate" id="txtNgayHetHan" name="Trợ cấp nhận hết ngày" allownull="yes"  validate="text"   label="Trợ cấp nhận hết ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+    <item type="Textbox" id="txtMucTroCap" name="Mức trợ cấp" allownull="yes"  validate="text"   label="Mức trợ cấp:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  
+  
+  <line label="Thông tin Người nhận mai táng phí và 3 tháng trợ cấp, phụ cấp" cols="2">
+    <item type="TextboxName" id="txtName2" name="Họ tên" allownull="no"  validate="text"   label="Họ tên:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName2',this.value)"  view = "true"/>
+    <item type="Textbox" id="txtNamsinh2" name="Sinh ngày" allownull="yes"  validate="text"   label="Sinh ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNguyenQuan2" name="Nguyên quán" allownull="yes"  validate="text"   label="Nguyên quán:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTruQuan2" name="Trú quán" allownull="yes"  validate="text"   label="Trú quán:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtQHvoiNgCoCong" name="Quan hệ với người có công từ trần" allownull="yes"  validate="text"   label="Quan hệ với người có công từ trần:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNoiDungTomTat" name="Danh sách thân nhân đủ điều kiện hưởng tuấn từ trần" allownull="yes" validate="text" label="Danh sách thân nhân đủ điều kiện hưởng tuấn từ trần:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <!--Tài liệu kèm theo-->
+  <line label="Tài liệu kèm theo" cols="1">
+    <item type="Checkbox" value="0" id="ckbGiayChungNhanThuongBinh" doc="yes" name="" allownull="" validate="" title="Bản khai của thân nhân người có công với CM từ trần có xác nhận của UBND xã, phường(mẫu 05)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbGiayKhaiSinh1" doc="yes" name="" allownull="" validate="" title="Đơn đề nghị viết tay có xác nhận của UBND phường, Xã" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbGiayKhaiSinh2" doc="yes" name="" allownull="" validate="" title="Giấy chứng tử do UBND cấp xã cấp(bản chính)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" id="ckbGiayKhaiSinh3" doc="yes" name="" allownull="" validate="" title="Sổ hộ khẩu (photo công chứng)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" id="ckbGiayKhaiSinh4" doc="yes" name="" allownull="" validate="" title="Giấy chứng nhận tình hình thân nhân trong gia đình người từ trần (mẫu số 11-TT2)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" id="ckbGiayKhaiSinh5" doc="yes" name="" allownull="" validate="" title="Quyết định hưởng tuất hàng tháng của BHXH Thành phố (photo công chứng)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="6" id="ckbDonTheoMauLDTB" doc="yes" name="" allownull="" validate="" title="Số lượng hồ sơ: 02 (bộ)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="7" id="ckbTaiLieuKhac" name="" allownull="" validate="" title="Tài liệu khác" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes" validate="text" label="" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <!--button-->
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

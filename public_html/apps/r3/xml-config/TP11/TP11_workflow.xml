@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<process code="TP11" name="Bổ sung hộ tịch, điều chỉnh hộ tịch" totaltime="1" version="1" fee="25.000">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="TP11::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TP11::BAN_GIAO" single_user="true" />
+		<task code="TP11::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="TP11::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step order="2" group="PHONG_TU_PHAP" name="Văn phòng tư pháp" time="0.5" role="XU_LY">
+		<task code="TP11::PHAN_CONG" name="Phân công thụ lý" time="0" next="TP11::THU_LY" single_user="true" />
+		<task code="TP11::THU_LY" name="Thụ lý" time="6" next="TP11::XET_DUYET"/>
+		<task code="TP11::XET_DUYET" name="Xét duyệt" time="1" next="TP11::THU_PHI" single_user="true" />
+	</step>
+	
+	<step order="4" group="BP_MOT_CUA" name="Thu phí" time="0" role="THU_PHI">
+		<task code="TP11::THU_PHI" name="Thu phí" time="0" next="TP11::TRA_KET_QUA" single_user="true"/>		
+	</step>
+	
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+		<task code="TP11::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

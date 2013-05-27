@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--Thông tin kê khai-->
+  <line label="Thông tin cá nhân" cols="2">
+    <item type="TextboxName" id="txtName" name="Họ tên học sinh" allownull="no"  validate="text"   label="Họ tên học sinh:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)"  view = "true"/>
+    <item type="Textbox" id="txtNamsinh" name="Năm sinh" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="2">
+    <item type="Textbox" id="txtDiaChi" name="Địa chỉ liên hệ" allownull="yes"  validate="text"   label="Địa chỉ liên hệ:"  defaul_value=""  size="50" css=""  view = "true"/>
+    <item type="DropDownList" id="ddlSex" name="Giới tính" allownull="no" validate="ddli" label="Giới tính" defaul_value="0" src_file="public/xml/xml_gioi_tinh.xml" view="true" />
+  </line>
+    <line label="" cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Textbox" id="txtEmail" name="Tên trường" allownull="yes"  validate="text"   label="Tên trường:"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+  
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTrinhdo" name="Trình độ văn hóa" allownull="no"  validate="text"   label="Trình độ văn hóa:"  defaul_value=""  size="20" css=""   view = "true"/>
+  </line>
+  
+      <line label="" cols="1">
+    <item type="TextboxArea" id="txtThanhtich" name="Thành tích học tập" allownull="no"  validate="text"   label="Thành tích học tập:"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+
+
+ 
+  <!--Tài liệu kèm theo-->
+
+  <line label="Là đối tượng" cols="2">
+    <item type="Checkbox" value="0" id="ckbTreEmDanTocThieuSo" doc="yes"  name="Trẻ em dân tộc thiểu số" allownull=""  validate="" title="Trẻ em dân tộc thiểu số" label=""  view = "true"/>
+    <item type="Textbox" id="txtDantoc" name="Dân tộc" allownull="yes"  validate="text"   label="Dân tộc:"  defaul_value=""  size="20" css=""   view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Checkbox" value="1" id="ckbTreKhuyetTat" doc="yes" name="Trẻ em khuyết tật" allownull=""  validate="" title="Trẻ em khuyết tật" label=""  view = "true"/>
+    <item type="Textbox" id="txtLoaiKhuyetTat" name="Loại khuyết tật" allownull="yes"  validate="text"   label="Loại khuyết tật:"  defaul_value=""  size="20" css=""   view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbConTBLS" doc="yes" name="Trẻ em con TBLS" allownull=""  validate="" title="Trẻ em con TBLS" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" id="ckbTreNgheoHieuHoc" doc="yes" name="Trẻ em nghèo hiếu học" allownull=""  validate="" title="Trẻ em nghèo hiếu học" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1" >
+    <item type="Checkbox" value="4"  id="ckbTreHieuThao" doc="yes" name="Trẻ em con cháu hiểu thảo" allownull=""  validate="" title="Trẻ em con cháu hiểu thảo" label="" view = "true"/>
+  </line>
+
+ 
+
+  <line label="Thành phần hồ sơ" cols="1">
+    <item type="Checkbox" value="0" id="ckbTreEmNhanHocBong" doc="yes"  name="Hồ sơ trẻ em nhận học bổng" allownull=""  validate="" title="Hồ sơ trẻ em nhận học bổng" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbCapHocBong" doc="yes" name="Đơn xin cấp học bổng" allownull=""  validate="" title="Đơn xin cấp học bổng(theo mẫu)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbSaoHocba" doc="yes" name="Bản trích sao học bạ" allownull=""  validate="" title="Bản trích sao học bạ" label=""  view = "true"/>
+  </line>
+	<line label="" cols="1" >
+		<item type="Checkbox" value="3"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css=""  view = "true"/>
+	</line>
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--I. Thông tin người kê khai-->
+  <line label="Thông tin người kê khai" cols="1">
+    <item type="TextboxName" id="txtName" name="Họ tên người làm chứng thực" allownull="no"  validate="text"   label="Họ tên người làm chứng thực: "  defaul_value=""  size="60" css="" Even="ConverUpperCase('txtName',this.value)" view = "true" />
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtDiaChi" name="Địa chỉ liên hệ" allownull="yes"  validate="text"   label="Địa chỉ liên hệ:"  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+  <line label=""  cols="2">
+    <item type="Textbox" id="txtSoDienThoai" name="Điện thoại" allownull="yes"  validate="number"   label="Điện thoại:"  defaul_value="" size="30" css="" view = "true"/>
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="yes"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"/>
+  </line>
+  <line label=""  cols="1">
+    <item type="Textbox" id="txtTinhThanhPho" name="Tỉnh (thành phố)" allownull="yes"  validate="text"   label="Tỉnh (thành phố):"  defaul_value="HOÀ BÌNH" size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTenGiayTochungThu" name="Tên giấy tờ chứng thực" allownull="yes"  validate="text"   label="Tên giấy tờ chứng thực:"  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+  <line label=""  cols="1">
+    <item type="Textbox" id="txtSoLuongBanSao" name="Số lượng bản sao" allownull="yes"  validate="number"   label="Số lượng bản sao:"  defaul_value="" size="30" css="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="Textbox" id="txtCost" name="Lệ phí thu" allownull="yes"  validate="money"   label="Lệ phí thu:(đồng)"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+
+  <!--tai lieu kem theo don-->
+
+  <line label="Tài liệu kèm theo đơn" cols="1">
+    <item type="Checkbox" value="0" doc="yes"  id="ckbTaiLieuMuonChungThuc" name="" allownull=""  validate="" title=" Xuất trình bản chính muốn chứng thực" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" doc="yes"  id="ckbChungMinhND" name="" allownull=""  validate="" title="Nộp bản sao từ bản chính yêu cầu chứng thực" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" doc="yes"  id="ckbPhieuyeucau" name="" allownull=""  validate="" title="Phiếu yêu cầu chứng thực" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" doc="yes"  id="ckbBanChinhQuanHe" name="" allownull=""  validate="" title="Xuất trình bản chính chứng minh quan hệ giữa người để lại di sản và người được hưởng di sản" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" doc="yes"  id="ckbBanSaoQuanHe" name="" allownull=""  validate="" title="Nộp bản sao từ bản chính chứng minh quan hệ giữa người để lại di sản và người được hưởng di sản" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" doc="yes"  id="ckbBanChinhQSH" name="" allownull=""  validate="" title="Xuất trình bản chính chứng minh quyền sở hữu, quyền sử dụng đối với tài sản" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="6" doc="yes"  id="ckbBanSaoQSH" name="" allownull=""  validate="" title="Nộp bản sao từ bản chính chứng minh quyền sở hữu, quyền sử dụng đối với tài sản" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="7" doc="yes"  id="ckbVanBanPhanChia" name="" allownull=""  validate="" title="Văn bản phân chia di sản hoặc văn bản khai nhận di sản được soạn thảo kèm theo văn bản thông báo niêm yết văn bản này  " label="" view = "true"/>
+  </line>
+
+  <line label="" cols="1" >
+    <item type="Checkbox" value="8"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+
+
+
+  <!--le phi-->
+
+ <!--<line label="" cols="1">
+    <item type="Textbox" id="txtCost" name="Lệ phí thu" allownull="yes"  validate="text"   label="Lệ phí thu:(đồng)"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>-->
+
+
+
+  <!--button-->
+
+  <!--<line label="" cols="0">
+    <item type="Button" id="btnSave"  name="button" allownull="" validate=""  value="Ghi lại" ObjList="GetControl('Modules/XML/TP_159/TP_159.xml')"/>
+    
+  </line>-->
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

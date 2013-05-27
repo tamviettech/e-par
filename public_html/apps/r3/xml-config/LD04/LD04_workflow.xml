@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<process code="LD04" name="Cấp giấy CN con TB, bệnh binh, con liệt sỹ, người có công" totaltime="1" version="1" fee="">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="LD04::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="LD04::BAN_GIAO" single_user="true" />
+		<task code="LD04::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="LD04::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step code="" order="2" group="PHONG_LAO_DONG_THUONG_BINH_XA_HOI" name="Phòng LĐTB - XH xử lý hồ sơ" time="0.5" role="XU_LY">
+		<task code="LD04::PHAN_CONG" name="Phân công thụ lý" time="0" next="LD04::THU_LY" single_user="true" />
+		<task code="LD04::THU_LY" name="Thụ lý" time="6" next="LD04::XET_DUYET"/>
+		<task code="LD04::XET_DUYET" name="Xét duyệt" time="1" next="LD04::TRA_KET_QUA" single_user="true" />
+	</step>
+
+	<step order="4" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+		<task code="LD04::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

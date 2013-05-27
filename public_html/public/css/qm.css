@@ -1,0 +1,151 @@
+/*!!!!!!!!!!! QuickMenu Core CSS [Do Not Modify!] !!!!!!!!!!!!!*/
+.qmclear {font-size:1px;height:0px;width:0px;clear:left;line-height:0px;display:block;}.qmmc {position:relative;}.qmmc a {float:left;display:block;white-space:nowrap;}.qmmc div a {float:none;}.qmmc div {display:none;position:absolute;}
+
+
+/*!!!!!!!!!!! QuickMenu Styles [Please Modify!] !!!!!!!!!!!*/
+
+
+	/* Remove the comments bleow for vertical mains and change the false value to
+           true in the qm_create function after the menus structure. */
+	/*.qmmc a {float:none}*/
+
+
+
+	/*"""""""" (MAIN) Container """"""""*/
+	#qm0
+	{
+		background-color:transparent;
+	}
+
+
+	 /*"""""""" (MAIN) Items """"""""*/
+	#qm0 a
+	{
+		color:#000000;
+		background-color:#F1F3F5;
+		font-family:Arial;
+		font-size:11px;
+		text-decoration:none;
+		padding:5px 40px 5px 8px;		
+		z-index:1000;		
+		font-weight: normal;
+		border-top: 0.1em solid #ccc;
+		border-left: 1px solid #fff;
+		border-right: 1px solid #d8d8d8;
+	}
+
+
+	/*"""""""" (MAIN) Hover State """"""""*/
+	#qm0 a:hover
+	{		
+		text-decoration:none;		
+		background-color: #F1E8E6; 		
+	}
+
+
+	/*"""""""" (MAIN) Active State """"""""*/
+	#qm0 .qmactive
+	{
+		/* Note: Add '!important' after each style */
+
+		background-color:#F1E8E6 !important;
+		text-decoration:none !important;
+		
+		
+	}
+
+
+	/*"""""""" (MAIN) Parent Items """"""""*/
+	#qm0 .qmparent
+	{
+		background-image:url(images/j_arrow_down.png);
+		background-repeat:no-repeat;
+		background-position:95%;
+		z-index:1000;
+	}
+
+
+	/*"""""""" [SUB] Containers """"""""*/
+	#qm0 div
+	{
+		background-color:#efefef;
+		padding-left:21px;
+		padding-top:0px;		
+		border-style:solid;
+		border-width:1px;
+		border-top:0px;
+		border-color:#8C867B;
+		margin-top:-1px;
+		z-index:1000;		
+		line-height: 1.6em; 
+		vertical-align: middle;
+		color: #333333;	
+		font-size: 11px; 
+		text-decoration: none;
+		cursor: default;
+		font-weight:normal;	
+		width:176px;
+	}
+	
+	/*"""""""" [SUB] Hover State """"""""*/
+	#qm0 div a:hover
+	{
+		text-decoration:none;	
+		background-color: #F1E8E6;		
+	}
+
+
+	/*""""""""[SUB] Active State """"""""*/
+	#qm0 div .qmactive
+	{
+		/* Note: Add '!important' after each style */
+
+		background-color:#F1E8E6 !important;		
+		border: 1px solid #c24733;
+		padding: 1px 1px 1px 3px;
+	}
+
+
+	/*"""""""" [SUB] Parent Items """"""""*/
+	#qm0 div .qmparent
+	{
+		background-image:url(images/arrow.png);
+		z-index:1000;
+	}
+	#qm0 div .qmparent a:hover
+	{
+		text-decoration:none;
+		background-color: #f1e8e6;
+		border: 1px solid #c24733;
+	}
+	
+
+
+	/*"""""""" [SUB] Items """"""""*/
+	#qm0 div a
+	{
+		text-decoration : none;
+		display: block;
+		border-left:0px;
+		border-style:none;		
+		padding: 2px 2px 2px 4px;
+		text-align:left;
+		z-index:1000;		
+		font-weight:normal;
+		color: #333333;		
+		background-color:#F1F3F5;		
+	}	
+	#qm0 div a{
+		width:170px;
+	}
+	#qm0 div a:hover{		
+		border: 1px solid #c24733;
+		background-color: #f1e8e6;
+		padding: 1px 1px 1px 3px;
+		text-decoration:none;		
+	}
+	#qm0 a.disabled{
+		background-color:#F1F3F5;
+		color: #AAAAAA;
+		cursor:default;
+	}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="50" align="right"/>
+        <item type="text" id="C_GROUP_NAME" name="Phòng ban" size="300" />
+        <item type="text" id="C_COUNT_RECEIVED" name="Tiếp nhận" size="100" align="right" />
+        <item type="text" id="C_COUNT_PROCESSING" name="Đang giải quyết" size="100" align="right" />
+        <item type="text" id="C_COUNT_DELAYED" name="Chậm tiến độ" size="100" align="right" />
+        <item type="text" id="C_COUNT_OVERTIME" name="Quá hạn" size="100" align="right" />
+    </list>
+    <total>
+        <item colspan="2" name="Tổng cộng" align="right"/>
+        <item colspan="1" id="C_COUNT_RECEIVED" align="right"/>
+        <item colspan="1" id="C_COUNT_PROCESSING" align="right"/>
+        <item colspan="1" id="C_COUNT_DELAYED" align="right"/>
+        <item colspan="1" id="C_COUNT_OVERTIME" align="right"/>
+    </total>
+    <sub_total>
+
+    </sub_total>
+</report>

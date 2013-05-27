@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--Thông tin người kê khai-->
+  <line label="I.Thông tin người kê khai" cols="1">
+    <item type="TextboxName" id="txtName" name="Họ và tên người khai" allownull="no"  validate="text"   label="Họ và tên người khai: "  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDiaChi" name="Địa chỉ thường trú/tạm trú" allownull="no"  validate="text"   label="Địa chỉ thường trú/tạm trú:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtSoDienThoai" name="Số điện thoại" allownull="yes"  validate="number"   label="Số điện thoại :"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtSoCMD_HoChieu" name="Số CMND/Hộ chiếu" allownull="yes"  validate="text"   label="Số CMND/Hộ chiếu:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="2">
+	  <item type="TextboxDate" id="txtNgayCap" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""  css="" view = "true"/>
+	  <item type="Textbox" id="txtNoiCap" name="Nơi cấp" allownull="yes"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtQuanHeVoiNguoiDuocCap" name="Quan hệ với người được cấp giấy khai sinh" allownull="no"  validate="text"   label="Quan hệ với người được cấp giấy khai sinh:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+
+  <!--Đề nghị UBND TP Yên Bái cấp lại bản chính Giấy khai sinh cho người có tên dưới đây-->
+  
+	<line label="II.Đề nghị UBND TP YÊN BÁI cấp lại bản chính Giấy khai sinh cho người có tên dưới đây" cols="2" >
+    <item type="TextboxName" id="txtHoVaTen" name="Họ và tên" allownull="no"  validate="text"   label="Họ và tên: "  defaul_value=""  size="30" css=""  view = "true" Even="ConverUpperCase('txtHoVaTen',this.value)"/>
+    <item type="DropDownList" id="ddlSex" name="Giới tính" allownull="no"  validate="ddli" label="Giới tính "  defaul_value="0"  src_file="public/xml/xml_gioi_tinh.xml" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxDate" id="txtNgayThangNam" string ="true" name="Ngày, tháng, năm sinh" allownull="yes"  validate="no"   label="Ngày, tháng, năm sinh:"  defaul_value=""  css="" view = "true"/>
+  </line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtNgayThangNamBangchu" name="Ghi bằng chữ" allownull="yes"  validate="text"   label="Ghi bằng chữ:"  defaul_value=""  size="80" css="" view = "true"/>
+	</line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiSinh" name="Nơi sinh" allownull="no"  validate="text"   label="Nơi sinh:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtDanToc" name="Dân tộc" allownull="yes"  validate="text"   label="Dân tộc :"  defaul_value="Kinh"  size="30" css="" view = "true"/>
+    <item type="Textbox" id="txtQuocGia" name="Quốc tịch" allownull="yes"  validate="text"   label="Quốc tịch :"  defaul_value="Việt Nam"  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtQueQuan1" name="Quê quán (1)" allownull="yes"  validate="text"   label="Quê quán (1):"  defaul_value="" size="60" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDiaChiThuongTru" name="Địa chỉ thường trú/tạm trú" allownull="no"  validate="text"   label="Địa chỉ thường trú/tạm trú:"  defaul_value="" size="60" css="" view = "true"/>
+  </line>
+  <line label=""  cols="1">
+    <item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="yes"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"/>
+  </line>
+
+  <!--thong tin bo me-->
+
+  <line label="" cols="1">
+    <item type="TextboxName" id="txtHoTenCha" name="Họ và tên cha" allownull="yes"  validate="text"   label="Họ và tên cha:"  defaul_value="" size="60" css="" view = "true" Even="ConverUpperCase('txtHoTenCha',this.value)"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtDanTocCha" name="Dân tộc" allownull="yes"  validate="text"   label="Dân tộc :"  defaul_value="Kinh"  size="30" css="" view = "true"/>
+    <item type="Textbox" id="txtQuocGiaCha" name="Quốc tịch" allownull="yes"  validate="text"   label="Quốc tịch :"  defaul_value="Việt Nam"  size="30" css="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxName" id="txtHoTenMe" name="Họ và tên mẹ" allownull="no"  validate="text"   label="Họ và tên mẹ:"  defaul_value="" size="60" css="" view = "true" Even="ConverUpperCase('txtHoTenMe',this.value)"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtDanTocMe" name="Dân tộc" allownull="yes"  validate="text"   label="Dân tộc :"  defaul_value="Kinh"  size="30" css="" view = "true"/>
+    <item type="Textbox" id="txtQuocGiaMe" name="Quốc tịch" allownull="yes"  validate="text"   label="Quốc tịch :"  defaul_value="Việt Nam"  size="30" css="" view = "true"/>
+  </line>
+
+  <line label=""  cols="1">
+    <item type="DropDownList" id="ddlTai" name="Đã đăng ký khai sinh tại " allownull="yes"  validate="ddli" label="Đã đăng ký khai sinh tại :"  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxDate" id="txtNgayThangNamDaDangKy" name="Ngày, tháng, năm " allownull="yes"  validate="date"   label="Ngày, tháng, năm :"  defaul_value=""  css="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="Textbox" id="txtLyDoCapLai" name="Lý do xin cấp lại  " allownull="yes"  validate="text"   label="Lý do xin cấp lại : "  defaul_value=" Do bị mất bản chính GKS"  size="50" css="" view = "true"/>
+  </line>
+
+
+  <!--tai lieu kem theo don-->
+
+  <line label="Tài liệu kèm theo đơn" cols="1">
+    <item type="Checkbox" value="0" doc="yes"  id="ckbToKhaiTheomau" name="" allownull=""  validate="" title="Tờ khai theo mẫu" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" doc="yes"  id="ckbGiayXacNhanDangKyKhaiSinh" name="" allownull=""  validate="" title="Giấy chứng minh thư nhân dân " label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" doc="yes"  id="ckbbanSaoGiayKhaiSinhCu" name="" allownull=""  validate="" title="Bản chính giấy khai sinh cũ" label="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" doc="yes"  id="ckbbanSaoGiayKhaiSinhTuSoGoc" name="" allownull=""  validate="" title="Bản sao giấy khai sinh" label="" view = "true"/>
+  </line>
+ <line label="" cols="1">
+    <item type="Checkbox" value="4" doc="yes"  id="ckbGiayUQ" name="" allownull=""  validate="" title="Giấy ủy quyền" label="" view = "true"/>
+  </line>
+  
+   
+  <line label="" cols="1" >
+    <item type="Checkbox" value="6" doc="yes"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true" />
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css="" view = "true"/>
+  </line>
+
+
+  <!--le phi-->
+  <line label="Số biên lai và lệ phí" cols="1">
+    <item type="Textbox" id="txtSoBienLai" name="Số biên lai" allownull="yes"  validate="text"   label="Số biên lai:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtSoLuongBan" name="Số lượng bản" allownull="yes"  validate="text"   label="Số lượng bản:"  defaul_value="01"  size="30" css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxMoney" id="txtCost" name="Lệ phí tạm thu" allownull="yes"  validate="text"   label="Lệ phí tạm thu:"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="50" align="right"/>
+        <item type="text" id="C_SPEC_NAME" name="Lĩnh vực" size="600"/>
+        <item type="text" id="C_COUNT" name="Số tiếp nhận" size="100" align="right" number_format="true"/>
+    </list>
+    <total>
+        <item colspan="2" name="Tổng cộng" align="right"/>
+        <item colspan="1" id="C_COUNT" align="right"/>
+    </total>
+    <sub_total>
+    </sub_total>
+</report>

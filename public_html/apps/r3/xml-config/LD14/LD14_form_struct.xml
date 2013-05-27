@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+  <!--Thông tin kê khai-->
+  <line label="Thông tin người tham gia kháng chiến" cols="2">
+    <item type="TextboxName" id="txtName" name="Họ và tên" allownull="no"  validate="text"   label="Họ và tên:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)"  view = "true"/>
+    <item type="Textbox" id="txtNamsinh" name="Năm sinh" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNguyenQuan" name="Nguyên quán" allownull="yes"  validate="text"   label="Nguyên quán:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTruQuan" name="Trú quán" allownull="yes"  validate="text"   label="Trú quán:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNgayNhapNgu" name="Nhập ngũ hoặc tham gia kháng chiến ngày" allownull="yes"  validate="text"   label="Nhập ngũ hoặc tham gia kháng chiến ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtChucVu" name="Cấp bậc, chức vụ" allownull="yes"  validate="text"   label="Cấp bậc, chức vụ:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtDonVi" name="Cơ quan, đơn vị" allownull="yes"  validate="text"   label="Cơ quan, đơn vị:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtNgayBiThuong" name="Thời gian ở chiến trường từ tngày" allownull="yes"  validate="text"   label="Thời gian ở chiến trường từ tngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+    <item type="Textbox" id="txtNgayKT" name="Đến ngày" allownull="yes"  validate="text"   label="Đến ngày:"  defaul_value=""  size="30" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiBiThuong" name="Địa bàn hoạt động" allownull="yes"  validate="text"   label="Địa bàn hoạt động:"  defaul_value=""  size="60" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiMaitang" name="Tình trạng bản thân hiện nay" allownull="no"  validate="text"   label="Tình trạng bệnh tật hiện nay:"  defaul_value=""  size="80" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNoiDungTomTat" name="Kê khai chi tiết tình trạng bệnh tật" allownull="yes"  validate="text"   label="Kê khai chi tiết tình trạng bệnh tật:"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNoiDungTomTat2" name="Tình trạng bệnh tật con đẻ của người tham gia kháng chiến" allownull="yes"  validate="text"   label="Tình trạng bệnh tật con đẻ của người tham gia kháng chiến:"  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+    
+
+
+  <!--Tài liệu kèm theo-->
+
+  <line label="Tài liệu kèm theo" cols="1">
+    <item type="Checkbox" value="0" id="ckbGiayChungNhanThuongBinh" doc="yes"  name="" allownull=""  validate="" title="Bản khai cá nhân (Mẫu số 7-HH2)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbDonTheoMauLDTB" doc="yes" name="" allownull=""  validate="" title="Hồ sơ điều trị được bệnh viện ký (bản sao)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbLylich" doc="yes" name="" allownull=""  validate="" title="Lý lịch" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbQuyetdinh" doc="yes" name="" allownull=""  validate="" title="Quyết định phục viên, xuất ngũ, giấy XYZ xác nhận hoạt động ở chiến trường" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbGiaychuyenthuong" doc="yes" name="" allownull=""  validate="" title="Giấy chuyển thương, chuyển viện, giấy điều trị" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbHuanchuong" doc="yes" name="" allownull=""  validate="" title="Huân, Huy chương chiến sỹ giải phóng" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" id="ckbTinhhinhbenhtat" doc="yes" name="" allownull=""  validate="" title="Tình trạng bệnh tật và sức khoẻ hiện tại của người HĐKC trên cơ sở ý kiến của y tế phường, xã" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" id="ckbGiaychungnhan" doc="yes" name="" allownull=""  validate="" title="Giáy chứng nhận người HĐKC  bị nhiễm CĐHH của UBND phường, xã (Mẫu số 7-HH)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="6" id="ckbBienban" doc="yes" name="" allownull=""  validate="" title="Biên bản họp Hội đồng xác nhận NCC phường, xã. (Mẫu số 07 -HH3)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="7" id="ckbGiaychungnhan" doc="yes" name="" allownull=""  validate="" title="Biên bản của hội đồng giám định y khoa cấp tỉnh xác định suy giảm khả năng lao động (mẫu số 7-HH6)" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="8" id="ckbDanhsach" doc="yes" name="" allownull=""  validate="" title="Danh sách trích ngang của UBND phường, xã" label=""  view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="9" id="ckbHoso" doc="yes" name="" allownull=""  validate="" title="Số lượng hồ sơ:  02  (Bộ)" label=""  view = "true"/>
+  </line>
+  
+ 
+  <line label="" cols="1" >
+    <item type="Checkbox" value="3"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+  </line>
+
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css=""  view = "true"/>
+  </line>
+
+
+  <!--button-->
+
+  <!--<line label="" cols="0">
+    <item type="Button" id="btnSave"  name="button" allownull="" validate=""  value="Ghi lại" ObjList="GetControl('Modules/XML/LDTB_113/LDTB_113.xml')"/>
+    
+    
+  </line>-->
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

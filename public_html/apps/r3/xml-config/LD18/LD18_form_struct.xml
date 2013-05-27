@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <!--Thông tin về thân nhân-->
+  <line label="" cols="2">
+    <item type="TextboxName" id="txtName" name="Họ và tên người kê khai" allownull="no" validate="text" label="Họ và tên người kê khai:" defaul_value="" size="30" css="" Even="ConverUpperCase('txtName',this.value)" view="true" />
+    <item type="Textbox" id="txtNamSinh" name="Năm sinh" allownull="yes" validate="text" label="Năm sinh:" defaul_value="" size="30" css="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNguyenQuan" name="Nguyên Quán" allownull="yes" validate="text" label="Nguyên Quán:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTruQuan" name="Trú Quán" allownull="yes" validate="text" label="Trú Quán:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtQuanHe" name="Quan hệ với người có công" allownull="yes" validate="text" label="Quan hệ với người có công:" defaul_value="" size="50" css="" view="true" />
+  </line>
+   <!--Thông tin về người có công-->
+  <line label="" cols="2">
+    <item type="TextboxName" id="txtName2" name="Họ và tên người có công từ trần" allownull="no" validate="text" label="Họ và tên người có công từ trần:" defaul_value="" size="30" css="" Even="ConverUpperCase('txtName2',this.value)" view="true" />
+    <item type="Textbox" id="txtNamSinh2" name="Năm sinh" allownull="yes" validate="text" label="Năm sinh:" defaul_value="" size="30" css="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNguyenQuan2" name="Nguyên Quán" allownull="yes" validate="text" label="Nguyên Quán:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiDK" name="Nơi đăng ký hộ khẩu trước khi chết (trừ liệt sỹ)" allownull="yes" validate="text" label="Nơi đăng ký hộ khẩu trước khi chết (trừ liệt sỹ):" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxDate" id="txtNgayThangNam" name="Đã chết ngày" allownull="yes"  validate="date"   label="Đã chết ngày:"  defaul_value=""  css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoiChet" name="Tại" allownull="yes" validate="text" label="Tại:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <line label="" cols="2">
+    <item type="Textbox" id="txtChungTu" name="Giấy chứng tử số" allownull="yes" validate="text" label="Giấy chứng tử số:" defaul_value="" size="30" css="" view="true" />
+    <item type="TextboxDate" id="txtNgayThangNam" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""  css="" view = "true"/>
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtNoicap" name="Nơi cấp" allownull="yes" validate="text" label="Nơi cấp:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <line label="Là đối tượng:" cols="1">
+    <item type="Checkbox" value="0" id="ckbLTCM" doc="yes" name="" allownull="" validate="" title="Lão Thành Cách mạng" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbTB" doc="yes" name="" allownull="" validate="" title="Thương binh" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbTKN" doc="yes" name="" allownull="" validate="" title="Tiền khởi nghĩa" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+  <item type="Checkbox" value="2" id="ckbNHDKC" doc="yes" name="" allownull="" validate="" title="Người hoạt động kháng chiến" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+  <item type="Checkbox" value="3" id="ckbDBTD" doc="yes" name="" allownull="" validate="" title="Bị địch bắt tủ đầy" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+  <item type="Checkbox" value="4" id="ckbLS" doc="yes" name="" allownull="" validate="" title="Liệt sỹ hi sinh trước ngày 30/04/1975" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtNoiDungTomTat" name="Nội dung bổ sung" allownull="no" validate="text" label="Nội dung bổ sung:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Textbox" id="txtTC" name="Thuộc diện hưởng trợ cấp một lần đối với" allownull="yes" validate="text" label="Thuộc diện hưởng trợ cấp một lần đối với:" defaul_value="" size="50" css="" view="true" />
+  </line>
+  
+  <!--Tài liệu kèm theo-->
+  <line label="Tài liệu kèm theo" cols="1">
+    <item type="Checkbox" value="0" id="ckbGiayChungNhanThuongBinh" doc="yes" name="" allownull="" validate="" title="Bản khai của thân nhân người có công với CM từ trần có chứng nhận của UBND xã, phường" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="1" id="ckbGiayKhaiSinh1" doc="yes" name="" allownull="" validate="" title="Đơi đề nghị viết tay (có xác nhận của UBND xã, phường)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="2" id="ckbGiayKhaiSinh2" doc="yes" name="" allownull="" validate="" title="Giấy chứng tử do UBND xã, phường cấp (bản chính)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="3" id="ckbGiayKhaiSinh" doc="yes" name="" allownull="" validate="" title="Sổ hộ khẩu (photo công chứng)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="4" id="ckbGiayKhaiSinh3" doc="yes" name="" allownull="" validate="" title="Bằng Tổ quốc Ghi công" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" id="ckbGiayKhaiSinh4" doc="yes" name="" allownull="" validate="" title="Biên bản họp gia đình (trường hợp có con đứng ra lĩnh tiền)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="5" id="ckbGiayKhaiSinh5" doc="yes" name="" allownull="" validate="" title="Quyết định hưởng mai táng phí hoăc tuất hàng tháng của BHXH Thành phố" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="6" id="ckbDonTheoMauLDTB" doc="yes" name="" allownull="" validate="" title="Số lượng hồ sơ: 02 (bộ)" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="Checkbox" value="7" id="ckbTaiLieuKhac" name="" allownull="" validate="" title="Tài liệu khác" label="" view="true" />
+  </line>
+  <line label="" cols="1">
+    <item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes" validate="text" label="" defaul_value="" size="50" css="" view="true" />
+  </line>
+  <!--button-->
+<line label="Số lượng bộ hồ sơ" cols="1"><item type="Textbox" id="txtSoLuongBoHoSo" name="Số lượng bộ hồ sơ" allownull="no" validate="number" label="Số lượng bộ hồ sơ:" defaul_value="01" size="30" css="" view="true"/></line></form>

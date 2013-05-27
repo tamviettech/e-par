@@ -1,0 +1,27 @@
+<root debug="true">
+	<item value="" order="0" name="--Lựa chọn phường xã--"/>
+	<item value="XA_AN_HA"  name="Xã An Hà"/>
+	<item value="XA_DINH_TRI"  name="Xã Dĩnh Trì"/>
+	<item value="XA_DUONG_DUC"  name="Xã Dương Đức"/>
+	<item value="XA_DAI_LAM"  name="Xã Đại Lâm"/>
+	<item value="XA_DAO_MY"  name="Xã Đào Mỹ"/>
+	<item value="XA_HUONG_LAC"  name="Xã Hương Lạc"/>
+	<item value="XA_HUONG_SON"  name="Xã Hương Sơn"/>
+	<item value="XA_MY_HA"  name="Xã Mỹ Hà"/>
+	<item value="XA_MY_THAI"  name="Xã Mỹ Thái"/>
+	<item value="XA_NGHIA_HOA"  name="Xã Nghĩa Hoà"/>
+	<item value="XA_NGHIA_HUNG"  name=" Xã Nghĩa Hưng"/>	
+	<item value="XA_PHI_MO"  name=" Xã Phi Mô"/>
+	<item value="XA_QUANG_THINH"  name=" Xã Quang Thịnh"/>
+	<item value="XA_TAN_DINH"  name=" Xã Tân Dĩnh"/>
+	<item value="XA_TAN_HUNG"  name=" Xã Tân Hưng"/>
+	<item value="XA_TAN_THANH"  name=" Xã Tân Thanh"/>
+	<item value="XA_TAN_THINH"  name=" Xã Tân Thịnh"/>
+	<item value="XA_THAI_DAO"  name=" Xã Thái Đào"/>	
+	<item value="XA_TIEN_LUC"  name=" Xã Tiên Lục"/>		
+	<item value="XA_XUAN_HUONG"  name=" Xã Xuân Hương"/>
+	<item value="XA_XUONG_LAM"  name=" Xã Xương Lâm"/>	
+	<item value="XA_YEN_MY"  name=" Xã Yên Mỹ"/>	
+	<item value="THI_TRAN_KEP"  name=" Thị trấn Kép"/>
+	<item value="THI_TRAN_VOI"  name=" Thị trấn Vôi"/>
+</root>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<process code="LD47" name="Đề nghị xác nhận đối tượng không hưởng chế độ do ngành LĐTBXH quản lý" totaltime="-1" version="1" fee="">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="LD47::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="LD47::BAN_GIAO" single_user="true" />
+		<task code="LD47::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="LD47::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step code="" order="2" group="PHONG_LAO_DONG_THUONG_BINH_XA_HOI" name="Phòng LĐTB &amp; XH xử lý hồ sơ" time="9" role="XU_LY">
+		<task code="LD47::PHAN_CONG" name="Phân công thụ lý" time="0" next="LD47::THU_LY" single_user="true" />
+		<task code="LD47::THU_LY" name="Thụ lý" time="6" next="LD47::XET_DUYET"/>
+		<task code="LD47::XET_DUYET" name="Xét duyệt" time="1" next="LD47::TRA_KET_QUA" single_user="true" />
+	</step>
+
+	<step order="4" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
+		<task code="LD47::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

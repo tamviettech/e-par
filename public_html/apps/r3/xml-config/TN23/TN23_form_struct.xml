@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+
+
+	<line label="Thông tin bên góp vốn" cols="2">
+		<item type="TextboxName" id="txtName" name="Tên người góp vốn" allownull="no"  validate="text"   label="Tên người góp vốn:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtName',this.value)" view = "true"/>
+		<item type="Textbox" id="txtBirthday1" name="Năm sinh" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value="" size="20" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtIdentityCard1" name="Số CMND" allownull="yes"  validate="number"   label="Số CMND:"  defaul_value="" size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtPlaceProvider1" name="Nơi cấp" allownull="yes"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="TextboxDate" id="txtDateProviderCard1" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""  css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtFamilyRegisterNo" name="Số sổ hộ khẩu" allownull="yes"  validate="text"   label="Số sổ hộ khẩu:"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="TextboxDate" id="txtDateProvider" name="Ngày cấp sổ hộ khẩu" allownull="yes"  validate="text"   label="Ngày cấp:"  defaul_value=""   css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtSoDienThoai" name="Số điện thoại" allownull="yes"  validate="phone"   label="Số điện thoại:"  defaul_value=""  size="20" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="TextboxName" id="txtHasbanWifeName" name="Họ tên (chồng/vợ)" allownull="yes"  validate="text"   label="Họ tên (chồng/vợ):"  defaul_value=""  size="30" css="" view = "true" Even="ConverUpperCase('txtHasbanWifeName',this.value)"/>
+		<item type="Textbox" id="txtBirthday2" name="Năm sinh (chồng/vợ)" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtIdentityCard2" name="Số CMND (chồng/vợ)" allownull="yes"  validate="text"   label="Số CMND:"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="Textbox" id="txtPlaceProvider2" name="Nơi cấp" allownull="yes"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="TextboxDate" id="txtDateProviderCard2" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""   css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtEmail" name="Địa chỉ email" allownull="yes"  validate="email"   label="Địa chỉ email:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtDiaChi" name="Địa chỉ" allownull="yes"  validate="text"   label="Địa chỉ:"  defaul_value="" size="30" css="" view = "true"/>
+	</line>
+
+	<line label="Thông tin bên nhận góp vốn" cols="2">
+		<item type="TextboxName" id="txtNameNhan" name="Tên người nhận góp vốn" allownull="no"  validate="text"   label="Tên người nhận góp vốn:"  defaul_value=""  size="30" css="" Even="ConverUpperCase('txtNameNhan',this.value)" view = "true"/>
+		<item type="Textbox" id="txtNamSinhNhan" name="Năm sinh" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value="" size="20" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtSoCMTNhan" name="Số CMND" allownull="yes"  validate="number"   label="Số CMND:"  defaul_value="" size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtNoiCapNhan" name="Nơi cấp" allownull="yes"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="TextboxDate" id="txtNgayCapNhan" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""  css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtSoHoKhauNhan" name="Số sổ hộ khẩu" allownull="yes"  validate="text"   label="Số sổ hộ khẩu:"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="TextboxDate" id="txtNgayCapHoKhauNhan" name="Ngày cấp sổ hộ khẩu" allownull="yes"  validate="text"   label="Ngày cấp:"  defaul_value=""   css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtSoDienThoaiNguoinhan" name="Số điện thoại" allownull="yes"  validate="phone"   label="Số điện thoại:"  defaul_value=""  size="20" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="TextboxName" id="txtHasbanWifeNameNguoinhan" name="Họ tên (chồng/vợ)" allownull="yes"  validate="text"   label="Họ tên (chồng/vợ):"  defaul_value=""  size="30" css="" view = "true" Even="ConverUpperCase('txtHasbanWifeNameNguoinhan',this.value)"/>
+		<item type="Textbox" id="txtBirthdayNamsinhnguoinhan" name="Năm sinh (chồng/vợ)" allownull="yes"  validate="text"   label="Năm sinh:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtSoCMTNhanNguoinhanvo" name="Số CMND" allownull="yes"  validate="number"   label="Số CMND:"  defaul_value="" size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtNoiCapNhannguoinhanvochong" name="Nơi cấp" allownull="yes"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="TextboxDate" id="txtNgayCapNhannguoinhanvochong" name="Ngày cấp" allownull="yes"  validate="date"   label="Ngày cấp:"  defaul_value=""  css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtDiaChiNGuoinhanvochong" name="Địa chỉ" allownull="yes"  validate="text"   label="Địa chỉ:"  defaul_value="" size="30" css="" view = "true"/>
+	</line>
+
+
+
+
+	<!--Thua đất xin đăng ký thế chấp-->
+	<line label="Thông tin tặng,cho" cols="2">
+		<item type="Textbox" id="txtPlaceNo" name="Thửa đất số" allownull="yes"  validate="text"   label="Thửa đất số"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="Textbox" id="txtMapNo" name="Tờ bản đồ số" allownull="yes"  validate="text"   label="Tờ bản đồ số"  defaul_value="" size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtPlaceAdd" name="Địa chỉ thửa đất" allownull="no"  validate="text"   label="Địa chỉ thửa đất:"  defaul_value="" size="30" css="" view = "true"/>
+		<!--<item type="DropDownList" id="ddlProvince" name="Phường/Xã" allownull="no"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="xml_phuong_xa.xml"/>-->
+		<item type="DropDownList" id="ddlXaPhuong" name="Phường/Xã" allownull="yes"  validate="ddli" label="Phường/Xã "  defaul_value="0"  src_file="public/xml/xml_phuong_xa.xml" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtArea" name="Diện tích" allownull="yes"  validate="numberString"   label="Diện tích:(m²)"  defaul_value=""  size="30" css="" view = "true"/>
+
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtUserPrivate" name="Sử dụng riêng" allownull="yes"  validate="numberString"   label="Sử dụng riêng:(m²)"  defaul_value=""  size="30" css="" view = "true"/>
+		<item type="Textbox" id="txtUserPublic" name="Sử dụng chung" allownull="yes"  validate="numberString"   label="Sử dụng chung:(m²)"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<!--mục đích sử dụng đất-->
+	<line label="Mục đích sử dụng đất" cols="1">
+		<item type="Checkbox" value="2" id="ckbNhaOnongthon" name="" allownull=""  validate="" title="Đất ở nông thôn" label="" />
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="3" id="ckbNhaOthanhthi" name="" allownull=""  validate="" title="Đất ở đô thị" label="" />
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="4" id="ckbdattrongcaylaunam" name="" allownull=""  validate="" title="Đất đất trồng cây lâu năm" label="" />
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="5" id="ckbrungtrongsanxuat" name="" allownull=""  validate="" title="Rừng trồng sản xuất" label="" />
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="6" id="ckbdatronglua" name="" allownull=""  validate="" title="Đất trồng lúa" label="" />
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtFinishDate" name="Thời hạn sử dụng" allownull="yes"  validate="text"   label="Thời hạn sử dụng:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	
+	<!--Nguồn gốc đất-->
+	<line label="Nguồn gốc đất" cols="1" groupid="1">
+		<item type="Checkbox" value="0" id="ckbDatChiemDung" name="" allownull=""  validate="" title="Đất chiếm dụng được " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="1" id="ckbNhaNuocCongNhanQSDDatCoThuTien" name="" allownull=""  validate="" title="Nhà nước công nhận quyền sử dụng đất như nhà nước giao đất có thu tiền sử dụng đất " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="2" id="ckbNhaNuocCongNhanQSDDatKhongThuTien" name="" allownull=""  validate="" title="Nhà nước công nhận quyền sử dụng đất như nhà nước giao đất không thu tiền sử dụng đất  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="3" id="ckbNhaNuocCongNhanQSDDatChoTraTienHangNam" name="" allownull=""  validate="" title="Nhà nước công nhận quyền sử dụng đất như nhà nước cho thuê đất trả tiền hàng năm  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="4" id="ckbNhaNuocCongNhanQSDDatChoTraTienMotLan" name="" allownull=""  validate="" title="Nhà nước công nhận quyền sử dụng đất như nhà nước cho thuê đất trả tiền một lần " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="5" id="ckbNhaNuocGiaoDatCoThuTien" name="" allownull=""  validate="" title="Nhà nước giao đất có thu tiền sử dụng đất  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="6" id="ckbNhaNuocGiaoDatKhongThuTien" name="" allownull=""  validate="" title="Nhà nước giao đất không thu tiền sử dụng đất " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="7" id="ckbDatChaOng" name="" allownull=""  validate="" title="Đất ông cha " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="8" id="ckbDatThueKhuCongNghiep" name="" allownull=""  validate="" title="Đất thuê khu công nghiệp  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="9" id="ckbNNChoThueTraTienHangNam" name="" allownull=""  validate="" title="Nhà nước cho thuê đất trả tiền thuê đất hàng năm  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="10" id="ckbNNChoThueTraTienMotLan" name="" allownull=""  validate="" title="Nhà nước cho thuê đất trả tiền một lần   " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="11" id="ckbNhanQSDDTheoQuyetDinhCuaCoQuanThiHanhAn" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo quyết định của cơ quan thi hành án   " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="12" id="ckbNhanQuyenSuDungDoChuyenNhuong" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất do chuyển nhượng quyền sử dụng đất   " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="13" id="ckbNhanQuyenSuDungDoDauGia" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo kết quả đấu giá quyền sử dụng đất   " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="14" id="ckbNhanQuyenSuDungDoGopVonBangQSDDat" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất do góp vốn bằng quyền sử dụng đất mà hình thành pháp nhân mới " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="15" id="ckbNhanQuyenSuDungDoKetQuaHoaGiai" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo kết quả hòa giải thành " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="16" id="ckbNhaNuocCap" name="" allownull=""  validate="" title="Nhà nước cấp  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="17" id="ckbNhanQuyenSuDungDoQuyetDinhHanhChinhToCao" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo quyết định hành chính giải quyết tố cáo về đất đai  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="18" id="ckbNhanQuyenSuDungDoQuyetDinhHanhChinhKhieuNai" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo quyết định hành chính giải quyết khiếu nại về đất đai  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="19" id="ckbNhanQuyenSuDungDatTuQuyenSuDungChungCuaGiaDinh" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất từ quyền sử dụng chung của gia đình (hoặc của nhóm người sử dụng chung thửa đất) " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="20" id="ckbNhanQuyenSuDungDatTheoBanAn" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo bản án (hoặc theo quyết định của tào án nhân dân)  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="21" id="ckbNhanQuyenSuDungTheoHopDongTheChap" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo hợp đồng thế chấp, bảo lãnh để xử lý nợ   " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="22" id="ckbNhanQuyenSuDungDoTangcho" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất do tặng cho quyền sử dụng đất   " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="23" id="ckbNhanQuyenSuDungTheoQuyetDinhChiaTach" name="" allownull=""  validate="" title="Nhận quyền sử dụng đất theo quyết định chia tách, sáp nhập tổ chức  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="24" id="ckbSoHuuCanHoNhaTrungCu" name="" allownull=""  validate="" title="Sở hữu căn hộ nhà chung cư  " label="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="25" id="ckbDatDoToTienDeLai" name="" allownull=""  validate="" title="Đất do tổ tiên để lại   " label="" view = "true"/>
+	</line>
+	<!--Tài sản gán liền vơi đất-->
+	<line label="Tài sản gắn liền với đất" cols="1">
+		<item type="Textbox" id="txtHouseTyle" name="Loại nhà hoặc CTXD" allownull="yes"  validate="text"   label="Loại nhà hoặc CTXD:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtImages" name="Ảnh chụp lô đất" allownull="yes"  validate="text"   label="Ảnh chụp lô đất:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtAreaHouse" name="Diện tích" allownull="yes"  validate="numberString"   label="Diện tích:(m²)"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtTreeTyle" name="Loại cây" allownull="yes"  validate="text"   label="Loại cây:"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtAreaTree" name="Diện tích có cây" allownull="yes"  validate="numberString"   label="Diện tích có cây:(m²)"  defaul_value=""  size="30" css="" view = "true"/>
+	</line>
+	<!--Tài liệu kèm theo-->
+	<line label="Tài liệu kèm theo đơn" cols="1">
+		<item type="Checkbox" value="1" id="ckbHopDong" doc="yes"  title="Hợp đồng góp vốn bằng quyền sử dụng đất và tài sản gắn liền với đất"  name="Hợp đồng góp vốn bằng quyền sử dụng đất và tài sản gắn liền với đất" allownull=""  validate="" view = "true"/>
+		</line>
+	<line label="" cols="1">
+	    <item type="Checkbox" value="2" id="ckbDonXin" doc="yes"  title="Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất"  name="Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất" allownull=""  validate="" view = "true"/>
+		</line>
+		
+		<line label="" cols="1">
+	    <item type="Checkbox" value="3" id="ckbDonXin1" doc="yes"  title="Giấy chứng nhận quyền sở hữu nhà ở và quyền sử dụng đất ở"  name="Giấy chứng nhận quyền sở hữu nhà ở và quyền sử dụng đất ở" allownull=""  validate="" view = "true"/>
+		</line>
+		
+		
+	<line label="" cols="1">
+	    <item type="Checkbox" value="4" id="ckbBanGoc" doc="yes"  title="Giấy chứng nhận quyền sử dụng đất và Giấy chứng nhận quyền sở hữu nhà ở, Giấy chứng nhận quyền sở hữu công trình xây dựng;"  name="Giấy chứng nhận quyền sử dụng đất và Giấy chứng nhận quyền sở hữu nhà ở, Giấy chứng nhận quyền sở hữu công trình xây dựng;" allownull=""  validate="" view = "true"/>
+	  </line>
+			
+	<line label="" cols="1">
+		<item type="Checkbox" value="5" id="ckbBanGoc1" doc="yes"  title="Giấy tờ về giao rừng sản xuất là rừng trồng"  name="Giấy tờ về giao rừng sản xuất là rừng trồng" allownull=""  validate="" view = "true"/>
+	</line>
+			
+
+	<line label="" cols="1" >
+		<item type="Checkbox" value="6" id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+	</line>
+
+	<line label="" cols="1">
+		<item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="TextboxDate" id="txtHuongDanKeKhai" name="Ngày đến hướng dẫn kê khai thuế" allownull="yes"  validate="date"   label="Ngày đến hướng dẫn kê khai thuế:"  defaul_value=""   css="" view = "true"/>
+	</line>
+	<!--<line label="" cols="1">
+    <item type="Textbox" id="txtCost" name="Lệ phí thu" allownull="yes"  validate="text"   label="Lệ phí thu:(đồng)"  defaul_value=""  size="30" css="" view = "true"/>
+  </line>
+
+
+  <line label="" cols="0">
+    <item type="Button" id="btnSave"  name="button" allownull="" validate=""  value="Ghi lại" ObjList="GetControl('Modules/XML/TNMT_261/TNMT_261.xml')"/>
+    <item type="Button" id="btnGoback"  name="button" allownull="" validate=""  value="Quay lại" ObjList="Back()"/>
+  </line>-->
+</form>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<process code="TN24" name="Đăng ký biến động về sử dụng đất, tài sản gắn liền với đất do đổi tên; giảm diện tích thửa đất do sạt lở tự nhiên; thay đổi về hạn chế quyền; thay đổi về nghĩa vụ tài chính; thay đổi diện tích xây dựng, diện tích sử dụng, tầng cao, kết cấu chính, cấp (hạng" totaltime="19" version="1" fee="0">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1" role="TIEP_NHAN">
+		<task code="TN24::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN24::BAN_GIAO" single_user="true"/>
+		<task code="TN24::BAN_GIAO" name="Bàn giao hồ sơ" time="1" next="TN24::PHAN_CONG" single_user="true"/>
+	</step>
+
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý hồ sơ" time="3">
+		<task code="TN24::PHAN_CONG" name="Phân công thụ lý" time="2" next="TN24::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" single_user="true"/>
+		<task code="TN24::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" name="Chuyển yêu cầu xác nhận xuống xã" time="1" next="TN24::XAC_NHAN_LIEN_THONG" single_user="true"/>
+	</step>
+
+	<step order="1" group="DIA_CHINH_CAP_XA" name="Xác nhận phường xã" time="5">
+		<task code="TN24::XAC_NHAN_LIEN_THONG" name="Xác nhận hồ sơ liên thông" time="5" next="TN24::THU_LY_HO_SO_LIEN_THONG" single_user="true"/>
+	</step>
+
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý tiếp hồ sơ" time="4">
+		<task code="TN24::THU_LY_HO_SO_LIEN_THONG" name="Thụ lý hồ sơ liên thông" time="1" next="TN24::XET_DUYET" single_user="true"/>
+		<task code="TN24::XET_DUYET" name="Xét duyệt" next="TNMT::TN24::XET_DUYET" single_user="true" time="1"/>
+	</step>
+
+	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT xét duyệt" time="3" role="XU_LY">
+		<task code="TNMT::TN24::XET_DUYET" name="Xét duyệt" time="2" next="TN24::KY_DUYET" single_user="true"/>
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Lãnh đạo Thành phố ký duyệt" time="2">
+		<task code="TN24::KY_DUYET" name="Ký duyệt" time="0" next="TNMT_VONG2::TN24::XET_DUYET"/>
+	</step>
+
+	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT ký duyệt, bàn giao cho Một Cửa" time="1" role="XU_LY">
+		<task code="TNMT_VONG2::TN24::XET_DUYET" name="Xét duyệt" time="2" next="TN24::TRA_KET_QUA" single_user="true" biz_done="true"/>
+	</step>
+
+	<step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA">
+		<task code="TN24::TRA_KET_QUA" name="Trả kết quả" time="1" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

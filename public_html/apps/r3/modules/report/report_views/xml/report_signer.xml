@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report>
+    <item>
+        <![CDATA[<br/><br/><br/><br/>
+        <table border="0" cellspacing="0" class="signer">
+                <tr>
+                    <td width="33%" class="deliver">
+                        <b><u>Nơi nhận:</u></b><br />
+                        - .................................. <br />
+                        - .................................. <br />
+                        - .................................. <br />
+                        - .................................. <br />
+                        - .................................. <br />
+                        - Lưu VT.
+                    </td>
+                    <td width="34%">&nbsp;</td>
+                    <td width="33%" class="signer" >
+                        KT.CHÁNH VĂN PHÒNG<br />
+                        PHÓ CHÁNH VĂN PHÒNG
+                    </td>
+                </tr>
+        </table>]]>
+    </item>
+    <css><![CDATA[
+        <style>
+            .summary
+            {
+                font-weight: bold;
+            }
+            table.report_list
+            {
+                border-collapse:collapse;
+            }
+            table.report_list TR.summary TD
+            {
+                font-weight: bold;
+                font-size: 120%;
+            }
+
+            table.report_list TR.subtotal TD
+            {
+                font-style: italic;
+                font-weight: bold;
+                text-decoration:under-line;
+            }
+
+            table.report_list TD span.days-remain
+            {
+               font-style: italic;
+            }
+            table.report_list TD.group_name
+            {
+                font-weight: bold;
+                font-size: 120%;
+            }
+
+            table.report_list TH
+            {
+                font-weight: bold;
+                text-align: center;
+                vertical-align:middle;
+            }
+            table.report_list TD.sub-header
+            {
+                text-align: center;
+                font-style: italic;
+            }
+
+            table.signer,
+            table.signer TD
+            {
+                border-collapse:collapse;
+            }
+
+            table.signer TD.deliver
+            {
+                text-align: left;
+                font-size: small;
+                font-style: italic;
+            }
+            table.signer TD.signer
+            {
+                margin-left:10px;
+                text-align: center;
+                vertical-align: text-top;
+                font-size: small;
+                font-style: italic;
+                font-weight:bold;
+            }
+        </style>
+        ]]>
+    </css>
+</report>

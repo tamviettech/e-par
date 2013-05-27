@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<line label="Kết quả hồ sơ" cols="2">
+		<item type="Checkbox" value="1" doc="yes" id="chk_result_giay_phep" title="Giấy phép" label="" view="true"/>	
+		<item type="Checkbox" value="1" doc="yes" id="chk_result_giay_chung_nhan" title="Giấy chứng nhận" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Checkbox" value="1" doc="yes" id="chk_result_giay_dang_ky" title="Giấy đăng ký" view="true"/>
+		<item type="Checkbox" value="1" doc="yes" id="chk_result_chung_chi_hanh_nghe" title="Chứng chỉ hành nghề" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Checkbox" value="1" doc="yes" id="chk_result_the" title="Thẻ" view="true"/>
+		<item type="Checkbox" value="1" doc="yes" id="chk_quyet_dinh_phe_duyet" title="Quyết định phê duyệt" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Checkbox" value="1" doc="yes" id="chk_quyet_chung_chi" title="Chứng chỉ" view="true"/>
+		<item type="Checkbox" value="1" doc="yes" id="chk_van_ban_xac_nhan" title="Văn bản xác nhận" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Checkbox" value="1" doc="yes" id="chk_quyet_dinh_hanh_chinh" title="Quyết định hành chính" view="true"/>
+		<item type="Checkbox" value="1" doc="yes" id="chk_giay_xac_nhan" title="Giấy xác nhận" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Checkbox" value="1" doc="yes" id="chk_ban_cam_ket" title="Bản cam kết" view="true"/>
+		<item type="Checkbox" value="1" doc="yes" id="chk_bien_hieu" title="Biển hiệu" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Checkbox" value="1" doc="yes" id="chk_van_ban_chap_thuan" title="Văn bản chấp thuận" view="true"/>
+		<item type="Checkbox" value="1" doc="yes" id="chk_van_bang_cap" title="Bằng cấp" view="true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="1" doc="yes" id="ckbTaiLieuKhac" title="Giấy tờ khác..." view="true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes" validate="text" label="" defaul_value="" size="50" css="" view="true"/>
+	</line>
+</form>

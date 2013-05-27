@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<item name="--Chọn giới tính" value="" />
+	<item name="Nam" value="0" />
+	<item name="Nữ" value="1" />
+</root>

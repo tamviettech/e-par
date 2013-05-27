@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<process code="TP07" name="Điều chỉnh nội dung trong sổ hộ tịch và các giấy tờ hộ tịch khác," totaltime="5" version="1" fee="0">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="TP07::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TP07::BAN_GIAO" single_user="true" />
+		<task code="TP07::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="TP07::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step order="2" group="PHONG_TU_PHAP" name="Văn phòng tư pháp" time="1" role="XU_LY">
+		<task code="TP07::PHAN_CONG" name="Phân công thụ lý" time="0" next="TP07::THU_LY" single_user="true" />
+		<task code="TP07::THU_LY" name="Thụ lý" time="6" next="TP07::XET_DUYET"/>
+		<task code="TP07::XET_DUYET" name="Xét duyệt" time="1" next="TP07::TRA_KET_QUA" single_user="true" />
+	</step>
+	<!--
+	<step order="4" group="BP_MOT_CUA" name="Thu phí" time="0" role="THU_PHI">
+		<task code="TP07::THU_PHI" name="Thu phí" time="0" next="TP07::TRA_KET_QUA" single_user="true"/>		
+	</step>
+	-->
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
+		<task code="TP07::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

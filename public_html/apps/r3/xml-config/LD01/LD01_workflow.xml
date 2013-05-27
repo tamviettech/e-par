@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<process code="LD01" name="Cấp học bổng cho trẻ em nghèo có hoàn cảnh đặc biệt" totaltime="60" version="1" fee="">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="LD01::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="LD01::BAN_GIAO" single_user="true" />
+		<task code="LD01::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="LD01::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step code="" order="2" group="PHONG_LAO_DONG_THUONG_BINH_XA_HOI" name="Phòng LĐTB - XH xử lý hồ sơ" time="54.5" role="XU_LY">
+		<task code="LD01::PHAN_CONG" name="Phân công thụ lý" time="0" next="LD01::THU_LY" single_user="true" />
+		<task code="LD01::THU_LY" name="Thụ lý" time="6" next="LD01::XET_DUYET"/>
+		<task code="LD01::XET_DUYET" name="Xét duyệt" time="1" next="LD01::KY_DUYET" single_user="true" />
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Ký duyệt" time="5">
+		<task code="LD01::KY_DUYET" name="Ký duyệt" time="0" next="LD01::TRA_KET_QUA" biz_done="true"/>
+	</step>
+
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+		<task code="LD01::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

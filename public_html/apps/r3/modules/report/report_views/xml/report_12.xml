@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="STT" size="40" align="right"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="120"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="150"/>
+        <item type="text" id="C_RECEIVE_DATE" name="Ngày tiếp nhận" size="110"/>
+        <item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả" size="110"/>
+        <item type="text" id="C_DOING_STEP_DEADLINE_DATE" name="Ngày hoàn thành theo yêu cầu" size="100"/>
+        <item type="text" id="C_ACTIVITY" name="Quá hạn" size="80"/>
+    </list>
+    <total>
+    </total>
+    <sub_total>
+        
+    </sub_total>
+</report>

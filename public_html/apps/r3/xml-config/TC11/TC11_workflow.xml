@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<process code="TC11" name="Thủ tục phê duyệt kế hoạch đấu thầu" totaltime="10" version="1" fee="">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
+		<task code="TC11::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TC11::BAN_GIAO" single_user="true" />
+		<task code="TC11::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="TC11::PHAN_CONG" single_user="true" />
+	</step>
+
+	<step code="" order="2" group="PHONG_TAI_CHINH_KE_HOACH" name="Phòng tài chính kế hoạch" time="9" role="XU_LY">
+		<task code="TC11::PHAN_CONG" name="Phân công thụ lý" time="0" next="TC11::THU_LY" single_user="true" />
+		<task code="TC11::THU_LY" name="Thụ lý" time="6" next="TC11::XET_DUYET"/>
+		<task code="TC11::XET_DUYET" name="Xét duyệt" time="1" next="TC11::KY_DUYET" single_user="true" />
+	</step>
+
+	<step order="3" group="LANH_DAO_DON_VI" name="Ký duyệt" time="1">
+		<task code="TC11::KY_DUYET" name="Ký duyệt" time="0" next="TC11::TRA_KET_QUA" biz_done="true"/>
+	</step>
+	
+	<step order="5" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
+		<task code="TC11::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true"/>
+		<!-- next="NULL": Kết thúc quy trình -->
+	</step>
+</process>

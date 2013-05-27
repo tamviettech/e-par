@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <display_all>
+        <list>
+            <!-- 3 item nay la bat buoc -->
+            <item type="primarykey" id="PK_RECORD" />
+
+            <!-- ********************************************************* -->
+			
+			<item type="checkbox" id="PK_RECORD" size="2%"/>
+			<item type="rownum" id="RN" name="#" clickable="no" size="3%"/>
+			<item type="text" id="C_RECORD_NO" name="Mã hồ sơ" clickable="yes" size="15%"/>
+			<item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" clickable="no" size="16%"/>
+			<item type="text" id="C_RETURN_PHONE_NUMBER" name="Điện thoại" clickable="no" size="16%"/>
+			<item type="text" id="C_RETURN_EMAIL" name="Email" clickable="no" size="16%"/>
+			<item type="text" id="C_RECEIVE_DATE" name="Ngày giờ nộp" clickable="no" size="9%"/>
+			<item type="action" id="PK_RECORD" name="Thao tác" clickable="no" size="*"/>
+        </list>
+    </display_all>
+</root>

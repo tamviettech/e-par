@@ -1,0 +1,89 @@
+<lang name="vi">
+    <!-- Dung thuong xuyen -->
+    <text name="edit" value="Sửa"/>
+    <text name="update" value="Cập nhật"/>
+    <text name="delete" value="Xoá"/>
+    <text name="add new" value="Thêm mới"/>
+    <text name="goback" value="Quay lại"/>
+    <text name="close window" value="Đóng cửa sổ"/>
+    <text name="cancel" value="Bỏ qua"/>
+    <text name="order" value="Thứ tự hiển thị"/>
+    <text name="are you sure to delete all selected object?" value="Bạn chắc chắn xoá đối tượng đã chọn?"/>
+    <text name="status" value="Trạng thái"/>
+    <text name="active status" value="Hoạt động"/>
+    <text name="inactive status" value="Không hoạt động"/>
+    <text name="filter" value="Lọc"/>
+    <text name="save and add new" value="Ghi và thêm mới"/>
+    <text name="add new" value="Thêm mới"/>
+    <text name="go back" value="Quay lại"/>
+    <text name="choose file" value="Chọn file"/>
+    <text name="page" value="Trang"/>
+    <text name="record" value="Bản ghi"/>
+    <text name="display" value="Hiển thị"/>
+    <text name="go to" value="Chuyển tới"/>
+    <text name="total" value="Tổng số"/>
+
+    <!--  Quan tri user -->
+    <text name="user managerment" value="Quản trị người dùng"/>
+    <text name="user" value="Người dùng"/>
+    <text name="user name" value="Tên người dùng"/>
+    <text name="add user" value="Thêm người dùng"/>
+    <text name="user info" value="Thông tin người dùng"/>
+    <text name="user group" value="Nhóm người dùng"/>
+    <text name="user permit" value="Phân quyền người dùng"/>
+    <text name="user job title" value="Chức danh"/>
+    <text name="ou" value="Đơn vị/Phòng ban"/>
+    <text name="Add OU" value="Thêm đơn vị"/>
+    <text name="parent ou" value="Trực thuộc"/>
+    <text name="insert ou" value="Thêm Đơn vị/Phòng ban"/>
+    <text name="ou name" value="Tên đơn vị"/>
+    <text name="group" value="Nhóm"/>
+    <text name="group code" value="Mã nhóm"/>
+    <text name="group name" value="Tên nhóm"/>
+    <text name="group info" value="Thông tin nhóm"/>
+    <text name="group user" value="Thành viên"/>
+    <text name="add group" value="Thêm nhóm"/>
+    <text name="add user group" value="Thêm Nhóm người dùng"/>
+    <text name="user type" value="Loại"/>
+    <text name="user ou type" value="Đơn vị hành chính"/>
+    <text name="user group type" value="Nhóm người dùng"/>
+    <text name="update ou info" value="Cập nhật thông tin đơn vị"/>
+    <text name="update ou" value="Cập nhật đơn vị"/>
+    <text name="user personal info" value="Thông tin cá nhân NSD"/>
+    <text name="in group" value="Thuộc các nhóm"/>
+    <text name="grant permission to user" value="Phân quyền cho NSD"/>
+    <text name="login name" value="Tên đăng nhập"/>
+    <text name="password" value="Mật khẩu"/>
+    <text name="confirm password" value="Xác nhận mật khẩu"/>
+    <text name="join group" value="Thêm nhóm"/>
+    <text name="leave group" value="Bỏ nhóm"/>
+    <text name="in ou" value="Thuộc đơn vị"/>
+    <text name="current password" value="Mật khẩu hiện hành"/>
+    <text name="new password" value="Mật khẩu mới"/>
+    <text name="select application" value="Chọn ứng dụng"/>
+    <text name="members" value="Thành viên"/>
+    <text name="grant permission to group" value="Phân quyền cho nhóm"/>
+    <text name="select website" value="Chọn chuyên trang" />
+    <text name="update user group info" value="Cập nhật thông tin nhóm" />
+    <text name="add user to group" value="Thêm thành viên" />
+    <text name="remove user from group" value="Xoá thành viên" />
+
+    <!--  Danh muc -->
+    <text name="listtype" value="Loại danh mục" />
+    <text name="listtype manager" value="Quản trị loại danh mục" />
+    <text name="filter by listtype name" value="Lọc theo tên loại danh mục" />
+    <text name="list manager" value="Quản trị đối tượng danh mục" />
+    <text name="filter by list name" value="Lọc theo tên danh mục" />
+    <text name="update listtype" value="Cập nhật loại danh mục" />
+    <text name="listtype code" value="Mã loại danh mục" />
+    <text name="listtype name" value="Tên loại danh mục" />
+    <text name="list code" value="Mã danh mục" />
+    <text name="list name" value="Tên danh mục" />
+    <text name="update list" value="Cập nhật danh mục" />
+
+    <!--  HS -->
+    <text name="send over internet" value="Cho phép nộp hồ sơ qua mạng internet" />
+    <text name="guide print" value="In hướng dẫn" />
+
+
+</lang>
