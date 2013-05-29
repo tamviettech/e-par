@@ -74,7 +74,7 @@ class login_Model extends Model {
                             ,u.C_JOB_TITLE
                             ,ou.C_NAME as C_OU_NAME
                     From t_cores_user u Left Join t_cores_ou as ou On u.FK_OU=ou.PK_OU
-                    Where u.C_LOGIN_NAME=? And u.C_PASSWORD=?';
+                    Where u.C_LOGIN_NAME=? And u.C_PASSWORD=? And u.C_STATUS=1';
             $params = array($v_login_name, $v_password);
             $arr_single_user = $this->db->getRow($stmt, $params);
         }
