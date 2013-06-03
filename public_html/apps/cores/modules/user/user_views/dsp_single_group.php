@@ -164,7 +164,6 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
     	$( "#tabs_group" ).tabs();
     });
 
-
     function add_user(returnVal) {
 
         json_data = JSON.stringify(returnVal);
@@ -197,7 +196,7 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
 
     function dsp_all_user_to_add()
     {
-        var url = '<?php echo $this->get_controller_url();?>dsp_all_user_by_ou_to_add/&pop_win=1';
+        var url = '<?php echo $this->get_controller_url();?>dsp_all_user_by_ou_to_add/' + QS + 'pop_win=1';
 
         showPopWin(url, 450, 350, add_user);
     }
@@ -244,11 +243,12 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
 
     function get_application_permit(app_id)
     {
-        $.ajax({url:"<?php echo SITE_ROOT;?>cores/application/dsp_application_permit/" + app_id, success:function(result){
+        $.ajax({url:"<?php echo SITE_ROOT . build_url('cores/application/dsp_application_permit/');?>" + app_id, success:function(result){
             $("#application_permit").html(result);
 
             //Danh dau cac quyen da duoc phan
-            v_url =  "<?php echo $this->get_controller_url();?>arp_group_permit_on_application/?app_id=" + app_id + '&group_id=' + $('#hdn_item_id').val();
+            v_url =  '<?php echo $this->get_controller_url();?>arp_group_permit_on_application/' + QS;
+            v_url += 'app_id=' + app_id + '&group_id=' + $('#hdn_item_id').val();
             $.getJSON(v_url, function(current_permit) {
                 for (i=0; i<current_permit.length; i++)
                 {
@@ -262,7 +262,7 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
 
     function dsp_all_ou_to_add()
     {
-        var url = '<?php echo $this->get_controller_url();?>dsp_all_ou_to_add/&pop_win=1';
+        var url = '<?php echo $this->get_controller_url();?>dsp_all_ou_to_add/' + QS + 'pop_win=1';
         
         showPopWin(url, 450, 350, add_ou);
     }
@@ -273,7 +273,6 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
        
         $('#txt_ou_patch').attr('value',ou_patch);
         $('#hdn_parent_ou_id').val(ou_id);
-       
     }
 </script>
 <?php $this->template->display('dsp_footer' .$v_pop_win . '.php');

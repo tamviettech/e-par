@@ -143,19 +143,19 @@ else
                     </tr>
                 <?php else: ?>
                     <tr>
-                        <td>Mật khẩu hiện hành</td>
+                        <td>Mật khẩu mới</td>
                         <td>
-                            <input type="password" name="txt_current_password" id="txt_current_password" value=""
+                            <input type="password" name="txt_password" id="txt_password" value=""
                                 class="inputbox" maxlength="50" style="width:50%"
                                 onKeyDown="return handleEnter(this, event);"
                                 data-allownull="yes" data-validate="text"
-                                data-name="Mật khẩu hiện hành"
+                                data-name="Mật khẩu mới"
                                 data-xml="no" data-doc="no"
                             />
                         </td>
                     </tr>
                     <tr>
-                        <td>Mật khẩu mới</td>
+                        <td>Xác nhận mật khẩu mới</td>
                         <td>
                             <input type="password" name="txt_confirm_password" id="txt_confirm_password" value=""
                                 class="inputbox" maxlength="50" style="width:50%"

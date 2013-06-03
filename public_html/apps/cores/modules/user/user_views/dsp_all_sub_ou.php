@@ -156,8 +156,8 @@ $this->template->display('dsp_header.php');
 
     function row_user_onclick_pop_win(user_id)
     {
-        var url = '<?php echo $this->get_controller_url();?>/dsp_single_user/'  + user_id;
-            url += '/&user_id=' + user_id + '&hdn_item_id=' + user_id + '&pop_win=1';
+        var url = '<?php echo $this->get_controller_url();?>/dsp_single_user/'  + user_id + '/' + QS;
+            url += 'user_id=' + user_id + '&hdn_item_id=' + user_id + '&pop_win=1';
             url += '&parent_ou_id=' + $("#hdn_current_ou_id").val();
             url += '&parent_ou_name=' + escape($("#hdn_current_ou_name").val());
 
@@ -166,8 +166,8 @@ $this->template->display('dsp_header.php');
 
     function row_ou_onclick_pop_win(id)
     {
-        var url = '<?php echo $this->get_controller_url();?>dsp_single_ou/'  + id;
-            url += '/&ou_id=' + id + '&hdn_item_id=' + id + '&pop_win=1';
+        var url = '<?php echo $this->get_controller_url();?>dsp_single_ou/' + id + '/' + QS;
+            url += 'ou_id=' + id + '&hdn_item_id=' + id + '&pop_win=1';
             url += '&parent_ou_id=' + $("#hdn_current_ou_id").val();
             url += '&parent_ou_name=' + escape($("#hdn_current_ou_name").val());
 
@@ -176,8 +176,8 @@ $this->template->display('dsp_header.php');
 
     function row_group_pop_win(id)
     {
-        var url = '<?php echo $this->get_controller_url();?>dsp_single_group/'  + id;
-            url += '/&group_id=' + id + '&hdn_item_id=' + id + '&pop_win=1';
+        var url = '<?php echo $this->get_controller_url();?>dsp_single_group/' + id + '/' + QS;
+            url += 'group_id=' + id + '&hdn_item_id=' + id + '&pop_win=1';
             url += '&parent_ou_id=' + $("#hdn_current_ou_id").val();
             url += '&parent_ou_name=' + escape($("#hdn_current_ou_name").val());
 
@@ -212,7 +212,7 @@ $this->template->display('dsp_header.php');
         var f = document.frmMain;
         if (confirm('Bạn chắc chắn xoá đối tượng đã chọn?')){
             f.hdn_item_id.value =  group_id;
-            m = $("#controller").val() + 'delete_group'
+            m = $("#controller").val() + 'delete_group';
             $("#frmMain").attr("action", m);
             f.submit();
         }

@@ -19,6 +19,7 @@
         <script type="text/javascript">
             var SITE_ROOT='<?php echo SITE_ROOT;?>';
             var _CONST_LIST_DELIM = '<?php echo _CONST_LIST_DELIM;?>';
+            var QS = '<?php echo check_htacces_file() ? '?' : '&';?>';
         </script>
         <!--  Modal dialog -->
         <script src="<?php echo SITE_ROOT; ?>public/js/submodal.js" type="text/javascript"></script>
