@@ -84,10 +84,10 @@ class login_Model extends Model {
             @session::init();
             $v_user_id = $arr_single_user['PK_USER'];
 
-            session::set('login_name', $v_login_name);
-            session::set('user_login_name', $v_login_name);
+            session::set('login_name', $arr_single_user['C_LOGIN_NAME']);
+            session::set('user_login_name', $arr_single_user['C_LOGIN_NAME']);
             session::set('user_name', $arr_single_user['C_USER_NAME']);
-            session::set('user_code', $v_login_name);
+            session::set('user_code', $arr_single_user['C_LOGIN_NAME']);
             session::set('user_id', $arr_single_user['PK_USER']);
             session::set('ou_id', $arr_single_user['FK_OU']);
             session::set('ou_name', $arr_single_user['C_OU_NAME']);
@@ -161,7 +161,10 @@ class login_Model extends Model {
                                             ON ug.FK_GROUP=g.PK_GROUP
                                         Where g.C_CODE='CAN_BO_CAP_XA'
                                     ) as udc
-                        On u.PK_USER=udc.FK_USER";
+                        On u.PK_USER=udc.FK_USER
+					WHERE u.C_LOGIN_NAME IS NOT NULL
+						AND u.C_NAME IS NOT NULL
+						";
             $arr_all_can_bo_cap_xa = $this->db->GetAssoc($sql);
             session::set('la_can_bo_cap_xa', array_key_exists($v_login_name, $arr_all_can_bo_cap_xa));
             session::set('arr_all_can_bo_cap_xa', $arr_all_can_bo_cap_xa);
