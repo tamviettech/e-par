@@ -1,26 +1,4 @@
 <?php
-/**
- // File name   : workflow_Mofel.php
- // Version     : 1.0.0.1
- // Begin       : 2012-12-01
- // Last Update : 2010-12-25
- // Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
- // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
- // -------------------------------------------------------------------
- //Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-
- // E-PAR is free software: you can redistribute it and/or modify it
- // under the terms of the GNU Lesser General Public License as
- // published by the Free Software Foundation, either version 3 of the
- // License, or (at your option) any later version.
- //
- // E-PAR is distributed in the hope that it will be useful, but
- // WITHOUT ANY WARRANTY; without even the implied warranty of
- // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- // See the GNU Lesser General Public License for more details.
- //
- // See LICENSE.TXT file for more information.
- */
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -98,7 +76,7 @@ class workflow_Model extends Model
                 {
                     $v_next_task_code = NULL;
                 }
-                if (($v_next != $v_next_task_code) && ($v_next_task_code != NULL))
+                if ((strpos($v_next_task_code, $v_next) === false) && ($v_next_task_code != NULL))
                 {
                     $v_message .= $v_next . ' -> ' . $v_next_task_code;
                     $ok = FALSE;
@@ -336,7 +314,6 @@ class workflow_Model extends Model
         $v_task_code        = isset($_POST['task_code']) ? $this->replace_bad_char($_POST['task_code']) : '';
         $v_next_task_code   = isset($_POST['next_task']) ? $this->replace_bad_char($_POST['next_task']) : '';
         $v_prev_task_code   = isset($_POST['prev_task']) ? $this->replace_bad_char($_POST['prev_task']) : '';
-
         if ($v_record_type_code != '' && $v_user_code != '' && $v_task_code != '')
         {
             $v_task_code = str_replace(_CONST_HTML_RTT_DELIM, _CONST_XML_RTT_DELIM, $v_task_code);
@@ -384,7 +361,6 @@ class workflow_Model extends Model
                 $this->db->debug = 0;
                 $this->db->Execute($stmt, $params);
             }
-
             echo $this->db->Affected_Rows();
         }
     }

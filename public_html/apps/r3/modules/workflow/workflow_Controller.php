@@ -1,33 +1,16 @@
 <?php
-/**
- // File name   : workflow_Controller.php
- // Version     : 1.0.0.1
- // Begin       : 2012-12-01
- // Last Update : 2010-12-25
- // Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
- // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
- // -------------------------------------------------------------------
- //Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-
- // E-PAR is free software: you can redistribute it and/or modify it
- // under the terms of the GNU Lesser General Public License as
- // published by the Free Software Foundation, either version 3 of the
- // License, or (at your option) any later version.
- //
- // E-PAR is distributed in the hope that it will be useful, but
- // WITHOUT ANY WARRANTY; without even the implied warranty of
- // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- // See the GNU Lesser General Public License for more details.
- //
- // See LICENSE.TXT file for more information.
- */
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
 class workflow_Controller extends Controller
 {
-
+    /**
+     *
+     * @var \workflow_Model 
+     */
+    public $db;
+    
     protected $_arr_roles = array(
         //BP Mot-Cua
         _CONST_TIEP_NHAN_ROLE                       => 'Tiếp nhận'
@@ -82,7 +65,7 @@ class workflow_Controller extends Controller
         //Kiem tra session
         session::init();
         intval(Session::get('is_admin')) > 0 OR die('Bạn không có quyền truy cập chức năng này');
-        $login_name = session::get('login_name');
+        $login_name                               = session::get('login_name');
         if ($login_name == NULL)
         {
             session::destroy();
@@ -286,7 +269,9 @@ class workflow_Controller extends Controller
         $xml_proc            = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><process author="Tam Viet"/>');
         //$xml_proc->addChild('process');
         $arr_proc_attributes = isset($arr_proc['@attributes']) ? $arr_proc['@attributes'] : array();
-        $arr_step = isset($arr_proc['step']) ? $arr_proc['step'] : array();
+        $arr_step            = isset($arr_proc['step']) ? $arr_proc['step'] : array();
+        $arr_no_chain        = isset($arr_proc['no_chain_step']) ? $arr_proc['no_chain_step'] : array();
+        $arr_step            = array_merge($arr_step, $arr_no_chain);
 
         foreach ($arr_proc_attributes as $key => $value)
         {
@@ -318,7 +303,10 @@ class workflow_Controller extends Controller
                 $arr_task_attr = isset($v_task['@attributes']) ? $v_task['@attributes'] : array();
                 foreach ($arr_task_attr as $key => $value)
                 {
-                    $xml_task->addAttribute($key, $value);
+                    if ($key != 'next_no_chain')
+                    {
+                        $xml_task->addAttribute($key, $value);
+                    }
                 }
             }
         }

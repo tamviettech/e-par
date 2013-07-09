@@ -50,6 +50,8 @@ if (!defined('SERVER_ROOT')) {exit('No direct script access allowed');}?>
         <script type="text/javascript">
             var SITE_ROOT='<?php echo SITE_ROOT;?>';
             var _CONST_LIST_DELIM = '<?php echo _CONST_LIST_DELIM;?>';
+			
+			var QS = '<?php echo check_htacces_file() ? '?' : '&';?>';
         </script>
         <!--  Modal dialog -->
         <script src="<?php echo SITE_ROOT; ?>public/js/submodal.js" type="text/javascript"></script>
@@ -67,6 +69,8 @@ if (!defined('SERVER_ROOT')) {exit('No direct script access allowed');}?>
         <?php if (isset($this->local_js)):?>
             <script src="<?php echo $this->local_js;?>" type="text/javascript"></script>
         <?php endif;?>
+		
+		<script src="<?php echo SITE_ROOT ?>public/js/angular.min.js"></script>
     </head>
     <body>
         <DIV id=overDiv style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></DIV>

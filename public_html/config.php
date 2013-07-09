@@ -24,8 +24,8 @@
 
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
-define('DEBUG_MODE', 1);
-define('SITE_ROOT','/lang-giang/');
+define('DEBUG_MODE', 0);
+define('SITE_ROOT','/e-par/');
 
 define('DATABASE_TYPE','MYSQL');//Be MSSQL or ORACLE or MYSQL
 
@@ -36,8 +36,7 @@ define('CONST_ORACLE_DSN','oci8://mvcxml:mvcxml@172.16.1.252/XE');
 define('CONST_MSSQL_DSN','PROVIDER=SQLOLEDB;DRIVER={SQL Server};SERVER=172.16.1.252;DATABASE=Go-Office;UID=sa;PWD=P@ssw0rd;');
 
 //MySQL Server Setting
-define('CONST_MYSQL_DSN','mysql://go-office:123456@172.16.1.200/lang-giang');
-//define('CONST_MYSQL_DSN','mysql://root:root@192.168.1.206/lang-giang');
+define('CONST_MYSQL_DSN','mysql://root:root@192.168.1.206/e-par');
 
 //Dung Cache
 define('CONST_USE_ADODB_CACHE_FOR_REPORT',0);
