@@ -1,63 +1,63 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+?>
+
+<?php
+if (!defined('SERVER_ROOT'))
+    exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE();
 
 $report_data = array(
-    'arr_all_record'             => $VIEW_DATA['arr_all_record']
-    ,'arr_single_task_info'      => $VIEW_DATA['arr_single_task_info']
+    'arr_all_record'       => $VIEW_DATA['arr_all_record']
+    , 'arr_single_task_info' => $VIEW_DATA['arr_single_task_info']
 );
 
-$v_xml_ho_for_tax_template_file   = $this->get_xml_config($arr_single_task_info['C_RECORD_TYPE_CODE'],'ho_for_tax_template');
+$v_xml_ho_for_tax_template_file = $this->get_xml_config($arr_single_task_info['C_RECORD_TYPE_CODE'], 'ho_for_tax_template');
 ?>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>In giấy bàn giao hồ sơ</title>
-        <link rel="stylesheet" href="<?php echo SITE_ROOT;?>public/css/reset.css" type="text/css" media="all" />
-        <link rel="stylesheet" href="<?php echo SITE_ROOT;?>public/css/text.css" type="text/css" media="screen" />
-        <link rel="stylesheet" href="<?php echo SITE_ROOT;?>public/css/printer.css" type="text/css" media="all" />
-        <script src="<?php echo SITE_ROOT;?>public/js/jquery/jquery.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="<?php echo SITE_ROOT; ?>public/css/reset.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="<?php echo SITE_ROOT; ?>public/css/text.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo SITE_ROOT; ?>public/css/printer.css" type="text/css" media="all" />
+        <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.min.js" type="text/javascript"></script>
     </head>
-    <body>
+    <body contenteditable>
         <div class="print-button">
-            <input type="button" value="In trang" onclick="window.print(); return false;" />
+            <input type="button" value="In trang" onclick="window.print();
+                    return false;" />
             <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin()" />
         </div>
         <div>
-            <?php create_handover_info($report_data, '(Liên 1: Lưu)', $v_xml_ho_for_tax_template_file);?>
+            <?php create_handover_info($report_data, '(Liên 1: Lưu)', $v_xml_ho_for_tax_template_file); ?>
             <h4 class="page-break"></h4>
-            <?php create_handover_info($report_data, '(Liên 2: Giao cho Chi cục thuế)', $v_xml_ho_for_tax_template_file);?>
+            <?php create_handover_info($report_data, '(Liên 2: Giao cho Chi cục thuế)', $v_xml_ho_for_tax_template_file); ?>
         </div>
     </body>
 </html>
 <?php
+
 function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_xml_ho_for_tax_template_file)
 {
-    $arr_all_record         = $report_data['arr_all_record'];
-    $arr_single_task_info   = $report_data['arr_single_task_info'];
+    $arr_all_record       = $report_data['arr_all_record'];
+    $arr_single_task_info = $report_data['arr_single_task_info'];
 
     $dom_unit_info = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
     ?>
@@ -65,9 +65,11 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
     <table border="0" cellpadding="0" cellspacing="0" width="100%" class="header">
         <tr>
             <td align="center" class="unit_full_name">
-                <?php echo get_xml_value($dom_unit_info, '/unit/full_name');?><br/>
+                <?php echo get_xml_value($dom_unit_info, '/unit/full_name'); ?><br/>
                 <strong>
-                    <u style="font-size: 13px">BỘ PHẬN TIẾP NHẬN VÀ TRẢ HỒ SƠ</u>
+                    <u style="font-size: 13px;text-transform: uppercase;">
+                        <?php echo Session::get('ou_name') ?>
+                    </u>
                 </strong>
             </td>
             <td align="center">
@@ -83,7 +85,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
         <tr>
             <td colspan="2" class="report-title">
                 <span class="title-1">GIẤY BÀN GIAO HỒ SƠ CHO CHI CỤC THUẾ</span><br/>
-                <span class="title-2"><?php echo $distribute;?></span>
+                <span class="title-2"><?php echo $distribute; ?></span>
             </td>
         </tr>
     </table>
@@ -99,7 +101,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                 <strong>Người bàn giao:</strong>
             </td>
             <td>
-                <span style="text-transform: uppercase;"><?php echo Session::get('user_name');?></span>
+                <span style="text-transform: uppercase;"><?php echo Session::get('user_name'); ?></span>
             </td>
         </tr>
         <tr>
@@ -115,7 +117,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                 <strong>Bên nhận bàn giao:</strong>
             </td>
             <td>
-                Chi cục thuế <?php //echo get_xml_value($dom_unit_info, '/unit/name');?>
+                Chi cục thuế <?php //echo get_xml_value($dom_unit_info, '/unit/name');    ?>
             </td>
         </tr>
         <tr>
@@ -123,7 +125,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                 <strong>Số lượng hồ sơ:</strong>
             </td>
             <td>
-                <span><?php echo (count($arr_all_record) < 10) ? '0' . count($arr_all_record) : count($arr_all_record);?> bộ</span>
+                <span><?php echo (count($arr_all_record) < 10) ? '0' . count($arr_all_record) : count($arr_all_record); ?> bộ</span>
             </td>
         </tr>
         <tr>
@@ -131,7 +133,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                 <strong>Loại hồ sơ:</strong>
             </td>
             <td>
-                <?php echo $arr_all_record[0]['C_RECORD_TYPE_NAME'];?>
+                <?php echo $arr_all_record[0]['C_RECORD_TYPE_NAME']; ?>
             </td>
         </tr>
         <tr>
@@ -139,7 +141,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                 <strong>Thời gian bàn giao:</strong>
             </td>
             <td>
-                <?php echo Date('d-m-Y H:i');?>
+                <?php echo Date('d-m-Y H:i'); ?>
             </td>
         </tr>
         <tr>
@@ -159,19 +161,19 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                             <th>Ngày nhận</th>
                             <th>Ngày hẹn trả</th>
                         </tr>
-                        <?php for ($i=0; $i<count($arr_all_record); $i++): ?>
+                        <?php for ($i = 0; $i < count($arr_all_record); $i++): ?>
                             <tr>
-                                <td class="right"><?php echo ($i+1);?></td>
-                                <td><?php echo $arr_all_record[$i]['C_RECORD_NO'];?></td>
-                                <td><?php echo $arr_all_record[$i]['C_CITIZEN_NAME'];?></td>
-                                <td><?php echo jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE);?></td>
-                                <td><?php echo r3_View::return_date_by_text($arr_all_record[$i]['C_RETURN_DATE']);?></td>
+                                <td class="right"><?php echo ($i + 1); ?></td>
+                                <td><?php echo $arr_all_record[$i]['C_RECORD_NO']; ?></td>
+                                <td><?php echo $arr_all_record[$i]['C_CITIZEN_NAME']; ?></td>
+                                <td><?php echo jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE); ?></td>
+                                <td><?php echo r3_View::return_date_by_text($arr_all_record[$i]['C_RETURN_DATE']); ?></td>
                             </tr>
-                        <?php endfor;?>
+                        <?php endfor; ?>
                     <?php else: ?>
                         <?php
                         $dom_unit_info_record_list = simplexml_load_file($v_xml_ho_for_tax_template_file);
-                        $cols            = $dom_unit_info_record_list->xpath('//list/item');
+                        $cols                      = $dom_unit_info_record_list->xpath('//list/item');
 
                         //Header
                         $html = '<tr>';
@@ -182,30 +184,30 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                         $html .= '</tr>';
 
                         //List
-                        for ($i=0; $i<count($arr_all_record); $i++)
+                        for ($i = 0; $i < count($arr_all_record); $i++)
                         {
-                            $v_xml_data     = isset($arr_all_record[$i]['C_XML_DATA']) ? $arr_all_record[$i]['C_XML_DATA'] : '<root/>';
-                            $dom_unit_info_xml_data   = simplexml_load_string($v_xml_data);
+                            $v_xml_data             = isset($arr_all_record[$i]['C_XML_DATA']) ? $arr_all_record[$i]['C_XML_DATA'] : '<root/>';
+                            $dom_unit_info_xml_data = simplexml_load_string($v_xml_data);
 
                             reset($cols);
                             $html .= '<tr>';
                             foreach ($cols as $col)
                             {
                                 //Cell data
-                                $v_col_id   = strval($col->attributes()->id);
-                                $v_align    = isset($col->attributes()->align) ? ' align="' . $col->attributes()->align . '"' : '';
+                                $v_col_id = strval($col->attributes()->id);
+                                $v_align  = isset($col->attributes()->align) ? ' align="' . $col->attributes()->align . '"' : '';
 
                                 if ($v_col_id == 'RN')
                                 {
-                                    $html .= '<td width="' . $col->attributes()->size . '"' . $v_align . '>' . strval($i+1) . '</td>';
+                                    $html .= '<td width="' . $col->attributes()->size . '"' . $v_align . '>' . strval($i + 1) . '</td>';
                                 }
                                 else
                                 {
-                                    if (strpos($v_col_id , 'xml/') !== FALSE) //Cot du lieu nam trong XML
+                                    if (strpos($v_col_id, 'xml/') !== FALSE) //Cot du lieu nam trong XML
                                     {
-                                        $v_col_id       = str_replace('xml/', '', $v_col_id);
-                                        $r              = $dom_unit_info_xml_data->xpath("/data/item[@id='" . $v_col_id . "']/value");
-                                        $v_col_data     = sizeof($r) ? $r[0] : '';
+                                        $v_col_id   = str_replace('xml/', '', $v_col_id);
+                                        $r          = $dom_unit_info_xml_data->xpath("/data/item[@id='" . $v_col_id . "']/value");
+                                        $v_col_data = sizeof($r) ? $r[0] : '';
                                     }
                                     else //Cot tuong minh
                                     {
@@ -227,7 +229,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
 
                         echo $html;
                         ?>
-                    <?php endif;?>
+                    <?php endif; ?>
                 </table>
                 <!-- End: Record list -->
             </td>
@@ -235,7 +237,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
         <tr>
             <td colspan="2" class="sign_place">
                 <br/>
-                <?php echo get_xml_value($dom_unit_info, '/unit/name');?>, ngày <?php echo Date('d');?> tháng <?php echo Date('m');?> năm <?php echo Date('Y');?>
+                <?php echo get_xml_value($dom_unit_info, '/unit/name'); ?>, ngày <?php echo Date('d'); ?> tháng <?php echo Date('m'); ?> năm <?php echo Date('Y'); ?>
             </td>
         </tr>
     </table>
@@ -256,18 +258,18 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                 <i>(Ký, ghi rõ họ tên)</i>
             </td>
         </tr>
-	    <tr>
+        <tr>
             <td>
                 <strong></strong>
             </td>
             <td style="height: 150px; align:center">
-                 <strong><span style="text-transform: uppercase;"><?php echo Session::get('user_name');?></span></strong>
+                <strong><span style="text-transform: uppercase;"><?php echo Session::get('user_name'); ?></span></strong>
             </td>
             <td style="height: 150px; align:center;text-transform: uppercase;">
-                <strong><?php echo get_xml_value($dom_unit_info, '/unit/supervisor');?></strong>
+                <strong><?php echo get_xml_value($dom_unit_info, '/unit/supervisor'); ?></strong>
             </td>
         </tr>
-		
-		
+
+
     </table><?php
 }

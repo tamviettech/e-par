@@ -657,3 +657,16 @@ function w(string)
 {
 	document.write(string);
 }
+
+function getTime()
+{
+	var v = (new Date());
+    var h, m, s,t;
+
+    h = v.getHours();
+    m = v.getMinutes();
+    s = v.getSeconds();
+    t=h*10000+m*100+s;
+	
+	return t;
+}

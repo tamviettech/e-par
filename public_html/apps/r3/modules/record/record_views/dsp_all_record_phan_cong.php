@@ -1,28 +1,23 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
 
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
 $arr_all_record_type    = $VIEW_DATA['arr_all_record_type'];
@@ -60,7 +55,9 @@ $this->template->display('dsp_header.php');
          
         <?php if (isset($this->arr_roles['XET_DUYET'])): ?>
             <input type="button" name="addnew" class="solid reject" value="Từ chối phê duyệt hồ sơ" onclick="btn_reject_onclick();" />
+            <input type="button" name="btn_supplement_request" class="solid supplement" value="Yêu cầu bổ sung hồ sơ" onclick="btn_supplement_request_onclick();" />
         <?php endif;?>
+        
         <input type="button" name="addnew" class="solid rollback" value="Không nhận, do chưa bàn giao đủ giấy tờ"
                onclick="btn_rollback_onclick();" />
     </div>
@@ -223,6 +220,27 @@ $this->template->display('dsp_header.php');
                 + '&role=<?php echo _CONST_PHAN_CONG_ROLE;?>';
 
             allot_pop_win(url);
+        }
+        else
+        {
+            alert('Chưa có hồ sơ nào được chọn!');
+        }
+    }
+
+    function btn_supplement_request_onclick()
+    {
+    	var f = document.frmMain;
+
+        //Danh sach ID Ho so da chon
+        v_selected_record_id_list = get_all_checked_checkbox(f.chk, ',');
+
+        if (v_selected_record_id_list != '')
+        {
+        	var url = '<?php echo $this->get_controller_url();?>dsp_supplement_request_record/' + v_selected_record_id_list
+            + '/?record_type_code=' + $("#record_type_code").val()
+            + '&pop_win=1';
+
+        	allot_pop_win(url);
         }
         else
         {

@@ -1,29 +1,24 @@
-<?php 
+<?php
 /**
-// File name   : dsp_report_option.php
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
 
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
-
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+/* @var $this \View */
 //header
 $this->template->title = 'In báo cáo';
 
@@ -103,8 +98,9 @@ $this->template->display('dsp_header.php');
 
                 function btn_print_onclick()
                 {
-                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/&pdf=1';?>';
+                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/';?>';
 
+                    v_url += QS + 'pdf=1';
                     v_url += '&period=' + $("#hdn_period").val();
                     v_url += '&year=' + $("#hdn_year").val();
                     v_url += '&month=' + $("#sel_month").val();
@@ -125,6 +121,12 @@ $this->template->display('dsp_header.php');
         case '7b':
             ?>
             <div id="div_week_period">
+                Lĩnh vực
+                <select name='sel_spec' id='sel_spec'>
+                    <option value=''>--Tất cả lĩnh vực--</option>
+                    <?php echo $this->generate_select_option($arr_all_spec) ?>
+                </select>
+                <br/>
                 Từ ngày <input type="textbox" id="txt_begin_date" name="txt_begin_date" class="text valid" value=""/>
                         <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT;?>public/images/calendar.gif" onclick="DoCal('txt_begin_date')">
                 Đến ngày <input type="textbox" id="txt_end_date" name="txt_end_date" class="text valid" />
@@ -136,10 +138,11 @@ $this->template->display('dsp_header.php');
             <script>
                 function btn_print_onclick()
                 {
-                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/&pdf=1';?>';
+                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/';?>';
+                    v_url += QS + 'pdf=1';
                     v_url += '&begin_date=' + $("#txt_begin_date").val();
                     v_url += '&end_date=' + $("#txt_end_date").val();
-
+                    v_url += '&spec=' + $("#sel_spec").val();
                     showPopWin(v_url, 1000, 600, null, true);
                 }
             </script>
@@ -194,7 +197,8 @@ $this->template->display('dsp_header.php');
                 $("#sel_record_type").chained("#sel_spec");
                 function btn_print_onclick()
                 {
-                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/&pdf=1';?>';
+                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/';?>';
+                    v_url += QS + 'pdf=1';
                     v_url += '&spec_code=' + $("#sel_spec").val();
                     v_url += '&record_type=' + $("#sel_record_type").val();
                     v_url += '&begin_date=' + $("#txt_begin_date").val();
@@ -239,7 +243,8 @@ $this->template->display('dsp_header.php');
             <script>
                 function btn_print_onclick()
                 {
-                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/&pdf=1';?>';
+                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/';?>';
+                    v_url += QS + 'pdf=1';
                     v_url += '&spec_code=' + $("#sel_spec").val();
                     v_url += '&begin_date=' + $("#txt_begin_date").val();
                     v_url += '&end_date=' + $("#txt_end_date").val();
@@ -254,7 +259,8 @@ $this->template->display('dsp_header.php');
         case '12':
         case '13':
         case '14':
-            $v_url = $this->get_controller_url() . 'type/' . $report_type . '/&pdf=1';
+        	$QS = check_htacces_file() ? '?' : '&';
+            $v_url = $this->get_controller_url() . 'type/' . $report_type . '/' . $QS . 'pdf=1';
             _dsp_print_button($v_url);
             break;
 

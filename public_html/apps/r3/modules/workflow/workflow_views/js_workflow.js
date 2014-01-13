@@ -60,6 +60,7 @@ function ui_ctrl($scope, $http, $timeout) {
     $scope.step_width = '600';
 
     $timeout(function() {
+
         if (typeof $scope.proc['step'] == 'undefined')
             $scope.proc['step'] = [];
         else if (typeof $scope.proc['step'].length == 'undefined')
@@ -71,6 +72,9 @@ function ui_ctrl($scope, $http, $timeout) {
             $scope.proc['no_chain_step'] = [$scope.proc['no_chain_step']];
 
         $.each($scope.proc['step'], function(k, v) {
+            if (typeof($scope.proc['step'][k]['task']) == 'undefined') {
+                $scope.proc['step'][k]['task'] = [];
+            }
             if ($scope.get_no_chain_task_code(k)) {
                 $scope.step_width = 400;
                 return;
@@ -124,6 +128,8 @@ function ui_ctrl($scope, $http, $timeout) {
 
     $scope.get_no_chain_task_code = function(step_index) {
         step = $scope.proc['step'][step_index];
+        if (typeof step['task'] == 'undefined')
+            return false;
         if (typeof step['task'].length == 'undefined') {
             step['task'] = [step['task']];
         }
@@ -287,7 +293,7 @@ function ui_ctrl($scope, $http, $timeout) {
 
     $scope.delete_step = function(step_index) {
         no_chain_task_code = $scope.get_no_chain_task_code(step_index);
-        if(typeof $scope.proc['no_chain_step'].length == 'undefined')
+        if (typeof $scope.proc['no_chain_step'].length == 'undefined')
             $scope.proc['no_chain_step'] = [$scope.proc['no_chain_step']];
         for (i = 0; i < $scope.proc['no_chain_step'].length; i++) {
             for (j = 0; j < $scope.proc['no_chain_step'][i]['task'].length; j++)
@@ -456,7 +462,15 @@ function ui_ctrl($scope, $http, $timeout) {
         if (typeof $scope.modal_task.modal_edit.task['@attributes'] == 'undefined') {
             return true;
         }
-        return $scope.modal_task.modal_edit.task['@attributes']['code'].match(/KY_DUYET/ig) == null ? true : false;
+        if ($scope.modal_task.modal_edit.task['@attributes']['code'].match(/KY_DUYET/ig))
+        {
+            return false;
+        }
+        else if ($scope.modal_task.modal_edit.task['@attributes']['code'].match(/XET_DUYET/ig))
+        {
+            return false;
+        }
+        return true;
     }
 
     $scope.modal_task.save = function() {

@@ -2,17 +2,20 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:import href="libs/xslt_libs.xsl"/>
 	<xsl:output method="html" encoding="UTF-8"/>
-	<xsl:output method="html"/>
 
 	<xsl:variable name="c_panel_color" select="000000"/>
 
 	<xsl:param name="p_site_root" select="0"/>
 	<xsl:param name="p_current_date" select="current-date()"/>
-
+	<xsl:param name="p_user_full_name" select="0"/>
+	<xsl:param name="p_unit_full_name" select="0"/>
+	<xsl:param name="p_la_thu_tuc_lien_thong" select="0"/>
+	
 	<xsl:variable name="v_record_type_code" select="//static_data/record_type_code" />
 	<xsl:variable name="v_xml_form_struct_full_path" select="//static_data/xml_form_struct_full_path" />
 	<xsl:variable name="v_xml_form_struct_dom" select="document($v_xml_form_struct_full_path)"/>
 	<xsl:variable name="v_unit_info" select="document('public/xml/xml_unit_info.xml')"/>
+	<xsl:variable name="v_phuong_xa_info" select="document('public/xml/xml_phuong_xa.xml')"/>
 
 	<xsl:variable name="v_record_no" select="//static_data/record_no"/>
 
@@ -31,16 +34,16 @@
 			            <input type="button" value="In trang" class="print" onclick="window.print(); return false;" />
 			            <input type="button" value="Đóng cửa sổ" class="close" onclick="window.parent.hidePopWin();return false;" />
 			        </div>
-					<br/>
-
 					<xsl:call-template name="create_handover_info">
 						<xsl:with-param name="distribute">(Liên 1: Lưu)</xsl:with-param>
+						<xsl:with-param name="type">1</xsl:with-param>
 					</xsl:call-template>
 
 					<h4 style="page-break-before: always; height: 0; line-height: 0"></h4>
 
 					<xsl:call-template name="create_handover_info">
 						<xsl:with-param name="distribute">(Liên 2: Giao cho công dân)</xsl:with-param>
+						<xsl:with-param name="type">2</xsl:with-param>
 					</xsl:call-template>
 				</div>
 			</body>
@@ -49,6 +52,7 @@
 
 	<xsl:template name="create_handover_info">
 		<xsl:param name="distribute"/>
+		<xsl:param name="type"/>
 		<!-- header-->
 		<table border="0" cellpadding="0" cellspacing="0" width="100%" class="header">
 			<tr>
@@ -62,7 +66,7 @@
 			<tr>
 				<td align="center">
 					<strong>
-						<u style="font-size: 13px">BỘ PHẬN MỘT CỬA - TIẾP NHẬN HỒ SƠ VÀ TRẢ KẾT QUẢ</u>
+						<u style="font-size: 13px">BỘ PHẬN TIẾP NHẬN VÀ TRẢ HỒ SƠ</u>
 					</strong>
 				</td>
 				<td align="center">
@@ -85,12 +89,13 @@
 		<table border="0" cellpadding="0" cellspacing="0" width="100%">
 			<tr>
 				<td>
-					<strong>Họ và tên người nộp hồ sơ:</strong>
+					<strong>Người nộp hồ sơ:</strong>
 				</td>
 				<td>
 					<xsl:value-of select="//item[@id='txtName']/value" disable-output-escaping="yes"/>
 				</td>
 			</tr>
+			
 			<tr>
 				<td>
 					<strong>Địa chỉ thường trú:</strong>
@@ -104,7 +109,7 @@
 					<strong>Số điện thoại:</strong>
 				</td>
 				<td>
-					<xsl:value-of select="//static_data/return_phone_number" disable-output-escaping="yes"/>
+					<xsl:value-of select="//item[@id='txtSoDienThoai']/value" disable-output-escaping="yes"/>
 				</td>
 			</tr>
 			<tr>
@@ -112,7 +117,10 @@
 					<strong>Địa chỉ thửa đất:</strong>
 				</td>
 				<td>
-					<xsl:value-of select="//item[@id='txtPlaceAdd']/value" disable-output-escaping="yes"/>
+					<xsl:variable name="v_village_code" select="//item[@id='ddlXaPhuong']/value" />
+					<xsl:variable name="v_place_addr" select="//item[@id='txtPlaceAdd']/value" />					
+					<xsl:variable name="v_village_name" select="$v_phuong_xa_info//item[@value=$v_village_code]/@name" />
+					<xsl:value-of select="concat($v_place_addr, ' ', $v_village_name)" disable-output-escaping="yes"/>
 				</td>
 			</tr>
 			<tr>
@@ -199,7 +207,7 @@
 					<strong>Số điện thoại của bộ phận “Một cửa”: <xsl:value-of select="$v_unit_info/unit/phone_number" /></strong>
 					<br/>
 					<strong>
-						<u>Chú ý:</u> Công dân đến lấy kết quả mang theo phiếu hẹn, CMTND, lệ phí và giấy uỷ quyền (nếu có)</strong>
+						<u>Chú ý:</u> Công dân đến lấy kết quả mang theo phiếu hẹn, CMTND, lệ phí và giấy uỷ quyền (nếu có).<br/> </strong>
 				</td>
 			</tr>
 			<tr>
@@ -214,21 +222,37 @@
 				</td>
 			</tr>
 		</table>
-		<p></p>
-		<br/>
+
 		<table border="0" cellpadding="0" cellspacing="0" width="100%">
 			<tr>
 				<td style="width: 30%">
 					<strong>NGƯỜI NỘP HỒ SƠ</strong>
 				</td>
-				<td style="width: 30%">
-					<strong>DUYỆT HỒ SƠ</strong>
-				</td>
-				<td style="width: 30%">
+				<xsl:if test="$type = 1">
+					<td style="width: 30% ; text-align:center">
+						<strong>DUYỆT HỒ SƠ</strong>
+					</td>
+				</xsl:if>
+				<xsl:if test="$type = 2">
+					<td style="width: 30% ; text-align:center">
+					</td>
+				</xsl:if>
+				<td style="width: 30% ; text-align:center">
 					<strong>CÁN BỘ TIẾP NHẬN</strong>
 				</td>
 			</tr>
+			
+			<tr>
+				<td style="height: 170px; align:center">
+					<strong></strong>
+				</td>
+				<td style="height: 170px ; text-align:center">
+					<strong></strong>
+				</td>
+				<td style="height: 170px ; text-align:center">
+					<strong><xsl:value-of select="$p_user_full_name" /></strong>
+				</td>
+			</tr>
 		</table>
-		<p></p>
 	</xsl:template>
 </xsl:stylesheet>

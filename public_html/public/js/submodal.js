@@ -22,149 +22,154 @@ var gPopupIsShown = false;
 var gDefaultPage = SITE_ROOT + "subModal.loading.html";
 var gHideSelects = false;
 var gReturnVal = null;
+var gID;
 
 var gTabIndexes = new Array();
 // Pre-defined list of tags we want to disable/enable tabbing into
-var gTabbableTags = new Array("A","BUTTON","TEXTAREA","INPUT","IFRAME");
+var gTabbableTags = new Array("A", "BUTTON", "TEXTAREA", "INPUT", "IFRAME");
 
 // If using Mozilla or Firefox, use Tab-key trap.
 if (!document.all) {
-	document.onkeypress = keyDownHandler;
+    document.onkeypress = keyDownHandler;
 }
 
 /**
  * Initializes popup code on load.
  */
 function initPopUp() {
-	// Add the HTML to the body
-	theBody = document.getElementsByTagName('BODY')[0];
-	popmask = document.createElement('div');
-	popmask.id = 'popupMask';
-	popcont = document.createElement('div');
-	popcont.id = 'popupContainer';
-	popcont.innerHTML = '' +
-		'<div id="popupInner">' +
-			'<div id="popupTitleBar">' +
-				'<div id="popupTitle"></div>' +
-				'<div id="popupControls">' +
-					'<img src="' + SITE_ROOT + 'public/images/subModal.close.gif" onclick="hidePopWin(false);" id="popCloseBox" />' +
-				'</div>' +
-			'</div>' +
-			'<iframe src="'+ gDefaultPage +'" style="width:100%;height:100%;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="100%" height="100%"></iframe>' +
-		'</div>';
-	theBody.appendChild(popmask);
-	theBody.appendChild(popcont);
+    // Add the HTML to the body
+    if (typeof window.top.gCount === 'undefined')
+        window.top.gCount = 0;
+    gID = 'popupFrame' + window.top.gCount++;
+    theBody = document.getElementsByTagName('BODY')[0];
+    popmask = document.createElement('div');
+    popmask.id = 'popupMask';
+    popcont = document.createElement('div');
+    popcont.id = 'popupContainer';
+    popcont.innerHTML = '' +
+            '<div id="popupInner">' +
+            '<div id="popupTitleBar">' +
+            '<div id="popupTitle"></div>' +
+            '<div id="popupControls">' +
+            '<img src="' + SITE_ROOT + 'public/images/subModal.close.gif" onclick="hidePopWin(false);" id="popCloseBox" />' +
+            '</div>' +
+            '</div>' +
+            '<iframe src="' + gDefaultPage + '" style="width:100%;height:100%;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="' + gID + '" name="' + gID + '" width="100%" height="100%"></iframe>' +
+            '</div>';
+    theBody.appendChild(popmask);
+    theBody.appendChild(popcont);
 
-	gPopupMask = document.getElementById("popupMask");
-	gPopupContainer = document.getElementById("popupContainer");
-	gPopFrame = document.getElementById("popupFrame");
+    gPopupMask = document.getElementById("popupMask");
+    gPopupContainer = document.getElementById("popupContainer");
+    gPopFrame = document.getElementById(gID);
 
-	// check to see if this is IE version 6 or lower. hide select boxes if so
-	// maybe they'll fix this in version 7?
-	var brsVersion = parseInt(window.navigator.appVersion.charAt(0), 10);
-	if (brsVersion <= 6 && window.navigator.userAgent.indexOf("MSIE") > -1) {
-		gHideSelects = true;
-	}
+    // check to see if this is IE version 6 or lower. hide select boxes if so
+    // maybe they'll fix this in version 7?
+    var brsVersion = parseInt(window.navigator.appVersion.charAt(0), 10);
+    if (brsVersion <= 6 && window.navigator.userAgent.indexOf("MSIE") > -1) {
+        gHideSelects = true;
+    }
 
-	// Add onclick handlers to 'a' elements of class submodal or submodal-width-height
-	var elms = document.getElementsByTagName('a');
-	for (i = 0; i < elms.length; i++) {
-		if (elms[i].className.indexOf("submodal") == 0) {
-			// var onclick = 'function (){showPopWin(\''+elms[i].href+'\','+width+', '+height+', null);return false;};';
-			// elms[i].onclick = eval(onclick);
-			elms[i].onclick = function(){
-				// default width and height
-				var width = 400;
-				var height = 200;
-				// Parse out optional width and height from className
-				params = this.className.split('-');
-				if (params.length == 3) {
-					width = parseInt(params[1]);
-					height = parseInt(params[2]);
-				}
-				showPopWin(this.href,width,height,null); return false;
-			}
-		}
-	}
+    // Add onclick handlers to 'a' elements of class submodal or submodal-width-height
+    var elms = document.getElementsByTagName('a');
+    for (i = 0; i < elms.length; i++) {
+        if (elms[i].className.indexOf("submodal") == 0) {
+            // var onclick = 'function (){showPopWin(\''+elms[i].href+'\','+width+', '+height+', null);return false;};';
+            // elms[i].onclick = eval(onclick);
+            elms[i].onclick = function() {
+                // default width and height
+                var width = 400;
+                var height = 200;
+                // Parse out optional width and height from className
+                params = this.className.split('-');
+                if (params.length == 3) {
+                    width = parseInt(params[1]);
+                    height = parseInt(params[2]);
+                }
+                showPopWin(this.href, width, height, null);
+                return false;
+            }
+        }
+    }
 }
 addEvent(window, "load", initPopUp);
 
- /**
-	* @argument width - int in pixels
-	* @argument height - int in pixels
-	* @argument url - url to display
-	* @argument returnFunc - function to call when returning true from the window.
-	* @argument showCloseBox - show the close box - default true
-	*/
+/**
+ * @argument width - int in pixels
+ * @argument height - int in pixels
+ * @argument url - url to display
+ * @argument returnFunc - function to call when returning true from the window.
+ * @argument showCloseBox - show the close box - default true
+ */
 function showPopWin(url, width, height, returnFunc, showCloseBox) {
-	// show or hide the window close widget
-	if (showCloseBox == null || showCloseBox == true) {
-		document.getElementById("popCloseBox").style.display = "block";
-	} else {
-		document.getElementById("popCloseBox").style.display = "none";
-	}
-	gPopupIsShown = true;
-	disableTabIndexes();
-	gPopupMask.style.display = "block";
-	gPopupContainer.style.display = "block";
-	// calculate where to place the window on screen
-	centerPopWin(width, height);
+    // show or hide the window close widget
+    if (showCloseBox == null || showCloseBox == true) {
+        document.getElementById("popCloseBox").style.display = "block";
+    } else {
+        document.getElementById("popCloseBox").style.display = "none";
+    }
+    gPopupIsShown = true;
+    disableTabIndexes();
+    gPopupMask.style.display = "block";
+    gPopupContainer.style.display = "block";
+    // calculate where to place the window on screen
+    centerPopWin(width, height);
 
-	var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
+    var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
 
 
-	gPopupContainer.style.width = width + "px";
-	gPopupContainer.style.height = (height+titleBarHeight) + "px";
+    gPopupContainer.style.width = width + "px";
+    gPopupContainer.style.height = (height + titleBarHeight) + "px";
 
-	setMaskSize();
+    setMaskSize();
 
-	// need to set the width of the iframe to the title bar width because of the dropshadow
-	// some oddness was occuring and causing the frame to poke outside the border in IE6
-	gPopFrame.style.width = parseInt(document.getElementById("popupTitleBar").offsetWidth, 10) + "px";
-	gPopFrame.style.height = (height) + "px";
+    // need to set the width of the iframe to the title bar width because of the dropshadow
+    // some oddness was occuring and causing the frame to poke outside the border in IE6
+    gPopFrame.style.width = parseInt(document.getElementById("popupTitleBar").offsetWidth, 10) + "px";
+    gPopFrame.style.height = (height) + "px";
 
-	// set the url
-	gPopFrame.src = url;
+    // set the url
+    gPopFrame.src = url;
 
-	gReturnFunc = returnFunc;
-	// for IE
-	if (gHideSelects == true) {
-		hideSelectBoxes();
-	}
+    gReturnFunc = returnFunc;
+    // for IE
+    if (gHideSelects == true) {
+        hideSelectBoxes();
+    }
 
-	window.setTimeout("setPopTitle();", 600);
+    window.setTimeout("setPopTitle();", 600);
 }
 
 //
 var gi = 0;
 function centerPopWin(width, height) {
-	if (gPopupIsShown == true) {
-		if (width == null || isNaN(width)) {
-			width = gPopupContainer.offsetWidth;
-		}
-		if (height == null) {
-			height = gPopupContainer.offsetHeight;
-		}
+    if (gPopupIsShown == true) {
+        if (width == null || isNaN(width)) {
+            width = gPopupContainer.offsetWidth;
+        }
+        if (height == null) {
+            height = gPopupContainer.offsetHeight;
+        }
 
-		//var theBody = document.documentElement;
-		var theBody = document.getElementsByTagName("BODY")[0];
-		//theBody.style.overflow = "hidden";
-		var scTop = parseInt(getScrollTop(),10);
-		var scLeft = parseInt(theBody.scrollLeft,10);
+        //var theBody = document.documentElement;
+        var theBody = document.getElementsByTagName("BODY")[0];
+        //theBody.style.overflow = "hidden";
+        var scTop = parseInt(getScrollTop(), 10);
+        var scLeft = parseInt(theBody.scrollLeft, 10);
 
-		setMaskSize();
+        setMaskSize();
 
-		//window.status = gPopupMask.style.top + " " + gPopupMask.style.left + " " + gi++;
+        //window.status = gPopupMask.style.top + " " + gPopupMask.style.left + " " + gi++;
 
-		var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
+        var titleBarHeight = parseInt(document.getElementById("popupTitleBar").offsetHeight, 10);
 
-		var fullHeight = getViewportHeight();
-		var fullWidth = getViewportWidth();
+        var fullHeight = getViewportHeight();
+        var fullWidth = getViewportWidth();
 
-		gPopupContainer.style.top = (scTop + ((fullHeight - (height+titleBarHeight)) / 2)) + "px";
-		gPopupContainer.style.left =  (scLeft + ((fullWidth - width) / 2)) + "px";
-		//alert(fullWidth + " " + width + " " + gPopupContainer.style.left);
-	}
+        gPopupContainer.style.top = (scTop + ((fullHeight - (height + titleBarHeight)) / 2)) + "px";
+        gPopupContainer.style.left = (scLeft + ((fullWidth - width) / 2)) + "px";
+        //alert(fullWidth + " " + width + " " + gPopupContainer.style.left);
+    }
 }
 addEvent(window, "resize", centerPopWin);
 addEvent(window, "scroll", centerPopWin);
@@ -176,26 +181,26 @@ window.onscroll = centerPopWin;
  *
  */
 function setMaskSize() {
-	var theBody = document.getElementsByTagName("BODY")[0];
+    var theBody = document.getElementsByTagName("BODY")[0];
 
-	var fullHeight = getViewportHeight();
-	var fullWidth = getViewportWidth();
+    var fullHeight = getViewportHeight();
+    var fullWidth = getViewportWidth();
 
-	// Determine what's bigger, scrollHeight or fullHeight / width
-	if (fullHeight > theBody.scrollHeight) {
-		popHeight = fullHeight;
-	} else {
-		popHeight = theBody.scrollHeight;
-	}
+    // Determine what's bigger, scrollHeight or fullHeight / width
+    if (fullHeight > theBody.scrollHeight) {
+        popHeight = fullHeight;
+    } else {
+        popHeight = theBody.scrollHeight;
+    }
 
-	if (fullWidth > theBody.scrollWidth) {
-		popWidth = fullWidth;
-	} else {
-		popWidth = theBody.scrollWidth;
-	}
+    if (fullWidth > theBody.scrollWidth) {
+        popWidth = fullWidth;
+    } else {
+        popWidth = theBody.scrollWidth;
+    }
 
-	gPopupMask.style.height = popHeight + "px";
-	gPopupMask.style.width = popWidth + "px";
+    gPopupMask.style.height = popHeight + "px";
+    gPopupMask.style.width = popWidth + "px";
 }
 
 /**
@@ -209,36 +214,36 @@ function hidePopWin(callReturnFunc, iframePath) {
         iframePath = '';
     }
 
-	gPopupIsShown = false;
-	var theBody = document.getElementsByTagName("BODY")[0];
-	theBody.style.overflow = "";
-	restoreTabIndexes();
-	if (gPopupMask == null) {
-		return;
-	}
-	gPopupMask.style.display = "none";
-	gPopupContainer.style.display = "none";
-	if (callReturnFunc == true && gReturnFunc != null) {
-		// Set the return code to run in a timeout.
-		// Was having issues using with an Ajax.Request();
+    gPopupIsShown = false;
+    var theBody = document.getElementsByTagName("BODY")[0];
+    theBody.style.overflow = "";
+    restoreTabIndexes();
+    if (gPopupMask == null) {
+        return;
+    }
+    gPopupMask.style.display = "none";
+    gPopupContainer.style.display = "none";
+    if (callReturnFunc == true && gReturnFunc != null) {
+        // Set the return code to run in a timeout.
+        // Was having issues using with an Ajax.Request();
         paths = '';
         if (iframePath != '')
         {
             arr_path = iframePath.split('\\');
-            for (i=0; i<arr_path.length; i++)
+            for (i = 0; i < arr_path.length; i++)
             {
                 paths += '.frames["' + arr_path[i] + '"]';
             }
         }
-        eval('gReturnVal = window.frames["popupFrame"]' + paths + '.returnVal');
+        eval('gReturnVal = window.frames["' + gID + '"]' + paths + '.returnVal');
 
-		window.setTimeout('gReturnFunc(gReturnVal);', 1);
-	}
-	gPopFrame.src = gDefaultPage;
-	// display all select boxes
-	if (gHideSelects == true) {
-		displaySelectBoxes();
-	}
+        window.setTimeout('gReturnFunc(gReturnVal);', 1);
+    }
+    gPopFrame.src = gDefaultPage;
+    // display all select boxes
+    if (gHideSelects == true) {
+        displaySelectBoxes();
+    }
 }
 
 /**
@@ -246,58 +251,59 @@ function hidePopWin(callReturnFunc, iframePath) {
  * Uses a timeout to keep checking until the title is valid.
  */
 function setPopTitle() {
-	/*
-	return;
-	if (window.frames["popupFrame"].document.title == null) {
-		window.setTimeout("setPopTitle();", 10);
-	} else {
-		document.getElementById("popupTitle").innerHTML = window.frames["popupFrame"].document.title;
-	}
-    */
-    if (window.frames["popupFrame"].document.title == null || window.frames["popupFrame"].document.title == "Loading Modal Content")
+    /*
+     return;
+     if (window.frames["popupFrame"].document.title == null) {
+     window.setTimeout("setPopTitle();", 10);
+     } else {
+     document.getElementById("popupTitle").innerHTML = window.frames["popupFrame"].document.title;
+     }
+     */
+    if (window.frames[gID].document.title == null || window.frames[gID].document.title == "Loading Modal Content")
     {
-            window.setTimeout("setPopTitle();", 25);
+        window.setTimeout("setPopTitle();", 25);
     }
     else
     {
-            document.getElementById("popupTitle").innerHTML = window.frames["popupFrame"].document.title;
+        document.getElementById("popupTitle").innerHTML = window.frames[gID].document.title;
     }
 }
 
 // Tab key trap. iff popup is shown and key was [TAB], suppress it.
 // @argument e - event - keyboard event that caused this function to be called.
 function keyDownHandler(e) {
-    if (gPopupIsShown && e.keyCode == 9)  return false;
+    if (gPopupIsShown && e.keyCode == 9)
+        return false;
 }
 
 // For IE.  Go through predefined tags and disable tabbing into them.
 function disableTabIndexes() {
-	if (document.all) {
-		var i = 0;
-		for (var j = 0; j < gTabbableTags.length; j++) {
-			var tagElements = document.getElementsByTagName(gTabbableTags[j]);
-			for (var k = 0 ; k < tagElements.length; k++) {
-				gTabIndexes[i] = tagElements[k].tabIndex;
-				tagElements[k].tabIndex="-1";
-				i++;
-			}
-		}
-	}
+    if (document.all) {
+        var i = 0;
+        for (var j = 0; j < gTabbableTags.length; j++) {
+            var tagElements = document.getElementsByTagName(gTabbableTags[j]);
+            for (var k = 0; k < tagElements.length; k++) {
+                gTabIndexes[i] = tagElements[k].tabIndex;
+                tagElements[k].tabIndex = "-1";
+                i++;
+            }
+        }
+    }
 }
 
 // For IE. Restore tab-indexes.
 function restoreTabIndexes() {
-	if (document.all) {
-		var i = 0;
-		for (var j = 0; j < gTabbableTags.length; j++) {
-			var tagElements = document.getElementsByTagName(gTabbableTags[j]);
-			for (var k = 0 ; k < tagElements.length; k++) {
-				tagElements[k].tabIndex = gTabIndexes[i];
-				tagElements[k].tabEnabled = true;
-				i++;
-			}
-		}
-	}
+    if (document.all) {
+        var i = 0;
+        for (var j = 0; j < gTabbableTags.length; j++) {
+            var tagElements = document.getElementsByTagName(gTabbableTags[j]);
+            for (var k = 0; k < tagElements.length; k++) {
+                tagElements[k].tabIndex = gTabIndexes[i];
+                tagElements[k].tabEnabled = true;
+                i++;
+            }
+        }
+    }
 }
 
 
@@ -308,11 +314,11 @@ function restoreTabIndexes() {
  * Thanks for the code Scott!
  */
 function hideSelectBoxes() {
-  var x = document.getElementsByTagName("SELECT");
+    var x = document.getElementsByTagName("SELECT");
 
-  for (i=0;x && i < x.length; i++) {
-    x[i].style.visibility = "hidden";
-  }
+    for (i = 0; x && i < x.length; i++) {
+        x[i].style.visibility = "hidden";
+    }
 }
 
 /**
@@ -323,11 +329,11 @@ function hideSelectBoxes() {
  * topmost z-index or layer.
  */
 function displaySelectBoxes() {
-  var x = document.getElementsByTagName("SELECT");
+    var x = document.getElementsByTagName("SELECT");
 
-  for (i=0;x && i < x.length; i++){
-    x[i].style.visibility = "visible";
-  }
+    for (i = 0; x && i < x.length; i++) {
+        x[i].style.visibility = "visible";
+    }
 }
 
 
@@ -352,27 +358,27 @@ function displaySelectBoxes() {
  * @argument evType - name of the event - DONT ADD "on", pass only "mouseover", etc
  * @argument fn - function to call
  */
-function addEvent(obj, evType, fn){
- if (obj.addEventListener){
-    obj.addEventListener(evType, fn, false);
-    return true;
- } else if (obj.attachEvent){
-    var r = obj.attachEvent("on"+evType, fn);
-    return r;
- } else {
-    return false;
- }
+function addEvent(obj, evType, fn) {
+    if (obj.addEventListener) {
+        obj.addEventListener(evType, fn, false);
+        return true;
+    } else if (obj.attachEvent) {
+        var r = obj.attachEvent("on" + evType, fn);
+        return r;
+    } else {
+        return false;
+    }
 }
-function removeEvent(obj, evType, fn, useCapture){
-  if (obj.removeEventListener){
-    obj.removeEventListener(evType, fn, useCapture);
-    return true;
-  } else if (obj.detachEvent){
-    var r = obj.detachEvent("on"+evType, fn);
-    return r;
-  } else {
-    alert("Handler could not be removed");
-  }
+function removeEvent(obj, evType, fn, useCapture) {
+    if (obj.removeEventListener) {
+        obj.removeEventListener(evType, fn, useCapture);
+        return true;
+    } else if (obj.detachEvent) {
+        var r = obj.detachEvent("on" + evType, fn);
+        return r;
+    } else {
+        alert("Handler could not be removed");
+    }
 }
 
 /**
@@ -383,50 +389,56 @@ function removeEvent(obj, evType, fn, useCapture){
  * Gets the full width/height because it's different for most browsers.
  */
 function getViewportHeight() {
-	if (window.innerHeight!=window.undefined) return window.innerHeight;
-	if (document.compatMode=='CSS1Compat') return document.documentElement.clientHeight;
-	if (document.body) return document.body.clientHeight;
+    if (window.innerHeight != window.undefined)
+        return window.innerHeight;
+    if (document.compatMode == 'CSS1Compat')
+        return document.documentElement.clientHeight;
+    if (document.body)
+        return document.body.clientHeight;
 
-	return window.undefined;
+    return window.undefined;
 }
 function getViewportWidth() {
-	var offset = 17;
-	var width = null;
-	if (window.innerWidth!=window.undefined) return window.innerWidth;
-	if (document.compatMode=='CSS1Compat') return document.documentElement.clientWidth;
-	if (document.body) return document.body.clientWidth;
+    var offset = 17;
+    var width = null;
+    if (window.innerWidth != window.undefined)
+        return window.innerWidth;
+    if (document.compatMode == 'CSS1Compat')
+        return document.documentElement.clientWidth;
+    if (document.body)
+        return document.body.clientWidth;
 }
 
 /**
  * Gets the real scroll top
  */
 function getScrollTop() {
-	if (self.pageYOffset) // all except Explorer
-	{
-		return self.pageYOffset;
-	}
-	else if (document.documentElement && document.documentElement.scrollTop)
-		// Explorer 6 Strict
-	{
-		return document.documentElement.scrollTop;
-	}
-	else if (document.body) // all other Explorers
-	{
-		return document.body.scrollTop;
-	}
+    if (self.pageYOffset) // all except Explorer
+    {
+        return self.pageYOffset;
+    }
+    else if (document.documentElement && document.documentElement.scrollTop)
+            // Explorer 6 Strict
+            {
+                return document.documentElement.scrollTop;
+            }
+    else if (document.body) // all other Explorers
+    {
+        return document.body.scrollTop;
+    }
 }
 function getScrollLeft() {
-	if (self.pageXOffset) // all except Explorer
-	{
-		return self.pageXOffset;
-	}
-	else if (document.documentElement && document.documentElement.scrollLeft)
-		// Explorer 6 Strict
-	{
-		return document.documentElement.scrollLeft;
-	}
-	else if (document.body) // all other Explorers
-	{
-		return document.body.scrollLeft;
-	}
+    if (self.pageXOffset) // all except Explorer
+    {
+        return self.pageXOffset;
+    }
+    else if (document.documentElement && document.documentElement.scrollLeft)
+            // Explorer 6 Strict
+            {
+                return document.documentElement.scrollLeft;
+            }
+    else if (document.body) // all other Explorers
+    {
+        return document.body.scrollLeft;
+    }
 }

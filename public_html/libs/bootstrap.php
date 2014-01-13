@@ -1,35 +1,12 @@
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <?php
-/**
-// File name   : bootstrap.php
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
-*/
-
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
-
 class Bootstrap {
 
     function __construct() {
         $url = (isset($_REQUEST['url'])) ? explode('/', rtrim($_REQUEST['url'], '/')) : array();
 
         $app = (isset($url[0])) ? trim($url[0]) : 'r3';
+        
         if (isset($url[1]))
         {
             $module = trim($url[1]);
@@ -88,18 +65,28 @@ class Bootstrap {
         }
     }
 
-    private function _error($code)
+    private function _error($code=0)
     {
-        switch ($code)
+        
+            
+        if (DEBUG_MODE > 0)
         {
-            case 1:
-                die('Không tồn tại hàm!');
-                break;
-
-            case 2:
-                die('Không tìm thấy file Controller!');
-                break;
+            switch ($code)
+            {
+                case 1:
+                    die('Không tìm thấy Method!');
+                    break;
+    
+                case 2:
+                    die('Không tìm thấy Controller!');
+                    break;
+            }
         }
+        else 
+        {
+            require_once (SERVER_ROOT . '404.php');
+        }
+
     }
 
 }

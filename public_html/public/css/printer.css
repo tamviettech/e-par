@@ -8,6 +8,14 @@
         display: block;
     }
 
+    .dots{
+        background: url('../images/dot.png') repeat-x bottom; 
+    }
+    
+    .dots label{
+        background-color: white;
+    }
+
     .print-button .print
     {
         background-position: left;
@@ -123,36 +131,36 @@
         border: 0px;
         text-align: center;
     }
-    
-	table.guide-table
-	{
-	    border-collapse: collapse;
-	    border:1px;
-	}
-	table.guide-table TH
-	{
-	    font-weight: 700;
-	    text-align: center;
-	    border: 1px solid;
-	}
-	table.guide-table TD
-	{
-	    border: 1px solid;
-	    padding: 4px;
-	    vertical-align: top;
-	}
-	.note-writer
-	{
-		 background: url(../images/note-writer-bg.png) repeat-y;
-		 width: 100%;
-		 height: auto;
-		 font: italic 13px verdana;
-		 line-height: 20px;
-		 padding:0px;
-		 /*max-height: 80px;*/
-		 overflow: hidden;
-		 border: none;
-	}
+
+    table.guide-table
+    {
+        border-collapse: collapse;
+        border:1px;
+    }
+    table.guide-table TH
+    {
+        font-weight: 700;
+        text-align: center;
+        border: 1px solid;
+    }
+    table.guide-table TD
+    {
+        border: 1px solid;
+        padding: 4px;
+        vertical-align: top;
+    }
+    .note-writer
+    {
+        background: url(../images/note-writer-bg.png) repeat-y;
+        width: 100%;
+        height: auto;
+        font: italic 13px verdana;
+        line-height: 20px;
+        padding:0px;
+        /*max-height: 80px;*/
+        overflow: hidden;
+        border: none;
+    }
 }
 
 @media print
@@ -168,5 +176,12 @@
     {
         background: none;
         border: none;
+    }
+    
+    .dots{
+        background: url('../images/dot.png') repeat-x bottom !important; 
+    }
+    .dots label{
+        background-color: white;
     }
 }

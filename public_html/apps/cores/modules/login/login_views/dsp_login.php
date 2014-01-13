@@ -1,3 +1,22 @@
+<?php
+/**
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+
 <?php if (!defined('SERVER_ROOT')) {exit('No direct script access allowed');}?>
 <!DOCTYPE html>
 <html>
@@ -47,35 +66,39 @@
         <h4>Hệ thống phần mềm Một cửa-<?php echo get_xml_value(simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml'), '//full_name')?></h4>
 		<form action="<?php echo $this->get_controller_url();?>do_login/" method="post" name="loginForm" id="loginForm">
 		<div class="form-block">
-			<div class="inputlabel">T&#234;n &#273;&#259;ng nh&#7853;p</div>
+			<div class="inputlabel">Tên đăng nhập</div>
 
 			<div>
 			     <input name="txt_login_name" type="text"
                         class="inputbox" size="15"
                         onchange="this.form.txt_password.focus();"
                         onkeypress="login(event);" autofocus="autofocus"
+                        autocomplete="off"
                 />
 		     </div>
-			<div class="inputlabel">M&#7853;t kh&#7849;u</div>
+			<div class="inputlabel">Mật khẩu</div>
 			<div>
 			     <input name="txt_password" type="password" class="inputbox"
-                        size="15" onkeypress="login(event);" value="123456"
+                        size="15" onkeypress="login(event);" value=""
+                        autocomplete="off"
                 />
 		     </div>
+		     <?php /*
 			<!--<div class="inputlabel">AD Domain</div>
 			<div>
 			     <select name="sel_domain">
                      <option></option>
                      <option><?php echo AD_DOMAIN_NAME;?></option>
                  </select>
-		     </div>-->
+		     </div>-->*/?>
 			 <br/>
 			<div align="left">
 			     <input type="button" name="btn_login" class="button"
-                        value="&#272;&#259;ng nh&#7853;p"
+                        value="Đăng nhập"
                         onclick="btn_login_onclick();"
                 />
 	       </div>
+	       
 		</div>
 
 		</form>

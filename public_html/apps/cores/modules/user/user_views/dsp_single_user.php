@@ -1,10 +1,20 @@
 <?php
 /**
- * @copyright	Copyright (C) 2012 Tam Viet Tech. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- * @author		Ngo Duc Lien <liennd@gmail.com>
- * @author		Luong Thanh Binh <ltbinh@gmail.com>
- */
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 ?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
@@ -212,6 +222,17 @@ else
                             <?php echo ($v_status > 0) ? ' checked' : ''; ?>
                             id="chk_status"
                         /><label for="chk_status"><?php echo __('active status'); ?></label><br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>IDC ID</td>
+                    <td>
+                         <input type="text" name="txt_idc_id" value="<?php echo $v_idc_id; ?>" id="txt_idc_id"
+                                class="inputbox" size="6" maxlength="6"
+                                data-allownull="no" data-validate="number"
+                                data-name="<?php echo __('order'); ?>"
+                                data-xml="no" data-doc="no"
+                        />
                     </td>
                 </tr>
             </table>

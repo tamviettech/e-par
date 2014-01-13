@@ -1,27 +1,22 @@
-<?php 
+<?php
 /**
- // File name   :
- // Version     : 1.0.0.1
- // Begin       : 2012-12-01
- // Last Update : 2010-12-25
- // Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
- // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
- // -------------------------------------------------------------------
- //Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
- // E-PAR is free software: you can redistribute it and/or modify it
- // under the terms of the GNU Lesser General Public License as
- // published by the Free Software Foundation, either version 3 of the
- // License, or (at your option) any later version.
- //
- // E-PAR is distributed in the hope that it will be useful, but
- // WITHOUT ANY WARRANTY; without even the implied warranty of
- // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- // See the GNU Lesser General Public License for more details.
- //
- // See LICENSE.TXT file for more information.
- */
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 ?>
+
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <html>
     <head>
@@ -33,7 +28,7 @@
         <script src="<?php echo SITE_ROOT;?>public/js/jquery/jquery.min.js" type="text/javascript"></script>
         <script src="<?php echo SITE_ROOT;?>public/js/mylibs.js" type="text/javascript"></script>
     </head>
-    <body>
+    <body contenteditable>
     	<div class="print-button">
     		<input type="button" value="In trang"
     			onclick="window.print();" /> <input type="button"

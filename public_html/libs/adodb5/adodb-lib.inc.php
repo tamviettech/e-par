@@ -6,7 +6,7 @@ global $ADODB_INCLUDED_LIB;
 $ADODB_INCLUDED_LIB = 1;
 
 /* 
-  @version V5.15 19 Jan 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
+  @version V5.18 3 Sep 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
@@ -542,7 +542,7 @@ function _adodb_pageexecute_all_rows(&$zthis, $sql, $nrows, $page,
 	return $rsreturn;
 }
 
-// Iván Oliva version
+// Ivï¿½n Oliva version
 function _adodb_pageexecute_no_last_page(&$zthis, $sql, $nrows, $page, $inputarr=false, $secs2cache=0) 
 {
 
@@ -1045,6 +1045,9 @@ function _adodb_column_sql(&$zthis, $action, $type, $fname, $fnameq, $arrFields,
 
 function _adodb_debug_execute(&$zthis, $sql, $inputarr)
 {
+    //Timetrack begin
+    $time_start = microtime(true);
+    
 	$ss = '';
 	if ($inputarr) {
 		foreach($inputarr as $kk=>$vv) {
@@ -1105,6 +1108,12 @@ function _adodb_debug_execute(&$zthis, $sql, $inputarr)
 	}
 	
 	if ($zthis->debug === 99) _adodb_backtrace(true,9999,2);
+	
+	//Timetrack end
+	$time_end = microtime(true);
+	$time = $time_end - $time_start;
+	
+	echo '<pre>Time: ' . $time . '</pre>';
 	return $qID;
 }
 

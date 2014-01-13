@@ -1,29 +1,23 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
 
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
-
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
 $arr_all_record_type    = $VIEW_DATA['arr_all_record_type'];
@@ -92,8 +86,10 @@ $this->template->display('dsp_header.php');
     </div> -->
 </form>
 <script>
-
     $(function() {
+    	//Pham vi thu tuc?
+        v_cope = $("#sel_record_type>option:selected").attr("data-scope");
+                    
     	$('.adminlist tr[role="presentation"] td[role="action"] .quick_action').each(function(index) {
             v_item_id =   $(this).attr('data-item_id');
 
@@ -103,9 +99,31 @@ $this->template->display('dsp_header.php');
             html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\');" class="quick_action" >';
             html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
 
+            <?php if (!Session::get('la_can_bo_cap_xa')):?>
+                //Tra lai ho so ve xa
+                if (v_cope == '1')
+                {
+                	 html += '<a href="javascript:void(0)" onclick="btn_stop_cross_over_record_onclick(\'' + v_item_id + '\');" class="quick_action" >';
+                     html += '<img src="' + SITE_ROOT + 'public/images/stop-16x16.png" title="Không nhận" /></a>';
+                }
+            <?php endif;?>
+
             $(this).html(html);
         });
     });
+
+    
+    function btn_stop_cross_over_record_onclick(v_record_id)
+    {
+    	var url = '<?php echo $this->get_controller_url();?>dsp_stop_cross_over_record/' + v_record_id + '/';
+        url += QS + 'record_id_list=' + v_record_id;
+        url += '&record_type_code=' + $("#record_type_code").val();
+        url += '&record_type_name=' + encodeURI($("#sel_record_type>option:selected").text());
+        url += '&type=' + $("#hdn_handover_type").val();
+        url += '&pop_win=1';
+
+        showPopWin(url, 500, 250, null, true);
+    }
 
     function btn_handover_onclick()
     {
@@ -140,7 +158,7 @@ $this->template->display('dsp_header.php');
         {
 
             var url = '<?php echo $this->get_controller_url();?>dsp_print_ho_for_bu/' + v_selected_record_id_list + '/';
-            url += '&record_id_list=' + v_selected_record_id_list;
+            url += QS + 'record_id_list=' + v_selected_record_id_list;
             url += '&record_type_code=' + $("#record_type_code").val();
             url += '&record_type_name=' + encodeURI($("#sel_record_type>option:selected").text());
             url += '&type=' + $("#hdn_handover_type").val();

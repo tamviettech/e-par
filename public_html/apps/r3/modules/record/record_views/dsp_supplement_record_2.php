@@ -1,27 +1,23 @@
-<?php 
+<?php
 /**
-// File name   : dsp_supplement_record_2.php
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+?>
+
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
 $arr_all_record_type    = $VIEW_DATA['arr_all_record_type'];
@@ -201,7 +197,7 @@ $this->template->display('dsp_header_pop_win.php');
         if (v_selected_record_id_list != '')
         {
             var url = '<?php echo $this->get_controller_url();?>dsp_print_supplement_ho_for_bu/' + v_selected_record_id_list + '/';
-            url += '&record_id_list=' + v_selected_record_id_list;
+            url += QS + 'record_id_list=' + v_selected_record_id_list;
             url += '&record_type_code=' + $("#record_type_code").val();
             url += '&a=' + encodeURI($("#sel_record_type>option:selected").text());
             url += '&type=' + $("#hdn_handover_type").val();

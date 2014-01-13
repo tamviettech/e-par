@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<line label="" cols="1">
+		<item type="DropDownList" id="txt_scope" name="Phạm vi của sổ" allownull="yes"  validate="ddli" label="Phạm vi của sổ:"  defaul_value="0"  src_file="public/xml/xml_pham_vi_so_theo_doi_ho_so.xml" view = "true"/>
+	</line>
+
+</form>

@@ -11,7 +11,7 @@
 			<item type="rownum" id="RN" name="#" clickable="no" size="3%"/>
 			<item type="text" id="C_RECORD_NO" name="Mã hồ sơ" clickable="yes" size="15%"/>
 			<item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" clickable="no" size="16%"/>
-			<item type="text" id="xml/txtPlaceAdd" name="Địa chỉ thửa đất" clickable="no" size="20%"/>
+			<item type="text_concat" id="xml/txtPlaceAdd, xml/ddlXaPhuong" name="Địa chỉ thửa đất" clickable="no" size="20%"/>
 			<item type="text" id="C_RECEIVE_DATE" name="Ngày giờ tiếp nhận" clickable="no" size="9%"/>
 			<item type="text" id="C_RETURN_DATE" name="Ngày giờ hẹn trả" clickable="no" size="13%"/>
 			<item type="text" id="C_DOING_STEP_DAYS_REMAIN" name="Thời hạn" clickable="no" size="14%"/>

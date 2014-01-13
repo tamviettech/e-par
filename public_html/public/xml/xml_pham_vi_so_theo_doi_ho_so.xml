@@ -1,0 +1,6 @@
+﻿<root debug="true">
+	<item value="0" name="UBND xã"/>
+	<item value="1" name="Liên thông xã, huyện"/>
+	<item value="2" name="Liên thông huyện, xã"/>
+	<item value="3" name="UBND huyện"/>
+</root>

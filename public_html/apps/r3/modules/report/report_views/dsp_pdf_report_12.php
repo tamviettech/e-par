@@ -1,42 +1,42 @@
-<?php 
-
+<?php
 /**
-// File name   : dsp_report_12.php
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('SERVER_ROOT')) { exit('No direct script access allowed');}
+?>
+
+<?php
+
+if (!defined('SERVER_ROOT'))
+{
+    exit('No direct script access allowed');
+}
 error_reporting(0);
 
 //Cau hinh phan ky
-$v_xml_signer_file_path = CONST_APPS_DIR . $this->app_name . DS . 'modules'. DS . $this->module_name . DS
-                        . $this->module_name . '_views' . DS . 'xml' . DS . $VIEW_DATA['report_code'] . '_signer.xml';
+$v_xml_signer_file_path = CONST_APPS_DIR . $this->app_name . DS . 'modules' . DS . $this->module_name . DS
+        . $this->module_name . '_views' . DS . 'xml' . DS . $VIEW_DATA['report_code'] . '_signer.xml';
 if (!file_exists($v_xml_signer_file_path))
 {
-    $v_xml_signer_file_path = CONST_APPS_DIR . $this->app_name . DS . 'modules'. DS . $this->module_name . DS
-                        . $this->module_name . '_views' . DS . 'xml' . DS . 'report_signer.xml';
+    $v_xml_signer_file_path = CONST_APPS_DIR . $this->app_name . DS . 'modules' . DS . $this->module_name . DS
+            . $this->module_name . '_views' . DS . 'xml' . DS . 'report_signer.xml';
 }
 
 //Phan than bao cao
-$v_xml_report_file_path = CONST_APPS_DIR . $this->app_name . DS . 'modules'. DS . $this->module_name . DS
-                        . $this->module_name . '_views' . DS . 'xml' . DS . $VIEW_DATA['report_code'] . '.xml';
+$v_xml_report_file_path = CONST_APPS_DIR . $this->app_name . DS . 'modules' . DS . $this->module_name . DS
+        . $this->module_name . '_views' . DS . 'xml' . DS . $VIEW_DATA['report_code'] . '.xml';
 if (!file_exists($v_xml_report_file_path))
 {
     die('Chưa cấu hình xml báo cáo cho mẫu này!');
@@ -57,7 +57,7 @@ $pdf->SetAuthor('Ngo Duc Lien');
 
 // set header and footer fonts
 $pdf->setPrintHeader(0);
-$pdf->SetHeaderData('', PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 023', 'asdadsadsadsa');
+$pdf->SetHeaderData('', PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 023', 'asdadsadsadsa');
 //$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, 'B', 16));
 $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', 13));
 
@@ -71,7 +71,6 @@ $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 //set auto page breaks
 //$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
 //set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -84,18 +83,18 @@ $pdf->AddPage('LANDSCAPE');
 
 $pdf->SetFont('liennd.times', '', 16);
 $dom_unit_info = simplexml_load_file('public/xml/xml_unit_info.xml');
-$v_unit_name = mb_strtoupper(get_xml_value($dom_unit_info,'/unit/full_name'), 'UTF-8') . "\nVĂN PHÒNG \n ________";
+$v_unit_name   = mb_strtoupper(get_xml_value($dom_unit_info, '/unit/full_name'), 'UTF-8') . "\nVĂN PHÒNG \n ________";
 $pdf->MultiCell(140, 3, $v_unit_name, 0, 'C', 0, 0, '', '', true);
-$txt = "Cộng hoà xã hội chủ nghĩa Việt Nam \n Độc lập - Tự do - Hạnh phúc \n _________";
+$txt           = "Cộng hoà xã hội chủ nghĩa Việt Nam \n Độc lập - Tự do - Hạnh phúc \n _________";
 $pdf->MultiCell(140, 5, $txt, 0, 'C', 0, 0, '', '', true);
 
-$v_unit_short_name = get_xml_value($dom_unit_info,'/unit/name');
+$v_unit_short_name = get_xml_value($dom_unit_info, '/unit/name');
 $pdf->report_date($v_unit_short_name);
 
 $pdf->report_title($report_title, $report_subtitle);
 
 $pdf->SetFont('liennd.times', '', 12);
-$pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'butt', 'join' => 'round', 'dash' => 5, 'color' => array(0, 0, 0)));
+$pdf->SetLineStyle(array('width' => 0.1, 'cap'   => 'butt', 'join'  => 'round', 'dash'  => 5, 'color' => array(0, 0, 0)));
 
 //INIT TOTAL
 $totals = $dom_xml_report->xpath('//total/item');
@@ -103,8 +102,8 @@ foreach ($totals as $total)
 {
     if (isset($total->attributes()->id))
     {
-        $id     = str_replace('xml/', '',$total->attributes()->id);
-        $$id    = 0;
+        $id  = str_replace('xml/', '', $total->attributes()->id);
+        $$id = 0;
     }
 }
 
@@ -113,10 +112,10 @@ foreach ($totals as $total)
 $html = get_xml_value(simplexml_load_file($v_xml_signer_file_path), '//css');
 
 //The header
-$v_first_page_head     = '<tr>'; //header cho trang dau tien
-$v_cont_page_head      = '<tr>'; //header cho cac trang tiep theo
-$cols = $dom_xml_report->xpath("//list/item");
-$i=1;
+$v_first_page_head = '<tr>'; //header cho trang dau tien
+$v_cont_page_head  = '<tr>'; //header cho cac trang tiep theo
+$cols              = $dom_xml_report->xpath("//list/item");
+$i                 = 1;
 foreach ($cols as $col)
 {
     $v_first_page_head .= '<td width="' . strval($col->attributes()->size) . '" align="center"><b>' . trim($col->attributes()->name) . '</b></td>';
@@ -132,27 +131,27 @@ $v_thead .= '</table></td></tr>';
 $pdf->set_thead($v_thead);
 
 //The Body
-$html .= '<table class="report_list" border="1" cellpadding="4" cellspacing="0">'. $v_first_page_head . $v_cont_page_head;
-$j=0;
-for ($i=0; $i<$v_count; $i++)
+$html .= '<table class="report_list" border="1" cellpadding="4" cellspacing="0">' . $v_first_page_head . $v_cont_page_head;
+$j = 0;
+for ($i = 0; $i < $v_count; $i++)
 {
-    $v_xml_data     = isset($arr_all_report_data[$i]['C_XML_DATA']) ? $arr_all_report_data[$i]['C_XML_DATA'] : '<root/>';
-    $dom_xml_data   = simplexml_load_string($v_xml_data);
+    $v_xml_data   = isset($arr_all_report_data[$i]['C_XML_DATA']) ? $arr_all_report_data[$i]['C_XML_DATA'] : '<root/>';
+    $dom_xml_data = simplexml_load_string($v_xml_data);
 
     $v_xml_processing = isset($arr_all_report_data[$i]['C_XML_PROCESSING']) ? $arr_all_report_data[$i]['C_XML_PROCESSING'] : '<root/>';
-    $dom_processing = @simplexml_load_string($v_xml_processing);
+    $dom_processing   = @simplexml_load_string($v_xml_processing);
 
     reset($cols);
 
-    $v_prev_group_code  = ($i > 0) ? $arr_all_report_data[$i - 1]['C_DOING_GROUP_CODE'] : '';
-    $v_group_code       = $arr_all_report_data[$i]['C_DOING_GROUP_CODE'];
+    $v_prev_group_code = ($i > 0) ? $arr_all_report_data[$i - 1]['C_DOING_GROUP_CODE'] : '';
+    $v_group_code      = $arr_all_report_data[$i]['C_DOING_GROUP_CODE'];
 
     if ($v_group_code != $v_prev_group_code)
     {
         $html .= '<tr>';
         $html .= '<td colspan="7" class="group_name">' . $arr_all_group[$v_group_code] . '</td>';
         $html .= '</tr>';
-        $j=0;
+        $j = 0;
     }
     $j++;
 
@@ -160,8 +159,8 @@ for ($i=0; $i<$v_count; $i++)
     foreach ($cols as $col)
     {
         //Cell data
-        $v_col_id   = strval($col->attributes()->id);
-        $v_align    = isset($col->attributes()->align) ? ' align="' . $col->attributes()->align . '"' : '';
+        $v_col_id = strval($col->attributes()->id);
+        $v_align  = isset($col->attributes()->align) ? ' align="' . $col->attributes()->align . '"' : '';
 
         if ($v_col_id == 'RN')
         {
@@ -169,10 +168,10 @@ for ($i=0; $i<$v_count; $i++)
         }
         else
         {
-            if (strpos($v_col_id , 'xml/') !== FALSE) //Cot du lieu nam trong XML
+            if (strpos($v_col_id, 'xml/') !== FALSE) //Cot du lieu nam trong XML
             {
-                $v_col_id = str_replace('xml/', '', $v_col_id);
-                $r = $dom_xml_data->xpath("/data/item[@id='" . $v_col_id . "']/value");
+                $v_col_id   = str_replace('xml/', '', $v_col_id);
+                $r          = $dom_xml_data->xpath("/data/item[@id='" . $v_col_id . "']/value");
                 $v_col_data = sizeof($r) ? $r[0] : '';
             }
             else //Cot tuong minh
@@ -199,12 +198,11 @@ for ($i=0; $i<$v_count; $i++)
                     {
                         //So ngay con lai cua step dang thực hiện
                         $v_step_days_remain = $arr_all_report_data[$i]['C_DOING_STEP_DAYS_REMAIN'];
-                        $v_col_data = '<span class="days-remain overdue">' . abs($v_step_days_remain) . ' ngày</span>';
+                        $v_col_data         = '<span class="days-remain overdue">' . abs($v_step_days_remain) . ' ngày</span>';
                     }
                 }
                 $v_col_data .= $append;
             }//end if cot tuong minh
-
             //format_number??
             if (isset($col->attributes()->number_format) && parse_boolean($col->attributes()->number_format))
             {
@@ -222,7 +220,6 @@ for ($i=0; $i<$v_count; $i++)
     }//end foreach $cols
     $html .= '</tr>';
 }//end for $i
-
 //Total
 if (sizeof($totals) > 0)
 {
@@ -230,17 +227,17 @@ if (sizeof($totals) > 0)
     reset($totals);
     foreach ($totals as $total)
     {
-        $colspan        = isset($total->attributes()->colspan) ? ' colspan="' . strval($total->attributes()->colspan) . '"': '';
-        $align          = isset($total->attributes()->align) ? ' align="' . strval($total->attributes()->align) . '"': '';
+        $colspan = isset($total->attributes()->colspan) ? ' colspan="' . strval($total->attributes()->colspan) . '"' : '';
+        $align   = isset($total->attributes()->align) ? ' align="' . strval($total->attributes()->align) . '"' : '';
 
         if (isset($total->attributes()->id))
         {
-            $id = strval($total->attributes()->id);
+            $id          = strval($total->attributes()->id);
             $v_cell_data = $$id;
         }
         else
         {
-            $v_cell_data    = isset($total->attributes()->name) ? strval($total->attributes()->name) : '';
+            $v_cell_data = isset($total->attributes()->name) ? strval($total->attributes()->name) : '';
         }
 
         $html .= '<td ' . $colspan . $align . '>' . $v_cell_data . '</td>';
@@ -262,5 +259,5 @@ $pdf->lastPage();
 //Change To Avoid the PDF Error
 @ob_end_clean();
 //Close and output PDF document
-$v_attach_file_path = $VIEW_DATA['report_code'] .  '.pdf';
+$v_attach_file_path = $VIEW_DATA['report_code'] . '.pdf';
 $pdf->Output($v_attach_file_path, 'I');

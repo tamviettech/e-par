@@ -1,38 +1,42 @@
 <?xml version="1.0"?>
-<process code="TN27" name="Gia hạn sử dụng đất đối với hộ gia đình, cá nhân sử dụng đất phi nông nghiệp; hộ gia đình, cá nhân không trực tiếp sản xuất nông nghiệp được Nhà nước cho thuê đất nông nghiệp" totaltime="23" version="1" fee="50.000">
+<process code="TN27" name="Gia hạn sử dụng đất đối với hộ gia đình, cá nhân sử dụng đất phi nông nghiệp; hộ gia đình, cá nhân không trực tiếp sản xuất nông nghiệp được Nhà nước cho thuê đất nông nghiệp" totaltime="24" version="1" fee="">
     <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1" role="TIEP_NHAN">
-        <task code="TN27::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN27::BAN_GIAO" single_user="true" />
-        <task code="TN27::BAN_GIAO" name="Bàn giao hồ sơ" time="1" next="TN27::PHAN_CONG" single_user="true" />
+        <task code="TN27::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN27::BAN_GIAO" />
+        <task code="TN27::BAN_GIAO" name="Bàn giao hồ sơ" time="1" next="TN27::PHAN_CONG" />
     </step>
 	
 	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý hồ sơ" time="3">
-        <task code="TN27::PHAN_CONG" name="Phân công thụ lý" time="2" next="TN27::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" single_user="true" />
-        <task code="TN27::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" name="Chuyển yêu cầu xác nhận xuống xã" time="1" next="TN27::XAC_NHAN_LIEN_THONG" single_user="true" />
+        <task code="TN27::PHAN_CONG" name="Phân công thụ lý" time="2" next="TN27::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" />
+        <task code="TN27::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" name="Chuyển yêu cầu xác nhận xuống xã" time="1" next="TN27::XAC_NHAN_LIEN_THONG" />
     </step>
 	
 	<step order="1" group="DIA_CHINH_CAP_XA" name="Xác nhận phường xã" time="5">
-        <task code="TN27::XAC_NHAN_LIEN_THONG" name="Xác nhận hồ sơ liên thông" time="5" next="TN27::THU_LY_HO_SO_LIEN_THONG" single_user="true" />
+        <task code="TN27::XAC_NHAN_LIEN_THONG" name="Xác nhận hồ sơ liên thông" time="5" next="TN27::THU_LY_HO_SO_LIEN_THONG" />
     </step>
 	
-	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý tiếp hồ sơ" time="3">
-        <task code="TN27::THU_LY_HO_SO_LIEN_THONG" name="Thụ lý hồ sơ liên thông" time="1" next="TN27::XET_DUYET" single_user="true" />
-        <task code="TN27::XET_DUYET" name="Xét duyệt" next="TNMT::TN27::XET_DUYET" single_user="true" time="2"/>
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý tiếp hồ sơ" time="6">
+        <task code="TN27::THU_LY_HO_SO_LIEN_THONG" name="Thụ lý hồ sơ liên thông" time="1" next="TN27::XET_DUYET" />
+        <task code="TN27::XET_DUYET" name="Xét duyệt" next="TNMT::TN27::XET_DUYET" time="2"/>
     </step>
 	
 	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT ký duyệt" time="5" role="XU_LY">
-		<task code="TNMT::TN27::XET_DUYET" name="Xét duyệt" time="2" next="TN27::KY_DUYET" single_user="true" />
+		<task code="TNMT::TN27::XET_DUYET" name="Xét duyệt" time="2" next="TN27::KY_DUYET" />
 	</step>
 	
-	<step order="3" group="LANH_DAO_DON_VI" name="Lãnh đạo Thành phố ký duyệt" time="2">
-		<task code="TN27::KY_DUYET" name="Ký duyệt" time="0" next="TNMT_VONG2::TN27::XET_DUYET" />
+	<step order="3" group="LANH_DAO_DON_VI" name="Lãnh đạo Thành phố ký duyệt" time="3">
+		<task code="TN27::KY_DUYET" name="Ký duyệt" time="0" next="TNMT_VONG2::TN27::BAN_GIAO" />
 	</step>
 	
-	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT ký duyệt, bàn giao cho Một Cửa" time="1" role="XU_LY">
-		<task code="TNMT_VONG2::TN27::XET_DUYET" name="Xét duyệt" time="2" next="TN27::TRA_KET_QUA" single_user="true" biz_done="true"/>
-	</step>	
-
-    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
-        <task code="TN27::TRA_KET_QUA" name="Trả kết quả" time="1" next="NULL" single_user="true"/>
+	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT bàn giao cho Một Cửa" time="1" role="XU_LY">
+		<task code="TNMT_VONG2::TN27::BAN_GIAO" name="Bàn giao" time="2" next="TN27::TRA_KET_QUA" biz_done="true"/>
+	</step>
+	<!--
+	<step order="4" group="BP_MOT_CUA" name="Thu phí" time="0" role="THU_PHI">
+		<task code="TN27::THU_PHI" name="Thu phí" time="0" next="TN27::TRA_KET_QUA" />		
+	</step>
+	-->
+    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+        <task code="TN27::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" />
         <!-- next="NULL": Kết thúc quy trình -->
     </step>
 </process>

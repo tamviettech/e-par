@@ -1,0 +1,16 @@
+E-PAR 1.0.0.2, 2013-08-13
+------------------------
+- Khắc phục các lỗi của phiên bản 1.0.0.1
++ Tương thích với môi trường Linux
++ Khắc phục lỗi Bad Request khi không sử dụng mod_rewrite của Apache
++ Khắc phục lỗi Người dùng (user) bị vô hiệu (disabled) vẫn đăng nhập được.
++ Fix nhiều lỗi bảo mật theo kết quả kiểm tra của VNCERT
+
+- Các tính năng bổ sung:
++ Bổ sung chức năng tạo, thay đổi quy trình bằng giao diện kéo, thả.
++ Bổ sung thêm cờ PAUSE, UNPAUSE trong khai báo quy trình, để tạm dừng hồ sơ. Phục vụ cho các đơn vị chờ công dân thực hiện xong nghĩa vụ thuế mới tiếp tục xử lý hồ sơ.
++ Bổ sung chức năng kết hợp (Concat) nhiều trường dữ liệu trên một cột trong danh sách hồ sơ.
+
+E-PAR 1.0.0.1, 2012-12-20
+------------------------
+- Phiên bản đầu tiên

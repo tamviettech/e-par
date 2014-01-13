@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<process author="Tam Viet" code="TP15" name="Xac thuc chu ky nguoi dung" totaltime="15" version="1" fee="25000" result="record_result.default.xml">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1">
+        <task code="TP15::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TP15::BAN_GIAO" order="1" single_user="true"/>
+        <task code="TP15::BAN_GIAO" name="Bàn giao hồ sơ" time="0" next="TP15::PHAN_CONG" order="2" single_user="true"/>
+    </step>
+    <step order="2" group="PHONG_TU_PHAP" name="Thụ lý và phân công thụ lý" time="3">
+        <task code="TP15::PHAN_CONG" name="Phân công" time="0" next="TP15::THU_LY" order="1" single_user="true"/>
+        <task code="TP15::THU_LY" name="Thụ lý" time="0" next="TP15::XET_DUYET" order="2" single_user="true"/>
+        <task code="TP15::XET_DUYET" name="Xét duyệt" time="0" next="TP15::KY_DUYET" order="3" single_user="true"/>
+    </step>
+    <step order="3" group="LANH_DAO_UY_BAN" name="Ky duyet" time="9">
+        <task code="TP15::KY_DUYET" name="Ký duyệt" time="0" next="TP15::TRA_KET_QUA" order="1" single_user="true"/>
+    </step>
+    <step order="4" group="BP_MOT_CUA" name="Tra ket qua" time="2">
+        <task code="TP15::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" single_user="true" order="1"/>
+    </step>
+    <step name="Bước song song" order="4" time="0" role="" code="" no_chain="true">
+        <task code="TP15::UNNAMED_NO_CHAIN_TASK" name="Công việc mới" next="FINISH_NO_CHAIN_STEP"/>
+    </step>
+</process>

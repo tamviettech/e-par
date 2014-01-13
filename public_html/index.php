@@ -1,30 +1,24 @@
 <?php
 /**
- // File name   : index.php
- // Version     : 1.0.0.1
- // Begin       : 2012-12-01
- // Last Update : 2010-12-25
- // Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
- // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
- // -------------------------------------------------------------------
- //Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
- // E-PAR is free software: you can redistribute it and/or modify it
- // under the terms of the GNU Lesser General Public License as
- // published by the Free Software Foundation, either version 3 of the
- // License, or (at your option) any later version.
- //
- // E-PAR is distributed in the hope that it will be useful, but
- // WITHOUT ANY WARRANTY; without even the implied warranty of
- // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- // See the GNU Lesser General Public License for more details.
- //
- // See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-ini_set('date.timezone','Asia/Ho_Chi_Minh');
+ini_set('date.timezone', 'Asia/Ho_Chi_Minh');
 
-define ('DS', DIRECTORY_SEPARATOR);
+define('DS', DIRECTORY_SEPARATOR);
 define('SERVER_ROOT', __DIR__ . DS);
 
 require_once ('config.php');
@@ -51,7 +45,10 @@ require_once (SERVER_ROOT . 'libs' . DS . 'view.php');
 require_once (SERVER_ROOT . 'libs' . DS . 'controller.php');
 require_once (SERVER_ROOT . 'libs' . DS . 'bootstrap.php');
 
+//lang
+//include_once SERVER_ROOT . 'languages/lang_vi.php';
 //Kiem session ngon ngu
 Lang::load_lang('lang_vi');
 
 $mvc_xml = new Bootstrap();
+$url     = get_request_var('url');

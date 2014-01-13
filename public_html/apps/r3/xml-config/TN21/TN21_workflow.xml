@@ -1,18 +1,22 @@
 <?xml version="1.0"?>
-<process code="TN21" name="Xoá đăng ký góp vốn bằng quyền sử dụng đất, tài sản gắn liền với đất cho hộ gia đình, cá nhân, cộng đồng dân cư, người Việt Nam định cư ở nước ngoài được sở hữu nhà ở tại Việt Nam" totaltime="5" version="1" fee="">
-    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
-        <task code="TN21::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN21::BAN_GIAO" single_user="true" />
-        <task code="TN21::BAN_GIAO" name="Bàn giao hồ sơ" time="0" next="TN21::PHAN_CONG" single_user="true" />
+<process code="TN21" name="Xoá đăng ký góp vốn bằng quyền sử dụng đất, tài sản gắn liền với đất cho hộ gia đình, cá nhân, cộng đồng dân cư, người Việt Nam định cư ở nước ngoài được sở hữu nhà ở tại Việt Nam" totaltime="6" version="1" fee="">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1" role="TIEP_NHAN">
+        <task code="TN21::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN21::BAN_GIAO"  />
+        <task code="TN21::BAN_GIAO" name="Bàn giao hồ sơ" time="1" next="TN21::PHAN_CONG"  />
     </step>
 	
 	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý hồ sơ" time="4">
-        <task code="TN21::PHAN_CONG" name="Phân công thụ lý" time="1" next="TN21::THU_LY" single_user="true" />
-        <task code="TN21::THU_LY" name="Thụ lý" time="1" next="TN21::XET_DUYET" single_user="true" />
-        <task code="TN21::XET_DUYET" name="Xét duyệt" time="2" next="TN21::TRA_KET_QUA" single_user="true" />
+        <task code="TN21::PHAN_CONG" name="Phân công thụ lý" time="2" next="TN21::THU_LY"  />
+        <task code="TN21::THU_LY" name="Thụ lý" time="1" next="TN21::XET_DUYET"  />
+		<task code="TN21::XET_DUYET" name="Xét duyệt" time="2" next="VPD::TN21::BAN_GIAO"  />
     </step>
+	
+	<step code="VPD" order="3" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất bàn giao hồ sơ" time="1" role="XU_LY">
+		<task code="VPD::TN21::BAN_GIAO" name="Bàn giao" time="1" next="TN21::TRA_KET_QUA" biz_done="true"/>
+	</step>
 
-    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
-        <task code="TN21::TRA_KET_QUA" name="Trả kết quả" time="0.5" next="NULL" single_user="true"/>
+    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+        <task code="TN21::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" />
         <!-- next="NULL": Kết thúc quy trình -->
     </step>
 </process>

@@ -1,14 +1,28 @@
 <?php
 /**
- * @copyright	Copyright (C) 2012 Tam Viet Tech. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- * @author		Ngo Duc Lien <liennd@gmail.com>
- * @author		Luong Thanh Binh <ltbinh@gmail.com>
- */
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-class user_Model extends Model {
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+
+<?php
+if (!defined('SERVER_ROOT'))
+    exit('No direct script access allowed');
+
+class user_Model extends Model
+{
 
     function __construct()
     {
@@ -17,7 +31,7 @@ class user_Model extends Model {
 
     public function qry_ou_tree()
     {
-        $sql = 'Select PK_OU, FK_OU, C_NAME, C_ORDER, C_INTERNAL_ORDER From t_cores_ou Order By C_INTERNAL_ORDER';
+        $sql             = 'Select PK_OU, FK_OU, C_NAME, C_ORDER, C_INTERNAL_ORDER From t_cores_ou Order By C_INTERNAL_ORDER';
         $this->db->debug = 0;
         return $this->db->getAll($sql);
     }
@@ -31,10 +45,9 @@ class user_Model extends Model {
      * Lấy danh sách Đơn vị cấp dưới
      * @param Int $ou_id ID đơn vị
      */
-
     public function qry_all_sub_ou($ou_id)
     {
-        $stmt = 'Select PK_OU, FK_OU, C_NAME, C_ORDER From t_cores_ou Where FK_OU=? Order By C_INTERNAL_ORDER';
+        $stmt   = 'Select PK_OU, FK_OU, C_NAME, C_ORDER From t_cores_ou Where FK_OU=? Order By C_INTERNAL_ORDER';
         $params = array($ou_id);
 
         return $this->db->getAll($stmt, $params);
@@ -42,7 +55,7 @@ class user_Model extends Model {
 
     public function qry_all_user_by_ou($ou_id)
     {
-        $stmt = 'Select * From t_cores_user Where FK_OU=? Order By C_ORDER';
+        $stmt   = 'Select * From t_cores_user Where FK_OU=? Order By C_ORDER';
         $params = array($ou_id);
 
         return $this->db->getAll($stmt, $params);
@@ -50,14 +63,14 @@ class user_Model extends Model {
 
     public function qry_all_group_by_ou($ou_id)
     {
-        $stmt = 'Select * From t_cores_group Where FK_OU=? Order By C_NAME';
+        $stmt   = 'Select * From t_cores_group Where FK_OU=? Order By C_NAME';
         $params = array($ou_id);
         return $this->db->getAll($stmt, $params);
     }
 
     public function qry_ou_path($ou_id)
     {
-        if (!( preg_match( '/^\d*$/', trim($ou_id)) == 1 ))
+        if (!( preg_match('/^\d*$/', trim($ou_id)) == 1 ))
         {
             $ou_id = $this->get_root_ou();
         }
@@ -70,8 +83,8 @@ class user_Model extends Model {
         {
             $ret_array = array();
 
-            $stmt = 'Select PK_OU, C_NAME, C_INTERNAL_ORDER, FK_OU From t_cores_ou Where PK_OU=?';
-            $params = array($ou_id);
+            $stmt        = 'Select PK_OU, C_NAME, C_INTERNAL_ORDER, FK_OU From t_cores_ou Where PK_OU=?';
+            $params      = array($ou_id);
             $arr_ou_info = $this->db->getRow($stmt, $params);
 
             $v_parent_ou_id   = $arr_ou_info['FK_OU'];
@@ -79,11 +92,11 @@ class user_Model extends Model {
             $v_ou_id          = $arr_ou_info['PK_OU'];
             $v_ou_name        = $arr_ou_info['C_NAME'];
 
-            $ret_array[$v_ou_name] =  $v_ou_id;
+            $ret_array[$v_ou_name] = $v_ou_id;
             while (strlen($v_internal_order) > 3)
             {
-                $stmt = 'Select PK_OU, C_NAME, C_INTERNAL_ORDER, FK_OU From t_cores_ou Where PK_OU=?';
-                $params = array($v_parent_ou_id);
+                $stmt        = 'Select PK_OU, C_NAME, C_INTERNAL_ORDER, FK_OU From t_cores_ou Where PK_OU=?';
+                $params      = array($v_parent_ou_id);
                 $arr_ou_info = $this->db->getRow($stmt, $params);
 
                 $v_parent_ou_id   = $arr_ou_info['FK_OU'];
@@ -91,7 +104,7 @@ class user_Model extends Model {
                 $v_ou_id          = $arr_ou_info['PK_OU'];
                 $v_ou_name        = $arr_ou_info['C_NAME'];
 
-                $ret_array[$v_ou_name] =  $v_ou_id;
+                $ret_array[$v_ou_name] = $v_ou_id;
             }
             return array_flip(array_reverse($ret_array));
         }
@@ -113,15 +126,16 @@ class user_Model extends Model {
 
     public function update_ou()
     {
-        $v_parent_ou_id        = get_post_var('hdn_parent_ou_id',0);
-        $v_ou_id               = get_post_var('hdn_item_id',0);
-        $v_name                = get_post_var('txt_name');
-        $v_order               = get_post_var('txt_order');
-        $v_xml_data            = get_post_var('XmlData','<data/>',0);
+        $v_parent_ou_id = get_post_var('hdn_parent_ou_id', 0);
+        $v_ou_id        = get_post_var('hdn_item_id', 0);
+        $v_name         = get_post_var('txt_name');
+        $v_order        = get_post_var('txt_order');
+        $v_xml_data     = get_post_var('XmlData', '<data/>', 0);
+        $v_level        = get_post_var('rad_level', 1);
 
         //Kiem tra trung ten
-        $stmt = 'Select Count(*) From t_cores_ou Where C_NAME=? And PK_OU <> ?';
-        $params = array($v_name, $v_ou_id);
+        $stmt             = 'Select Count(*) From t_cores_ou Where C_NAME=? And PK_OU <> ?';
+        $params           = array($v_name, $v_ou_id);
         $v_duplicate_name = $this->db->getOne($stmt, $params);
 
         if ($v_duplicate_name > 0)
@@ -132,48 +146,51 @@ class user_Model extends Model {
 
         if ($v_ou_id < 1)
         {
-            $stmt = 'Insert Into t_cores_ou(FK_OU, C_NAME,C_ORDER) Values(?, ?, ?)';
-            $params = array( $v_parent_ou_id
-                            ,$v_name
-                            ,$v_order
+            $stmt   = 'Insert Into t_cores_ou(FK_OU, C_NAME,C_ORDER, C_LEVEL) Values(?, ?, ?, ?)';
+            $params = array($v_parent_ou_id
+                , $v_name
+                , $v_order
+                , $v_level
             );
             $this->db->Execute($stmt, $params);
 
-            $v_ou_id = $this->get_last_inserted_id('t_cores_ou','PK_OU');
+            $v_ou_id = $this->get_last_inserted_id('t_cores_ou', 'PK_OU');
 
             $v_current_order = -1;
         }
         else
         {
             $v_current_order = $this->db->getOne('Select C_ORDER From t_cores_ou Where PK_OU=?', array($v_ou_id));
-            $stmt = 'Update t_cores_ou Set
+            $stmt            = 'Update t_cores_ou Set
                         C_NAME=N?
                         ,C_ORDER=?
+                        ,C_LEVEL=?
                     Where PK_OU=?';
-            $params = array(
-                        $v_name
-                        ,$v_order
-                        ,$v_ou_id
+            $params          = array(
+                $v_name
+                , $v_order
+                , $v_level
+                , $v_ou_id
             );
 
             $this->db->Execute($stmt, $params);
         }
 
         //reorder
-        $this->ReOrder('t_cores_ou','PK_OU','C_ORDER', $v_ou_id, $v_order, $v_current_order, " FK_OU=$v_parent_ou_id AND PK_OU <> $v_parent_ou_id");
+        $this->ReOrder('t_cores_ou', 'PK_OU', 'C_ORDER', $v_ou_id, $v_order, $v_current_order, " FK_OU=$v_parent_ou_id AND PK_OU <> $v_parent_ou_id");
 
         //Rebuild internal order
-        $this->build_interal_order('t_cores_ou', 'PK_OU','FK_OU',-1);
+        $this->build_interal_order('t_cores_ou', 'PK_OU', 'FK_OU', -1);
 
         $this->popup_exec_done();
     }
 
     public function delete_ou()
     {
-        $v_ou_id = get_post_var('hdn_item_id',0);
+        $v_ou_id = get_post_var('hdn_item_id', 0);
 
         //Kiem tra co don vi con, hoac user, hoac nhom trong khong
-        $stmt = 'Select SUM(a.C_COUNT) C_COUNT
+        $stmt    = 'Select SUM(a.C_COUNT) C_COUNT
                 From (
                     Select COUNT(*) C_COUNT From t_cores_ou Where FK_OU=?
                     Union
@@ -181,12 +198,12 @@ class user_Model extends Model {
                     Union
                     Select COUNT(*) C_COUNT From t_cores_group Where FK_OU=?
                     ) a ';
-        $params = array($v_ou_id, $v_ou_id, $v_ou_id);
+        $params  = array($v_ou_id, $v_ou_id, $v_ou_id);
         $v_count = $this->db->getOne($stmt, $params);
 
         if ($v_count < 1)
         {
-            $stmt = 'Delete From t_cores_ou Where PK_OU=?';
+            $stmt   = 'Delete From t_cores_ou Where PK_OU=?';
             $params = array($v_ou_id);
             $this->db->Execute($stmt, $params);
         }
@@ -210,25 +227,24 @@ class user_Model extends Model {
         }
     }
 
-
     public function update_user()
     {
-        $v_user_id          = get_post_var('hdn_item_id',0);
-        $v_ou_id            = get_post_var('hdn_parent_ou_id',0);
-        $v_name             = get_post_var('txt_name','');
-        $v_password         = get_post_var('txt_password','');
-        $v_order            = get_post_var('txt_order','0');
-        $v_status           = isset($_POST['chk_status']) ? 1 : 0;
-        $v_xml_data         = get_post_var('XmlData','<data/>',0);
-        $v_job_title        = get_post_var('txt_job_title','');
-        $v_login_name       = get_post_var('txt_login_name','');
-        $v_login_name       = str_replace(',', '', $v_login_name);
+        $v_user_id    = get_post_var('hdn_item_id', 0);
+        $v_ou_id      = get_post_var('hdn_parent_ou_id', 0);
+        $v_name       = get_post_var('txt_name', '');
+        $v_password   = get_post_var('txt_password', '');
+        $v_order      = get_post_var('txt_order', '0');
+        $v_status     = isset($_POST['chk_status']) ? 1 : 0;
+        $v_xml_data   = get_post_var('XmlData', '<data/>', 0);
+        $v_job_title  = get_post_var('txt_job_title', '');
+        $v_login_name = get_post_var('txt_login_name', '');
+        $v_login_name = str_replace(',', '', $v_login_name);
 
-        $v_group_id_list       = get_post_var('hdn_group_id_list','');
+        $v_group_id_list = get_post_var('hdn_group_id_list', '');
 
         //Kiem tra trung ten dang nhap
-        $stmt = 'Select Count(*) From t_cores_user Where C_LOGIN_NAME=? And PK_USER <> ?';
-        $params = array($v_login_name, $v_user_id);
+        $stmt                   = 'Select Count(*) From t_cores_user Where C_LOGIN_NAME=? And PK_USER <> ?';
+        $params                 = array($v_login_name, $v_user_id);
         $v_duplicate_login_name = $this->db->getOne($stmt, $params);
 
         if ($v_duplicate_login_name)
@@ -239,7 +255,7 @@ class user_Model extends Model {
 
         if ($v_user_id > 0)  //Update
         {
-            $stmt = 'Update t_cores_user Set
+            $stmt   = 'Update t_cores_user Set
                         C_NAME=?
                         ,C_ORDER=?
                         ,C_STATUS=?
@@ -248,13 +264,13 @@ class user_Model extends Model {
                         ,C_JOB_TITLE=?
                     Where PK_USER=?';
             $params = array(
-                    $v_name
-                    ,$v_order
-                    ,$v_status
-                    ,$v_ou_id
-                    ,$v_xml_data
-                    ,$v_job_title
-                    ,$v_user_id
+                $v_name
+                , $v_order
+                , $v_status
+                , $v_ou_id
+                , $v_xml_data
+                , $v_job_title
+                , $v_user_id
             );
             $this->db->Execute($stmt, $params);
 
@@ -266,49 +282,49 @@ class user_Model extends Model {
         }
         else  //Insert
         {
-            $stmt = 'Insert Into t_cores_user(C_LOGIN_NAME, C_NAME, C_PASSWORD
+            $stmt   = 'Insert Into t_cores_user(C_LOGIN_NAME, C_NAME, C_PASSWORD
                     , C_ORDER, C_STATUS, FK_OU, C_XML_DATA, C_JOB_TITLE) values (?,?,md5(?),?,?,?, ?, ?)';
             $params = array(
-                    $v_login_name
-                    ,$v_name
-                    ,$v_password
-                    ,$v_order
-                    ,$v_status
-                    ,$v_ou_id
-                    ,$v_xml_data
-                    ,$v_job_title
+                $v_login_name
+                , $v_name
+                , $v_password
+                , $v_order
+                , $v_status
+                , $v_ou_id
+                , $v_xml_data
+                , $v_job_title
             );
             $this->db->Execute($stmt, $params);
 
-            $v_user_id = $this->get_last_inserted_id('t_cores_user','PK_USER');
+            $v_user_id = $this->get_last_inserted_id('t_cores_user', 'PK_USER');
         }
         //Reorder
-        $this->ReOrder('t_cores_user','PK_USER','C_ORDER', $v_user_id, $v_order, -1, "FK_OU=$v_ou_id");
+        $this->ReOrder('t_cores_user', 'PK_USER', 'C_ORDER', $v_user_id, $v_order, -1, "FK_OU=$v_ou_id");
 
         //Cap nhat thong tin nhom
         //Xoa het du lieu cu
-        $stmt = 'Delete From t_cores_user_group Where FK_USER=?';
+        $stmt              = 'Delete From t_cores_user_group Where FK_USER=?';
         $this->db->execute($stmt, array($v_user_id));
         //Cap nhat du lieu moi
         $arr_group_id_list = explode(',', $v_group_id_list);
         foreach ($arr_group_id_list as $v_group_id)
         {
-            $stmt = 'Insert Into t_cores_user_group(FK_GROUP, FK_USER) Values(?, ?)';
-            $params = array($v_group_id, $v_user_id );
+            $stmt   = 'Insert Into t_cores_user_group(FK_GROUP, FK_USER) Values(?, ?)';
+            $params = array($v_group_id, $v_user_id);
             $this->db->Execute($stmt, $params);
         }
 
         //Cap nhat thong tin quyen tren ung dung
-        $v_application_id   = get_post_var('sel_application',0);
-        $v_grant_function   = get_post_var('hdn_grant_function','');
+        $v_application_id   = get_post_var('sel_application', 0);
+        $v_grant_function   = get_post_var('hdn_grant_function', '');
         //Xoa het thong tin cu
         $this->db->Execute('Delete From t_cores_user_function Where FK_USER=? And FK_APPLICATION=?', array($v_user_id, $v_application_id));
         $arr_grant_function = explode(',', $v_grant_function);
         foreach ($arr_grant_function as $v_function)
         {
-            if ( $v_function != NULL && $v_function != '')
+            if ($v_function != NULL && $v_function != '')
             {
-                $stmt = 'Insert Into t_cores_user_function(FK_USER, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
+                $stmt   = 'Insert Into t_cores_user_function(FK_USER, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
                 $params = array($v_user_id, $v_application_id, trim($v_function));
                 $this->db->Execute($stmt, $params);
             }
@@ -319,19 +335,19 @@ class user_Model extends Model {
 
     public function delete_user()
     {
-        $v_user_id = get_post_var('hdn_item_id',0);
+        $v_user_id = get_post_var('hdn_item_id', 0);
 
         //Xoa NSD khoi nhom
-        $stmt = 'Delete From t_cores_user_group Where FK_USER=?';
+        $stmt   = 'Delete From t_cores_user_group Where FK_USER=?';
         $params = array($v_user_id);
         $this->db->Execute($stmt, $params);
 
         //Xoa quyen
-        $stmt = 'Delete From t_cores_user_function Where FK_USER=?';
+        $stmt   = 'Delete From t_cores_user_function Where FK_USER=?';
         $params = array($v_user_id);
         $this->db->Execute($stmt, $params);
 
-        $stmt = 'Delete From t_cores_user Where PK_USER=?';
+        $stmt   = 'Delete From t_cores_user Where PK_USER=?';
         $params = array($v_user_id);
         $this->db->Execute($stmt, $params);
 
@@ -340,7 +356,7 @@ class user_Model extends Model {
 
     public function qry_all_application_option()
     {
-        $sql = 'Select PK_APPLICATION, C_NAME
+        $sql             = 'Select PK_APPLICATION, C_NAME
                 From t_cores_application
                 Where C_STATUS > 0
                 Order By C_ORDER';
@@ -352,7 +368,7 @@ class user_Model extends Model {
     {
         if ($group_id > 0)
         {
-            $stmt = 'Select * From t_cores_group Where PK_GROUP=?';
+            $stmt   = 'Select * From t_cores_group Where PK_GROUP=?';
             $params = array($group_id);
 
             return $this->db->getRow($stmt, $params);
@@ -363,7 +379,7 @@ class user_Model extends Model {
 
     public function qry_all_user_by_group($group_id)
     {
-        $stmt = 'Select u.PK_USER
+        $stmt   = 'Select u.PK_USER
                         ,u.C_NAME
                         ,u.C_STATUS
                 From t_cores_user u left join  t_cores_user_group g on u.PK_USER=g.FK_USER
@@ -375,15 +391,15 @@ class user_Model extends Model {
 
     public function update_group()
     {
-        $v_group_id         = get_post_var('hdn_item_id');
-        $v_ou_id            = get_post_var('hdn_parent_ou_id');
-        $v_code             = get_post_var('txt_code');
-        $v_name             = get_post_var('txt_name');
-        $v_user_id_list     = get_post_var('hdn_user_id_list');
+        $v_group_id     = get_post_var('hdn_item_id');
+        $v_ou_id        = get_post_var('hdn_parent_ou_id');
+        $v_code         = get_post_var('txt_code');
+        $v_name         = get_post_var('txt_name');
+        $v_user_id_list = get_post_var('hdn_user_id_list');
 
         //Kiem tra trung ma, trung ten
-        $stmt = 'Select Count(*) From t_cores_group Where C_CODE=? And PK_GROUP <> ?';
-        $params = array($v_code, $v_group_id);
+        $stmt             = 'Select Count(*) From t_cores_group Where C_CODE=? And PK_GROUP <> ?';
+        $params           = array($v_code, $v_group_id);
         $v_duplicate_code = $this->db->getOne($stmt, $params);
         if ($v_duplicate_code)
         {
@@ -391,8 +407,8 @@ class user_Model extends Model {
             return;
         }
 
-        $stmt = 'Select Count(*) From t_cores_group Where C_NAME=? And PK_GROUP <> ?';
-        $params = array($v_name, $v_group_id);
+        $stmt             = 'Select Count(*) From t_cores_group Where C_NAME=? And PK_GROUP <> ?';
+        $params           = array($v_name, $v_group_id);
         $v_duplicate_code = $this->db->getOne($stmt, $params);
         if ($v_duplicate_code)
         {
@@ -402,12 +418,12 @@ class user_Model extends Model {
 
         if ($v_group_id < 1)
         {
-            $stmt = 'Insert Into t_cores_group(FK_OU, C_CODE, C_NAME) Values(?, ?, ?)';
+            $stmt   = 'Insert Into t_cores_group(FK_OU, C_CODE, C_NAME) Values(?, ?, ?)';
             $params = array($v_ou_id, $v_code, $v_name);
 
             $this->db->Execute($stmt, $params);
 
-            $v_group_id = $this->get_last_inserted_id('t_cores_group','PK_GROUP');
+            $v_group_id = $this->get_last_inserted_id('t_cores_group', 'PK_GROUP');
         }
         else
         {
@@ -424,20 +440,22 @@ class user_Model extends Model {
 
         //Cap nhat NSD trong nhom
         //Xoa het du lieu cu
-        $stmt = 'Delete From t_cores_user_group Where FK_GROUP=?';
+        $stmt             = 'Delete From t_cores_user_group Where FK_GROUP=?';
         $this->db->execute($stmt, array($v_group_id));
         //Cap nhat du lieu moi
         $arr_user_id_list = explode(',', $v_user_id_list);
         foreach ($arr_user_id_list as $v_user_id)
         {
-            $stmt = 'Insert Into t_cores_user_group(FK_GROUP, FK_USER) Values(?, ?)';
-            $params = array($v_group_id, $v_user_id );
+            if (!$v_user_id)
+                continue;
+            $stmt   = 'Insert Into t_cores_user_group(FK_GROUP, FK_USER) Values(?, ?)';
+            $params = array($v_group_id, $v_user_id);
             $this->db->Execute($stmt, $params);
         }
 
         //Cap nhat quyen cua nhom
-        $v_application_id    = get_post_var('sel_application',0);
-        $v_grant_function    = get_post_var('hdn_grant_function','');
+        $v_application_id = get_post_var('sel_application', 0);
+        $v_grant_function = get_post_var('hdn_grant_function', '');
 
         //Xoa het thong tin cac quyen cu
         $this->db->Execute('Delete From t_cores_group_function Where FK_GROUP=? And FK_APPLICATION=?', array($v_group_id, $v_application_id));
@@ -446,9 +464,9 @@ class user_Model extends Model {
         $arr_grant_function = explode(',', $v_grant_function);
         foreach ($arr_grant_function as $v_function)
         {
-            if ( $v_function != NULL && $v_function != '')
+            if ($v_function != NULL && $v_function != '')
             {
-                $stmt = 'Insert Into t_cores_group_function(FK_GROUP, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
+                $stmt   = 'Insert Into t_cores_group_function(FK_GROUP, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
                 $params = array($v_group_id, $v_application_id, trim($v_function));
                 $this->db->Execute($stmt, $params);
             }
@@ -459,24 +477,24 @@ class user_Model extends Model {
 
     public function delete_group()
     {
-        $v_group_id = get_post_var('hdn_item_id',0);
+        $v_group_id = get_post_var('hdn_item_id', 0);
 
         $v_is_build_in = $this->db->getOne('Select C_BUILT_IN From t_cores_group Where PK_GROUP=?', array($v_group_id));
 
         if ($v_is_build_in == 0)
         {
             //Xoa NSD trong nhom
-            $stmt = 'Delete From t_cores_user_group Where FK_GROUP=?';
+            $stmt   = 'Delete From t_cores_user_group Where FK_GROUP=?';
             $params = array($v_group_id);
             $this->db->Execute($stmt, $params);
 
             //Xoa quyen cua nhom
-            $stmt = 'Delete From t_cores_group_function Where FK_GROUP=?';
+            $stmt   = 'Delete From t_cores_group_function Where FK_GROUP=?';
             $params = array($v_group_id);
             $this->db->Execute($stmt, $params);
 
             //Xoa
-            $stmt = 'Delete From t_cores_group Where PK_GROUP=? And (Select Count(*) From t_cores_user_group Where FK_GROUP=?) = 0';
+            $stmt   = 'Delete From t_cores_group Where PK_GROUP=? And (Select Count(*) From t_cores_user_group Where FK_GROUP=?) = 0';
             $params = array($v_group_id, $v_group_id);
             $this->db->Execute($stmt, $params);
         }
@@ -484,7 +502,7 @@ class user_Model extends Model {
         $this->exec_done($this->goback_url);
     }
 
-    public function qry_all_user_to_add($my_dept_only=0)
+    public function qry_all_user_to_add($my_dept_only = 0)
     {
 
         $stmt = 'Select PK_USER, C_LOGIN_NAME as C_CODE, C_NAME, C_STATUS,C_JOB_TITLE From t_cores_user Where C_STATUS > 0';
@@ -524,7 +542,7 @@ class user_Model extends Model {
         }
         elseif (DATABASE_TYPE == 'MYSQL')
         {
-            $stmt = "Select
+            $stmt       = "Select
                         OU.PK_OU
                         , OU.C_NAME
                         ,(Select GROUP_CONCAT('<row'
@@ -541,34 +559,34 @@ class user_Model extends Model {
             $arr_all_ou = $this->db->getAll($stmt);
             return $arr_all_ou;
             /*
-            for ($i=0; $i<sizeof($arr_all_ou); $i++)
-            {
-                $stmt = 'Select
-                            PK_USER
-                            , C_LOGIN_NAME
-                            , C_NAME
-                            , C_JOB_TITLE
-                        From t_cores_user
-                        Where FK_OU=?
-                            And C_STATUS > 0
-                        Order By C_ORDER';
-                $params = array($arr_all_ou[$i]['PK_OU']);
-                $arr_all_user_by_ou = $this->db->getAll($stmt, $params);
-                $v_xml_user = '';
-                for($j=0;$j<sizeof($arr_all_user_by_ou);$j++)
-                {
-                    $v_xml_user .= '<row';
-                    $v_xml_user .= ' PK_USER="' . $arr_all_user_by_ou[$j]['PK_USER'] . '"';
-                    $v_xml_user .= ' C_LOGIN_NAME="' . $arr_all_user_by_ou[$j]['C_LOGIN_NAME'] . '"';
-                    $v_xml_user .= ' C_NAME="' . $arr_all_user_by_ou[$j]['C_NAME'] . '"';
-                    $v_xml_user .= ' C_JOB_TITLE="' . $arr_all_user_by_ou[$j]['C_JOB_TITLE'] . '"';
-                    $v_xml_user .= '/>';
-                }
+              for ($i=0; $i<sizeof($arr_all_ou); $i++)
+              {
+              $stmt = 'Select
+              PK_USER
+              , C_LOGIN_NAME
+              , C_NAME
+              , C_JOB_TITLE
+              From t_cores_user
+              Where FK_OU=?
+              And C_STATUS > 0
+              Order By C_ORDER';
+              $params = array($arr_all_ou[$i]['PK_OU']);
+              $arr_all_user_by_ou = $this->db->getAll($stmt, $params);
+              $v_xml_user = '';
+              for($j=0;$j<sizeof($arr_all_user_by_ou);$j++)
+              {
+              $v_xml_user .= '<row';
+              $v_xml_user .= ' PK_USER="' . $arr_all_user_by_ou[$j]['PK_USER'] . '"';
+              $v_xml_user .= ' C_LOGIN_NAME="' . $arr_all_user_by_ou[$j]['C_LOGIN_NAME'] . '"';
+              $v_xml_user .= ' C_NAME="' . $arr_all_user_by_ou[$j]['C_NAME'] . '"';
+              $v_xml_user .= ' C_JOB_TITLE="' . $arr_all_user_by_ou[$j]['C_JOB_TITLE'] . '"';
+              $v_xml_user .= '/>';
+              }
 
-                $arr_all_ou[$i]['C_XML_USER'] = $v_xml_user;
-            } //end for $i
-            return $arr_all_ou;
-            */
+              $arr_all_ou[$i]['C_XML_USER'] = $v_xml_user;
+              } //end for $i
+              return $arr_all_ou;
+             */
         } //end if DATABASE_TYPE
 
         return array();
@@ -580,7 +598,7 @@ class user_Model extends Model {
      */
     public function qry_all_group_by_user($user_id)
     {
-        $stmt = 'Select g.PK_GROUP, g.C_NAME
+        $stmt   = 'Select g.PK_GROUP, g.C_NAME
                 From t_cores_group g left join t_cores_user_group ug on g.PK_GROUP=ug.FK_GROUP
                 WHere ug.FK_USER=?';
         $params = array($user_id);
@@ -588,7 +606,7 @@ class user_Model extends Model {
         return $this->db->getAssoc($stmt, $params);
     }
 
-    public function qry_all_group_to_add($my_dept_only=0)
+    public function qry_all_group_to_add($my_dept_only = 0)
     {
         $stmt = 'Select PK_GROUP, C_CODE, C_NAME From t_cores_group';
         if ($my_dept_only == 1)
@@ -630,12 +648,12 @@ class user_Model extends Model {
      */
     public function qry_single_user_permit_on_application($user_id, $appication_id)
     {
-        $stmt = 'Select C_FUNCTION_CODE
+        $stmt   = 'Select C_FUNCTION_CODE
                 From t_cores_user_function
                 Where FK_USER=? And FK_APPLICATION=?';
         $params = array($user_id, $appication_id);
 
-        $this->db->debug=0;
+        $this->db->debug = 0;
         return $this->db->getCol($stmt, $params);
     }
 
@@ -646,21 +664,21 @@ class user_Model extends Model {
      */
     public function qry_single_group_permit_on_application($group_id, $appication_id)
     {
-        $stmt = 'Select C_FUNCTION_CODE
+        $stmt   = 'Select C_FUNCTION_CODE
                 From t_cores_group_function
                 Where FK_GROUP=? And FK_APPLICATION=?';
         $params = array($group_id, $appication_id);
 
-        $this->db->debug=0;
+        $this->db->debug = 0;
         return $this->db->getCol($stmt, $params);
     }
 
     public function update_user_permit()
     {
-        $v_user_id          = isset($_POST['hdn_item_id']) ? replace_bad_char($_POST['hdn_item_id']) : 0;
-        $v_application_id   = isset($_POST['sel_application']) ? replace_bad_char($_POST['sel_application']) : 0;
+        $v_user_id        = isset($_POST['hdn_item_id']) ? replace_bad_char($_POST['hdn_item_id']) : 0;
+        $v_application_id = isset($_POST['sel_application']) ? replace_bad_char($_POST['sel_application']) : 0;
 
-        $v_grant_function   = isset($_POST['hdn_grant_function']) ? replace_bad_char($_POST['hdn_grant_function']) : '';
+        $v_grant_function = isset($_POST['hdn_grant_function']) ? replace_bad_char($_POST['hdn_grant_function']) : '';
 
         //Xoa het thong tin cu
         $this->db->Execute('Delete From t_cores_user_function Where FK_USER=? And FK_APPLICATION=?', array($v_user_id, $v_application_id));
@@ -668,9 +686,9 @@ class user_Model extends Model {
         $arr_grant_function = explode(',', $v_grant_function);
         foreach ($arr_grant_function as $v_function)
         {
-            if ( $v_function != NULL && $v_function != '')
+            if ($v_function != NULL && $v_function != '')
             {
-                $stmt = 'Insert Into t_cores_user_function(FK_USER, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
+                $stmt   = 'Insert Into t_cores_user_function(FK_USER, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
                 $params = array($v_user_id, $v_application_id, trim($v_function));
                 $this->db->Execute($stmt, $params);
             }
@@ -681,10 +699,10 @@ class user_Model extends Model {
 
     public function update_group_permit()
     {
-        $v_group_id          = isset($_POST['hdn_item_id']) ? replace_bad_char($_POST['hdn_item_id']) : 0;
-        $v_application_id    = isset($_POST['sel_application']) ? replace_bad_char($_POST['sel_application']) : 0;
+        $v_group_id       = isset($_POST['hdn_item_id']) ? replace_bad_char($_POST['hdn_item_id']) : 0;
+        $v_application_id = isset($_POST['sel_application']) ? replace_bad_char($_POST['sel_application']) : 0;
 
-        $v_grant_function   = isset($_POST['hdn_grant_function']) ? replace_bad_char($_POST['hdn_grant_function']) : '';
+        $v_grant_function = isset($_POST['hdn_grant_function']) ? replace_bad_char($_POST['hdn_grant_function']) : '';
 
         //Xoa het thong tin cac quyen cu
         $this->db->Execute('Delete From t_cores_group_function Where FK_GROUP=? And FK_APPLICATION=?', array($v_group_id, $v_application_id));
@@ -692,9 +710,9 @@ class user_Model extends Model {
         $arr_grant_function = explode(',', $v_grant_function);
         foreach ($arr_grant_function as $v_function)
         {
-            if ( $v_function != NULL && $v_function != '')
+            if ($v_function != NULL && $v_function != '')
             {
-                $stmt = 'Insert Into t_cores_group_function(FK_GROUP, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
+                $stmt   = 'Insert Into t_cores_group_function(FK_GROUP, FK_APPLICATION, C_FUNCTION_CODE) Values (?, ? , ?)';
                 $params = array($v_group_id, $v_application_id, trim($v_function));
                 $this->db->Execute($stmt, $params);
             }
@@ -705,15 +723,16 @@ class user_Model extends Model {
 
     public function do_change_password()
     {
-        $v_user_id = Session::get('user_id');
+        $v_user_id          = Session::get('user_id');
         $v_current_password = replace_bad_char($_POST['txt_current_password']);
         $v_new_password     = replace_bad_char($_POST['txt_new_password']);
 
-        $stmt = 'Update t_cores_user Set C_PASSWORD=md5(?) Where PK_USER=? And C_PASSWORD=?';
-        $params = array($v_new_password,$v_user_id, md5($v_current_password));
+        $stmt   = 'Update t_cores_user Set C_PASSWORD=md5(?) Where PK_USER=? And C_PASSWORD=?';
+        $params = array($v_new_password, $v_user_id, md5($v_current_password));
 
         $this->db->Execute($stmt, $params);
-        if ($this->db->Affected_Rows() != 1) {
+        if ($this->db->Affected_Rows() != 1)
+        {
             echo '<script type="text/javascript">alert("Doi mat khau KHONG thanh cong");window.parent.hidePopWin();</script>';
             exit;
         }
@@ -723,7 +742,7 @@ class user_Model extends Model {
             exit;
         }
     }
-    
+
     public function qry_all_ou()
     {
         $stmt = 'Select

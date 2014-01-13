@@ -1,29 +1,29 @@
-<?php 
+<?php
 /**
-// File name   : record_type_Model.php
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+?>
 
-class record_type_Model extends Model {
+<?php
+
+if (!defined('SERVER_ROOT'))
+    exit('No direct script access allowed');
+
+class record_type_Model extends Model
+{
 
     function __construct()
     {
@@ -35,8 +35,8 @@ class record_type_Model extends Model {
         //Phan trang
         page_calc($v_start, $v_end);
 
-        $condition_query    = '';
-        $v_filter           = $arr_filter['txt_filter'];
+        $condition_query = '';
+        $v_filter        = $arr_filter['txt_filter'];
 
         if ($v_filter != '')
         {
@@ -89,7 +89,21 @@ class record_type_Model extends Model {
         }
     }
 
-    public function delete_record_type($arr_filter=array())
+    function qry_all_report_books($record_type_id)
+    {
+        $record_type_id = (int) $record_type_id;
+        $sql            = "
+            Select ls.*, link.c_book_code As C_IS_CHECKED From t_cores_listtype lt
+            Inner Join t_cores_list ls
+            On ls.fk_listtype = lt.pk_listtype
+            Left Join t_r3_book_record_type link
+            ON (BINARY ls.c_code = BINARY link.c_book_code And link.fk_record_type = ?)
+            Where lt.C_CODE = ?
+            ";
+        return $this->db->GetAll($sql, array($record_type_id, 'DM_SO_THEO_DOI_HO_SO'));
+    }
+
+    public function delete_record_type($arr_filter = array())
     {
         $v_record_type_id_list = isset($_POST['hdn_item_id_list']) ? $this->replace_bad_char($_POST['hdn_item_id_list']) : 0;
 
@@ -112,7 +126,7 @@ class record_type_Model extends Model {
             return array('C_ORDER' => $this->get_max('t_r3_record_type', 'C_ORDER') + 1);
         }
 
-        $stmt = 'Select
+        $stmt   = 'Select
                         PK_RECORD_TYPE
                       ,C_CODE
                       ,C_NAME
@@ -125,6 +139,7 @@ class record_type_Model extends Model {
                       ,C_SCOPE
                       ,C_SEND_OVER_INTERNET
                       ,C_SPEC_CODE
+                      ,C_ALLOW_VERIFY_RECORD
                  From t_r3_record_type RT Where PK_RECORD_TYPE=?';
         $params = array($p_record_type_id);
         return $this->db->GetRow($stmt, $params);
@@ -132,17 +147,21 @@ class record_type_Model extends Model {
 
     public function update_record_type($arr_filter)
     {
-        $v_record_type_id                = get_post_var('hdn_item_id', 0);
-        $v_code                          = get_post_var('txt_code','');
-        $v_name                          = get_post_var('txt_name','');
-        $v_xml_data                      = get_post_var('XmlData', '', FALSE);
-        $v_scope                         = get_post_var('rad_scope',3);
-        $v_order                         = get_post_var('txt_order',1);
-        $v_spec_code                     = get_post_var('sel_spec_code','XX');
+        $v_record_type_id = get_post_var('hdn_item_id', 0);
+        $v_code           = get_post_var('txt_code', '');
+        $v_name           = get_post_var('txt_name', '');
+        $v_xml_data       = get_post_var('XmlData', '', FALSE);
+        $v_scope          = get_post_var('rad_scope', 3);
+        $v_order          = get_post_var('txt_order', 1);
+        $v_spec_code      = get_post_var('sel_spec_code', 'XX');
+        
+        $arr_report_books = get_post_var('chk_report_book', array(), false);
 
         $v_status             = isset($_POST['chk_status']) ? 1 : 0;
         $v_save_and_addnew    = isset($_POST['chk_save_and_addnew']) ? 1 : 0;
         $v_send_over_internet = isset($_POST['chk_send_over_internet']) ? '1' : '0';
+        
+        $v_allow_verify       = isset($_POST['chk_allow_verify_record']) ? '1' : '0';
 
         //Kiem tra trung ma
         $sql = "Select Count(*)
@@ -155,7 +174,7 @@ class record_type_Model extends Model {
         }
 
         //Kiem tra trung ten
-       $sql = "Select Count(*)
+        $sql = "Select Count(*)
                 From t_r3_record_type
                 Where C_NAME='$v_name' And PK_RECORD_TYPE <> $v_record_type_id";
         if ($this->db->getOne($sql) > 0)
@@ -166,16 +185,16 @@ class record_type_Model extends Model {
 
         if ($v_record_type_id < 1) //Insert
         {
-            $stmt = 'Insert Into t_r3_record_type (C_CODE, C_NAME, C_XML_DATA,C_STATUS,C_SCOPE,C_ORDER, C_SEND_OVER_INTERNET,C_SPEC_CODE) Values (?,?,?,?,?,?,?,?)';
-            $params = array($v_code, $v_name, $v_xml_data, $v_status,$v_scope,$v_order, $v_send_over_internet,$v_spec_code);
+            $stmt   = 'Insert Into t_r3_record_type (C_CODE, C_NAME, C_XML_DATA,C_STATUS,C_SCOPE,C_ORDER, C_SEND_OVER_INTERNET,C_SPEC_CODE,C_ALLOW_VERIFY_RECORD) Values (?,?,?,?,?,?,?,?,?)';
+            $params = array($v_code, $v_name, $v_xml_data, $v_status, $v_scope, $v_order, $v_send_over_internet, $v_spec_code, $v_allow_verify);
 
             $this->db->Execute($stmt, $params);
 
-            $v_record_type_id = $this->get_last_inserted_id('t_r3_record_type','PK_RECORD_TYPE');
+            $v_record_type_id = $this->get_last_inserted_id('t_r3_record_type', 'PK_RECORD_TYPE');
         }
         else //Update
         {
-            $stmt = 'Update t_r3_record_type Set
+            $stmt   = 'Update t_r3_record_type Set
                         C_CODE=?
                         ,C_NAME=?
                         ,C_XML_DATA=?
@@ -184,6 +203,7 @@ class record_type_Model extends Model {
                         ,C_ORDER=?
                         ,C_SEND_OVER_INTERNET=?
                         ,C_SPEC_CODE=?
+                        ,C_ALLOW_VERIFY_RECORD=?
                     Where PK_RECORD_TYPE=?';
             $params = array(
                 $v_code,
@@ -194,6 +214,7 @@ class record_type_Model extends Model {
                 $v_order,
                 $v_send_over_internet,
                 $v_spec_code,
+                $v_allow_verify,
                 $v_record_type_id,
             );
 
@@ -201,9 +222,10 @@ class record_type_Model extends Model {
         }
 
         $this->ReOrder('t_r3_record_type', 'PK_RECORD_TYPE', 'C_ORDER', $v_record_type_id, $v_order);
+        $this->update_report_book_report_type($v_record_type_id, $arr_report_books);
 
         //Luu dieu kien loc
-        $arr_filter = get_filter_condition(array('txt_filter', 'sel_goto_page','sel_rows_per_page'));
+        $arr_filter = get_filter_condition(array('txt_filter', 'sel_goto_page', 'sel_rows_per_page'));
         //Done
         if ($v_save_and_addnew > 0)
         {
@@ -211,7 +233,36 @@ class record_type_Model extends Model {
         }
         else
         {
-            $this->exec_done($this->goback_url, $arr_filter);
+           $this->exec_done($this->goback_url, $arr_filter);
         }
     }
+
+    function update_report_book_report_type($v_record_type_id, $arr_new_books)
+    {
+        if (!is_array($arr_new_books))
+        {
+            $arr_new_books = array();
+        }
+
+        $this->db->Execute('DELETE FROM t_r3_book_record_type 
+            WHERE fk_record_type = ?', array($v_record_type_id));
+        $insert_list = '';
+        reset($arr_new_books);
+        $insert_list .= "'" . replace_bad_char(current($arr_new_books)) . "'";
+        while (next($arr_new_books))
+        {
+            $insert_list .= ",'" . replace_bad_char(current($arr_new_books)) . "'";
+        }
+
+        $sql_insert = "
+            INSERT INTO t_r3_book_record_type(c_book_code, fk_record_type)
+            SELECT ls.c_code, ? AS fk_record_type
+            FROM t_cores_list ls
+            INNER JOIN t_cores_listtype lt
+            ON ls.fk_listtype = lt.pk_listtype
+            WHERE ls.c_code IN($insert_list)
+            AND lt.c_code = 'DM_SO_THEO_DOI_HO_SO'";
+        $this->db->Execute($sql_insert, array($v_record_type_id));
+    }
+
 }

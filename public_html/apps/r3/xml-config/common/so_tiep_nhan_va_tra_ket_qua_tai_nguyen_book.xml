@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <display_all>
+        <list>
+            <!-- 3 item nay la bat buoc -->
+            <item type="primarykey" id="PK_RECORD" />
+
+            <!-- ********************************************************* -->
+			
+			<item type="text" id="RN" name="TT"  size="8%" align="center" subhead="1"/>
+			<item type="text" id="C_CITIZEN_NAME" name="Họ tên, địa chỉ người nộp hồ sơ"  size="15%" subhead="2"/>
+			<item type="text" id="C_RECORD_TYPE_NAME" name="Nội dung công việc cần giải quyết"  size="15%" subhead="3"/>
+			<item type="text" id="C_SCOPE" name="Người có trách nhiệm giải quyết"  size="9%" subhead="4"/>
+			<item type="text" id="C_RECEIVE_DATE" name="Ngày nhận hồ sơ"  size="9%" align="center" subhead="5"/>
+			<item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả hồ sơ"  size="9%" align="center" subhead="6"/>
+			<item type="text" id="p_xml/XET_DUYET/datetime" name="Ngày ký hồ sơ"  size="9%" align="center" subhead="7"/>
+			<item type="text" id="p_xml/XET_DUYET/user_name" name="Người ký hồ sơ"  size="9%" />
+			<item type="text" id="C_CLEAR_DATE" name="Ngày trả thực tế"  size="9%" align="center"/>
+			<item type="text" id="NULL" name="Ngày tổ chức, công dân ký nhận lại hồ sơ"  size="8%" align="center" subhead="9"/>
+        </list>
+    </display_all>
+</root>

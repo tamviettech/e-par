@@ -1,16 +1,35 @@
 <?php
+/**
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+
+<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
 class workflow_Controller extends Controller
 {
+
     /**
      *
      * @var \workflow_Model 
      */
-    public $db;
-    
+    public $model;
     protected $_arr_roles = array(
         //BP Mot-Cua
         _CONST_TIEP_NHAN_ROLE                       => 'Tiếp nhận'
@@ -110,6 +129,15 @@ class workflow_Controller extends Controller
         $VIEW_DATA['arr_all_role']        = $this->_arr_roles;
         $VIEW_DATA['arr_all_group']       = $this->model->qry_all_group();
 
+        //danh sach xml result
+        $VIEW_DATA['arr_all_xml_result'] = array();
+        foreach (scandir(SERVER_ROOT . 'apps/r3/xml-config/record_result/') as $item)
+        {
+            if (strpos($item, 'xml'))
+            {
+                $VIEW_DATA['arr_all_xml_result'][] = $item;
+            }
+        }
         $this->view->render('dsp_single_workflow_ui', $VIEW_DATA);
     }
 
@@ -311,7 +339,13 @@ class workflow_Controller extends Controller
             }
         }
 
-        $_POST['txt_plaintext_workflow'] = $xml_proc->asXML();
+        $domDocObj                     = new DOMDocument('1.0', 'utf-8');
+        $domDocObj->loadXML($xml_proc->asXML());
+        $domDocObj->formatOutput       = true;
+        $domDocObj->preserveWhitespace = false;
+
+        $_POST['txt_plaintext_workflow'] = $domDocObj->saveXML();
+        $_POST['txt_plaintext_workflow'] = trim(preg_replace('/^[ ]+(?=<)/m', '$0$0', $_POST['txt_plaintext_workflow']));
         echo $this->model->update_workflow();
     }
 
@@ -360,6 +394,114 @@ class workflow_Controller extends Controller
                 echo '<font style="color:red;font-weight:bold">FAIL</font>';
             }
         }
+    }
+
+    function dsp_copy_assign($record_type_code)
+    {
+        //lấy lĩnh vực
+        $record_type_code = replace_bad_char($record_type_code);
+        $arr_single       = $this->model->qry_single_record_type('', $record_type_code);
+        $v_spec_code      = isset($arr_single['C_SPEC_CODE']) ? $arr_single['C_SPEC_CODE'] : '';
+        //lọc
+        $v_search         = get_post_var('txt_search');
+
+        //phan trang
+        page_calc($v_start, $v_end);
+        $limit  = $v_end - $v_start + 1;
+        $offset = $v_start - 1;
+        //lấy thủ tục cùng lĩnh vực và đã được phân công
+        $where  = "C_SPEC_CODE='$v_spec_code' 
+                And C_CODE <> '$record_type_code'
+                And Exists(Select PK_USER_TASK From t_r3_user_task Where C_RECORD_TYPE_CODE=C_CODE)
+                And (C_CODE Like '%$v_search%' Or C_NAME Like '%$v_search%')";
+
+        $arr_spec_record_types = $this->model->qry_all_record_type($where, $limit, $offset);
+
+        $VIEW_DATA['arr_spec_record_types'] = $arr_spec_record_types;
+        $VIEW_DATA['id']                    = $arr_single['PK_RECORD_TYPE'];
+        $this->view->render('dsp_copy_assign', $VIEW_DATA);
+    }
+
+    function copy_assign()
+    {
+        $src  = (int) get_post_var('src');
+        $dest = (int) get_post_var('dest');
+        echo $this->model->copy_assign($dest, $src);
+    }
+
+    /**
+     * Tìm kiếm tất cả workflow xem có chỗ nào sai bizdone không
+     */
+    function find_misplace_biz_done()
+    {
+        $xmlconfig_path = SERVER_ROOT . 'apps/r3/xml-config/';
+        $items          = scandir($xmlconfig_path);
+        foreach ($items as $item)
+        {
+            $item_path = $xmlconfig_path . $item;
+            if (!is_dir($item_path) || in_array($item, array('.', '..', 'common')))
+            {
+                continue;
+            }
+            $worflow_file = $item_path . '/' . $item . '_workflow.xml';
+            if (!file_exists($worflow_file))
+            {
+                continue;
+            }
+            $dom_workflow = simplexml_load_file($worflow_file);
+            $biz_done     = -1;
+            $i            = 0;
+            foreach (xpath($dom_workflow, '//step[not(@no_chain="true")]/task') as $task)
+            {
+                if (strval($task->attributes()->biz_done))
+                {
+                    $biz_done = $i;
+                }
+                if (strpos($task->attributes()->code, _CONST_THU_PHI_ROLE) !== false ||
+                        strpos($task->attributes()->code, _CONST_TRA_KET_QUA_ROLE) !== false)
+                {
+                    if ($biz_done != -1 && $biz_done != ($i - 1))
+                    {
+                        echo $item . '<hr/>';
+                    }
+                    break;
+                }
+                $i++;
+            }
+        }
+    }
+
+    function dsp_switch_user()
+    {
+        $VIEW_DATA['user']     = get_request_var('user');
+        $VIEW_DATA['task']     = get_request_var('task');
+        $VIEW_DATA['keywords'] = get_post_var('txt_search');
+        page_calc($v_start, $v_end);
+        $v_start               = $v_start - 1;
+        $limit                 = $v_end - $v_start;
+
+        $tables = "t_cores_user u Left Outer Join 
+            (Select * from t_r3_user_task Where C_TASK_CODE='{$VIEW_DATA['task']}') ut 
+            On u.C_LOGIN_NAME=ut.C_USER_LOGIN_NAME";
+        $conds  = "u.C_STATUS=1 And ut.PK_USER_TASK Is Null";
+        if ($VIEW_DATA['keywords'])
+        {
+            $conds .= " And C_NAME Like '%{$VIEW_DATA['keywords']}%'";
+        }
+
+        $count = $this->model->db->GetOne("Select Count(*) From $tables Where $conds");
+
+        $VIEW_DATA['arr_all_user'] = $this->model->db->GetAll("Select u.*, $count As TOTAL_RECORD from $tables Where $conds 
+            Limit $limit Offset $v_start");
+        $this->view->render('dsp_switch_user', $VIEW_DATA);
+    }
+
+    function switch_user()
+    {
+        $task = get_post_var('hdn_task');
+        $src  = get_post_var('hdn_src');
+        $dest = get_post_var('hdn_dest');
+        $this->model->switch_user($task, $dest, $src);
     }
 
 }

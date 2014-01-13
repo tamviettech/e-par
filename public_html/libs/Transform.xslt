@@ -142,6 +142,9 @@
 			<xsl:when test="$ControlType = 'TextboxArea'">
 				<xsl:call-template name="CreateTextboxArea"/>
 			</xsl:when>
+            <xsl:when test="$ControlType = 'TextboxDocSEQ'">
+				<xsl:call-template name="CreateTextboxDocSEQ"/>
+			</xsl:when>
 			<xsl:otherwise>This object [<xsl:value-of select="$ControlType"/>] not found</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -188,13 +191,23 @@
 	<!--***********************************************************************************************
   Call this template when object is normal text box-->
 	<xsl:template name="CreateDropDownList">
-		<select id="{@id}" class="ddl" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}">
-			<xsl:for-each select="document(@src_file)//item">
-				<!--<xsl:sort select="@name" order="ascending" lang="vi" />-->
-				<option value="{@value}">
-					<xsl:value-of select="@name"/>
-				</option>
-			</xsl:for-each>
+		<select id="{@id}" class="ddl" data-allownull="{@allownull}" data-name="{@name}" data-xml="yes" data-doc="{@doc}">
+			<xsl:if test="@src_file != ''">
+				<xsl:for-each select="document(@src_file)//item">
+					<option value="{@value}">
+						<xsl:value-of select="@name"/>
+					</option>
+				</xsl:for-each>
+			</xsl:if>
+			<xsl:if test="@src_xlist != ''">
+				<option value="">-- Chọn <xsl:value-of select="@name"/> --</option>
+				<xsl:variable name="v_option_list" select="document(concat($p_site_root,'cores/webservice/arp_data_for_xlist_ddli/',@src_xlist, '/?format=xml'))"/>
+				<xsl:for-each select="$v_option_list//item">
+					<option value="{@value}">
+						<xsl:value-of select="@name"/>
+					</option>
+				</xsl:for-each>
+			</xsl:if>
 		</select>
 	</xsl:template>
 	<!--***********************************************************************************************
@@ -282,5 +295,13 @@
 				</td>
 			</tr>
 		</table>
+	</xsl:template>
+    
+    <xsl:template name="CreateTextboxDocSEQ">		
+		<xsl:if test="@defaul_value=''">
+			<input type="textbox" id="{@id}" class=" text  valid" value="" size="{@size}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}"/>
+		</xsl:if>
+		<xsl:text disable-output-escaping="yes">&amp;nbsp</xsl:text>
+		<img class="btnSeq" style="cursor:pointer" id="btnSeq" src="{$p_site_root}public/images/next_seq.png" onclick="get_next_doc_seq('{@id}')" width="20px" height="20px" />
 	</xsl:template>
 </xsl:stylesheet>

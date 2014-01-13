@@ -1,27 +1,23 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+?>
+
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE();
 
@@ -41,7 +37,7 @@ $v_xml_ho_for_bu_template_file   = $this->get_xml_config($arr_single_task_info['
         <link rel="stylesheet" href="<?php echo SITE_ROOT;?>public/css/printer.css" type="text/css" media="all" />
         <script src="<?php echo SITE_ROOT;?>public/js/jquery/jquery.min.js" type="text/javascript"></script>
     </head>
-    <body>
+    <body contenteditable>
         <div class="print-button">
             <input type="button" value="In trang" onclick="window.print(); return false;" />
             <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin()" />
@@ -49,7 +45,7 @@ $v_xml_ho_for_bu_template_file   = $this->get_xml_config($arr_single_task_info['
         <div>
             <?php create_handover_info($report_data, '(Liên 1: Lưu)', $v_xml_ho_for_bu_template_file);?>
             <h4 class="page-break"></h4>
-            <?php create_handover_info($report_data, '(Liên 2: Giao cho phòng chuyên môn)', $v_xml_ho_for_bu_template_file);?>
+            <?php create_handover_info($report_data, '(Liên 2: Giao cho bên nhận)', $v_xml_ho_for_bu_template_file);?>
         </div>
     </body>
 </html>
@@ -60,12 +56,26 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
     $arr_single_task_info   = $report_data['arr_single_task_info'];
 
     $dom_unit_info = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
+    
+    $v_scope                    = $arr_all_record[0]['C_SCOPE'];
+    
+    $v_la_thu_tuc_lien_thong = 0;
+    $v_unit_full_name = Session::get('root_ou_name');
+    if ($v_scope >=2) //Thu tuc cap huyen -> lay ten Huyen
+    {
+        $v_unit_full_name = Session::get('root_ou_name');
+    }
+    else //Thu tuc cap xa -> lay ten xa
+    {
+        $v_unit_full_name = Session::get('ou_name');
+        $v_la_thu_tuc_lien_thong = 1;
+    }
     ?>
     <!-- header -->
     <table border="0" cellpadding="0" cellspacing="0" width="100%" class="header">
         <tr>
             <td align="center" class="unit_full_name">
-                <?php echo get_xml_value($dom_unit_info, '/unit/full_name');?><br/>
+                <?php echo $v_unit_full_name;?><br/>
                 <strong>
                     <u style="font-size: 13px">BỘ PHẬN TIẾP NHẬN VÀ TRẢ HỒ SƠ</u>
                 </strong>
@@ -82,7 +92,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
         </tr>
         <tr>
             <td colspan="2" class="report-title">
-                <span class="title-1">GIẤY BÀN GIAO HỒ SƠ CHO PHÒNG CHUYÊN MÔN</span><br/>
+                <span class="title-1">GIẤY BÀN GIAO HỒ SƠ</span><br/>
                 <span class="title-2"><?php echo $distribute;?></span>
             </td>
         </tr>
@@ -104,7 +114,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
         </tr>
         <tr>
             <td>
-                <strong>Phòng bàn giao:</strong>
+                <strong>Bên bàn giao:</strong>
             </td>
             <td>
                 <span class="address">Bộ phận một cửa</span>
@@ -112,7 +122,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
         </tr>
         <tr>
             <td>
-                <strong>Phòng nhận bàn giao:</strong>
+                <strong>Bên nhận bàn giao:</strong>
             </td>
             <td>
                 <?php echo $arr_single_task_info['C_GROUP_NAME'];?>

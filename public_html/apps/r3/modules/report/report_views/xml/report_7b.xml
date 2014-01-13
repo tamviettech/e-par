@@ -6,15 +6,21 @@
         <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="120"/>
         <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="150" />
         <item type="text" id="C_CHARGE_DATE" name="Ngày thu" size="120"  />
-        <item type="text" id="C_FINAL_FEE" name="Số tiền" size="80" align="right" number_format="true"/>
-        <item type="text" id="C_FEE_DESCRIPTION" name="Diễn giải" size="230" />
+        <item type="text" id="C_FINAL_FEE" name="Lệ phí" size="80" align="right" number_format="true"/>
+        <item type="text" id="C_COST" name="Phí" size="80" align="right" number_format="true"/>
+        <item type="text" id="C_SUM" name="Tổng" size="80" align="right" number_format="true"/>
+        <item type="text" id="C_FEE_DESCRIPTION" name="Diễn giải" size="100" />
     </list>
     <total>
         <item colspan="4" name="Tổng cộng" align="right"/>
         <item colspan="1" id="C_FINAL_FEE" align="right" number_format="true"/>
+        <item colspan="1" id="C_COST" align="right" number_format="true"/>
+        <item colspan="1" id="C_SUM" align="right" number_format="true"/>
     </total>
     <sub_total group="C_SPEC_CODE" text="C_SPEC_NAME">
-		<item colspan="4" name="Tổng:" align="right"/>
+        <item colspan="4" name="Tổng:" align="right"/>
         <item colspan="1" id="C_FINAL_FEE" align="right" number_format="true"/>
+        <item colspan="1" id="C_COST" align="right" number_format="true"/>
+        <item colspan="1" id="C_SUM" align="right" number_format="true"/>
     </sub_total>
 </report>

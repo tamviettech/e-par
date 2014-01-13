@@ -1,29 +1,23 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
 
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
-
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
 $this->template->title = 'Kết quả hồ sơ';
@@ -52,4 +46,22 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
         <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>"/>
 	</div>
 </form>
+<script>
+    $(document).ready(function() {
+        <?php 
+        $dom_workflow = simplexml_load_file($this->get_xml_config($record_type, 'workflow'));
+        $dom_workflow_record_result = $dom_workflow->xpath('//results');
+        $arr_workflow_record_result = $dom_workflow_record_result[0]->result;
+        	
+        if ($arr_workflow_record_result != NULL)
+        {
+            foreach ($arr_workflow_record_result as $v_result_id)
+            {
+                $v_result_id      = strval($v_result_id);
+                echo "$('#$v_result_id').attr('checked','checked');\n";
+            }//end foreach $arr_workflow_record_result
+        }
+        ?>
+    });
+</script>
 <?php $this->template->display('dsp_footer' .$v_pop_win . '.php');

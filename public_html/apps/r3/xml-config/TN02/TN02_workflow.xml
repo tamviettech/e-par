@@ -1,38 +1,34 @@
 <?xml version="1.0"?>
-<process code="TN02" name="Chuyển mục đích sử dụng đất với trường hợp phải xin phép" totaltime="27" version="1" fee="0">
-    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="0.5" role="TIEP_NHAN">
-        <task code="TN02::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN02::BAN_GIAO" single_user="true" />
-        <task code="TN02::BAN_GIAO" name="Bàn giao hồ sơ" time="0.5" next="TN02::PHAN_CONG" single_user="true" />
+<process code="TN02" name="Chuyển mục đích sử dụng đất với trường hợp phải xin phép" totaltime="32" version="1" fee="0">
+    <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1" role="TIEP_NHAN">
+        <task code="TN02::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN02::BAN_GIAO"  />
+        <task code="TN02::BAN_GIAO" name="Bàn giao hồ sơ" time="0" next="TN02::PHAN_CONG"  />
     </step>
 	
 	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý hồ sơ" time="3">
-        <task code="TN02::PHAN_CONG" name="Phân công thụ lý" time="2" next="TN02::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" single_user="true" />
-        <task code="TN02::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" name="Chuyển yêu cầu xác nhận xuống xã" time="1" next="TN02::XAC_NHAN_LIEN_THONG" single_user="true" />
+        <task code="TN02::PHAN_CONG" name="Phân công thụ lý" time="2" next="TN02::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA"  />
+        <task code="TN02::CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA" name="Chuyển yêu cầu xác nhận xuống xã" time="1" next="TN02::XAC_NHAN_LIEN_THONG"  />
     </step>
 	
 	<step order="1" group="DIA_CHINH_CAP_XA" name="Xác nhận phường xã" time="5">
-        <task code="TN02::XAC_NHAN_LIEN_THONG" name="Xác nhận hồ sơ liên thông" time="5" next="TN02::THU_LY_HO_SO_LIEN_THONG" single_user="true" />
+        <task code="TN02::XAC_NHAN_LIEN_THONG" name="Xác nhận hồ sơ liên thông" time="5" next="TN02::THU_LY_HO_SO_LIEN_THONG"  />
     </step>
 	
-	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý tiếp hồ sơ" time="3">
-        <task code="TN02::THU_LY_HO_SO_LIEN_THONG" name="Thụ lý hồ sơ liên thông" time="2" next="TN02::XET_DUYET" single_user="true" />
-        <task code="TN02::XET_DUYET" name="Xét duyệt" next="TNMT::TN02::XET_DUYET" single_user="true" time="1"/>
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý tiếp hồ sơ" time="5">
+        <task code="TN02::THU_LY_HO_SO_LIEN_THONG" name="Thụ lý hồ sơ liên thông" time="2" next="TN02::XET_DUYET"  />
+        <task code="TN02::XET_DUYET" name="Xét duyệt" next="TNMT::TN02::XET_DUYET"  time="1"/>
     </step>
 	
-	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT xét duyệt hồ sơ" time="3" role="XU_LY">
-		<task code="TNMT::TN02::XET_DUYET" name="Xét duyệt" time="3" next="TN02::KY_DUYET" single_user="true" />
+	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng TNMT xét duyệt hồ sơ" time="5" role="XU_LY">
+		<task code="TNMT::TN02::XET_DUYET" name="Xét duyệt" time="3" next="TN02::KY_DUYET"  />
 	</step>
 	
-	<step order="3" group="LANH_DAO_DON_VI" name="Lãnh đạo Thành phố ký duyệt" time="2">
-		<task code="TN02::KY_DUYET" name="Ký duyệt" time="0" next="TNMT_VONG2::TN02::XET_DUYET" />
+	<step order="3" group="LANH_DAO_DON_VI" name="Lãnh đạo Thành phố ký duyệt" time="3">
+		<task code="TN02::KY_DUYET" name="Ký duyệt" time="0" next="VPD_VONG2::TN02::XET_DUYET" />
 	</step>
 	
-	<step code="TNMT" order="3" group="PHONG_TAI_NGUYEN_MOI_TRUONG" name="Phòng tài nguyên môi trường [br] Bàn giao cho Văn phòng đăng ký QSD đất xử" time="2" role="XU_LY">
-		<task code="TNMT_VONG2::TN02::XET_DUYET" name="Xét duyệt" time="2" next="VPD_VONG2::TN02::XET_DUYET" single_user="true" />
-	</step>
-	
-	<step code="34" order="3" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Giám đốc Văn phòng đăng ký QSD đất xét duyệt để chuyển sang thuế" time="2" role="XU_LY">
-		<task code="VPD_VONG2::TN02::XET_DUYET" name="Xét duyệt" time="2" next="TN02::NOP_HO_SO_SANG_CHI_CUC_THUE" single_user="true" />
+	<step code="34" order="3" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Giám đốc Văn phòng đăng ký QSD đất xét duyệt để chuyển sang thuế" time="3" role="XU_LY">
+		<task code="VPD_VONG2::TN02::XET_DUYET" name="Xét duyệt" time="2" next="TN02::NOP_HO_SO_SANG_CHI_CUC_THUE"  />
 	</step>
 	
 	<step code="NGHIA_VU_THUE" order="3" group="BP_THUE" name="Thực hiện nghĩa vụ thuế" time="3">
@@ -41,17 +37,17 @@
 		<task code="TN02::CHUYEN_THONG_BAO_THUE_VE_BP_MOT_CUA" name="Chuyển thông báo của cơ quan thuế về bộ phận một cửa" time="0" next="TN02::TRA_THONG_BAO_NOP_THUE" />
 	</step>
 	
-	<step code="TRA_THONG_BAO_THUE" order="4" group="BP_MOT_CUA" name="Trả thông báo thuế">
-		<task code="TN02::TRA_THONG_BAO_NOP_THUE" name="Trả thông báo nộp thuế" time="0" next="TN02::NHAN_BIEN_LAI_NOP_THUE" />
-		<task code="TN02::NHAN_BIEN_LAI_NOP_THUE" name="Nhận biên lai nộp thuế" time="0" next="SAU_THUE::TN02::XET_DUYET" />
+	<step code="TRA_THONG_BAO_THUE" order="2" group="BP_MOT_CUA" name="Trả thông báo thuế" time="1">
+		<task code="TN02::TRA_THONG_BAO_NOP_THUE" name="Trả thông báo nộp thuế" time="1" pause="true" next="TN02::NHAN_BIEN_LAI_NOP_THUE" />
+		<task code="TN02::NHAN_BIEN_LAI_NOP_THUE" name="Nhận biên lai nộp thuế" time="0" unpause="true" next="SAU_THUE::TN02::XET_DUYET" />
 	</step>
 	
-	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD thẩm định" time="3">
-        <task code="SAU_THUE::TN02::XET_DUYET" name="Xét duyệt sau nghĩa vụ thuế" time="2" next="TN02::TRA_KET_QUA" single_user="true" biz_done="true"/>
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD chỉnh lý" time="3">
+        <task code="SAU_THUE::TN02::XET_DUYET" name="Xét duyệt sau nghĩa vụ thuế" time="2" next="TN02::TRA_KET_QUA"  biz_done="true"/>
     </step>
 
-    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
-        <task code="TN02::TRA_KET_QUA" name="Trả kết quả" time="1" next="NULL" single_user="true"/>
+    <step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+        <task code="TN02::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" />
         <!-- next="NULL": Kết thúc quy trình -->
     </step>
 </process>

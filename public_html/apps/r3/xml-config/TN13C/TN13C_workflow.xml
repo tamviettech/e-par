@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <process code="TN13C" name="Cấp giấy CNQSDĐ đối hộ chuyển nhượng, thừa kế, tặng cho QSD đất và tài sản gắn liền với đất (Trường hợp chỉnh lý biến động )" totaltime="15" version="1" fee="0">
     <step order="1" group="BP_MOT_CUA" name="Tiếp nhận hồ sơ" time="1" role="TIEP_NHAN">
-		<task code="TN13C::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN13C::BAN_GIAO" single_user="true"/>
-		<task code="TN13C::BAN_GIAO" name="Bàn giao hồ sơ" time="1" next="TN13C::PHAN_CONG" single_user="true"/>
+		<task code="TN13C::TIEP_NHAN" name="Tiếp nhận hồ sơ" time="0" next="TN13C::BAN_GIAO" />
+		<task code="TN13C::BAN_GIAO" name="Bàn giao hồ sơ" time="1" next="TN13C::PHAN_CONG" />
 	</step>
 
 	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD đất xử lý hồ sơ" time="8">
-		<task code="TN13C::PHAN_CONG" name="Phân công thụ lý" time="1" next="TN13C::THU_LY" single_user="true"/>
-		<task code="TN13C::THU_LY" name="Thụ lý" time="5" next="TN13C::XET_DUYET" single_user="true"/>
-		<task code="TN13C::XET_DUYET" name="Xét duyệt" time="2" next="TN13C::NOP_HO_SO_SANG_CHI_CUC_THUE" single_user="true"/>
+		<task code="TN13C::PHAN_CONG" name="Phân công thụ lý" time="1" next="TN13C::THU_LY" />
+		<task code="TN13C::THU_LY" name="Thụ lý" time="5" next="TN13C::XET_DUYET" />
+		<task code="TN13C::XET_DUYET" name="Xét duyệt" time="2" next="TN13C::NOP_HO_SO_SANG_CHI_CUC_THUE" />
 	</step>
 	
 	<step code="NGHIA_VU_THUE" order="3" group="BP_THUE" name="Thực hiện nghĩa vụ thuế" time="3">
@@ -17,17 +17,17 @@
 		<task code="TN13C::CHUYEN_THONG_BAO_THUE_VE_BP_MOT_CUA" name="Chuyển thông báo của cơ quan thuế về bộ phận một cửa" time="0" next="TN13C::TRA_THONG_BAO_NOP_THUE" />
 	</step>
 	
-	<step code="TRA_THONG_BAO_THUE" order="4" group="BP_MOT_CUA" name="Trả thông báo thuế">
-		<task code="TN13C::TRA_THONG_BAO_NOP_THUE" name="Trả thông báo nộp thuế" time="0" next="TN13C::NHAN_BIEN_LAI_NOP_THUE" />
-		<task code="TN13C::NHAN_BIEN_LAI_NOP_THUE" name="Nhận biên lai nộp thuế" time="0" next="SAU_THUE::TN13C::XET_DUYET" />
+	<step code="TRA_THONG_BAO_THUE" order="4" group="BP_MOT_CUA" name="Trả thông báo thuế" time="1">
+		<task code="TN13C::TRA_THONG_BAO_NOP_THUE" name="Trả thông báo nộp thuế" time="1" pause="true" next="TN13C::NHAN_BIEN_LAI_NOP_THUE" />
+		<task code="TN13C::NHAN_BIEN_LAI_NOP_THUE" name="Nhận biên lai nộp thuế" time="0" unpause="true" next="SAU_THUE::TN13C::XET_DUYET" />
 	</step>
 	
-	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD thẩm định" time="3">
-        <task code="SAU_THUE::TN13C::XET_DUYET" name="Xét duyệt sau nghĩa vụ thuế" time="3" next="TN13C::TRA_KET_QUA" single_user="true" biz_done="true"/>
+	<step order="1" group="VAN_PHONG_DANG_KY_QSD_DAT" name="Văn phòng đăng ký QSD thẩm định" time="2">
+        <task code="SAU_THUE::TN13C::XET_DUYET" name="Xét duyệt sau nghĩa vụ thuế" time="3" next="TN13C::TRA_KET_QUA"  biz_done="true"/>
     </step>
 	
-	<step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0.5" role="TRA_KET_QUA" >
-        <task code="TN13C::TRA_KET_QUA" name="Trả kết quả" time="1" next="NULL" single_user="true"/>
+	<step order="2" group="BP_MOT_CUA" name="Trả kết quả" time="0" role="TRA_KET_QUA" >
+        <task code="TN13C::TRA_KET_QUA" name="Trả kết quả" time="0" next="NULL" />
         <!-- next="NULL": Kết thúc quy trình -->
     </step>
 </process>

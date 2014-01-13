@@ -10,6 +10,9 @@
     <line label="" cols="1">
         <item type="Checkbox" value="1" id="QUAN_TRI_LUAT_CAN_LOC_HO_SO" name="" allownull="" validate="" title="Quản trị luật cản lọc hồ sơ" label="" view="true"/>
     </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="1" id="THEO_DOI_NGUOI_DUNG" name="" allownull="" validate="" title="Theo dõi hoạt động người dùng" label="" view="true"/>
+    </line>
     
     <!-- Cap xã -->
     <line label="Hồ sơ ở cấp xã" cols="1">
@@ -22,6 +25,9 @@
     <!-- BP Mot cua -->
     <line label="Tiếp nhận và trả kết quả" cols="1">
         <item type="Checkbox" value="2" id="XAC_NHAN_HO_SO_NOP_QUA_INTERNET" name="" allownull="" validate="" title="Xác nhận hồ sơ nộp qua Internet" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="KIEM_TRA_TRUOC_HO_SO" name="" allownull="" validate="" title="Kiểm tra trước hồ sơ" label="" view="true"/>
     </line>
     <line label="" cols="1">
         <item type="Checkbox" value="2" id="TIEP_NHAN" name="" allownull="" validate="" title="Tiếp nhận hồ sơ" label="" view="true"/>
@@ -40,6 +46,9 @@
     </line>
     <line label="" cols="1">
         <item type="Checkbox" value="2" id="THU_PHI" name="" allownull="" validate="" title="Thu phí, lệ phí" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="RUT_HO_SO" name="" allownull="" validate="" title="Rút hồ sơ" label="" view="true"/>
     </line>
     <line label="" cols="1">
         <item type="Checkbox" value="2" id="TRA_THONG_BAO_NOP_THUE" name="" allownull="" validate="" title="Trả thông báo nộp thuế cho công dân" label="" view="true"/>
@@ -110,11 +119,19 @@
         <item type="Checkbox" value="2" id="TRA_CUU" name="" allownull="" validate="" title="Tra cứu hồ sơ" label="" view="true"/>
     </line>
     <line label="" cols="1">
+        <item type="Checkbox" value="2" id="TRA_CUU_HO_SO_LIEN_THONG" name="" allownull="" validate="" title="Tra cứu hồ sơ liên thông" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="TRA_CUU_HO_SO_TAI_XA" name="" allownull="" validate="" title="Tra cứu hồ sơ tại xã" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
         <item type="Checkbox" value="2" id="BAO_CAO" name="" allownull="" validate="" title="Xem báo cáo" label="" view="true"/>
     </line>
     <line label="" cols="1">
         <item type="Checkbox" value="2" id="THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO" name="" allownull="" validate="" title="Theo dõi, giám sát toàn bộ hồ sơ" label="" view="true"/>
     </line>
-    
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="QUAN_TRI_SO_THEO_DOI_HO_SO" name="" allownull="" validate="" title="Quản trị sổ theo dõi hồ sơ" label="" view="true"/>
+    </line>
     
 </form>

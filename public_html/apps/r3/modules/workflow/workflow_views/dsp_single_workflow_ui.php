@@ -1,4 +1,23 @@
 <?php
+/**
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+
+<?php
 if (!defined('SERVER_ROOT'))
 {
     exit('No direct script access allowed');
@@ -9,7 +28,6 @@ if (!defined('SERVER_ROOT'))
 $this->template->title = 'Quản trị quy trình xử lý hồ sơ';
 $this->template->display('dsp_header.php');
 ?>
-
 <form name="frmMain" method="post" id="frmMain" action="" ng-controller="ui_ctrl">
     <div class="darkness" ng-show="modal_step.visible || modal_task.visible || modal_proc_info.visible">&nbsp;</div>
     <div 
@@ -22,7 +40,7 @@ $this->template->display('dsp_header.php');
                 <input type="button" value="Đóng cửa sổ" ng-click="modal_proc_info.visible = false"/>
             </div>
             <div class="modal_body">
-                <table border="0">
+                <table class="no-border">
                     <tr>
                         <td>Mã quy trình <span class="required">(*)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><input type="text" size="50" ng-model="modal_proc_info.data['code']"/></td>
@@ -40,6 +58,16 @@ $this->template->display('dsp_header.php');
                         <td><input type="text" ng-model="modal_proc_info.data['fee']"/></td>
                     </tr>
                     <tr>
+                        <td>XML định nghĩa kết quả trả</td>
+                        <td>
+                            <div ng-init='xml_results = <?php echo json_encode($arr_all_xml_result) ?>'></div>
+                            <select 
+                                ng-model="modal_proc_info.data['result']" 
+                                ng-options="xml as xml for xml in xml_results">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td></td>
                         <td>
                             <input type="button" class="button save" ng-click="modal_proc_info.save()" value="Ghi lại"/>
@@ -55,7 +83,7 @@ $this->template->display('dsp_header.php');
                 <input type="button" value="Đóng cửa sổ" ng-click="modal_step.visible = false;"/>
             </div>
             <div class="modal_body">
-                <table border="0">
+                <table class="no-border">
                     <tr>
                         <td>Mã bước</td>
                         <td>
@@ -115,7 +143,7 @@ $this->template->display('dsp_header.php');
                         <input type="button" value="Đóng cửa sổ" ng-click="modal_task.modal_edit.visible = false"/>
                     </div>
                     <div class="modal_body">
-                        <table border="0">
+                        <table class="no-border">
                             <tr>
                                 <td>Tên công việc <span class="required">(*)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td>
@@ -214,7 +242,7 @@ $this->template->display('dsp_header.php');
                                         id="chk_unpause"
                                         ng-model="modal_task.modal_edit.task['@attributes']['unpause']" 
                                         value="true"
-    
+
                                         />
                                     <label for="chk_unpause">
                                         Hồ sơ tiếp tục HOẠT ĐỘNG ngay sau khi hoàn thành công việc này
@@ -241,9 +269,10 @@ $this->template->display('dsp_header.php');
                 <input type="button" class="button add" ng-click="modal_task.add()" value="Thêm mới" />
                 <input type="button" class="button save" ng-click="modal_task.save()" value="Ghi lại" />
                 <input type="button" class="button close" ng-click="modal_task.visible = false" value="Huỷ bỏ" />
+                <h4></h4>
                 <div id="contentWrap">
                     <div id="contentLeft">
-                        Kéo và thả để sắp xếp thứ tự công việc
+                        <div class="alert alert-info"><b>Kéo</b> và <b>thả</b> để sắp xếp thứ tự công việc</div>
                         <ul id="all_task">
                             <div 
                                 ng-repeat="task in modal_task.tasks" 
@@ -254,22 +283,22 @@ $this->template->display('dsp_header.php');
                                 <li style="width:600px">
                                     <div class="step-header">
                                         <div class="step-name quick_action">
-                                            <h3>
+                                            <h6>
                                                 <label class="{{task.error}}">{{task['@attributes']['name']}}</label>
-                                            </h3>
+                                            </h6>
                                         </div>
                                         <div class="step-config quick_action">
                                             <a href="javascript:void(0)" title="Hiệu chỉnh thông tin công việc"
                                                class="quick_action"
                                                ng-click="modal_task.edit($index)"
                                                >
-                                                <img src="<?php echo SITE_ROOT; ?>public/images/edit-32x32.png" />
+                                                <img src="<?php echo SITE_ROOT; ?>public/images/edit-32x32.png" style="width: 24px;height: 24px;" />
                                             </a>
                                             <a href="javascript:void(0)" title="Xoá công việc"
                                                class="quick_action"
                                                ng-click="modal_task.delete_task($index)"
                                                >
-                                                <img src="<?php echo SITE_ROOT; ?>public/images/delete-24x24.png" width="24px"/>
+                                                <img src="<?php echo SITE_ROOT; ?>public/images/delete-24x24.png" style="width:24px;;height: 24px;"/>
                                             </a>
                                         </div>
                                     </div>
@@ -332,11 +361,16 @@ $this->template->display('dsp_header.php');
                 $v_xml_flow         = str_replace('#CODE#', $v_record_type_code, $v_default_xml_flow);
             }
             session::set('v_current_xml_flow', $v_xml_flow);
-            $dom           = simplexml_load_string($v_xml_flow);
-            $r             = $dom->xpath("/process");
-            $proc          = $r[0];
-            $step          = $proc->xpath("//step[not(no_chain='true')]");
-            $no_chain_step = $proc->xpath("//step[no_chain='true']");
+            $dom  = simplexml_load_string($v_xml_flow);
+            $r    = $dom->xpath("/process");
+            $proc = $r[0];
+            if (empty($proc->attributes()->result))
+            {
+                $proc->addAttribute('result', 'record_result.default.xml');
+            }
+            $step          = $proc->xpath("//step[not(@no_chain='true')]");
+            $no_chain_step = $proc->xpath("//step[@no_chain='true']");
+
             foreach ($proc->step as $step)
             {
                 $is_no_chain = ($step->attributes()->no_chain == 'true');
@@ -362,11 +396,18 @@ $this->template->display('dsp_header.php');
                 {
                     foreach ($step->children() as $task)
                     {
-                        $a = preg_match("/\[(.*)\]/", (string) $task->attributes()->next, $matches);
-                        $b = (string)$task->attributes()->next_no_chain;
+                        $a = preg_match("/\[(.*)\]/", (string) $task->attributes()->code, $matches);
+                        $b = (string) $task->attributes()->next_no_chain;
+
                         if ($a && !$b)
                         {
-                            $task->addAttribute('next_no_chain', $matches[1]);
+                            $c = count($proc->xpath("//task[@code='{$matches[1]}']"));
+                            if ($c)
+                            {
+                                $task->addAttribute('next_no_chain', $matches[1]);
+                            }
+                            $pos                      = strpos($task->attributes()->code, '[');
+                            $task->attributes()->code = trim(substr($task->attributes()->code, 0, $pos));
                         }
                     }
                 }
@@ -387,12 +428,12 @@ $this->template->display('dsp_header.php');
             <?php echo $this->hidden('hdn_record_type_name', strval($proc['@attributes']['name'])); ?>
             <?php echo $this->hidden('hdn_total_time', strval($proc['@attributes']['totaltime'])); ?>
             <?php echo $this->hidden('hdn_fee', strval($proc['@attributes']['fee'])); ?>
-
             <input type="button" class="button lookup" value="Sửa" ng-click="modal_proc_info.show()"/>
+            <h4></h4>
         </div>
         <div id="contentWrap">
             <div id="contentLeft" style='width:100%'>
-                <div>Kéo và thả để sắp xếp thứ tự bước</div>
+                <div class="alert alert-info"><b>Kéo</b> và <b>thả</b> để sắp xếp thứ tự bước</div>
                 <ul class="ui-sortable" id="all_step">
                     <div ng-repeat="step in proc['step']" 
                          class='step_container ui-state-disabled' id="step_{{$index}}" 
@@ -403,17 +444,19 @@ $this->template->display('dsp_header.php');
                             <div class="step-header">
                                 <div class="step-name quick_action">
                                     <h6>
-                                        <a href="javascript:void(0)" title="Công việc trong bước" class="quick_action" ng-click="dsp_all_task(step, false)">
-                                            <img src="<?php echo SITE_ROOT; ?>public/images/config.png" width="24px"/>
-                                        </a>
-                                        <a href="javascript:void(0)" title="Hiệu chỉnh thông tin bước" class="quick_action" ng-click="dsp_step_details($index, 'step')">
-                                            <img src="<?php echo SITE_ROOT; ?>public/images/edit-32x32.png" width="24px"/>
-                                        </a>
-                                        <a href="javascript:void(0)" title="Xoá bước" class="quick_action" ng-click="delete_step($index)">
-                                            <img src="<?php echo SITE_ROOT; ?>public/images/delete-24x24.png" width="24px"/>
-                                        </a>
                                         <label class="{{step.error}}" id="lbl_step_{{$index}}">{{step['@attributes']['name']}}</label>
                                     </h6>
+                                    <div class="step-buttons">
+                                        <a href="javascript:void(0)" title="Công việc trong bước" class="quick_action" ng-click="dsp_all_task(step, false)">
+                                            <img src="<?php echo SITE_ROOT; ?>public/images/config.png" style="width:24px;height:24px"/>
+                                        </a>
+                                        <a href="javascript:void(0)" title="Hiệu chỉnh thông tin bước" class="quick_action" ng-click="dsp_step_details($index, 'step')">
+                                            <img src="<?php echo SITE_ROOT; ?>public/images/edit-32x32.png" style="width:24px;height:24px"/>
+                                        </a>
+                                        <a href="javascript:void(0)" title="Xoá bước" class="quick_action" ng-click="delete_step($index)">
+                                            <img src="<?php echo SITE_ROOT; ?>public/images/delete-24x24.png" style="width:24px;height:24px"/>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="step-info">
@@ -449,6 +492,9 @@ $this->template->display('dsp_header.php');
                                     <div class="step-header">
                                         <div class="step-name quick_action">
                                             <h6>
+                                                <label ng-class="{{no_chain_step.error}}" id="lbl_no_chain_{{$index}}">{{no_chain_step[$index]['@attributes']['name']}}</label>
+                                            </h6>
+                                            <div class="step-buttons">
                                                 <a href="javascript:void(0)" title="Công việc trong bước" class="quick_action" ng-click="dsp_all_task(no_chain_step[$index], true)">
                                                     <img src="<?php echo SITE_ROOT; ?>public/images/config.png" width="24px"/>
                                                 </a>
@@ -458,8 +504,7 @@ $this->template->display('dsp_header.php');
                                                 <a href="javascript:void(0)" title="Xoá bước" class="quick_action" ng-click="delete_no_chain_step(no_chain_step[$index])">
                                                     <img src="<?php echo SITE_ROOT; ?>public/images/delete-24x24.png" width="24px"/>
                                                 </a>
-                                                <label ng-class="{{no_chain_step.error}}" id="lbl_no_chain_{{$index}}">{{no_chain_step[$index]['@attributes']['name']}}</label>
-                                            </h6>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="step-info">
@@ -478,13 +523,14 @@ $this->template->display('dsp_header.php');
             <div style="float:left;width: 200px;padding: 10px;">
                 <p class="required" ng-repeat="error in submit_errors">{{error}}</p>
             </div>
-            <div id="contentRight" style="width:350px;">
+            <div class="clear"></div>
+            <h4></h4>
+            <div style="float:right" class="alert alert-info">
                 <input type="button" class="button save" ng-click="submit_workflow()" value="Ghi lại" />
                 <input type="button" class="button add" ng-click="add_step()" value="Thêm bước" />
                 <input type="button" class="button close" value="Quay lại" ng-click="goback()"/>
                 <img width="16" src="<?php echo SITE_ROOT ?>public/images/loading.gif" ng-show="submiting"/>
                 <div id="response"></div>
-
             </div>
         </div>
     <?php endif; ?>

@@ -6,9 +6,10 @@
             <item type="primarykey" id="PK_RECORD" />
 
             <!-- ********************************************************* -->			
-			<item type="rownum" id="RN" name="#" clickable="no" size="5%"/>
+			<item type="rownum" id="RN" name="#" clickable="no" size="3%"/>
 			<item type="text" id="C_RECORD_NO" name="Mã hồ sơ" clickable="yes" size="14%"/>
-			<item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" clickable="no" size="20%"/>			
+			<item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" clickable="no" size="18%"/>
+			<item type="text_concat" id="xml/txtPlaceAdd, xml/ddlXaPhuong" name="Địa chỉ thửa đất" clickable="no" size="20%"/>
 			<item type="text" id="C_RECEIVE_DATE" name="Ngày giờ tiếp nhận" clickable="no" size="12%"/>
 			<item type="text" id="C_RETURN_DATE" name="Ngày giờ hẹn trả" clickable="no" size="17%"/>		
 			<item type="text" id="C_ACTIVITY" name="Tình trạng" clickable="no" size="25%"/>	

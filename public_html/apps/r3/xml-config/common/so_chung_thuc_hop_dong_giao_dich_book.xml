@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <display_all>
+        <list>
+			<item type="primarykey" id="PK_RECORD" />
+            <!-- ********************************************************* -->
+			<item type="text" id="r_xml/txt_so_hieu_giay_to_van_ban" name="Số chứng thực" size="8%" align="center" subhead="1"/>
+			<item type="text_concat" id="C_CLEAR_DATE,'AND', C_RECEIVE_DATE" name="Ngày, tháng, năm chứng thực" size="15%"  align="center" subhead="2"/>
+			<item type="text" id="C_RECEIVE_DATE" name="Ngày, tháng, năm thụ lý"  align="center"  size="16%" subhead="3"/>
+			<item type="text" id="C_CITIZEN_NAME" name="Họ tên, nơi cư trú của người yêu cầu chứng thực"  subhead="4"  size="20%"/>
+			<item type="text" id="C_RECORD_TYPE_NAME" name="Loại việc chứng thực"   size="9%" subhead="5"/>
+			<item type="text" id="xml/txt_noi_dung_tom_tat" name="Tóm tắt nội dung" size="13%" subhead="6"/>
+			<item type="text" id="p_xml/KY_DUYET/user_name" name="Họ tên người ký chứng thực"   size="14%" subhead="7"/>
+			<item type="text" id="NULL" name="Ghi chú"  size="10%" subhead="8"/>
+        </list>
+    </display_all>
+</root>

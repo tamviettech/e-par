@@ -1,28 +1,24 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
 
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
 $arr_all_record_type    = $VIEW_DATA['arr_all_record_type'];
@@ -51,6 +47,10 @@ $this->template->display('dsp_header.php');
     ?>
     <?php echo $this->dsp_div_notice($VIEW_DATA['active_role_text'] );?>
     <!-- filter -->
+    <!-- filter -->
+    <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
+    
+    <?php /*
     <div id="div_filter">
         (1)&nbsp;<label>Mã loại hồ sơ</label>
         <input type="text" name="txt_record_type_code" id="txt_record_type_code"
@@ -63,10 +63,17 @@ $this->template->display('dsp_header.php');
         <select name="sel_record_type" id="sel_record_type" style="width:75%; color:#000000;"
                 onchange="sel_record_type_onchange(this)">
             <option value="">-- Chọn loại hồ sơ --</option>
-            <?php echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>
+            <?php foreach ($arr_all_record_type as $code=>$info):?>
+			    <?php $str_selected = ($code == strval($v_record_type_code)) ? ' selected':'';?>
+                <option value="<?php echo $code;?>"<?php echo $str_selected?> data-scope="<?php echo $info['C_SCOPE'];?>"><?php echo $info['C_NAME'];?></option>
+                <?php if (($code == $v_record_type_code) && ($info['C_SCOPE'] == 1)) {$v_la_ho_so_lien_thong = TRUE;}?>
+			<?php endforeach;?>
+            <?php //echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>
         </select>
         <input type="text" name="noname" style="visibility: hidden"/>
     </div>
+    */
+    ?>
     <div class="clear"></div>
 
     <div id="procedure">

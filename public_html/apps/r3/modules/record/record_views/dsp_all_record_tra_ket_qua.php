@@ -1,28 +1,23 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
 
-if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
 $arr_all_record_type    = $VIEW_DATA['arr_all_record_type'];
@@ -111,7 +106,15 @@ $this->template->display('dsp_header.php');
 
                 html = '';
 
-                //Phe duyet
+                //Inp hieu tu choi
+               v_is_rejected = $(this).attr('data-reject');
+               if (v_is_rejected == "1")
+               {
+            	   html += '<a href="javascript:void(0)" onclick="print_record_reject_for_citizen(\'' + v_item_id + '\')" class="quick_action">';
+                   html += '<img src="' + SITE_ROOT + 'public/images/print-reject.png" title="In phiếu từ chối"  /></a>';
+               }
+
+                //Tra ket qua
                 html += '<a href="javascript:void(0)" onclick="btn_return_onclick(\'' + v_item_id + '\')" class="quick_action">';
                 html += '<img src="' + SITE_ROOT + 'public/images/btn_certificate_16x16.png" title="Trả kết quả"  /></a>';
 
@@ -149,14 +152,13 @@ $this->template->display('dsp_header.php');
 
         showPopWin(url, 1000, 600, null, true);
 
-/*
-        if (confirm('Bạn chắc chắn trả kết quả các hồ sơ đã chọn?'))
-        {
-            m = $("#controller").val() + 'do_return_record';
-            $("#frmMain").attr('action', m);
-            f.submit();
-        }
-        */
+    }
+
+    function print_record_reject_for_citizen(p_record_id)
+    {
+    	var url = '<?php echo $this->get_controller_url();?>dsp_print_record_reject_for_citizen/' + p_record_id; 
+        url += QS + 'pop_win=1';
+        showPopWin(url, 800, 450, null, true);
     }
 </script>
 <?php $this->template->display('dsp_footer.php');

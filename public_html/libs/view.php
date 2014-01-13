@@ -1,27 +1,3 @@
-<?php
-/**
-// File name   : view.php
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <?php
 
@@ -37,6 +13,7 @@ class View{
     protected $template_directory;
 
     public $msg;
+    /** @var \Savant3 */
     public $template;
 
     function __construct($app, $module) {
@@ -151,7 +128,7 @@ class View{
         $this->xslt->setXml($full_path);
         $html = '';
         $this->xslt->setXslString(file_get_contents(SERVER_ROOT . 'libs' .DS . 'Transform.xslt'));
-        $this->xslt->setParameter(array('p_site_root' => SITE_ROOT, 'p_current_date' => date('d-m-Y')));
+        $this->xslt->setParameter(array('p_site_root' => FULL_SITE_ROOT, 'p_current_date' => date('d-m-Y')));
         if ($this->xslt->transform()) {
             $html = $this->xslt->getOutput();
             $this->xslt->destroy();
@@ -164,7 +141,7 @@ class View{
     {
         $html = '';
         $this->xslt->setXslString(file_get_contents(SERVER_ROOT . 'libs' .DS. 'Transform.xslt'));
-        $this->xslt->setParameter(array('p_site_root' => SITE_ROOT, 'p_current_date' => date('d-m-Y')));
+        $this->xslt->setParameter(array('p_site_root' => FULL_SITE_ROOT, 'p_current_date' => date('d-m-Y')));
         if ($this->xslt->transform()) {
             $html = $this->xslt->getOutput();
             $this->xslt->destroy();
@@ -256,10 +233,7 @@ class View{
                         if (strpos($index , 'xml/') !== FALSE) //Cot du lieu nam trong XML
                         {
                             $index = str_replace('xml/','',$index);
-
-                            $r = $dom_xml_data->xpath("/data/item[@id='$index']/value");
-                            $d = sizeof($r) ? $r[0] : '';
-
+                            $d = xpath($dom_xml_data, "/data/item[@id='$index']/value", XPATH_DOM);
                             if (!$edit OR $v_clickable == 'no')
                             {
                                 $html .= '<td>' . $d . '</td>';
@@ -273,11 +247,13 @@ class View{
                         {
                             if (!$edit OR $v_clickable == 'no')
                             {
-                                $html .= '<td>' . $data[$i][$index] . '</td>';
+                                $text = isset($data[$i][$index]) ? $data[$i][$index] : '';
+                                $html .= '<td>' . $text . '</td>';
                             }
                             else
                             {
-                                $html .= '<td><a href="javascript:void(0)" onclick="row_onclick(\'' . $data[$i][$primarykey] . '\')">' . $data[$i][$index] . '</a></td>';
+                                $text = isset($data[$i][$index]) ? $data[$i][$index] : '';
+                                $html .= '<td><a href="javascript:void(0)" onclick="row_onclick(\'' . $data[$i][$primarykey] . '\')">' . $text. '</a></td>';
                             }
                         }
                         break;
@@ -302,6 +278,12 @@ class View{
             return '<input type="hidden" name="' . $name . '" id="' . $name . '" value="' . $value . '" />';
         }
     }
+    
+    public static function user_token()
+    {
+        return self::hidden('user_token', Session::get('user_token'));
+    }
+    
 
     public static function add_empty_rows($pCurrentRow, $pTotalRow, $pTotalColumn)
     {

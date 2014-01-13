@@ -1,6 +1,11 @@
 RewriteEngine On
 
-RewriteBase /e-par/
+RewriteBase /e-par-idc/
+
+<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh|cmd|exe|bat)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
 
 ##
 RewriteCond %{REQUEST_FILENAME} !-d

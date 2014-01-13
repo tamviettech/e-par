@@ -1,27 +1,23 @@
-<?php 
+<?php
 /**
-// File name   : 
-// Version     : 1.0.0.1
-// Begin       : 2012-12-01
-// Last Update : 2010-12-25
-// Author      : TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-//Copyright (C) 2012-2013  TamViet Technology, Ha Noi, Viet Nam. http://www.tamviettech.vn
+Copyright (C) 2012 Tam Viet Tech. All rights reserved.
 
-// E-PAR is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// E-PAR is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// See LICENSE.TXT file for more information.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
 
+<?php 
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -56,6 +52,9 @@ $this->template->display('dsp_header.php');
                <!-- 
         <input type="button" class="solid print" value="In danh sách ký duyệt"
                onclick="print_record_ho_for_bu();" /> -->
+               
+        <input type="button" class="solid print" value="In giấy bàn giao"
+               onclick="print_record_ho_for_bu_onclick();" />
     </div>
     <div class="clear">&nbsp;</div>
 
@@ -158,6 +157,35 @@ $this->template->display('dsp_header.php');
     function btn_dsp_print_supplement_request_onclick(record_id)
     {
         alert(1);
+    }
+
+    function print_record_ho_for_bu_onclick(record_id)
+    {
+    	var f = document.frmMain;
+
+        //Danh sach ID Ho so da chon
+        if (typeof(record_id) == 'undefined')
+        {
+            v_selected_record_id_list = get_all_checked_checkbox(f.chk, ',');
+        }
+        else
+        {
+            v_selected_record_id_list = record_id;
+        }
+
+        if (v_selected_record_id_list != '')
+        {
+            var url = '<?php echo $this->get_controller_url();?>dsp_print_ho_between_2_bu/' + v_selected_record_id_list
+                + '/?record_type_code=' + $("#record_type_code").val()
+                + '&pop_win=1';
+                + '&type=1';
+
+            showPopWin(url, 1000, 600, null, true);
+        }
+        else
+        {
+            alert('Chưa có hồ sơ nào được chọn!');
+        }
     }
 </script>
 <?php $this->template->display('dsp_footer.php');
