@@ -210,16 +210,25 @@ else
 
         <input type="button" name="aaa" class="button lookup" value="Xem quy trình xử lý hồ sơ" onclick="window.open('<?php echo $this->get_controller_url('workflow'); ?>&sel_record_type=<?php echo $v_code; ?>');"/>
         <input type="button" name="bbb" class="button lookup" value="Xem biểu mẫu đơn" onclick="btn_dsp_plaintext_form_struct_onclick();"/>
+        <input type="button" name="btn_edit_all_form" class="button lookup" value="Chỉnh sửa tất cả biểu mẫu" onclick="btn_edit_all_form_onclick();"/>
     </div>
 </form>
 <script>
-                       function btn_dsp_plaintext_form_struct_onclick()
-                       {
-                           var url = '<?php echo $this->get_controller_url(); ?>dsp_plaintext_form_struct/&sel_record_type=<?php echo $v_code; ?>';
-                           url += '&pop_win=1';
+    function btn_dsp_plaintext_form_struct_onclick()
+    {
+        var url = '<?php echo $this->get_controller_url(); ?>dsp_plaintext_form_struct/&sel_record_type=<?php echo $v_code; ?>';
+        url += '&pop_win=1';
 
-                           showPopWin(url, 1000, 550);
-                       }
+        showPopWin(url, 1000, 550);
+    }
+    
+    function btn_edit_all_form_onclick()
+    {
+        var url = '<?php echo $this->get_controller_url(); ?>dsp_edit_all_form/' + QS + 'sel_record_type=<?php echo $v_code; ?>';
+        url += '&pop_win=1&record_type_name=<?php echo $v_name;?>';
+
+        showPopWin(url, 1000, 550);
+    }
 
 </script>
 <?php
