@@ -101,10 +101,10 @@ else
                     </td>
                     <td>
                         <?php if ($v_user_id < 1): ?>
-                            <input type="text" name="txt_login_name" id="txt_login_name"value=""
+                            <input type="text" name="txt_login_name" id="txt_login_name" value=""
                                 class="inputbox" maxlength="50" style="width:50%"
                                 onKeyDown="return handleEnter(this, event);"
-                                data-allownull="no" data-validate="text"
+                                data-allownull="no" data-validate="username"
                                 data-name="Tên đăng nhập"
                                 data-xml="no" data-doc="no"
                                 autofocus="autofocus"
@@ -120,7 +120,7 @@ else
                         <input type="text" name="txt_name" id="txt_name" value="<?php echo $v_name;?>"
                             class="inputbox" maxlength="50" style="width:50%"
                             onKeyDown="return handleEnter(this, event);"
-                            data-allownull="no" data-validate="text"
+                            data-allownull="no" data-validate="username"
                             data-name="Tên người sử dụng"
                             data-xml="no" data-doc="no"
                         />
@@ -187,7 +187,6 @@ else
                         <br/>
                         <input type ="text" id="txt_ou_patch" name="txt_ou_patch" value="<?php echo $v_ou_patch;?>" style="width:50%" disabled/>
                         <input type="button" class="ButtonAddOu" onclick="dsp_all_ou_to_add()">
-                        
                     </td>
                 </tr>
                 <tr>
@@ -224,17 +223,19 @@ else
                         /><label for="chk_status"><?php echo __('active status'); ?></label><br/>
                     </td>
                 </tr>
-                <tr>
-                    <td>IDC ID</td>
-                    <td>
-                         <input type="text" name="txt_idc_id" value="<?php echo $v_idc_id; ?>" id="txt_idc_id"
-                                class="inputbox" size="6" maxlength="6"
-                                data-allownull="no" data-validate="number"
-                                data-name="<?php echo __('order'); ?>"
-                                data-xml="no" data-doc="no"
-                        />
-                    </td>
-                </tr>
+                <?php if (defined('CONST_IDC_INTERGRATED') && CONST_IDC_INTERGRATED > 0): ?>
+                    <tr>
+                        <td>IDC ID</td>
+                        <td>
+                             <input type="text" name="txt_idc_id" value="<?php echo $v_idc_id; ?>" id="txt_idc_id"
+                                    class="inputbox" size="6" maxlength="6"
+                                    data-allownull="no" data-validate="number"
+                                    data-name="IDC ID"
+                                    data-xml="no" data-doc="no"
+                            />
+                        </td>
+                    </tr>
+                <?php endif; ?>
             </table>
         </div>
         <div id="user_group">
@@ -342,6 +343,14 @@ else
 
     function btn_update_user_onclick()
     {
+        <?php if ($v_user_id < 1): ?>
+            //Kiem tra xac nhan mat khau
+            if ($("#txt_password").val() != $("#txt_confirm_password").val())
+            {
+                alert('Mật khẩu xác nhận chưa đúng!');
+                return;
+            }
+        <?php endif; ?>
         //Lay danh sach nhom
         var arr_group_id = new Array();
         var q = "input[name='chk_group']";
@@ -362,6 +371,7 @@ else
         });
 
         $('#hdn_grant_function').val(arr_checked_function.join());
+        
 
         btn_update_onclick();
     }

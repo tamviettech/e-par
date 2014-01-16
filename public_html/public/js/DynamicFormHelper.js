@@ -209,6 +209,11 @@ function DynamicFormHelper(data, file,f) {
             case "numberString": //fax number string
                 mess = mess + this.checkNumberString(control_id, name, allow);
                 break;
+                
+            case "username": //Ten dang nhap
+                mess = mess + this.checkUsername(control_id, name, allow);
+                break;
+                
             default:
                 break;
         }
@@ -282,6 +287,39 @@ function DynamicFormHelper(data, file,f) {
                 var test_white_space = this.checkWhiteSpace(str);
                 if (test_white_space == "") {
                     mess = mess + " " + name + " không được toàn là khoảng trắng!";
+                }
+            }
+        }
+        return mess;
+    }
+    
+    /**
+     * 
+     * @param {type} control_id
+     * @param {type} name
+     * @param {type} allow
+     * @returns {String}
+     */
+    this.checkUsername = function (control_id, name, allow) {
+        var mess = "";
+        var number = document.getElementById(control_id).value;
+        var str = new String(number);
+
+        if (allow == "no") {
+            if (this.isEmpty(str)) {
+                mess = mess + " Bạn chưa nhập " + name + " !";
+            }
+            else {
+                var test_white_space = this.checkWhiteSpace(str);
+                if (test_white_space == "") {
+                    mess = mess + " " + name + " không được toàn là khoảng trắng!";
+                } 
+                else
+                {
+                    var ck_username = /^([a-zA-Z]+)([A-Za-z0-9.]*)$/;
+                    if (!ck_username.test(str)) {
+                        mess = mess + " Tên đăng nhập không hợp lệ";
+                    }
                 }
             }
         }
