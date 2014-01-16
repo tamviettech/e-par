@@ -214,13 +214,16 @@ function DynamicFormHelper(data, file,f) {
                 mess = mess + this.checkUsername(control_id, name, allow);
                 break;
                 
+            case "listcode": //Ten dang nhap
+                mess = mess + this.checkListCode(control_id, name, allow);
+                break;
+                
             default:
                 break;
         }
         //if (validate == 'phone')
-
-
-        if (mess != '')//focus toi control bi loi
+        
+        if (trim(mess) != '')//focus toi control bi loi
         {
             var dom = document.getElementById(control_id);
             if (dom != null) {
@@ -240,7 +243,7 @@ function DynamicFormHelper(data, file,f) {
                 //errorMessage.appendChild(br);
 
                 var error = document.createElement("span");
-                error.setAttribute("id", id);
+                error.setAttribute("id", id + "_span");
                 //error.setAttribute("style", "color:red");
                 error.style.color = "red";
                 error.innerHTML = mess;
@@ -251,24 +254,9 @@ function DynamicFormHelper(data, file,f) {
             }
         } else {
             //neu da sua loi roi thi tat thong bao loi di
-
-
-
-
-
-            /*
-            var err = document.getElementById(control_id);
-            if (err != null) {
-
-                var id = "error_" + control_id;
-
-                var exist = document.getElementById(id);
-                //Xoa thong bao loi neu da co
-                if (exist) {
-                    err.parentNode.removeChild(exist);
-                }
-            }
-                                                    */
+            try {
+                $("#error_" + control_id).html('');
+            } catch (e){}
         }
 
         return mess;
@@ -318,7 +306,40 @@ function DynamicFormHelper(data, file,f) {
                 {
                     var ck_username = /^([a-zA-Z]+)([A-Za-z0-9.]*)$/;
                     if (!ck_username.test(str)) {
-                        mess = mess + " Tên đăng nhập không hợp lệ";
+                        mess = mess + " " + name + " không hợp lệ";
+                    }
+                }
+            }
+        }
+        return mess;
+    }
+    
+    /**
+     * Kieu ma danh muc
+     * @param {type} control_id
+     * @param {type} name
+     * @param {type} allow
+     * @returns {undefined}
+     */
+    this.checkListCode = function (control_id, name, allow) {
+        var mess = "";
+        var number = document.getElementById(control_id).value;
+        var str = new String(number);
+
+        if (allow == "no") {
+            if (this.isEmpty(str)) {
+                mess = mess + " Bạn chưa nhập " + name + " !";
+            }
+            else {
+                var test_white_space = this.checkWhiteSpace(str);
+                if (test_white_space == "") {
+                    mess = mess + " " + name + " không được toàn là khoảng trắng!";
+                } 
+                else
+                {
+                    var ck_username = /^([A-Z]+)([A-Z0-9_]*)$/;
+                    if (!ck_username.test(str)) {
+                        mess = mess + " " + name + " không hợp lệ";
                     }
                 }
             }
