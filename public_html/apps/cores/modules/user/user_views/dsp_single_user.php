@@ -104,7 +104,7 @@ else
                             <input type="text" name="txt_login_name" id="txt_login_name" value=""
                                 class="inputbox" maxlength="50" style="width:50%"
                                 onKeyDown="return handleEnter(this, event);"
-                                data-allownull="no" data-validate="username"
+                                data-allownull="no" data-validate="loginname"
                                 data-name="Tên đăng nhập"
                                 data-xml="no" data-doc="no"
                                 autofocus="autofocus"
