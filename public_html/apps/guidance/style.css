@@ -1,0 +1,650 @@
+*
+{
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Arial;
+    color:black;
+}
+body
+{
+    font-size: 1em;
+    line-height: 1.8em;
+    width: 100%;
+    margin: 0;
+}
+
+/*commont*/
+#header,  .banner, .curr_time,#main,.box-item,.item
+{
+    overflow: hidden;
+}
+.curr_time label
+{
+    color: white;
+}
+a
+{
+    text-decoration: none;
+}
+li
+{
+    list-style-type: none;
+}
+ul,h1,h2,h3,h4,h5,h6,form
+{
+    margin: 0;padding: 0;
+    font-family: Arial, Time-New-Roman
+}
+/*Emd commont*/
+/*header*/
+.banner
+{
+    height: auto;
+    width: 100%;
+    /*background-image: url(images/banner.jpg);*/
+}
+.banner img
+{
+    width: 100%;
+    height: auto;
+}
+.curr_time
+{
+    height: 35px;
+    width: 100%;
+    background: #dea317;
+    margin-top: -6px;
+}
+.curr_time label
+{
+    margin-left: 20px;
+    font-size: 1.2em;
+    line-height: 35px;
+}
+/*end header*/
+
+/*###############################################*/
+/*footer*/
+
+#footer
+{
+    background: #333;
+    overflow: hidden;
+    width: 100%;
+    height: 80px;
+    bottom: 0;
+    display: none;
+}
+
+/*end footer*/
+#home
+{
+    padding-top:25px;
+}
+
+/*Chon mau cho item*/
+/**
+* gan thep gia tri cua item i 
+*/
+#home .item-1
+{
+    /*background: red !important;*/       
+}
+/*End chon mau item*/
+
+.metro .tile.squarepeek
+{
+    width: 160px;
+}
+tile-column-span-2 a
+{
+    height: 320px;
+}
+.metro .tile .text 
+{
+    font-size: 1.5em;
+    line-height: 1.5em;
+    height: auto;
+    padding: 10px;
+    text-align: justify;
+    color: white;
+}
+/*###############################################*/
+/*Page all_list*/
+.all-list
+{
+    padding: 0 20px
+}
+.all-list .panorama
+{
+    margin: 0;
+}
+.all-list .list-head
+{
+    overflow: hidden;
+    width: 100%;
+    padding: 0;
+    margin: 10px 0;
+}
+.all-list .title
+{
+    background: #ce4b27;
+    color: white;
+    line-height: 50px;
+    font-size: 1.1em;
+    float: left;
+    width: 58%;
+    padding-left: 20px;
+}
+.all-list .box-search
+{
+    overflow: hidden;
+    float: right;
+    height: 50px;
+    width:39%;
+}
+.all-list .box-search #search
+{
+    border: solid 2px transparent;;
+    height: 50px;
+    width: 75%;
+    float: left;
+    border-right: none; 
+    padding-left: 5px;
+    font-family: Time-new-roman;
+    font-size: 1.2em;
+}
+.all-list .box-search #search:focus,.all-list .box-search #search:focus + #submit
+{
+    border-color: rgba(82, 168, 236, 0.8);
+    outline: 0;
+    outline: thin dotted \9;
+    background-color: #fff;
+
+}
+.all-list .box-search #submit,.all-list .box-search #search:focus + #submit
+{
+    width: 19%;
+    background: #4285f4 url(images/icon_searh.png) no-repeat right center;
+    border: none;
+    height: 50px;
+    border: solid 2px transparent;
+    border-left: none;
+}
+.all-list .box-search #submit:hover
+{
+    background: #4285f4 url(images/icon_searh.png) no-repeat right center;
+}
+
+.all-list table
+{
+    border-collapse: separate;
+    width: 100%;
+    margin: 10px 0;
+}
+.all-list th
+{
+    height: 30px;
+}
+.all-list td
+{
+    padding: 0px 15px;
+    line-height: 30px;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #dddddd;
+}
+.all-list .even td a,.all-list .odd td a
+{
+    width: 100%;
+    line-height: 50px;
+    font-size: 1.1em;
+    display: block;
+}
+
+.all-list .all-list-content 
+{
+    font-weight: bold;
+    line-height: 1.8em;
+    display: block;
+    padding: 10px 0;
+}
+.all-list tr.odd
+{
+    background: #d9edf7;
+}
+.all-list tr.even
+{
+    background: #dddddd;;
+}
+.all-list tr:hover
+{
+    outline: 2px solid #ce4b27;;
+    -moz-box-shadow: 0 0 15px #CCC;
+    -webkit-box-shadow: 0 0 15px #CCC;
+    box-shadow: 0 0 15px #CCC;
+    ext-decoration: none;
+    color: #FFF;
+    cursor: pointer;
+}
+.all-list thead tr:hover,.all-list tr.last:hover
+{
+    outline: 0px solid #ce4b27;
+    border: none;
+}
+.all-list td a
+{
+    text-decoration: none;
+}
+.all-list td.stt
+{
+    line-height: 50px;
+}
+.all-list td.stt:hover
+{
+    color: black;
+    border: none;
+    cursor: auto;
+    outline:none;
+    moz-box-shadow: 0 0 0 #dddddd;;
+    -webkit-box-shadow: 0 0 0 #dddddd;;
+    box-shadow: 0 0 0 #dddddd;;
+    ext-decoration: none;
+    
+}
+.all-list .last
+{
+    background: #0CA6BB;;
+}
+.all-list .last td:hover
+{
+    outline: 0px solid #ce4b27;;
+    -moz-box-shadow: 0 0 0px #CCC;
+    -webkit-box-shadow: 0 0 0px #CCC;
+    box-shadow: 0 0 0px #CCC;
+    ext-decoration: none;
+    cursor: auto;
+}
+.all-list .last .prev-next
+{
+    display: block;
+    position: relative;
+    height:60px;
+}
+.all-list .last td
+{
+    padding: 0;
+}
+.all-list .last .prev-next a
+{
+    color: white;
+    font-size: 1.2em;
+}
+.all-list .last .prev,.all-list .last .next
+{
+    padding: 16px 10px 20px 50px;
+    position: absolute;
+    overflow: hidden;
+    border: none;
+    font-size: 1.1em;
+    color: white;
+    cursor: pointer;
+    margin: 0;
+}
+.all-list .last .prev:active
+{
+    border: none;
+    margin: 0;
+}
+.all-list .last .prev:hover,.all-list .last .next:hover,.all-list .last .back-home:hover
+{
+    background-color:  #009600;
+}
+.all-list .last .prev
+{
+    left: 0;
+    background: transparent url(images/prev.png)  no-repeat 10px center  ;
+}
+
+.all-list .last .next
+{
+    right: 0;
+    background: transparent url(images/next.png)  no-repeat 10px center  ;
+}
+.all-list .last .prev-next
+{
+    text-align: center
+}
+.all-list .last .back-home
+{
+    position: absolute;
+    padding: 16px 10px 16px 80px;
+    background: transparent url(images/home.png)  no-repeat 10px center  ;
+    overflow: hidden;
+    left: 40%;
+}
+
+/*end page all_list_guidance*/
+
+/*###############################################*/
+
+/*Strart page dsp_single_guidace*/
+#main.single
+{
+    padding: 5px 20px;
+}
+#main.single table
+{
+    width: 100%;
+}
+
+.single .last
+{
+    background: #0CA6BB;;
+}
+.single .last td:hover
+{
+    outline: 0px solid #ce4b27;;
+    -moz-box-shadow: 0 0 0px #CCC;
+    -webkit-box-shadow: 0 0 0px #CCC;
+    box-shadow: 0 0 0px #CCC;
+    ext-decoration: none;
+    cursor: auto;
+}
+.single .last .prev-top
+{
+    display: block;
+    position: relative;
+    height:60px;
+}
+.single .last td
+{
+    padding: 0;
+}
+.single .last .prev-top a
+{
+    color: white;
+    font-size: 1.2em;
+}
+.single .last .prev,.single .last .top
+{
+    padding: 16px 50px;
+    position: absolute;
+    background: transparent url(images/prev.png)  no-repeat left center  ;
+    overflow: hidden;
+}
+
+.single .last .prev:hover,.single .last .top:hover,.single .last .back-home:hover
+{
+    background-color:  #009600;
+}
+.single .last .prev
+{
+    left: 0;
+    background: transparent url(images/prev.png)  no-repeat 10px center  ;
+}
+
+.single .last .top
+{
+    right: 0;
+    background: transparent url(images/icon_top.png)  no-repeat 10px center  ;
+}
+.single .last .prev-top
+{
+    text-align: center
+}
+.single .last .back-home
+{
+    position: absolute;
+    padding: 16px 10px 16px 80px;
+    background: transparent url(images/home.png)  no-repeat 10px center  ;
+    overflow: hidden;
+    left: 40%;
+}
+.single .box-item
+{
+    overflow: hidden;
+    width: 100%;
+}
+.single .single-item
+{
+    background: white;
+    padding: 20px 70px;
+    text-align: justify;
+}
+.single .single-item .title
+{
+    margin-bottom: 20px;
+    border-bottom: solid 2px #009600;
+    padding-bottom: 10px;
+}
+.single .single-item .linhvuc
+{
+    margin-right: 10px;
+    color:#3879D9;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+}
+.single .single-item .thutuc
+{
+    color: red
+}
+.single-item .thutuc-title
+{
+    color:rgb(173, 10, 10);
+    margin: 0;
+}
+.single-item .thutuc-title span
+{
+    color:red;
+}
+.single-item .content
+{
+    margin:0 0 20px 20px;
+    font-family: 'Times New Roman';
+    font-size: 18px;
+    line-height: 22px; 
+    text-align: justify; 
+    background-color: rgb(255, 255, 255);
+}
+#panorama-scroll-prev, #panorama-scroll-next
+{
+    top: 220px;
+}
+.tile-column-span-2{
+    width: 645px;
+}
+@media all and (min-width: 790px) and (max-width: 995px)
+{
+    .all-list .box-search #submit, .all-list .box-search #search:focus + #submit 
+    {
+        width: 17%;
+    }
+}
+@media all and (min-width: 645px) and (max-width: 790px)
+{
+    .all-list .title
+    {
+        width: 50%;
+    }
+    .all-list .box-search
+    {
+        width: 40%;
+    }
+    .all-list .box-search{width: 46%;}
+    .all-list .box-search #search
+    {
+        width: 73%;
+    }
+}
+@media all and (min-width: 480px) and (max-width: 645px)
+{
+    .metro .tile.wide.imagetext.wideimage
+    {
+        width: 220px;
+    }
+    .all-list .box-search
+    {
+        width: 100%;
+        margin-top: 10px;
+    }
+        .all-list .title
+    {
+        width: 100%;
+        padding: 0;
+    }
+    th
+    {
+        font-weight: bold;
+    }
+    .all-list .last .back-home
+    {
+        position: inherit;
+        display: block;
+    }
+    .all-list .title
+    {
+        width: 100%;
+        padding: 0;
+    }
+    
+    /*foot*/
+    .all-list .last .prev, .all-list .last .next
+    {
+        position: inherit;
+        display: block;
+        width: 100%;
+        padding: 16px 0px 20px 50px;
+        text-align: left;
+    }
+    .all-list .last .prev-next,.single .last .prev-top
+    {
+        height: auto;
+        overflow: hidden;
+    }
+    .single .last .prev, .single .last .top,.single .last .back-home
+    {
+        position: inherit;
+        display: inline-block;
+        width: 100%;
+        left: 0;
+        padding: 16px 60px;
+        text-align: left;
+    }
+    .single .last .back-home
+    {
+        padding-left: 80px;
+    }
+    .all-list .last .back-home
+    {
+        padding-left: 80px;
+        text-align: left;
+    }
+}
+
+
+@media all and (min-width: 0px) and (max-width: 480px) 
+{
+    .all-list .box-search #submit, .all-list .box-search #search:focus + #submit 
+    {
+        width: 17%;
+    }
+    .all-list .box-search #search 
+    {
+        width: 74%;
+    }
+     .metro .tile.wide.imagetext.wideimage
+     {
+         width: 250PX;
+        float: none;
+        margin: 5px auto;
+     }
+    .tile-column-span-2 
+    {
+        clear: both;
+        height: auto;
+        width: auto !important;
+        overflow: hidden;
+    }
+    panorama-sections
+    {
+        height: auto;
+    }
+    .panorama .panorama-sections .panorama-section
+    {
+        float: none;
+        margin: 0;
+    }
+
+    #panorama-scroll-prev-bkg, #panorama-scroll-next-bkg,#panorama-scroll-prev, #panorama-scroll-next 
+    {
+        display: none !important;
+    }
+    .all-list .box-search
+    {
+        width: 100%;
+        margin-top: 10px;
+    }
+    /*button next-prev*/
+    th
+    {
+        font-weight: bold;
+    }
+    .all-list .last .back-home
+    {
+        position: inherit;
+        display: block;
+    }
+    .all-list .title
+    {
+        width: 100%;
+        padding: 0;
+    }
+    
+    /*foot*/
+    .all-list .last .prev, .all-list .last .next
+    {
+        position: inherit;
+        display: block;
+        width: 100%;
+        padding: 16px 0px 20px 50px;
+        text-align: left;
+    }
+    .all-list .last .prev-next,.single .last .prev-top
+    {
+        height: auto;
+        overflow: hidden;
+    }
+    .single .last .prev, .single .last .top,.single .last .back-home
+    {
+        position: inherit;
+        display: inline-block;
+        width: 100%;
+        left: 0;
+        padding: 16px 0px;
+    }
+    .single .last .back-home
+    {
+        padding-left: 16px;
+    }
+    .all-list .last .back-home
+    {
+        padding-left: 0px;
+    }
+    .panorama .panorama-sections
+    {
+        width: auto !important;
+        height: auto !important;
+    }
+}
+.tile.align-center .container
+{
+    background: none !important;
+    
+}
+.tile.align-center .container h3
+{
+    color: white !important;
+    padding: 0 2px;
+}
