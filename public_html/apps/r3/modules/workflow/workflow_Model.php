@@ -1,23 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -64,18 +45,139 @@ class workflow_Model extends Model
      */
     function switch_user($task, $dest, $src)
     {
+        $v_role = get_role($task);
+        $v_task_code = $task;
+        
+        //1. Can bo moi tiep quan ho so
         $this->db->Execute("Update t_r3_record Set C_NEXT_USER_CODE=Replace(C_NEXT_USER_CODE, ?, ?) 
             Where C_NEXT_TASK_CODE=?", array($src, $dest, $task));
+        
         $this->db->Execute("Update t_r3_record Set C_NEXT_CO_USER_CODE=Replace(C_NEXT_CO_USER_CODE, ?, ?)
             Where C_NEXT_TASK_CODE=?", array($src, $dest, $task));
 
         $this->db->Execute("Update t_r3_record Set C_NEXT_NO_CHAIN_USER_CODE=Replace(C_NEXT_NO_CHAIN_USER_CODE, ?, ?) 
            Where C_NEXT_NO_CHAIN_TASK_CODE=?", array($src, $dest, $task));
 
+        //2. Thay doi phan cong
         $this->db->Execute("Update t_r3_user_task Set C_USER_LOGIN_NAME=? 
             Where C_USER_LOGIN_NAME=? And C_TASK_CODE=?", array($dest, $src, $task));
+        
+        $v_record_type_code = $this->db->getOne('Select C_RECORD_TYPE_CODE From t_r3_user_task Where C_TASK_CODE=?', array($task));
+        
+        //LienND update 2014-01-07: kem theo cac cong viec lien quan.
+        //2.1  Neu doi can bo TIEP_NHAN ==> Phai doi ca bo sung        
+        if ($v_role == _CONST_TIEP_NHAN_ROLE)
+        {
+            $v_bo_sung_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BO_SUNG_ROLE;
+        
+            $stmt = 'Update t_r3_user_task Set C_USER_LOGIN_NAME=? Where C_USER_LOGIN_NAME=? And C_RECORD_TYPE_CODE=? And C_TASK_CODE like ?';
+            $params = array($dest, $src, $v_record_type_code, '%' . $v_bo_sung_task_code);
+            $this->db->Execute($stmt, $params);
+            
+            //Tiep quan ho so dang bo sung
+            $stmt = 'Update t_r3_record '
+                    . ' Set C_NEXT_USER_CODE=Replace(C_NEXT_USER_CODE, ?, ?) '
+                    . ' Where C_NEXT_TASK_CODE like ? '
+                    . '     And (C_NEXT_USER_CODE = ? Or C_NEXT_USER_CODE Like ?) '
+                    . '     And FK_RECORD_TYPE=(Select PK_RECORD_TYPE From t_r3_record_type Where C_CODE=?)';   
+            $params = array($src, $dest, '%' . $v_bo_sung_task_code, $src,  '%,' . $src . ',%', $v_record_type_code);
+            $this->db->Execute($stmt, $params);
+            
+        }
 
-        $this->popup_exec_done();
+        //2.2 Neu doi buoc xet duyet ==> Doi luon xet duyet bo sung
+        if ($v_role == _CONST_XET_DUYET_ROLE)
+        {
+            $v_xet_duyet_bo_sung_task_code  = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_XET_DUYET_BO_SUNG_ROLE;
+            
+            $stmt = 'Update t_r3_user_task Set C_USER_LOGIN_NAME=? Where C_USER_LOGIN_NAME=? And C_RECORD_TYPE_CODE=? And C_TASK_CODE like ?';
+            $params = array($dest, $src, $v_record_type_code, '%' . $v_xet_duyet_bo_sung_task_code);
+            $this->db->Execute($stmt, $params);
+            
+            //Tiep quan ho so dang XET DUYET BO SUNG
+            $stmt = 'Update t_r3_record '
+                    . ' Set C_NEXT_USER_CODE=Replace(C_NEXT_USER_CODE, ?, ?) '
+                    . ' Where C_NEXT_TASK_CODE like ? '
+                    . '     And (C_NEXT_USER_CODE = ? Or C_NEXT_USER_CODE Like ?) '
+                    . '     And FK_RECORD_TYPE=(Select PK_RECORD_TYPE From t_r3_record_type Where C_CODE=?)';   
+            $params = array($src, $dest, '%' . $v_xet_duyet_bo_sung_task_code, $src,  '%,' . $src . ',%', $v_record_type_code);
+            $this->db->Execute($stmt, $params);
+        }
+            
+        //2.3 Neu doi THU_LY ==> Doi ca thu ly lai
+        if ($v_role == _CONST_THU_LY_ROLE)
+        {
+            $v_thu_ly_lai_task_code  = str_replace(_CONST_XML_RTT_DELIM . _CONST_THU_LY_ROLE, _CONST_XML_RTT_DELIM . _CONST_YEU_CAU_THU_LY_LAI_ROLE, $v_task_code);
+
+            $stmt = 'Update t_r3_user_task Set C_USER_LOGIN_NAME=? Where C_USER_LOGIN_NAME=? And C_RECORD_TYPE_CODE=? And C_TASK_CODE like ?';
+            $params = array($dest, $src, $v_record_type_code, '%' . $v_thu_ly_lai_task_code);
+            $this->db->Execute($stmt, $params);
+            
+            //Tiep quan ho so dang THU LY LAI
+            $stmt = 'Update t_r3_record '
+                    . ' Set C_NEXT_USER_CODE=Replace(C_NEXT_USER_CODE, ?, ?) '
+                    . ' Where C_NEXT_TASK_CODE like ? '
+                    . '     And (C_NEXT_USER_CODE = ? Or C_NEXT_USER_CODE Like ?) '
+                    . '     And FK_RECORD_TYPE=(Select PK_RECORD_TYPE From t_r3_record_type Where C_CODE=?)';   
+            $params = array($src, $dest, '%' . $v_thu_ly_lai_task_code, $src,  '%,' . $src . ',%', $v_record_type_code);
+            $this->db->Execute($stmt, $params);
+        }
+
+        if ($v_role == _CONST_THU_LY_HO_SO_LIEN_THONG_ROLE)
+        {
+            $v_thu_ly_lai_ho_so_lien_thong_task_code  = str_replace(_CONST_XML_RTT_DELIM . _CONST_THU_LY_HO_SO_LIEN_THONG_ROLE, _CONST_XML_RTT_DELIM . _CONST_YEU_CAU_THU_LY_LAI_ROLE, $v_task_code);
+
+            $stmt = 'Update t_r3_user_task Set C_USER_LOGIN_NAME=? Where C_USER_LOGIN_NAME=? And C_RECORD_TYPE_CODE=? And C_TASK_CODE like ?';
+            $params = array($dest, $src, $v_record_type_code, '%' . $v_thu_ly_lai_ho_so_lien_thong_task_code);
+            $this->db->Execute($stmt, $params);
+            
+            
+            //Tiep quan ho so dang THU LY LIEN THONG
+            $stmt = 'Update t_r3_record '
+                    . ' Set C_NEXT_USER_CODE=Replace(C_NEXT_USER_CODE, ?, ?) '
+                    . ' Where C_NEXT_TASK_CODE like ? '
+                    . '     And (C_NEXT_USER_CODE = ? Or C_NEXT_USER_CODE Like ?) '
+                    . '     And FK_RECORD_TYPE=(Select PK_RECORD_TYPE From t_r3_record_type Where C_CODE=?)';   
+            $params = array($src, $dest, '%' . $v_thu_ly_lai_ho_so_lien_thong_task_code, $src,  '%,' . $src . ',%', $v_record_type_code);
+            $this->db->Execute($stmt, $params);
+        }
+            
+        //2.4 PHAN_CONG ==> THAY DOI PHAN CONG
+        if ($v_role == _CONST_PHAN_CONG_ROLE)
+        {
+            $v_thay_doi_phan_cong_task_code  = str_replace(_CONST_XML_RTT_DELIM . _CONST_PHAN_CONG_ROLE, _CONST_XML_RTT_DELIM . _CONST_PHAN_CONG_LAI_ROLE, $v_task_code);
+
+            $stmt = 'Update t_r3_user_task Set C_USER_LOGIN_NAME=? Where C_USER_LOGIN_NAME=? And C_RECORD_TYPE_CODE=? And C_TASK_CODE like ?';
+            $params = array($dest, $src, $v_record_type_code, '%' . $v_thay_doi_phan_cong_task_code);
+            $this->db->Execute($stmt, $params);
+        }
+          
+        //3. Thay doi XML next
+        //Danh sach HS can cap nhat next
+        //3.1 Update Next user name
+        $v_to_user_name = $this->db->getOne('Select C_NAME From t_cores_user Where C_LOGIN_NAME=?', Array($dest));
+        $sql = "Update t_r3_record
+                Set C_XML_PROCESSING = UpdateXML(C_XML_PROCESSING,  '/data/next_task/@user_name[@user=\"{$src}\"]', 'user_name=\"$v_to_user_name\"')
+                Where ExtractValue(C_XML_PROCESSING, '/data/next_task[@code=''$v_task_code''][1]/@user[1]') ='$src'";
+        $this->db->Execute($sql);
+        //3.2 Update next user_code
+        $sql = "Update t_r3_record
+                Set C_XML_PROCESSING = UpdateXML(C_XML_PROCESSING,  '/data/next_task/@user[@user=\"{$src}\"]', 'user=\"$dest\"')
+                Where ExtractValue(C_XML_PROCESSING, '/data/next_task[@code=''$v_task_code''][1]/@user[1]') ='$src'";
+        $this->db->Execute($sql);
+        //4 Lưu trữ người thay đổi vào log
+        $stmt = "Insert Into t_r3_swap_user_log
+                    (C_FROM_USER_CODE,
+                     C_TO_USER_CODE,
+                     C_SWAP_DATE,
+                     C_ROLE)
+                Values (?,
+                        ?,
+                        NOW(),
+                        ?)";
+        $this->db->Execute($stmt,array($src,$dest,$task));
+        
+        $this->popup_exec_done();        
     }
 
     public function qry_all_user_in_workflow($p_record_type_code)
@@ -159,16 +261,19 @@ class workflow_Model extends Model
 
             //Kiem tra totaltime
             $v_totaltime   = (float) get_xml_value($dom_flow, '/process/@totaltime');
-            $v_time_by_sum = 0;
-            $steps         = $dom_flow->xpath('//step');
-            foreach ($steps as $step)
+            if ($v_totaltime > 0)
             {
-                $v_time_by_sum += (float) $step->attributes()->time;
-            }
-            if ($v_totaltime != $v_time_by_sum)
-            {
-                $ok = FALSE;
-                $v_message .= 'Sai TotalTime';
+                $v_time_by_sum = 0;
+                $steps         = $dom_flow->xpath('//step');
+                foreach ($steps as $step)
+                {
+                    $v_time_by_sum += (float) $step->attributes()->time;
+                }
+                if ($v_totaltime != $v_time_by_sum)
+                {
+                    $ok = FALSE;
+                    $v_message .= 'Sai TotalTime';
+                }
             }
         }
         else
