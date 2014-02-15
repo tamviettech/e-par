@@ -15,15 +15,20 @@
 					</xsl:attribute>
 						<td style="width:100%">
 							<xsl:if test="@label!=''">
-								<table class="panel_table" border="0" style="width:100%" cellpadding="0" cellspacing="0">
-									<tr class="panel_color">
-										<td colspan="4" height="25px">
-											<span class="@css">
+                                                            <div class="widget-head blue">
+                                                                <h3>
+                                                                    <xsl:value-of select="@label"/>
+                                                                </h3>
+                                                            </div>
+<!--								<table class="panel_table" border="0" style="width:100%" cellpadding="0" cellspacing="0">
+									<tr class="widget-head blue">
+										<td colspan="4">
+											<h3 class="@css" >
 												<xsl:value-of select="@label"/>
-											</span>
+											</h3>
 										</td>
 									</tr>
-								</table>
+								</table>-->
 							</xsl:if>
 							<table border="0" style="width:100%" cellpadding="0" cellspacing="0">
 								<tr>
@@ -145,6 +150,11 @@
             <xsl:when test="$ControlType = 'TextboxDocSEQ'">
 				<xsl:call-template name="CreateTextboxDocSEQ"/>
 			</xsl:when>
+                        
+            <xsl:when test="$ControlType = 'Password'">
+                <xsl:call-template name="CreatePassword"/>
+            </xsl:when>
+                        
 			<xsl:otherwise>This object [<xsl:value-of select="$ControlType"/>] not found</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -166,7 +176,12 @@
 	<xsl:template name="CreateTextboxMoney">
 		<input type="textbox" id="{@id}" class="text  valid" size="{@size}" value="{@defaul_value}" onfocusout="ReadNumberToString('{@id}','lbl_mess_{@id}');" onkeyup="{@Even}" maxlength="15" onKeyDown="return handleEnter(this, event);"
 		       data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}"
-			   onfocus="this.value=removeCommas(this.value)" />			   
+			   onfocus="this.value=removeCommas(this.value)" />
+		<xsl:if test="@id='txtCost'">
+			<label style="display:inline !important; padding-left:4px;">
+				<input type="checkbox" name="chk_txtCost_full" id="chk_txtCost_full" checked="checked" data-xml="yes" value="1"/><strong>Đã thu đủ</strong>
+			</label>
+		</xsl:if>	   			   
 		<br/>
 		<span id="lbl_mess_{@id}" class="{@css}"></span>
 	</xsl:template>
@@ -187,6 +202,12 @@
 		<xsl:if test="@legend != ''">
 			<label><xsl:value-of select="@legend" disable-output-escaping="yes" /></label>
 		</xsl:if>
+	</xsl:template>
+        
+        <!--***********************************************************************************************
+  Call this template when object is Password text box-->
+	<xsl:template name="CreatePassword">
+		<input type="password" id="{@id}" class=" text  valid" size="{@size}" value="{@defaul_value}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}"/>
 	</xsl:template>
 	<!--***********************************************************************************************
   Call this template when object is normal text box-->
@@ -259,10 +280,10 @@
 				<xsl:for-each select="document(@src_file)//item">
 					<tr>
 						<td>
-							<input type="checkbox" id="{@item_id}" name="Fields" value="{@value}" onKeyDown="return handleEnter(this, event);" data-name="{@text}" data-xml="yes" data-doc="{@doc}"/>
-							<label for="{@item_id}">
-								<xsl:value-of select="@text"/>
-							</label>
+                                                    <label for="{@item_id}">
+                                                        <input type="checkbox" id="{@item_id}" name="Fields" value="{@value}" onKeyDown="return handleEnter(this, event);" data-name="{@text}" data-xml="yes" data-doc="{@doc}"/>
+                                                        <xsl:value-of select="@text"/>
+                                                    </label>
 						</td>
 					</tr>
 				</xsl:for-each>
@@ -275,24 +296,25 @@
 	<xsl:template name="CreateCheckbox">
 		<table border="0">
 			<tr>
-				<td align="top" style="width:1%">
-					<xsl:if test="@id='ckbTaiLieuKhac'">
-						<input type="checkbox" id="{@id}" onclick="Textarea('{@id}','{@id}_div');" onKeyDown="return handleEnter(this, event);" data-name="{@title}" data-xml="yes" data-doc="{@doc}"/>
-					</xsl:if>
-					<xsl:if test="@id!='ckbTaiLieuKhac'">
-						<input type="checkbox" id="{@id}" data-name="{@title}" data-xml="yes" data-doc="{@doc}"/>
-					</xsl:if>
-				</td>
-				<td class="text_check">
-					<label for="{@id}">
-						<xsl:value-of select="@title"/>
-					</label>
-				</td>
+                            <td>
+                                <xsl:if test="@id='ckbTaiLieuKhac'">
+                                    <label for="{@id}">
+                                        <input type="checkbox" id="{@id}" onclick="Textarea('{@id}','{@id}_div');" onKeyDown="return handleEnter(this, event);" data-name="{@title}" data-xml="yes" data-doc="{@doc}"/>
+                                        <xsl:value-of select="@title"/>
+                                    </label>
+                                </xsl:if>
+                                <xsl:if test="@id!='ckbTaiLieuKhac'">
+                                    <label for="{@id}">
+                                        <input type="checkbox" id="{@id}" data-name="{@title}" data-xml="yes" data-doc="{@doc}"/>
+                                        <xsl:value-of select="@title"/>
+                                    </label>
+                                </xsl:if>
+                            </td>
 			</tr>
 			<tr style="display:none">
-				<td colspan="2">
-					<div id="{@id}_div" style="display:none;"></div>
-				</td>
+                            <td>
+                                <div id="{@id}_div" style="display:none;"></div>
+                            </td>
 			</tr>
 		</table>
 	</xsl:template>
@@ -305,3 +327,15 @@
 		<img class="btnSeq" style="cursor:pointer" id="btnSeq" src="{$p_site_root}public/images/next_seq.png" onclick="get_next_doc_seq('{@id}')" width="20px" height="20px" />
 	</xsl:template>
 </xsl:stylesheet>
+<!-- Stylus Studio meta-information - (c) 2004-2009. Progress Software Corporation. All rights reserved.
+
+<metaInformation>
+	<scenarios/>
+	<MapperMetaTag>
+		<MapperInfo srcSchemaPathIsRelative="yes" srcSchemaInterpretAsXML="no" destSchemaPath="" destSchemaRoot="" destSchemaPathIsRelative="yes" destSchemaInterpretAsXML="no"/>
+		<MapperBlockPosition></MapperBlockPosition>
+		<TemplateContext></TemplateContext>
+		<MapperFilter side="source"></MapperFilter>
+	</MapperMetaTag>
+</metaInformation>
+-->
