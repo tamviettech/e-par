@@ -1,22 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE();
@@ -27,6 +8,7 @@ $report_data = array(
 );
 
 $v_xml_ho_for_bu_template_file   = $this->get_xml_config($arr_single_task_info['C_RECORD_TYPE_CODE'],'ho_for_bu_template');
+$v_xml_form_struct_full_path = str_replace('\\', '/', $this->get_xml_config($arr_single_task_info['C_RECORD_TYPE_CODE'], 'form_struct'));
 ?>
 <html>
     <head>
@@ -37,20 +19,20 @@ $v_xml_ho_for_bu_template_file   = $this->get_xml_config($arr_single_task_info['
         <link rel="stylesheet" href="<?php echo SITE_ROOT;?>public/css/printer.css" type="text/css" media="all" />
         <script src="<?php echo SITE_ROOT;?>public/js/jquery/jquery.min.js" type="text/javascript"></script>
     </head>
-    <body contenteditable>
+    <body>
         <div class="print-button">
             <input type="button" value="In trang" onclick="window.print(); return false;" />
             <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin()" />
         </div>
         <div>
-            <?php create_handover_info($report_data, '(Liên 1: Lưu)', $v_xml_ho_for_bu_template_file);?>
+            <?php create_handover_info($report_data, '(Liên 1: Lưu)', $v_xml_ho_for_bu_template_file,$v_xml_form_struct_full_path);?>
             <h4 class="page-break"></h4>
-            <?php create_handover_info($report_data, '(Liên 2: Giao cho bên nhận)', $v_xml_ho_for_bu_template_file);?>
+            <?php create_handover_info($report_data, '(Liên 2: Giao cho bên nhận)', $v_xml_ho_for_bu_template_file,$v_xml_form_struct_full_path);?>
         </div>
     </body>
 </html>
 <?php
-function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_xml_ho_for_bu_template_file)
+function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_xml_ho_for_bu_template_file,$v_xml_form_struct_full_path)
 {
     $arr_all_record         = $report_data['arr_all_record'];
     $arr_single_task_info   = $report_data['arr_single_task_info'];
@@ -99,7 +81,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
     </table>
 
     <!-- report body -->
-    <table cellpadding="0" cellspacing="0" width="100%" >
+    <table cellpadding="0" cellspacing="0" width="100%" class="word-wrap">
         <colgroup>
             <col width="30%" />
             <col width="70%" />
@@ -160,7 +142,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
         <tr>
             <td colspan="2">
                 <!-- Record list -->
-                <table cellpadding="4" cellspacing="0" width="100%" class="list">
+                <table cellpadding="4" cellspacing="0" width="100%" class="list word-wrap">
                     <?php if (!is_file($v_xml_ho_for_bu_template_file)): ?>
                         <tr>
                             <th>STT</th>
@@ -196,11 +178,12 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                         {
                             $v_xml_data     = isset($arr_all_record[$i]['C_XML_DATA']) ? $arr_all_record[$i]['C_XML_DATA'] : '<root/>';
                             $dom_unit_info_xml_data   = simplexml_load_string($v_xml_data);
-
+                            
                             reset($cols);
                             $html .= '<tr>';
                             foreach ($cols as $col)
                             {
+                                $v_col_data = '';
                                 //Cell data
                                 $v_col_id   = strval($col->attributes()->id);
                                 $v_align    = isset($col->attributes()->align) ? ' align="' . $col->attributes()->align . '"' : '';
@@ -213,9 +196,43 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                                 {
                                     if (strpos($v_col_id , 'xml/') !== FALSE) //Cot du lieu nam trong XML
                                     {
-                                        $v_col_id       = str_replace('xml/', '', $v_col_id);
-                                        $r              = $dom_unit_info_xml_data->xpath("/data/item[@id='" . $v_col_id . "']/value");
-                                        $v_col_data     = sizeof($r) ? $r[0] : '';
+                                        //lay loai du lieu xml
+                                        $col_type_xml = strval($col->attributes()->type);
+                                        //dang formstruct
+                                        if($col_type_xml == 'formstruct')
+                                        {
+                                            $v_col_id       = str_replace('xml/', '', $v_col_id);
+                                            if($v_col_id == 'doc')
+                                            {
+                                                $x_path = "//item[value='true' and @doc='true']/@id";
+                                            }
+                                            else
+                                            {
+                                                $x_path = "/data/item[@id='" . $v_col_id . "']/value";
+                                            }
+                                            
+                                            $r  = $dom_unit_info_xml_data->xpath($x_path);
+                                            //lay du lieu tu form struct
+                                            $v_col_data .= '<ul>';
+                                            foreach($r as $arr_id)
+                                            {
+                                                $id = $arr_id->id;
+                                                $dom = simplexml_load_file($v_xml_form_struct_full_path);
+                                                $x_path = "//line/item[@id='$id']/@title";
+                                                $r = $dom->xpath($x_path);
+                                                
+                                                $v_col_data .= '<li>' . $r[0] . '</li>';
+                                            }
+                                            $v_col_data .= '</ul>';
+                                        }
+                                        //dang default: text
+                                        else
+                                        {
+                                            $v_col_id       = str_replace('xml/', '', $v_col_id);
+                                            $r              = $dom_unit_info_xml_data->xpath("/data/item[@id='" . $v_col_id . "']/value");
+                                            $v_col_data     = sizeof($r) ? $r[0] : '';
+                                            $v_col_data     = '<pre>' . $v_col_data . '</pre>';
+                                        }
                                     }
                                     else //Cot tuong minh
                                     {
@@ -229,6 +246,9 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                                             $v_col_data = r3_View::return_date_by_text($v_col_data);
                                         }
                                     }
+                                    
+                                    $v_col_data = str_replace('<pre>', '', $v_col_data);
+                                    $v_col_data = str_replace('</pre>', '', $v_col_data);
                                     $html .= '<td width="' . $col->attributes()->size . '"' . $v_align . '>' . strval($v_col_data) . '</td>';
                                 }//end if ($v_col_id == 'RN')
                             } //end foreach $cols

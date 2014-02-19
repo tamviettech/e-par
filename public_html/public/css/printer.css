@@ -1,5 +1,9 @@
 @media all
 {
+    .word-wrap 
+    {
+        word-wrap: break-word;
+    }
     .print-button
     {
         float: left;
