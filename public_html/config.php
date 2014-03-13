@@ -20,8 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <?php
 
 /******************** Hang so ket noi CSDL ***********************************/
-define('CONST_DB_SERVER_ADDRESS', '10.10.1.213');
-define('CONST_DB_DATABASE_NAME', 'e-par-idc');
+define('CONST_DB_SERVER_ADDRESS', '10.10.1.200');
+define('CONST_DB_DATABASE_NAME', 'epar-github');
 define('CONST_DB_USER_NAME', 'root');
 define('CONST_DB_USER_PASSWORD', 'root');
 define('DATABASE_TYPE','MYSQL');//Be MSSQL or ORACLE or MYSQL
@@ -35,7 +35,7 @@ define('DEBUG_MODE', 0);
 //Duong dan dia chi goc
 //          o   /virtual-directory/: Chay bang thu muc ao (Virtual Directory)
 //          o   /                  : Chay bang domain     
-define('SITE_ROOT','/e-par-idc/');
+define('SITE_ROOT','/epar-github/');
 
 //Turn on/off chat module
 //          o   0: Khong su dung chat
@@ -47,9 +47,9 @@ define('CONST_USE_ADODB_CACHE_FOR_REPORT',0);
 
 //Database tren cung server voi webserver
 //Neu khac, thoi gian duoc lay theo dong ho cua Database server
-define('CONST_DATABASE_IS_SAME_SERVER',1);
+define('CONST_DATABASE_IS_SAME_SERVER',0);
 
-define('CONST_IDC_INTERGRATED',1);
+define('CONST_IDC_INTERGRATED',0);
 
 //Xac thuc qua Windows AD
 define('AUTH_MODE', 'AD');
