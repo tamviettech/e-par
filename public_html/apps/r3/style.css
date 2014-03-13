@@ -226,7 +226,7 @@ h2.module_title {
 #header #date {
     float: right;
     padding-right: 20px;
-    padding-top: 8px;
+    padding-top: 13px;
 }
 
 #footer {
@@ -937,6 +937,7 @@ a.home {
 #header {
     background-color: #F6F6F6;
     border-top: solid 1px #FFF;
+    height: 40px;
 }
 #roles ul {
     list-style-type: none;
