@@ -44,6 +44,7 @@ class record_Controller extends Controller
         , _CONST_KIEM_TRA_TRUOC_HO_SO_ROLE            => 'Kiểm tra trước hồ sơ'
         //BO SUNG
         , _CONST_THONG_BAO_BO_SUNG_ROLE               => 'Thông báo bổ sung'
+        , _CONST_TRINH_KY_ROLE                        => 'Trình ký'
 
         //Bo phan Thue
         , _CONST_NOP_HO_SO_SANG_CHI_CUC_THUE_ROLE         => 'Chuyển HS sang thuế'
@@ -268,6 +269,7 @@ class record_Controller extends Controller
      */
     private function _require_office_hour()
     {
+        return true;
         if (DEBUG_MODE)
         {
             return;
@@ -847,6 +849,29 @@ class record_Controller extends Controller
 
         $this->view->render('dsp_approval_record', $VIEW_DATA);
     }
+    
+    public function dsp_submit_to_sign($record_id_list)
+    {
+        $this->_require_office_hour();
+        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
+        $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRINH_KY_ROLE;
+
+        $VIEW_DATA['record_id_list'] = $record_id_list;
+
+        $arr_all_record = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
+        //Gia tri chinh xac cua TASK_CODE (cong viec chuan bi thuc hien)
+        if (count($arr_all_record) > 0)
+        {
+            $v_task_code = $arr_all_record[0]['C_NEXT_TASK_CODE'];
+        }
+
+        $VIEW_DATA['arr_all_record']       = $arr_all_record;
+        $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+
+        $VIEW_DATA['arr_all_next_user'] = $this->model->qry_all_user_on_next_task($v_task_code);
+
+        $this->view->render('dsp_submit_to_sign_record', $VIEW_DATA);
+    }
 
     /**
      * Hiển thị màn hình phê duyệt HS bổ sung
@@ -879,6 +904,11 @@ class record_Controller extends Controller
     {
         $this->_require_office_hour();
         $this->model->do_approval_record();
+    }
+    public function do_submit_to_sign_record()
+    {
+        $this->_require_office_hour();
+        $this->model->do_submit_to_sign_record();
     }
 
     public function do_reject_record()
@@ -1329,6 +1359,10 @@ class record_Controller extends Controller
     }
 
     private function thu_phi()
+    {
+        $this->_regular_role(__FUNCTION__);
+    }
+    private function trinh_ky()
     {
         $this->_regular_role(__FUNCTION__);
     }
