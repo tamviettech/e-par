@@ -146,7 +146,6 @@ defined('_CONST_TRA_CUU_LIEN_THONG_ROLE') or define('_CONST_TRA_CUU_LIEN_THONG_R
             </div>
             <div class="grid_24 top-nav-box" id="header">
                 <div id="user_info">
-                    <div>
                         <ul id="menu-bar">
                             <li><?php echo VIEW::nav_home(); ?></li>
                             <?php if (check_permission('QUAN_TRI_DANH_MUC_LOAI_HO_SO', 'R3') OR check_permission('QUAN_TRI_QUY_TRINH_XU_LY_HO_SO', 'R3') OR check_permission('QUAN_TRI_LUAT_CAN_LOC_HO_SO', 'R3') OR Session::get('is_admin')): ?>
@@ -175,7 +174,6 @@ defined('_CONST_TRA_CUU_LIEN_THONG_ROLE') or define('_CONST_TRA_CUU_LIEN_THONG_R
                                 </li>
                             <?php endif; ?>
                         </ul>
-                    </div>
                 </div>    
                 <div id="date"><?php echo jwDate::vn_day_of_week() . ', ' . date("d/m/Y"); ?>
                     <?php if (Session::get('login_name') !== NULL): ?>
