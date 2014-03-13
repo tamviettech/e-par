@@ -3428,6 +3428,89 @@ class record_Model extends Model
 
         $this->popup_exec_done();
     }
+    
+    /**
+     * trinh ky
+     */
+    public function do_submit_to_sign_record()
+    {
+        //Ma loai HS
+        $v_record_type_code = get_post_var('hdn_record_type_code');
+        ($v_record_type_code != '') OR DIE();
+
+        //Ket qua thu ly
+        $v_approval_value = get_post_var('rad_approval');
+        ($v_approval_value != '') OR DIE();
+
+        //Danh sach ma HS
+        $v_record_id_list = get_post_var('hdn_item_id_list');
+        ($v_record_id_list != '') OR DIE();
+
+        //Ly do chua duyet HS
+        $v_reason = get_post_var('txt_reason');
+
+        //Phí, lệ phí
+        $v_fee             = get_post_var('txt_fee');
+        $v_fee_description = get_post_var('txt_fee_description');
+
+        $arr_record_id = explode(',', $v_record_id_list);
+
+        foreach ($arr_record_id as $v_record_id)
+        {
+            if (!$this->_check_inhand_record($v_record_id))
+            {
+                continue;
+            }
+            
+            $this->db->Execute('Update t_r3_record Set C_ROLLBACKABLE=1 Where PK_RECORD=?', array($v_record_id));
+            //$v_current_task ?????
+            $stmt           = 'Select C_NEXT_TASK_CODE From view_processing_record Where PK_RECORD=?';
+            $v_current_task = $this->db->getOne($stmt, array($v_record_id));
+            
+            //Phe duyet, chuyen den buoc tiep theo
+                
+            $arr_next_task_info    = $this->_qry_next_task_info($v_current_task);
+            $v_next_task_code      = $arr_next_task_info['C_NEXT_TASK_CODE'];
+            $v_next_task_user_code = replace_bad_char($_POST['rad_signer']);
+            $arr_single_user_info  = $this->db->getRow('Select C_NAME, C_JOB_TITLE From t_cores_user Where C_LOGIN_NAME=?', array($v_next_task_user_code));
+            $v_next_task_user_name = $arr_single_user_info['C_NAME'];
+            $v_next_user_job_title = $arr_single_user_info['C_JOB_TITLE'];
+               
+
+            $xml_next_task = '<next_task ';
+            $xml_next_task .= ' code="' . $v_next_task_code . '"';
+            $xml_next_task .= ' user="' . $v_next_task_user_code . '"';
+            $xml_next_task .= ' user_name="' . $v_next_task_user_name . '"';
+            $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
+            $xml_next_task .= ' fee="' . $v_fee . '"';
+            $xml_next_task .= ' fee_description="' . $v_fee_description . '"';
+            $xml_next_task .= ' />';
+            if (!$v_next_task_code)
+            {
+                continue;
+            }
+            
+            //Step log
+            $v_step_seq = uniqid();
+            $v_deadline = $this->db->GetOne("Select C_DOING_STEP_DEADLINE_DATE
+                From t_r3_record Where PK_RECORD=?", array($v_record_id));
+            $step       = '<step seq="' . $v_step_seq . '" code="' . $v_current_task . '">';
+            $step .= '<user_code>' . Session::get('user_code') . '</user_code>';
+            $step .= '<user_name>' . Session::get('user_name') . '</user_name>';
+            $step .= '<user_job_title>' . Session::get('user_job_title') . '</user_job_title>';
+            $step .= '<datetime>' . $this->getDate() . '</datetime>';
+            $step .= '<fee>' . $v_fee . '</fee>';
+            $step .= '<fee_description>' . $v_fee_description . '</fee_description>';
+            $step .= '<to_group_code>' . $arr_next_task_info['C_NEXT_GROUP_CODE'] . '</to_group_code>';
+            $step .= "<deadline>$v_deadline</deadline>";
+            $step .= '</step>';
+            $this->_insert_record_processing_step($v_record_id, $step);
+            $this->_update_next_task_info($v_record_id, $xml_next_task);
+            
+            $this->popup_exec_done();
+                
+        }
+    }
 
     public function do_reject_record()
     {
