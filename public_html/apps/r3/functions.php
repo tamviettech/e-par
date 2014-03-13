@@ -28,9 +28,13 @@ class r3_View extends View {
 	
 	private function get_root_record_type_code($record_type_code)
 	{
+        return substr($record_type_code, 0, 2) . '00';
+        /*
 	    $ret =  preg_replace('/([0-9]+[A-Z0-9-_]*)/', '00', $record_type_code);
 	    //$ret = str_replace('0000', '00', $ret);
 	    return $ret;
+         * 
+         */
 	}
     
     public function get_book_config($book_code)
