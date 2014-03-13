@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteBase /e-par-idc/
+RewriteBase /epar-github/
 
 <FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh|cmd|exe|bat)$">
     Order Allow,Deny
