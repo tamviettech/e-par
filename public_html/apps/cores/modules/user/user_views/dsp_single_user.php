@@ -120,7 +120,7 @@ else
                         <input type="text" name="txt_name" id="txt_name" value="<?php echo $v_name;?>"
                             class="inputbox" maxlength="50" style="width:50%"
                             onKeyDown="return handleEnter(this, event);"
-                            data-allownull="no" data-validate="username"
+                            data-allownull="no" data-validate="text"
                             data-name="Tên người sử dụng"
                             data-xml="no" data-doc="no"
                         />
