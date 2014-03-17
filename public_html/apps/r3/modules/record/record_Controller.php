@@ -869,7 +869,8 @@ class record_Controller extends Controller
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
 
         $VIEW_DATA['arr_all_next_user'] = $this->model->qry_all_user_on_next_task($v_task_code);
-
+        
+        
         $this->view->render('dsp_submit_to_sign_record', $VIEW_DATA);
     }
 
