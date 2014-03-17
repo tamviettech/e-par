@@ -46,12 +46,8 @@ $v_record_id_list     = $VIEW_DATA['record_id_list'];
 $v_record_type_code = $arr_all_record[0]['C_RECORD_TYPE_CODE'];
 $v_record_type_name = $arr_all_record[0]['C_RECORD_TYPE_NAME'];
 
-// = $arr_single_task_info[''];
-//$v_group_name       = $arr_single_task_info['C_GROUP_NAME'];
-$arr_all_next_user = $VIEW_DATA['arr_all_next_user'];
-
 //display header
-$this->template->title = 'Xét duyệt hồ sơ';
+$this->template->title = 'Trình ký hồ sơ';
 
 $v_pop_win = isset($_REQUEST['pop_win']) ? '_pop_win' : '';
 $this->template->display('dsp_header' . $v_pop_win . '.php');
@@ -129,7 +125,7 @@ if ($v_promote == '')
     }
     ?>
 
-    <div class="panel_color_form">Danh sách hồ xét duyệt</div>
+    <div class="panel_color_form">Danh sách hồ trình ký</div>
     <div class="Row">
         <div class="left-Col">
             <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
@@ -215,6 +211,8 @@ if ($v_promote == '')
                     </ul>
                 </div>
             </div>
+        <?php else: ?>
+            <input type="hidden" value="<?php echo $arr_all_next_user[0]['C_USER_LOGIN_NAME']; ?>" id="rad_signer" name="rad_signer">
         <?php endif; ?>
 
         <?php if (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_THU_PHI_ROLE . '$/', $v_next_task_code) OR preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '$/', $v_next_task_code)):
@@ -225,15 +223,6 @@ if ($v_promote == '')
                     <input type="button" class="solid print" value="In phiếu bàn giao" name="btn_print_record_list_to_handover_back" onclick="btn_print_record_list_to_handover_back_onclick();" />
                 </div>
             </div>
-        <?php else: ?>
-            <!--
-                <div class="Row">
-                    <div class="left-Col">&nbsp;</div>
-                    <div class="right-Col">
-                        <input type="button" class="solid print" value="In danh sách ký duyệt" name="btn_print_record_list_to_sign"onclick="btn_print_record_list_to_sign_onclick();" />
-                    </div>
-                </div>
-            -->
         <?php endif; ?>
     </div>
 
