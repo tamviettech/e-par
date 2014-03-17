@@ -230,6 +230,8 @@ if ($v_promote == '')
                         <label>Cán bộ thu phí <span class="required">*</span></label>
                     <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '$/', $v_next_task_code)): ?>
                         <label>Cán bộ trả kết quả:<span class="required">*</span></label>
+                    <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_TRINH_KY_ROLE . '$/', $v_next_task_code)): ?>
+                        <label>Cán bộ trình ký:<span class="required">*</span></label>
                     <?php else: ?>
                         <label>Lãnh đạo ký duyệt:<span class="required">*</span></label>
                     <?php endif; ?>
