@@ -1,22 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 /* @var $this \View */
 //header
@@ -31,7 +12,12 @@ $this->template->display('dsp_header.php');
 <?php
     function _dsp_print_button($url)
     {
-        echo '<center><input type="button" name="print" class="solid print" value="In báo cáo" onclick="showPopWin(\'' . $url . '\', 1000, 600, null, true);" /></center>';
+        echo '<center>
+                <button type="button" name="trash" class="btn btn-info" onclick="showPopWin(\'' . $url . '\', 1000, 600, null, true);">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
+              </center>';
     }
     
     switch (strtolower($report_type))
@@ -41,9 +27,18 @@ $this->template->display('dsp_header.php');
             echo $this->hidden('hdn_year');
             ?>
             <label><strong>Kỳ báo cáo:</strong></label>
-            <input type="radio" name="rad_period" id="year_period" value="year" onclick="select_period(this)"><label for="year_period">Theo năm</label>
-            <input type="radio" name="rad_period" id="month_period" value="month" onclick="select_period(this)"><label for="month_period">Theo tháng</label>
-            <input type="radio" name="rad_period" id="week_period" value="week" onclick="select_period(this)"><label for="week_period">Theo tuần</label>
+            <label class="checkbox inline">
+                <input type="radio" name="rad_period" id="year_period" value="year" onclick="select_period(this)">
+                Theo năm
+            </label>
+            <label class="checkbox inline">
+                <input type="radio" name="rad_period" id="month_period" value="month" onclick="select_period(this)">
+                Theo tháng
+            </label>
+            <label class="checkbox inline">
+                <input type="radio" name="rad_period" id="week_period" value="week" onclick="select_period(this)">
+                Theo tuần
+            </label>
 
             <div id="div_year_period" style="display:none;">
                 Năm
@@ -111,7 +106,11 @@ $this->template->display('dsp_header.php');
                 }
             </script>
             <center>
-                <input type="button" name="print" class="solid print" value="In báo cáo" onclick="btn_print_onclick();" />
+                <!--button in-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <?php
             break;
@@ -132,13 +131,30 @@ $this->template->display('dsp_header.php');
                 Đến ngày <input type="textbox" id="txt_end_date" name="txt_end_date" class="text valid" />
                         <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT;?>public/images/calendar.gif" onclick="DoCal('txt_end_date')">
             </div>
+            <div class="clear" style="height: 10px">&nbsp;</div>
             <center>
-                <input type="button" name="print" class="solid print" value="In báo cáo" onclick="btn_print_onclick();" />
+                <!--button in phi le phi-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
+                <!--button in chi tiet phi le phi-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick('7b');">
+                    <i class="icon-print"></i>
+                    In báo cáo chi tiết thu phí, lệ phí
+                </button>
             </center>
             <script>
-                function btn_print_onclick()
+                function btn_print_onclick(report_type)
                 {
-                    v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/';?>';
+                    if(typeof(report_type) == 'undefined')
+                    {
+                        v_url = '<?php echo $this->get_controller_url() . 'type/' . $report_type . '/';?>';
+                    }
+                    else
+                    {
+                        v_url = '<?php echo $this->get_controller_url() . 'type/';?>' + report_type + '/' ;
+                    }
                     v_url += QS + 'pdf=1';
                     v_url += '&begin_date=' + $("#txt_begin_date").val();
                     v_url += '&end_date=' + $("#txt_end_date").val();
@@ -189,7 +205,11 @@ $this->template->display('dsp_header.php');
                 </tr>
             </table>
             <center>
-                <input type="button" name="print" class="solid print" value="In báo cáo" onclick="btn_print_onclick();" />
+                <!--button in-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
 
             <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.chained.mini.js" type="text/javascript"></script>
@@ -238,7 +258,7 @@ $this->template->display('dsp_header.php');
                 </tr>
             </table>
             <center>
-                <input type="button" name="print" class="solid print" value="In báo cáo" onclick="btn_print_onclick();" />
+                <input type="button" name="print" class="btn btn-info" value="In báo cáo" onclick="btn_print_onclick();" />
             </center>
             <script>
                 function btn_print_onclick()
@@ -255,21 +275,16 @@ $this->template->display('dsp_header.php');
             <?php 
             break;
 
-        case '3':
-        case '12':
-        case '13':
-        case '14':
-        	$QS = check_htacces_file() ? '?' : '&';
-            $v_url = $this->get_controller_url() . 'type/' . $report_type . '/' . $QS . 'pdf=1';
-            _dsp_print_button($v_url);
-            break;
+//        case '3':
+//        case '12':
+//        case '13':
+//        case '14':
+        	
 
         default:
-            ?>
-            <iframe src="<?php echo SITE_ROOT?>r3/liveboard" style="width:100%;height:500px; border:0; overflow: scroll;"></iframe>
-            <a href="<?php echo SITE_ROOT?>r3/liveboard" target="blank"><label>Xem bảng tổng hợp đầy đủ</label></a>
-            <?php 
-            break;
+            $QS = check_htacces_file() ? '?' : '&';
+            $v_url = $this->get_controller_url() . 'type/' . $report_type . '/' . $QS . 'pdf=1';
+            _dsp_print_button($v_url);
     }
     ?>
 </form>
