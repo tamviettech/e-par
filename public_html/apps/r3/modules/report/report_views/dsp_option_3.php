@@ -1,23 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-
-<?php
 defined('DS') or die;
 /* @var $this \View */
 $this->template->title = 'Báo cáo tổng hợp';
@@ -39,7 +20,7 @@ $this->template->display('dsp_header.php');
                     , '1to6'  => '6 tháng đầu năm', '7to12' => '6 tháng cuối năm');
                 ?>
                 <?php foreach ($arr_rads as $k => $v): ?>
-                    <label>
+                    <label class="checkbox inline">
                         <input 
                             type="radio" name="rad_type"
                             id="rad_<?php echo $k ?>" value="<?php echo $k ?>"
@@ -88,7 +69,7 @@ $this->template->display('dsp_header.php');
                 $arr_quarters = array(1 => 'Quý I', 2 => 'Quý II', 3 => 'Quý III', 4 => 'Quý IV');
                 ?>
                 <?php foreach ($arr_quarters as $k => $v): $checked = $quarter == $k ? 'checked' : '' ?>
-                    <label>
+                    <label class="checkbox inline">
                         <input type="radio" name="rad_quarter" <?php echo $checked ?> value="<?php echo $k ?>"/>
                         <?php echo $v ?>
                     </label>
@@ -98,7 +79,11 @@ $this->template->display('dsp_header.php');
         <tr>
             <td></td>
             <td class="">
-                <input type="button" name="print" class="solid print" value="In báo cáo" onclick="btn_print_onclick();">
+                <!--button in-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </td>
         </tr>
     </table>
