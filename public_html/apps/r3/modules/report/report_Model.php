@@ -1,23 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-
-<?php
 
 require_once __DIR__ . '/../record/record_Model.php';
 
@@ -33,7 +14,36 @@ class report_Model extends record_Model
     {
         parent::__construct();
     }
+    
+    
+      /**
+     * Lấy danh sách Role của một user
+     * @param string $user_code
+     * @return array
+     */
+    public function qry_all_user_role($user_code)
+    {
+        if (DATABASE_TYPE == 'MSSQL')
+        {
+            $stmt = "Select distinct right(C_TASK_CODE, PATINDEX ( '%[A-Z0-9_][" . _CONST_XML_RTT_DELIM . "]%' , reverse(C_TASK_CODE))) C_ROLE
+                    From t_r3_user_task  Where C_USER_LOGIN_NAME=?";
+        }
+        elseif (DATABASE_TYPE == 'MYSQL')
+        {
+            $stmt = "Select distinct Right(C_TASK_CODE, LOCATE('" . _CONST_XML_RTT_DELIM . "', REVERSE(C_TASK_CODE)) - 1) C_ROLE
+                    From t_r3_user_task Where C_USER_LOGIN_NAME=?";
+        }
+        $params = array($user_code);
 
+        if (DEBUG_MODE < 10)
+        {
+            $this->db->debug = 0;
+        }
+        $ret             = $this->db->getCol($stmt, $params);
+        $this->db->debug = DEBUG_MODE;
+        return $ret;
+    }
+    
     public function qry_all_record_type_with_spec_code()
     {
         $sql = 'Select PK_RECORD_TYPE, C_SPEC_CODE, C_CODE, C_NAME From t_r3_record_type Where C_STATUS>0 Order By C_ORDER';
@@ -808,7 +818,7 @@ class report_Model extends record_Model
 
     function qry_all_due($begin, $end)
     {
-        $this->db->debug = 1;
+        //$this->db->debug = 1;
         $fields          = "r.C_CITIZEN_NAME, r.C_RECORD_NO, r.C_XML_PROCESSING, r.C_RECEIVE_DATE, r.C_CLEAR_DATE, r.C_BIZ_DAYS_EXCEED";
         $fields .= " ,rt.C_CODE as C_TYPE_CODE ";
         $sql             = "Select $fields 
