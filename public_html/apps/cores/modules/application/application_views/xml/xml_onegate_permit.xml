@@ -113,6 +113,9 @@
     <line label="" cols="1">
         <item type="Checkbox" value="2" id="Y_KIEN_LANH_DAO" name="" allownull="" validate="" title="Ý kiến chỉ đạo" label="" view="true"/>
     </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="TRINH_KY" name="" allownull="" validate="" title="Trình ký" label="" view="true"/>
+    </line>
 
     <!-- Chung, tra cứu, báo cáo -->
     <line label="Tra cứu, báo cáo" cols="1">

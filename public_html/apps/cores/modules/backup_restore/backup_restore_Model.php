@@ -19,7 +19,6 @@ class backup_restore_Model extends Model
     function __construct()
     {
         parent::__construct();
-        (Session::get('is_admin') == 1 OR check_permission('QUAN_TRI_BACKUP_RESTORE')) Or die($this->access_denied());
     }
 
     
@@ -76,9 +75,9 @@ class backup_restore_Model extends Model
             return ' Xảy ra lỗi, xin thử lại!';
             
         }
-        $commend = "mysql --user=$this->_username --password=$this->_password  --host=$this->_host $this->_database_name < $dir_file_restore";
-        system($commend, $result);
-        if ($result == TRUE) 
+        $command = "mysql --user=$this->_username --password=$this->_password  --host=$this->_host $this->_database_name < $dir_file_restore";
+        system($command, $result);
+        if ($result != 0) 
         {
             return 'Đã xảy ra lỗi trong quá trình khôi phục';
             
@@ -94,8 +93,9 @@ class backup_restore_Model extends Model
             echo 'Đã có lỗi xảy ra';
             return;
         }
-        $commend = "mysqldump --user=$this->_username --password=$this->_password  --host=$this->_host $this->_database_name > $dir_path_save";
-        system($commend, $result);
+        $command = "mysql --user=$this->_username --password=$this->_password  --host=$this->_host $this->_database_name > $dir_path_save";
+        system($command, $result);
+        
         if ($result != 0) {
             unlink($dir_path_save);
             return 'Xảy ra lỗi trong quá trình sao lưu!';

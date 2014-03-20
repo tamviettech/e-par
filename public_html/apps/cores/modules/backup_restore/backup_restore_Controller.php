@@ -20,15 +20,14 @@ class backup_restore_Controller extends Controller
     {
            //Kiem tra session
         session::init();
-        $login_name = session::get('login_name');
-        
+       $login_name = session::get('login_name');
         if ($login_name == NULL)
         {
             session::destroy();
             header('location:' . SITE_ROOT . 'login.php');
             exit;
         }
-        (Session::get('is_admin') == 1 OR check_permission('QUAN_TRI_BACKUP_RESTORE')) Or die($this->access_denied());
+        (Session::get('is_admin') == 1 OR check_permission('QUAN_TRI_BACKUP_RESTORE','cores')) Or die($this->access_denied());
         parent::__construct('cores', 'backup_restore');
         $this->view->show_left_side_bar = $this->view->template->show_left_side_bar = FALSE;
        

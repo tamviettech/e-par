@@ -2,7 +2,7 @@
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
-
+    
 //header
 $this->template->title = 'Sao lưu khôi phục';
 $this->template->display('dsp_header.php');
@@ -23,9 +23,13 @@ $arr_total_is_file_backup[]['TOTAL_RECORD'] = ($arr_all_item->TOTAL_RECORD->TOTA
 $v_current_tab               = isset($_REQUEST['hdn_status_tab']) ? $_REQUEST['hdn_status_tab'] : 0;
 ?>
 <div id="loading" style="display: none;width: 77%; height: 100%; position: absolute; z-index: 99999999; text-align: center; margin: 0px; padding: 0px;">
-    <img src="/lang-giang/apps/r3/modules/backup_restore/images/loading_1.gif">
+    <img src="<?php echo FULL_SITE_ROOT.'apps/cores/modules/backup_restore/images/loading_1.gif';?>">
 </div>
-
+    <ul class="breadcrumb">
+    	<li><a href="<?php echo SITE_ROOT;?>" class="icon-home"></a><span class="divider "><i class="icon-angle-right"></i></span></li>
+    	<li class="active">Quản trị hệ thống<span class="divider"><i class="icon-angle-right"></i></span></li>
+    	<li class="active">Sao lưu và khôi phục dữ liệu</li>
+    </ul>
 <form name="frmMain" id="frmMain" method="post">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
