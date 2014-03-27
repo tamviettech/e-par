@@ -28,10 +28,6 @@ function chat_ctrl($scope, $http, $timeout) {
     $scope.show_chat = -1;
     $scope.my_chat_info = {};
     $scope.chat_boxes = [];
-    
-    return;
-
-    //return;
 
     //online list
     $scope.get_online_list = function() {
