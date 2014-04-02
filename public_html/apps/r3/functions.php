@@ -188,8 +188,11 @@ class r3_View extends View {
             				<option value="">-- Chọn loại hồ sơ --</option>
             				<?php $v_la_ho_so_lien_thong = FALSE;?>
             				<?php foreach ($arr_all_record_type as $code=>$info):?>
-            				    <?php $str_selected = ($code == strval($v_record_type_code)) ? ' selected':'';?>
-                                <option value="<?php echo $code;?>"<?php echo $str_selected?> data-scope="<?php echo $info['C_SCOPE'];?>"><?php echo $info['C_NAME'];?></option>
+            				    <?php 
+                                            $str_selected = ($code == strval($v_record_type_code)) ? ' selected':'';
+                                            $v_mapping_code = (string)$info['C_MAPPING_CODE'];
+                                            ?>
+                                <option value="<?php echo $code;?>"<?php echo $str_selected?> data-mapping="<?php echo $v_mapping_code;?>" data-scope="<?php echo $info['C_SCOPE'];?>"><?php echo $info['C_NAME'];?></option>
                                 <?php if (($code == $v_record_type_code) && ($info['C_SCOPE'] == 1)) {$v_la_ho_so_lien_thong = TRUE;}?>
             				<?php endforeach;?>
             	            <?php //echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>

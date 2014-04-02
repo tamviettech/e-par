@@ -15,6 +15,14 @@ function txt_record_type_code_onkeypress(evt)
         }
         else
         {
+            $("#sel_record_type option").each(function(){
+                if($(this).attr('data-mapping') == v_record_type_code)
+                {
+                    $("#sel_record_type").val($(this).val());
+                    $("#frmMain").submit();
+                }
+            });
+            
             $("#procedure").html('');
         }
     }

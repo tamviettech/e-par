@@ -1315,13 +1315,19 @@ class record_Model extends Model
     {
         $role        = strtoupper($role);
         $v_user_code = Session::get('user_code');
-
+        $v_user_id   = Session::get('user_id');
+        
+        //left join t_r3_mapping
+        $v_join_mapping = "  LEFT JOIN t_r3_mapping M
+                                ON RT.C_CODE = M.C_RECORD_TYPE_CODE";
+        
         if (check_permission('THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO', $this->app_name))
         {
             $v_from_qry = "From t_r3_record_type RT Right Join (Select distinct UT.C_RECORD_TYPE_CODE
                                             From t_r3_user_task UT) as RTU
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
-                    Where RT.C_STATUS > 0";
+                                            $v_join_mapping
+                    Where RT.C_STATUS > 0 And M.FK_USER = $v_user_id";
         }
         else
         {
@@ -1334,7 +1340,8 @@ class record_Model extends Model
                                             From t_r3_user_task UT
                                             Where UT.C_USER_LOGIN_NAME='$v_user_code') as RTU
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
-                            Where $cond";
+                                            $v_join_mapping
+                            Where $cond And M.FK_USER = $v_user_id";
             }
             else
             {
@@ -1342,7 +1349,8 @@ class record_Model extends Model
                                             From t_r3_user_task UT
                                             Where UT.C_USER_LOGIN_NAME='$v_user_code' and UT.C_TASK_CODE Like '%::$role') as RTU
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
-                            Where RT.C_STATUS > 0";
+                                            $v_join_mapping
+                            Where RT.C_STATUS > 0 And M.FK_USER = $v_user_id";
             }
 
             /*
@@ -1379,6 +1387,7 @@ class record_Model extends Model
                         RT.C_CODE
                         , Concat(RT.C_CODE, ' - ',  RT.C_NAME) as C_NAME
                         , RT.C_SCOPE 
+                        , M.C_CODE as C_MAPPING_CODE 
                     $v_from_qry
                     $other_clause
                     ORDER BY RT.c_code";
