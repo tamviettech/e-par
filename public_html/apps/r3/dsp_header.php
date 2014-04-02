@@ -179,6 +179,7 @@ defined('_CONST_TRA_CUU_LIEN_THONG_ROLE') or define('_CONST_TRA_CUU_LIEN_THONG_R
                     <?php if (Session::get('login_name') !== NULL): ?>
                         <img src="<?php echo SITE_ROOT; ?>public/images/users.png" />
                         <label><?php echo Session::get('user_name'); ?> - <?php echo Session::get('user_job_title'); ?></label>
+                        <label>(<a href="<?php echo SITE_ROOT . build_url('r3/mapping'); ?>">Bảng ánh xạ thủ tục</a>)</label>
                         <?php if (session::get('auth_by') != 'AD'): ?>
                             <?php $v_change_password_url = SITE_ROOT . build_url('cores/user/dsp_change_password'); ?>
                             <label>(<a href="javascript:void(0)" onclick="showPopWin('<?php echo $v_change_password_url; ?>', 500, 400, null);">Đổi mật khẩu</a>)</label>
