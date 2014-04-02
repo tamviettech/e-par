@@ -1318,7 +1318,7 @@ class record_Model extends Model
         $v_user_id   = Session::get('user_id');
         
         //left join t_r3_mapping
-        $v_join_mapping = "  LEFT JOIN t_r3_mapping M
+        $v_join_mapping = "  LEFT JOIN (SELECT C_RECORD_TYPE_CODE,C_CODE FROM t_r3_mapping WHERE FK_USER = $v_user_id) M
                                 ON RT.C_CODE = M.C_RECORD_TYPE_CODE";
         
         if (check_permission('THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO', $this->app_name))
@@ -1327,7 +1327,7 @@ class record_Model extends Model
                                             From t_r3_user_task UT) as RTU
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
                                             $v_join_mapping
-                    Where RT.C_STATUS > 0 And M.FK_USER = $v_user_id";
+                    Where RT.C_STATUS > 0 ";
         }
         else
         {
@@ -1341,7 +1341,7 @@ class record_Model extends Model
                                             Where UT.C_USER_LOGIN_NAME='$v_user_code') as RTU
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
                                             $v_join_mapping
-                            Where $cond And M.FK_USER = $v_user_id";
+                            Where $cond ";
             }
             else
             {
@@ -1350,7 +1350,7 @@ class record_Model extends Model
                                             Where UT.C_USER_LOGIN_NAME='$v_user_code' and UT.C_TASK_CODE Like '%::$role') as RTU
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
                                             $v_join_mapping
-                            Where RT.C_STATUS > 0 And M.FK_USER = $v_user_id";
+                            Where RT.C_STATUS > 0";
             }
 
             /*
