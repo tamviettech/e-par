@@ -641,6 +641,7 @@ class report_Model extends record_Model
                     ,C_RETURN_DATE
                     ,CAST(DATE_FORMAT(ExtractValue(C_XML_PROCESSING, '//step[@code=''REJECT''][last()]/datetime'),'%d-%m-%Y %H:%i:%s') AS CHAR(19)) AS C_REJECTED_DATE_DDMMYYYY
                     ,C_CLEAR_DATE
+                    ,C_XML_DATA
               From view_record
               Where 1>0 
               And FK_VILLAGE_ID = $v_village_id";
