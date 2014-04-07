@@ -1387,6 +1387,7 @@ class record_Model extends Model
                         RT.C_CODE
                         , Concat(RT.C_CODE, ' - ',  RT.C_NAME) as C_NAME
                         , RT.C_SCOPE 
+                        , RT.C_SPEC_CODE
                         , M.C_CODE as C_MAPPING_CODE 
                     $v_from_qry
                     $other_clause
@@ -4798,6 +4799,7 @@ class record_Model extends Model
         $v_user_code = Session::get('user_code');
         //Xem theo trang
         page_calc($v_start, $v_end);
+        $v_spec_code = get_post_var('sel_spec','');
 
         $v_receive_date_from = isset($_POST['txt_receive_date_from']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_receive_date_from']), 0) : '';
         $v_receive_date_to   = isset($_POST['txt_receive_date_to']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_receive_date_to'])) : '';
@@ -4918,6 +4920,12 @@ class record_Model extends Model
             {
                 $v_and_condition .= " And FK_RECORD_TYPE In ($v_record_type_id_list)";
             }
+            //loc theo ma linh vuc
+            $v_spec_condition = '';
+            if($v_spec_code != '')
+            {
+                $v_spec_condition = " And C_SPEC_CODE = '$v_spec_code'";
+            }
             /*
               if (sizeof($arr_record_type_id_list) > 0)
               {
@@ -5012,7 +5020,10 @@ class record_Model extends Model
                             FROM  $v_from_and_where $v_and_condition
                             ORDER BY C_RECEIVE_DATE DESC
                             LIMIT $v_start, $v_limit
-                        ) RID LEFT JOIN t_r3_user_task UT ON (RID.C_NEXT_TASK_CODE = UT.C_TASK_CODE AND RID.C_NEXT_USER_CODE = UT.C_USER_LOGIN_NAME)
+                        ) RID LEFT JOIN t_r3_user_task UT 
+                        ON (RID.C_NEXT_TASK_CODE = UT.C_TASK_CODE AND RID.C_NEXT_USER_CODE = UT.C_USER_LOGIN_NAME)
+                        LEFT JOIN t_r3_record_type RT On UT.C_RECORD_TYPE_CODE = RT.C_CODE
+                        WHERE (1>0) $v_spec_condition
                     ) a LEFT JOIN t_r3_record R ON a.PK_RECORD=R.PK_RECORD
                     ";
             return $this->db->getAll($sql);

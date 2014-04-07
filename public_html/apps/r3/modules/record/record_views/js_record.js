@@ -7,7 +7,7 @@ function txt_record_type_code_onkeypress(evt)
     }
 
     if(theKey == 13){
-        v_record_type_code = trim($("#txt_record_type_code").val()).toUpperCase();
+        var v_record_type_code = trim($("#txt_record_type_code").val()).toUpperCase();
         $("#sel_record_type").val(v_record_type_code);
         if ($("#sel_record_type").val() != '')
         {
@@ -15,15 +15,30 @@ function txt_record_type_code_onkeypress(evt)
         }
         else
         {
-            $("#sel_record_type option").each(function(){
-                if($(this).attr('data-mapping') == v_record_type_code)
+            $("#sel_record_type option").show();
+            if(v_record_type_code != '')
+            {
+                var count = 0;
+                $("#sel_record_type option").each(function(){
+                    if($(this).attr('data-mapping') == v_record_type_code)
+                    {
+                        $("#sel_record_type").val($(this).val());
+                        count ++;
+                    }
+                    else
+                    {
+                        $(this).hide();
+                    }
+                });
+                if(count == 1)
                 {
-                    $("#sel_record_type").val($(this).val());
                     $("#frmMain").submit();
                 }
-            });
-            
-            $("#procedure").html('');
+                else
+                {
+//                    $("#procedure").html('');
+                }
+            }
         }
     }
     return false;
@@ -74,7 +89,7 @@ function get_supplement_notice()
 
                 html += '<li><a href="javascript:void(0)" onclick="set_record_type(\'' + v_record_type_code + '\')">'
                         + v_record_type_code + ' - ' + v_record_type_name
-                        + ' có <span class="count">' + v_count + '</span> hồ sơ </a></li>';
+                        + ' c� <span class="count">' + v_count + '</span> h? so </a></li>';
             });
             html += '</ul>';
             $("#notice-container").html(html);
@@ -97,7 +112,7 @@ function get_supplement_notice()
 //
 //            html += '<li><a href="javascript:void(0)" onclick="set_record_type(\'' + v_record_type_code + '\')">'
 //                + v_record_type_code + ' - ' + v_record_type_name
-//                + ' có <span class="count">' + v_count + '</span> hồ sơ </a></li>';
+//                + ' c� <span class="count">' + v_count + '</span> h? so </a></li>';
 //        });
 //        html +='</ul>';
 //        $("#notice-container").html(html);

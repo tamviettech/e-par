@@ -869,8 +869,7 @@ class record_Controller extends Controller
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
 
         $VIEW_DATA['arr_all_next_user'] = $this->model->qry_all_user_on_next_task($v_task_code);
-        
-        
+
         $this->view->render('dsp_submit_to_sign_record', $VIEW_DATA);
     }
 
@@ -1624,7 +1623,8 @@ class record_Controller extends Controller
         $VIEW_DATA['active_role']      = strtoupper(__FUNCTION__);
         $VIEW_DATA['active_role_text'] = $this->_arr_roles[strtoupper(__FUNCTION__)];
         $VIEW_DATA['arr_all_record']   = $arr_all_record;
-
+        $VIEW_DATA['arr_all_spec']     = $this->model->assoc_list_get_all_by_listtype_code(_CONST_DANH_MUC_LINH_VUC, CONST_USE_ADODB_CACHE_FOR_REPORT);
+        
         $this->view->render('dsp_all_record_tra_cuu', $VIEW_DATA);
     }
 

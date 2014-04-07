@@ -39,6 +39,7 @@ $v_return_date_to   = isset($_POST['txt_return_date_to']) ? replace_bad_char($_P
 $v_record_no = isset($_POST['txt_record_no']) ? replace_bad_char($_POST['txt_record_no']) : '';
 
 $v_free_text = get_post_var('txt_free_text');
+$sel_spec_selected = get_post_var('sel_spec','');
 ?>
 <form name="frmMain" id="frmMain"
       action="" method="POST">
@@ -69,6 +70,17 @@ $v_free_text = get_post_var('txt_free_text');
         </h4>
         <div class="Row">
             <div class="left-Col">
+                Lĩnh vực
+            </div>
+            <div class="right_col">
+                <select name="sel_spec" id="sel_spec" style="width: 77%; color: #000000;">
+                        <option value="">-- Tất cả lĩnh vực --</option>
+                        <?php echo $this->generate_select_option($arr_all_spec,$sel_spec_selected); ?>
+                </select>
+            </div>
+        </div>
+        <div class="Row">
+            <div class="left-Col">
                 <label>Mã loại hồ sơ: (Alt+1) </label>
             </div>
             <div class="right-Col">
@@ -81,11 +93,11 @@ $v_free_text = get_post_var('txt_free_text');
 
                 <select name="sel_record_type" id="sel_record_type"
                         style="width: 76%; color: #000000;"
-                        onchange="sel_record_type_onchange(this)">
+                        onchange="sel_rt_onchange(this)">
                     <option value="">-- Chọn loại hồ sơ --</option>
                     <?php foreach ($arr_all_record_type as $code => $info): ?>
                         <?php $str_selected = ($code == strval($v_record_type_code)) ? ' selected' : ''; ?>
-                        <option value="<?php echo $code; ?>"<?php echo $str_selected ?> data-scope="<?php echo $info['C_SCOPE']; ?>"><?php echo $info['C_NAME']; ?></option>
+                        <option value="<?php echo $code; ?>"<?php echo $str_selected ?> data-scope="<?php echo $info['C_SCOPE']; ?>" class="<?php echo $info['C_SPEC_CODE'];?>" ><?php echo $info['C_NAME']; ?></option>
                     <?php endforeach; ?>
                     <?php //echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>
                 </select>
@@ -226,6 +238,10 @@ $is_tra_cuu            = strtoupper($this->active_role) == _CONST_TRA_CUU_ROLE;
 $is_tra_cuu_lien_thong = strtoupper($this->active_role) == _CONST_TRA_CUU_LIEN_THONG_ROLE;
 $is_tra_cuu_tai_xa     = strtoupper($this->active_role) == _CONST_TRA_CUU_TAI_XA_ROLE;
 ?>
+<script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.chained.mini.js" type="text/javascript"></script>
+<script>
+    $("#sel_record_type").chained("#sel_spec");
+</script>
 <script>
     $(document).ready(function() {
         //Show context on each row
@@ -338,7 +354,11 @@ $is_tra_cuu_tai_xa     = strtoupper($this->active_role) == _CONST_TRA_CUU_TAI_XA
     $(document).ready(function() {
         show_search_mode($('#hdn_search_mode').val());
     });
-
+    
+    function sel_rt_onchange(sel_record)
+    {
+        $('#txt_record_type_code').val($(sel_record).val());
+    }
 </script>
 <?php
 $this->template->display('dsp_footer.php');
