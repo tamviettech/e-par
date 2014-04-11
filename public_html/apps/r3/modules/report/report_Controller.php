@@ -1,4 +1,23 @@
 <?php
+/**
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+
+<?php
 
 class report_Controller extends Controller
 {
@@ -23,61 +42,18 @@ class report_Controller extends Controller
         //in pdf khá lâu
         set_time_limit(60 * 5);
         parent::__construct('r3', 'report');
-        
-        //tao array role tu r3_const
-        $this->_arr_roles = json_decode(CONST_ALL_R3_ROLES,true);
-        $this->view->template->show_left_side_bar = TRUE;
-        $this->view->active_role = _CONST_BAO_CAO_ROLE;
-        $this->view->template->active_role = _CONST_BAO_CAO_ROLE;
-        //tao controller url record cho menu
-        $this->view->template->controller_url = $this->view->get_controller_url('report');
-        
-        //tao menu 
-          $menu = Array();
 
-        $arr_my_role = $this->model->qry_all_user_role(Session::get('user_code'));
-        foreach ($this->_arr_roles as $key => $val)
-        {
-            if ($this->check_permission($key) && in_array($key, $arr_my_role))
-            {
-                $menu[$key]             = $val;
-                $this->_arr_user_role[] = strtoupper($key);
-            }
-        }
-
-        $arr_not_admin_roles = array(_CONST_XAC_NHAN_HO_SO_NOP_QUA_INTERNET_ROLE
-            , _CONST_KIEM_TRA_TRUOC_HO_SO_ROLE, _CONST_RUT_ROLE);
-        $is_admin            = (bool) Session::get('is_admin');
-        foreach ($arr_not_admin_roles as $role)
-        {
-            if ($this->check_permission($role) && !$is_admin)
-            {
-                $menu[$role]            = $this->_arr_roles[$role];
-                $this->_arr_user_role[] = $role;
-            }
-        }
-
-        $arr_more_roles = array(_CONST_Y_KIEN_LANH_DAO_ROLE, _CONST_TRA_CUU_ROLE
-            , _CONST_TRA_CUU_LIEN_THONG_ROLE, _CONST_TRA_CUU_TAI_XA_ROLE, _CONST_BAO_CAO_ROLE);
-        foreach ($arr_more_roles as $role)
-        {
-            if ($this->check_permission($role))
-            {
-                $menu[$role]            = $this->_arr_roles[$role];
-                $this->_arr_user_role[] = $role;
-            }
-        }
-        $this->view->template->arr_roles = $menu;
-        $this->view->arr_roles           = $menu;
-        
         if (DEBUG_MODE < 10)
             $this->model->db->debug = 0;
 
-        
+        $this->view->template->show_left_side_bar = TRUE;
 
         //Danh muc bao cao
         $this->arr_all_report_type            = $this->model->assoc_list_get_all_by_listtype_code('DANH_MUC_BAO_CAO', CONST_USE_ADODB_CACHE_FOR_REPORT);
         $this->view->template->reportbook_url = $this->view->get_controller_url('reportbook', 'r3');
+        
+        $this->arr_year = $this->model->get_year();
+        $this->arr_all_group = $this->model->qry_all_group();
     }
 
     function __destruct()
@@ -87,7 +63,7 @@ class report_Controller extends Controller
 
     public function main()
     {
-        $this->option(3);
+        $this->option(0);
     }
 
     public function type($type = '3')
@@ -107,6 +83,7 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_group']          = $this->arr_all_group;
             $VIEW_DATA['arr_all_report_type'] = $this->arr_all_report_type;
             $VIEW_DATA['report_type']         = strval($type);
             $this->view->render('dsp_report_option', $VIEW_DATA);
@@ -122,11 +99,12 @@ class report_Controller extends Controller
         if (get_request_var('pdf') == 1)
         {
             //Chu ky bao cao
-            $v_period = get_request_var('period');
+            $v_period   = get_request_var('period');
+            $group_code = get_request_var('group',0);
 
             //Lay danh sach Linh vuc
             $arr_all_spec = $this->model->assoc_list_get_all_by_listtype_code(_CONST_DANH_MUC_LINH_VUC, CONST_USE_ADODB_CACHE_FOR_REPORT);
-            $model_data   = $this->model->qry_all_report_data_6($v_period, $arr_all_spec);
+            $model_data   = $this->model->qry_all_report_data_6($v_period, $arr_all_spec,$group_code);
 
             $VIEW_DATA['arr_all_spec']        = $arr_all_spec;
             $VIEW_DATA['report_priord']       = $v_period;
@@ -139,6 +117,8 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_group']          = $this->arr_all_group;
+            $VIEW_DATA['arr_year'] = $this->arr_year;
             $VIEW_DATA['arr_all_report_type'] = $this->arr_all_report_type;
             $VIEW_DATA['report_type']         = 6;
 
@@ -181,6 +161,9 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_group']          = $this->arr_all_group;
+            $VIEW_DATA['arr_all_spec']        = $this->model->qry_all_spec();
+            
             $VIEW_DATA['arr_all_report_type'] = $this->arr_all_report_type;
             $VIEW_DATA['report_type']         = 12;
 
@@ -208,6 +191,9 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_group']          = $this->arr_all_group;
+            $VIEW_DATA['arr_all_spec']        = $this->model->qry_all_spec();
+            
             $VIEW_DATA['arr_all_report_type'] = $this->arr_all_report_type;
             $VIEW_DATA['report_type']         = 13;
 
@@ -234,6 +220,9 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_group']          = $this->arr_all_group;
+            $VIEW_DATA['arr_all_spec']        = $this->model->qry_all_spec();
+            
             $VIEW_DATA['arr_all_report_type'] = $this->arr_all_report_type;
             $VIEW_DATA['report_type']         = 14;
 
@@ -245,19 +234,34 @@ class report_Controller extends Controller
     {
         if (get_request_var('pdf') == 1)
         {
+            $group_code = get_request_var('group','');
+            $spec_code = get_request_var('spec','');
+            
             //Kỳ báo cáo
-            $v_begin_date = get_request_var('begin_date', date('d-m-Y'));
-            $v_end_date   = get_request_var('end_date', date('d-m-Y'));
+//            $v_begin_date = get_request_var('begin_date', date('d-m-Y'));
+//            $v_end_date   = get_request_var('end_date', date('d-m-Y'));
+            
+            $v_begin_date = get_request_var('begin_date', '');
+            $v_end_date   = get_request_var('end_date', '');
 
             $v_begin_date_yyyymmdd = jwDate::ddmmyyyy_to_yyyymmdd($v_begin_date);
             $v_end_date_yyyymmdd   = jwDate::ddmmyyyy_to_yyyymmdd($v_end_date);
 
             $arr_all_group       = $this->model->qry_all_group(CONST_USE_ADODB_CACHE_FOR_REPORT);
-            $arr_all_report_data = $this->model->qry_all_report_data_15($v_begin_date_yyyymmdd, $v_end_date_yyyymmdd);
-
+            $arr_all_report_data = $this->model->qry_all_report_data_15($v_begin_date_yyyymmdd, $v_end_date_yyyymmdd,$group_code,$spec_code);
+            
+            $VIEW_DATA['report_subtitle']     = '';
+            if($v_begin_date_yyyymmdd != '')
+            {
+                $VIEW_DATA['report_subtitle']     = 'Từ ngày ' . $v_begin_date;
+            }
+            if($v_end_date_yyyymmdd != '')
+            {
+                $VIEW_DATA['report_subtitle']     .= ' đến ngày ' . $v_end_date;
+            }
+            
             $VIEW_DATA['arr_all_report_data'] = $arr_all_report_data;
             $VIEW_DATA['report_title']        = "BÁO CÁO THỦ TỤC HÀNH CHÍNH BỊ TỪ CHỐI";
-            $VIEW_DATA['report_subtitle']     = 'Từ ngày ' . $v_begin_date . ' đến ngày ' . $v_end_date;
             $VIEW_DATA['report_code']         = 'report_15';
             $VIEW_DATA['arr_all_group']       = $arr_all_group;
 
@@ -265,6 +269,8 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_group']          = $this->arr_all_group;
+            $VIEW_DATA['arr_all_spec']        = $this->model->qry_all_spec();
             $VIEW_DATA['arr_all_report_type'] = $this->arr_all_report_type;
             $VIEW_DATA['report_type']         = 15;
 
@@ -281,6 +287,8 @@ class report_Controller extends Controller
         {
             $v_spec_code      = get_request_var('spec_code', '');
             $v_record_type_id = get_request_var('record_type', 0);
+            $group_code       = get_request_var('group', '');
+            $group_level      = get_request_var('group_level', '');
 
             $v_begin_date = get_request_var('begin_date', '');
             $v_end_date   = get_request_var('end_date', '');
@@ -288,7 +296,7 @@ class report_Controller extends Controller
             $v_begin_date_yyyymmdd = jwDate::ddmmyyyy_to_yyyymmdd($v_begin_date);
             $v_end_date_yyyymmdd   = jwDate::ddmmyyyy_to_yyyymmdd($v_end_date);
 
-            $arr_model_data = $this->model->qry_all_report_data_16($v_spec_code, $v_record_type_id, $v_begin_date_yyyymmdd, $v_end_date_yyyymmdd);
+            $arr_model_data = $this->model->qry_all_report_data_16($v_spec_code, $v_record_type_id, $v_begin_date_yyyymmdd, $v_end_date_yyyymmdd,$group_code,$group_level);
 
             $arr_report_filter   = $arr_model_data['report_filter'];
             $arr_all_report_data = $arr_model_data['report_data'];
@@ -303,6 +311,7 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_group']                      = $this->arr_all_group;
             $VIEW_DATA['arr_all_record_type_with_spec_code'] = $this->model->qry_all_record_type_with_spec_code();
             $VIEW_DATA['arr_all_report_type']                = $this->arr_all_report_type;
             $VIEW_DATA['arr_all_spec']                       = $this->model->assoc_list_get_all_by_listtype_code(_CONST_DANH_MUC_LINH_VUC, CONST_USE_ADODB_CACHE_FOR_REPORT);
@@ -316,8 +325,8 @@ class report_Controller extends Controller
     {
         if (get_request_var('pdf') == 1)
         {
-            $v_begin_date          = get_request_var('begin_date', Date('d-m-Y'));
-            $v_end_date            = get_request_var('end_date', Date('d-m-Y'));
+            $v_begin_date          = get_request_var('begin_date','');
+            $v_end_date            = get_request_var('end_date','');
             $v_spec                = get_request_var('spec');
             $v_begin_date_yyyymmdd = jwDate::ddmmyyyy_to_yyyymmdd($v_begin_date);
             $v_end_date_yyyymmdd   = jwDate::ddmmyyyy_to_yyyymmdd($v_end_date);
@@ -355,7 +364,17 @@ class report_Controller extends Controller
             $VIEW_DATA['arr_all_report_data'] = $arr_all_report_data;
             $VIEW_DATA['arr_all_spec']        = $arr_all_spec;
             $VIEW_DATA['report_title']        = "BÁO CÁO VỀ PHÍ, LỆ PHÍ ĐÃ THU";
-            $VIEW_DATA['report_subtitle']     = 'Từ ngày ' . $v_begin_date . ' đến ngày ' . $v_end_date;
+            
+            $VIEW_DATA['report_subtitle'] = '';
+            if($v_begin_date != '')
+            {
+                $VIEW_DATA['report_subtitle'] .= 'Từ ngày ' . $v_begin_date;
+            }
+            if($v_end_date != '')
+            {
+                $VIEW_DATA['report_subtitle'] .= ' đến ngày ' . $v_end_date;
+            }
+            
             $VIEW_DATA['report_code']         = 'report_7';
             $this->view->render('dsp_common_pdf_report', $VIEW_DATA);
         }
@@ -376,10 +395,11 @@ class report_Controller extends Controller
             $v_begin_date          = get_request_var('begin_date', Date('d-m-Y'));
             $v_end_date            = get_request_var('end_date', Date('d-m-Y'));
             $v_spec                = get_request_var('spec', '');
+            $v_record_type         = get_request_var('record_type', '');
             $v_begin_date_yyyymmdd = jwDate::ddmmyyyy_to_yyyymmdd($v_begin_date);
             $v_end_date_yyyymmdd   = jwDate::ddmmyyyy_to_yyyymmdd($v_end_date);
 
-            $arr_all_report_data = $this->model->qry_all_report_data_7b($v_spec, $v_begin_date_yyyymmdd, $v_end_date_yyyymmdd);
+            $arr_all_report_data = $this->model->qry_all_report_data_7b($v_record_type,$v_spec, $v_begin_date_yyyymmdd, $v_end_date_yyyymmdd);
 
             $VIEW_DATA['arr_all_report_data'] = $arr_all_report_data;
             $VIEW_DATA['report_title']        = "BÁO CÁO CHI TIẾT DANH SÁCH THU PHÍ, LỆ PHÍ";
@@ -390,6 +410,7 @@ class report_Controller extends Controller
         }
         else
         {
+            $VIEW_DATA['arr_all_record_type_with_spec_code'] = $this->model->qry_all_record_type_with_spec_code();
             $VIEW_DATA['arr_all_spec']        = $this->model->qry_all_spec();
             $VIEW_DATA['arr_all_report_type'] = $this->arr_all_report_type;
             $VIEW_DATA['report_type']         = '7b';
@@ -433,49 +454,56 @@ class report_Controller extends Controller
             $year        = get_request_var('year', $now->format('Y'));
             $begin_month = get_request_var('begin_month', $now->format('m'));
             $end_month   = get_request_var('end_month', $now->format('m'));
-            $v_subtitle  = '';
+            $group_code  = get_request_var('group', 0);
+            $group_level = get_request_var('group_level', '');
+            $v_subtitle  = 'Thời gian tiếp nhận hồ sơ: ';
 
             switch ($type)
             {
                 case 'm':
                     //Thang hien tai
-                    $v_subtitle = "tháng $end_month năm $year";
+                    $v_subtitle .= "tháng $end_month năm $year";
                     break;
                     
                 case 'Q':
                     $v_quarter  = $this->integerToRoman(intval($end_month / 3));
-                    $v_subtitle = "quý $v_quarter năm $year";
+                    $v_subtitle .= "quý $v_quarter năm $year";
                     break;
                     
                 case 'Y':
                     //ca nam
-                    $v_subtitle = "năm $year";
+                    $v_subtitle .= "năm $year";
                     break;
                     
                 case '1to6':
                     //6 thang dau nam
-                    $v_subtitle = "6 tháng đầu năm $year";
+                    $v_subtitle .= "6 tháng đầu năm $year";
                     break;
                     
                 case '7to12':
                     //6 thang cuoi nam
-                    $v_subtitle = "6 tháng cuối năm $year";
+                    $v_subtitle .= "6 tháng cuối năm $year";
                     break;
                     
                 default:
                     //Thang hien tai
-                    $v_subtitle = "tháng $end_month năm $year";
+                    $v_subtitle .= "tháng $end_month năm $year";
                     break;
             }
 
             require_once SERVER_ROOT . 'libs/tcpdf/zreport.php';
-            $VIEW_DATA['arr_all_spec'] = $this->model->qry_report999($year, $begin_month, $end_month);
+            
+//            $VIEW_DATA['arr_all_spec'] = $this->model->qry_report999($year, $begin_month, $end_month);
+            $VIEW_DATA['arr_all_listtype_code'] = $this->model->list_get_all_by_listtype_code('DANH_MUC_LINH_VUC');
+            $VIEW_DATA['arr_all_spec'] = $this->model->qry_all_report_data_3($year, $begin_month, $end_month,$group_code,$group_level);
             $VIEW_DATA['now']          = $now;
             $VIEW_DATA['subtitle']     = $v_subtitle;
+            $VIEW_DATA['report_code']         = 'report_3';
             $this->view->render('dsp_pdf_report_3', $VIEW_DATA);
         }
         else
         {
+            $VIEW_DATA['arr_all_group']                 = $this->arr_all_group;
             $VIEW_DATA['arr_all_report_type']          = $this->arr_all_report_type;
             $VIEW_DATA['report_type']                  = 3;
             $this->view->template->arr_all_report_type = $this->arr_all_report_type;
@@ -492,19 +520,27 @@ class report_Controller extends Controller
         if (get_request_var('pdf'))
         {
             require_once SERVER_ROOT . 'libs/tcpdf/zreport.php';
-            $begin_date = date_create_from_format('d-m-Y', get_request_var('begin'))->format('Y-m-d');
-            $end_date   = date_create_from_format('d-m-Y', get_request_var('end'))->format('Y-m-d');
+            $begin_date = get_request_var('begin','');
+            $end_date   = get_request_var('end','');
+            $spec_code  = get_request_var('spec','');
+            
             $now        = date_create($this->model->getDate());
 
-            $VIEW_DATA['arr_all_record'] = $this->model->qry_all_due($begin_date, $end_date);
             $VIEW_DATA['now']            = $now;
-            $VIEW_DATA['begin']          = get_request_var('begin');
-            $VIEW_DATA['end']            = get_request_var('end');
+            $VIEW_DATA['begin']          = $begin_date;
+            $VIEW_DATA['end']            = $end_date;
+            
+            $begin_date = jwDate::ddmmyyyy_to_yyyymmdd($begin_date);
+            $end_date   = jwDate::ddmmyyyy_to_yyyymmdd($end_date);
+            
+            $VIEW_DATA['arr_all_record'] = $this->model->qry_all_report_data_18($begin_date, $end_date,$spec_code);
             $this->view->render('dsp_pdf_report_18', $VIEW_DATA);
         }
         else
         {
             $VIEW_DATA['report_type']                  = 18;
+            
+            $VIEW_DATA['arr_all_spec']                 = $this->model->assoc_list_get_all_by_listtype_code(_CONST_DANH_MUC_LINH_VUC, CONST_USE_ADODB_CACHE_FOR_REPORT);
             $this->view->template->arr_all_report_type = $this->arr_all_report_type;
             $this->view->template->current_report_type = 18;
             $this->view->render('dsp_option_18', $VIEW_DATA);

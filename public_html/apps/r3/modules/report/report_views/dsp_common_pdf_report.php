@@ -1,10 +1,29 @@
 <?php
+/**
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+
+<?php
 
 if (!defined('SERVER_ROOT'))
 {
     exit('No direct script access allowed');
 }
-error_reporting(0);
+error_reporting(1);
 
 //Cau hinh phan ky
 $v_xml_signer_file_path = CONST_APPS_DIR . $this->app_name . DS . 'modules' . DS . $this->module_name . DS
@@ -31,39 +50,6 @@ $v_count = count($arr_all_report_data);
 
 // create new PDF document
 $v_layout = strtoupper(get_xml_value($dom_xml_report, '/report/@layout')) == 'P' ? 'P' : 'L';
-$pdf      = new ZREPORT($v_layout, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Ngo Duc Lien');
-
-// set header and footer fonts
-$pdf->setPrintHeader(0);
-$pdf->SetHeaderData('', PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 023', '');
-//$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, 'B', 16));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', 13));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-//set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(0);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-//set auto page breaks
-//$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-//set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-//set some language-dependent strings
-$pdf->setLanguageArray($l);
-
-// ---------------------------------------------------------
-// add a page
-$pdf->AddPage($v_layout);
-
-$pdf->SetFont('liennd.times', '', 16);
 $dom_unit_info = simplexml_load_file('public/xml/xml_unit_info.xml');
 
 if (Session::get('la_can_bo_cap_xa'))
@@ -71,28 +57,8 @@ if (Session::get('la_can_bo_cap_xa'))
 else
     $v_unit_name = xpath($dom_unit_info, '//full_name', XPATH_STRING);
 $v_unit_name = mb_strtoupper(str_ireplace('UBND', 'Uỷ ban nhân dân', $v_unit_name), 'UTF-8');
-
-$slogan = 'Độc lập - Tự do - Hạnh phúc';
-$txt = mb_strtoupper("Cộng hoà xã hội chủ nghĩa Việt Nam", 'UTF-8') . "\n$slogan\n" . str_repeat('_', mb_strlen($slogan, 'UTF-8'));
-
-if ($v_layout == 'L')
-{
-    $pdf->MultiCell(140, 3, $v_unit_name, 0, 'C', 0, 0, '', '', true);
-    $pdf->MultiCell(140, 5, $txt, 0, 'C', 0, 0, '', '', true);
-}
-else
-{
-    $pdf->MultiCell(100, 3, $v_unit_name, 0, 'C', 0, 0, '', '', true);
-    $pdf->MultiCell(100, 5, $txt, 0, 'C', 0, 0, '', '', true);
-}
-
 $v_unit_short_name = get_xml_value($dom_unit_info, '/unit/name');
-$pdf->report_date($v_unit_short_name);
 
-$pdf->report_title($report_title, $report_subtitle);
-
-$pdf->SetFont('liennd.times', '', 12);
-$pdf->SetLineStyle(array('width' => 0.1, 'cap'   => 'butt', 'join'  => 'round', 'dash'  => 5, 'color' => array(0, 0, 0)));
 
 //INIT TOTAL
 $totals = $dom_xml_report->xpath('//total/item');
@@ -126,10 +92,9 @@ $v_thead = '<tr><td colspan="1000"><table border="1" cellpadding="5" cellspacing
 $v_thead .= $v_first_page_head . $v_cont_page_head;
 //$v_thead .= $v_cont_page_head;
 $v_thead .= '</table></td></tr>';
-$pdf->set_thead($v_thead);
+
 
 //The Body
-
 if (isset($arr_report_filter) && sizeof($arr_report_filter) > 0)
 {
     $html_filter = '<table class="report_filter" border="0" cellspacing="0" width="500">';
@@ -141,9 +106,8 @@ if (isset($arr_report_filter) && sizeof($arr_report_filter) > 0)
         $html_filter .= '</tr>';
     }
     $html_filter .= '</table>';
-
-    $pdf->writeHtmlReport($html_filter);
 }
+$html .= $html_filter;
 $html .= '<table class="report_list" border="1" cellpadding="4" cellspacing="0">' . $v_first_page_head . $v_cont_page_head;
 for ($i = 0; $i < $v_count; $i++)
 {
@@ -242,14 +206,187 @@ $html .= '</table>';
 
 //Chu ky
 $html .= get_xml_value(simplexml_load_file($v_xml_signer_file_path), '//item');
-$pdf->writeHtmlReport($html);
-$pdf->lastPage();
 
-//echo 'Line: ' . __LINE__ . '<br>File: ' . __FILE__;
-//var_dump::display($html);exit;
-//Change To Avoid the PDF Error
-@ob_end_clean();
-//Close and output PDF document
-$v_attach_file_path = $VIEW_DATA['report_code'] . '.pdf';
+if((int) get_post_var('hdn_print_pdf',0) == 1)
+{
+    $pdf      = new ZREPORT($v_layout, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    // set document information
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor('Ngo Duc Lien');
 
-$pdf->Output($v_attach_file_path, 'I');
+    // set header and footer fonts
+    $pdf->setPrintHeader(0);
+    $pdf->SetHeaderData('', PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 023', '');
+    //$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, 'B', 16));
+    $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', 13));
+
+    // set default monospaced font
+    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    //set margins
+    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    $pdf->SetHeaderMargin(0);
+    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    //set auto page breaks
+    //$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+    //set image scale factor
+    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    //set some language-dependent strings
+    $pdf->setLanguageArray($l);
+
+    // ---------------------------------------------------------
+    // add a page
+    $pdf->AddPage($v_layout);
+
+    $pdf->SetFont('liennd.times', '', 16);
+
+    $slogan = 'Độc lập - Tự do - Hạnh phúc';
+    $txt = mb_strtoupper("Cộng hoà xã hội chủ nghĩa Việt Nam", 'UTF-8') . "\n$slogan\n" . str_repeat('_', mb_strlen($slogan, 'UTF-8'));
+
+    if ($v_layout == 'L')
+    {
+        $pdf->MultiCell(140, 3, $v_unit_name, 0, 'C', 0, 0, '', '', true);
+        $pdf->MultiCell(140, 5, $txt, 0, 'C', 0, 0, '', '', true);
+    }
+    else
+    {
+        $pdf->MultiCell(100, 3, $v_unit_name, 0, 'C', 0, 0, '', '', true);
+        $pdf->MultiCell(100, 5, $txt, 0, 'C', 0, 0, '', '', true);
+    }
+
+    $pdf->report_date($v_unit_short_name);
+
+    $pdf->report_title($report_title, $report_subtitle);
+
+    $pdf->SetFont('liennd.times', '', 12);
+    $pdf->SetLineStyle(array('width' => 0.1, 'cap'   => 'butt', 'join'  => 'round', 'dash'  => 5, 'color' => array(0, 0, 0)));
+
+    $pdf->set_thead($v_thead);
+    
+    $pdf->writeHtmlReport($html);
+    $pdf->lastPage();
+
+    //Change To Avoid the PDF Error
+    @ob_end_clean();
+    //Close and output PDF document
+    $v_attach_file_path = $VIEW_DATA['report_code'] . '.pdf';
+
+    $pdf->Output($v_attach_file_path, 'D');
+}
+else
+{
+    $v_unit_short_name = get_xml_value($dom_unit_info,'/unit/name');
+     ?>
+    <style>
+        table
+        {
+            width: 100%;
+        }
+        .report_list
+        {
+            width: 100%;
+            border: 2px solid #0D0D0D;
+        }
+        
+        .report_list th,.report_list tr,.report_list td
+        {
+            border: 2px solid #0D0D0D;
+        }
+        
+        .report_list td
+        {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .report_list b
+        {
+            font-size: 18px;
+        }
+        .report_list .sub-header
+        {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        table.signer
+        {
+            width: 100%;
+            border: 0px;
+        }
+        table.signer td,th,tr
+        {
+            border: 0px;
+        }
+        .reprot_header .item
+        {
+            text-align: center;
+            width: 50%;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .reprot_header .date
+        {
+            text-align: center;
+            width: 50%;
+            font-weight: normal;
+            font-size: 18px;
+        }
+        .header
+        {
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 25px;
+            margin: 15px 0px 10px 0px;
+            
+        }
+        .formPrint
+        {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+        }
+    </style>
+    <form class="formPrint" action="" method="POST">
+        <?php echo $this->hidden('hdn_print_pdf','1');?>
+        <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();"/>
+    </form>
+    <table class="reprot_header">
+        <tr>
+            <td class="item">
+                <?php
+                 echo mb_strtoupper(get_xml_value($dom_unit_info, '/unit/full_name'), 'UTF-8');
+                 echo '<br>';
+                 echo 'VĂN PHÒNG';
+                 echo '<br>';
+                 echo '________';
+                ?>
+            </td>
+            <td class="item">
+                <?php
+                echo "Cộng hoà xã hội chủ nghĩa Việt Nam <br> Độc lập - Tự do - Hạnh phúc <br> _________";
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="item">
+                &nbsp;
+            </td>
+            <td class="date">
+                <?php
+                    $date = Date('d-m-Y');
+                    echo $v_unit_short_name . ', ngày ' . Date('d', strtotime($date)) . ' tháng ' . Date('m', strtotime($date)) . ' năm ' . Date('Y', strtotime($date));
+                ?>
+            </td>
+        </tr>
+    </table>
+    <div class="header">
+        <?php
+            echo $report_title . '<br>' .$report_subtitle;
+        ?>
+    </div>
+<?php
+    echo $html;
+}

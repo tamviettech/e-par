@@ -1,36 +1,10 @@
 <?php
 defined('SERVER_ROOT') or die;
 
-$pdf = new ZREPORT(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Ngo Duc Lien');
-
-// set header and footer fonts
-$pdf->setPrintHeader(0);
-$pdf->SetHeaderData('', PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 023', 'asdadsadsadsa');
-//$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, 'B', 16));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', 13));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-//set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(0);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-$pdf->AddPage('LANDSCAPE');
-//set auto page breaks
-//$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-//set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-$pdf->SetFont('liennd.times', '', 12);
-
 $dom_unit      = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
 $unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
 ob_end_clean();
 ob_start();
-error_reporting(0);
 ?>
 
 <table width="100%" >
@@ -59,9 +33,9 @@ error_reporting(0);
 
 <p align="center">Kính gửi: <?php echo str_repeat('.', 100) ?></p>
 <?php $colgroup      = array(10, 15, 15, 15, 15, 15, 15) ?>
-<table width="100%" border="1" cellpadding="3">
+<table width="100%" class="report_list">
     <?php $thead         = array('TT', 'Mã hồ sơ', 'Tên công dân', 'Ngày tiếp nhận', 'Ngày trả', 'Quá hạn', 'Lý do') ?>
-    <thead>
+    <thead class="reprot_header">
         <tr>
             <?php for ($i = 0; $i < count($colgroup); $i++): ?>
                 <td width="<?php echo $colgroup[$i] ?>%" align="center"><b><?php echo $thead[$i] ?></b></td>
@@ -78,7 +52,7 @@ error_reporting(0);
             <?php
             $record = $arr_all_record[$i];
             ?>
-            <tr nobr="true">
+            <tr >
                 <td align="center" width="<?php echo $colgroup[0] ?>%"><?php echo $i + 1 ?></td>
                 <td align="center" width="<?php echo $colgroup[1] ?>%"><?php echo $record['C_RECORD_NO'] ?></td>
                 <td align="center" width="<?php echo $colgroup[2] ?>%"><?php echo $record['C_CITIZEN_NAME'] ?></td>
@@ -106,6 +80,118 @@ error_reporting(0);
     </tr>
 </table>
 <?php
-$pdf->writeHTML(ob_get_clean());
-$pdf->Output();
-?>
+$html = ob_get_clean();
+
+if((int) get_post_var('hdn_print_pdf',0) == 1)
+{
+    $pdf = new ZREPORT(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    // set document information
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor('');
+
+    // set header and footer fonts
+    $pdf->setPrintHeader(0);
+    $pdf->SetHeaderData('', PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 023', 'asdadsadsadsa');
+    //$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, 'B', 16));
+    $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', 13));
+
+    // set default monospaced font
+    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    //set margins
+    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    $pdf->SetHeaderMargin(0);
+    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+    $pdf->AddPage('LANDSCAPE');
+    //set auto page breaks
+    //$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+    //set image scale factor
+    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    $pdf->SetFont('liennd.times', '', 12);
+
+    $pdf->writeHTML($html);
+    $v_attach_file_path = $VIEW_DATA['report_code'] . '.pdf';
+    $pdf->Output($v_attach_file_path,'D');
+}
+else
+{
+    ?>
+    <style>
+            table
+            {
+                width: 100%;
+                border-spacing: 0px;
+            }
+            .report_list
+            {
+                width: 100%;
+                border: 1px solid #0D0D0D;
+            }
+
+            .report_list th,.report_list tr,.report_list td
+            {
+                border: 1px solid #0D0D0D;
+            }
+
+            .report_list td
+            {
+                font-size: 14px;
+                font-weight: 700;
+            }
+            .report_list b
+            {
+                font-size: 18px;
+            }
+            .report_list .sub-header
+            {
+                font-weight: bold;
+                font-size: 16px;
+            }
+            table.signer
+            {
+                width: 100%;
+                border: 0px;
+            }
+            table.signer td,th,tr
+            {
+                border: 0px;
+            }
+            .reprot_header .item
+            {
+                text-align: center;
+                width: 50%;
+                font-weight: bold;
+                font-size: 18px;
+            }
+            .reprot_header .date
+            {
+                text-align: center;
+                width: 50%;
+                font-weight: normal;
+                font-size: 18px;
+            }
+            .header
+            {
+                width: 100%;
+                text-align: center;
+                font-weight: bold;
+                font-size: 25px;
+                margin: 15px 0px 10px 0px;
+
+            }
+            .formPrint
+            {
+                position: fixed;
+                top: 0px;
+                left: 0px;
+            }
+    </style>
+    <form class="formPrint" action="" method="POST">
+        <?php echo $this->hidden('hdn_print_pdf','1');?>
+        <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();"/>
+    </form>
+    <?php
+    echo $html;
+}
+
