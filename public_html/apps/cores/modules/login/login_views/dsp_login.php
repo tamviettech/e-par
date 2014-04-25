@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta http-equiv="Cache-Control" content="no-cache"/>
         <title>Đăng nhập hệ thống</title>
+        
+        <script src="<?php echo SITE_ROOT?>public/js/md5.js"></script>
         <script language="javascript" type="text/javascript">
 
             function setFocus() {
@@ -43,6 +45,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     f.txt_password.focus();
                     return false;
                 }
+                
+                document.loginForm.hdn_password_md5.value = CryptoJS.MD5(document.loginForm.txt_password.value);
                 f.submit();
             }
 
@@ -82,16 +86,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         size="15" onkeypress="login(event);" value=""
                         autocomplete="off"
                 />
+                 <input type="hidden" name="hdn_password_md5" value="" />
 		     </div>
-		     <?php /*
-			<!--<div class="inputlabel">AD Domain</div>
+            <?php
+            /*
+			<div class="inputlabel">AD Domain</div>
 			<div>
 			     <select name="sel_domain">
                      <option></option>
                      <option><?php echo AD_DOMAIN_NAME;?></option>
                  </select>
-		     </div>-->*/?>
-			 <br/>
+		     </div>
+             * 
+             */?>
+            
+			<br/>
 			<div align="left">
 			     <input type="button" name="btn_login" class="button"
                         value="Đăng nhập"
