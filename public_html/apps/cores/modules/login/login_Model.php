@@ -39,9 +39,9 @@ class login_Model extends Model
         }
 
         $v_login_name = isset($_POST['txt_login_name']) ? $this->replace_bad_char($_POST['txt_login_name']) : null;
-        $v_password   = isset($_POST['txt_password']) ? $this->replace_bad_char($_POST['txt_password']) : null;
+        $v_password   = isset($_POST['hdn_password_md5']) ? $this->replace_bad_char($_POST['hdn_password_md5']) : null;
 
-        $v_password = md5($v_password);
+        //$v_password = md5($v_password);
 
         if ($v_password == NULL)
         {
@@ -69,7 +69,7 @@ class login_Model extends Model
             //authenticate the user
             if ($adldap->authenticate($v_login_name, $v_password))
             {
-                $stmt            = 'Select u.PK_USER
+                $stmt   = 'Select u.PK_USER
                             ,u.FK_OU
                             ,u.C_NAME as C_USER_NAME
                             ,u.C_LOGIN_NAME
@@ -215,6 +215,24 @@ class login_Model extends Model
 	            $arr_all_village = $this->db->getAssoc($sql);
 	            session::set('arr_all_village', $arr_all_village);
             }
+            
+            //Ghi log thong tin dang nhap
+            $sql = "SHOW TABLES LIKE 't_cores_user_login_log'";
+            $r = $this->db->GetAll($sql);
+            if (sizeof($r) == 0 )
+            {
+                $sql = "Create Table t_cores_user_login_log(
+                            PK_LOG int UNSIGNED AUTO_INCREMENT PRIMARY KEY
+                            , C_DATETIME DATETIME not null
+                            , C_LOGIN_NAME varchar(50) not null
+                            , C_IP_ADDRESS varchar(50)
+                        )";
+                $this->db->Execute($sql);
+            }
+            
+            $stmt = 'Insert Into t_cores_user_login_log(C_DATETIME, C_LOGIN_NAME, C_IP_ADDRESS)Values(Now(),?,?)';
+            $params = array(session::get('user_login_name'),$_SERVER['REMOTE_ADDR']);
+            $this->db->Execute($stmt, $params);
             
             $this->exec_done(SITE_ROOT . build_url('r3/record/'));
 
