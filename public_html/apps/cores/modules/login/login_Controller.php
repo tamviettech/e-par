@@ -41,7 +41,7 @@ class login_Controller extends Controller
         session::init();
         if (empty($_SERVER['HTTPS']))
         {
-            //header('location:' . 'https://demo.e-par.vn/cores/login/');
+            header('location:' . 'https://demo.e-par.vn/cores/login/');
         }
         $this->view->render('dsp_login');
     }
