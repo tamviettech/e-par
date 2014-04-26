@@ -233,9 +233,13 @@ class login_Model extends Model
             $stmt = 'Insert Into t_cores_user_login_log(C_DATETIME, C_LOGIN_NAME, C_IP_ADDRESS)Values(Now(),?,?)';
             $params = array(session::get('user_login_name'),$_SERVER['REMOTE_ADDR']);
             $this->db->Execute($stmt, $params);
+            //set sjacking -> chong loi session jacking
+            $remote_addr = $_SERVER['REMOTE_ADDR'];
+            $user_agent = $_SERVER['HTTP_USER_AGENT'];
+            $signature = md5($remote_addr.$user_agent);
+            session::set('signature',$signature);
             
             $this->exec_done(SITE_ROOT . build_url('r3/record/'));
-
 
             exit;
         }
