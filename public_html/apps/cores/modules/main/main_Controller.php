@@ -26,11 +26,7 @@ class main_Controller extends Controller {
         parent::__construct('cores', 'main');
         $this->view->template->show_left_side_bar =FALSE;
 
-        //Kiem tra dang nhap
-        if (!$this->check_login())
-        {
-            $this->login();
-        }
+        session::check_login();
     }
     function main()
     {

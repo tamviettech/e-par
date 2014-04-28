@@ -28,10 +28,7 @@ class user_Controller extends Controller {
         $this->view->template->show_left_side_bar =FALSE;
 
         //Kiem tra dang nhap
-        if (!$this->check_login())
-        {
-            $this->login();
-        }
+        session::check_login();
     }
 
     function main()

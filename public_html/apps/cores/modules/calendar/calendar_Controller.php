@@ -32,7 +32,7 @@ class calendar_Controller extends Controller {
         $this->view->template->show_left_side_bar = FALSE;
 
         //Kiem tra dang nhap
-        $this->check_login();
+        session::check_login();
     }
 
     function main()

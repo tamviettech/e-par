@@ -38,7 +38,26 @@ class Session {
     public static function destroy(){
         @session_destroy();
     }
-
+    
+    public static function check_login()
+    {
+        session::init();
+        $login_name = session::get('login_name');
+        
+        $cur_signature = session::get('signature');
+        
+        $remote_addr = $_SERVER['REMOTE_ADDR'];
+        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $signature = md5($remote_addr.$user_agent);
+        
+        if ($login_name == NULL OR $cur_signature != $signature)
+        {
+            session::destroy();
+            header('location:' . SITE_ROOT . 'login.php');
+            return FALSE;
+        }
+        return TRUE;
+    }
 }
 
 Class Cookie {
