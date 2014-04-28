@@ -43,13 +43,7 @@ class chat_Controller extends Controller
         parent::__construct('r3', 'chat');
 
         //Kiem tra session
-        session::init();
-        $login_name = session::get('login_name');
-        $user_id    = session::get('user_id');
-        if ($login_name == NULL)
-        {
-            die('Must login');
-        }
+        session::check_login();
 
         $this->model->init_data($user_id, $login_name);
         $this->_user_chat_info = $this->model->get_my_chat_info();

@@ -19,25 +19,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
-class sequence_Controller extends Controller {
-     function __construct() {
-        parent::__construct('cores', 'sequence');
-        $this->model->goback_url = $this->view->get_controller_url();
-        $this->view->template->show_left_side_bar = FALSE;
+class login_log_Model extends Model {
 
-        //Kiem tra dang nhap
-        session::check_login();
-    }
-
-    function main()
+    function __construct()
     {
-
+        parent::__construct();
     }
 
-    function next_val($seq_name)
+    public function login_log()
     {
-        echo $this->model->next_val($seq_name);
+        
+        //Loc theo ten, ma
+        $v_filter = get_post_var('txt_filter');
+
+        page_calc($v_start, $v_end);
+
+        $condition_query = '';
+        if ($v_filter !== '')
+        {
+            $condition_query = " And (C_LOGIN_NAME Like '%$v_filter%')";
+        }
+
+        //Dem tong ban ghi
+        $sql_count_record = "Select Count(*) t_cores_user_login_log From t_cores_listtype LT Where (1 > 0) $condition_query";
+        
+        $sql = 'Select *
+                From t_cores_application
+                Order By C_ORDER';
+        return $this->db->getAll($sql);
     }
-
-
-}

@@ -26,14 +26,7 @@ class blacklist_Controller extends Controller {
         $this->view->template->show_left_side_bar = FALSE;
         
         //Kiem tra session
-        session::init();
-        $login_name = session::get('login_name');
-        if ($login_name == NULL)
-        {
-            session::destroy();
-            header('location:' . SITE_ROOT . 'login.php');
-            exit;
-        }
+        session::check_login();
     }
     
     public function main()

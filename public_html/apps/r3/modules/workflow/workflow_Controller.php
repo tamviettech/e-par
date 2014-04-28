@@ -84,13 +84,8 @@ class workflow_Controller extends Controller
         //Kiem tra session
         session::init();
         intval(Session::get('is_admin')) > 0 OR die('Bạn không có quyền truy cập chức năng này');
-        $login_name                               = session::get('login_name');
-        if ($login_name == NULL)
-        {
-            session::destroy();
-            header('location:' . SITE_ROOT . 'login.php');
-            exit;
-        }
+        
+        session::check_login();
     }
 
     public function main()

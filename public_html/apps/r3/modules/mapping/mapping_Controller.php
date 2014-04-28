@@ -11,14 +11,8 @@ class mapping_Controller extends Controller
     function __construct()
     {
         //Kiem tra session
-        session::init();
-        $login_name = session::get('login_name');
-        if ($login_name == NULL)
-        {
-            session::destroy();
-            header('location:' . SITE_ROOT . 'login.php');
-            exit;
-        }
+        session::check_login();
+        
         parent::__construct('r3', 'mapping');
         $this->view->template->show_left_side_bar = FALSE;
         $this->model->goback_url = $this->view->get_controller_url();

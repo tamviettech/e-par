@@ -19,25 +19,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
-class sequence_Controller extends Controller {
-     function __construct() {
-        parent::__construct('cores', 'sequence');
-        $this->model->goback_url = $this->view->get_controller_url();
+class login_log_Controller extends Controller {
+
+    function __construct()
+    {
+        deny_bad_http_referer();
+        
+        parent::__construct('cores', 'login_log');
         $this->view->template->show_left_side_bar = FALSE;
 
         //Kiem tra dang nhap
-        session::check_login();
+        $this->check_login();
     }
 
     function main()
     {
+        //Kiem tra quyen
+        (Session::get('is_admin') == 1) Or die($this->access_denied());
 
+        $this->dsp_all_login_log();
     }
-
-    function next_val($seq_name)
+ 
+    public function dsp_all_login_log()
     {
-        echo $this->model->next_val($seq_name);
+        $VIEW_DATA['arr_all_login_log'] = $this->model->qry_all_login_log();
+        
+        $this->view->render(dsp_all_login_log);
     }
-
-
 }

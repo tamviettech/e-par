@@ -45,14 +45,8 @@ class reportbook_Controller extends Controller
         parent::__construct('r3', 'reportbook');
         $this->view->template->show_left_side_bar = FALSE;
 
-        session::init();
-        $login_name = session::get('login_name');
-        if ($login_name == NULL)
-        {
-            session::destroy();
-            header('location:' . SITE_ROOT . 'login.php');
-            exit;
-        }
+        session::check_login();
+        
         $is_admin       = Session::get('is_admin');
         $has_permission = check_permission('QUAN_TRI_SO_THEO_DOI_HO_SO', 'R3');
         ($is_admin OR $has_permission) OR die('Bạn không có quyền truy cập chức năng này');

@@ -45,14 +45,7 @@ class record_type_Controller extends Controller
         $this->view->template->app_name = 'R3';
 
         //Kiem tra session
-        session::init();
-        $login_name = session::get('login_name');
-        if ($login_name == NULL)
-        {
-            session::destroy();
-            header('location:' . SITE_ROOT . 'login.php');
-            exit;
-        }
+        session::check_login();
     }
 
     private function _save_filter()

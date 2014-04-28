@@ -45,8 +45,8 @@ class logistic_Controller extends Controller
     {
         parent::__construct('r3', 'logistic');
         $this->view->template->show_left_side_bar = false;
-        Session::init();
-        Session::get('user_id') or die('Bạn cần đăng nhập');
+        
+        session::check_login();
         check_permission('THEO_DOI_NGUOI_DUNG', 'R3') or die('Bạn không có quyền thực hiện chức năng này');
     }
 
