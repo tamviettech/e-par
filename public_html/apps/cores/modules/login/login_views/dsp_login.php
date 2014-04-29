@@ -47,6 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 }
                 
                 document.loginForm.hdn_password_md5.value = CryptoJS.MD5(document.loginForm.txt_password.value);
+                document.loginForm.txt_password.value = "";
                 f.submit();
             }
 
