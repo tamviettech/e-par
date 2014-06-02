@@ -5,18 +5,30 @@
     font-family: Arial;
     color:black;
 }
+input:focus{
+    outline: 0;
+}
 body
 {
+    border: none;
     font-size: 1em;
     line-height: 1.8em;
     width: 100%;
     margin: 0;
 }
-
+h1
+{
+    font-size: 1.8em;
+}
+h2{font-size: 1.5em;}
 /*commont*/
-#header,  .banner, .curr_time,#main,.box-item,.item
+#header,  #banner, .curr_time,#main,.box-item,.item
 {
     overflow: hidden;
+}
+#main.all-list
+{
+    background: white;
 }
 .curr_time label
 {
@@ -25,6 +37,7 @@ body
 a
 {
     text-decoration: none;
+    border: none;
 }
 li
 {
@@ -37,30 +50,30 @@ ul,h1,h2,h3,h4,h5,h6,form
 }
 /*Emd commont*/
 /*header*/
-.banner
+
+#headerWrapper
 {
-    height: auto;
-    width: 100%;
-    /*background-image: url(images/banner.jpg);*/
+
+    overflow: hidden;
+    padding-bottom: 15px;
+    text-align: center;
+
 }
-.banner img
+#headerWrapper
 {
-    width: 100%;
-    height: auto;
+    padding-top: 20px;
+    background: none;
+    border: none;
+    position: relative;
+    overflow: hidden;
 }
-.curr_time
+
+#headerWrapper .title
 {
-    height: 35px;
-    width: 100%;
-    background: #dea317;
-    margin-top: -6px;
+    font-weight: bold;
+    color: white;
 }
-.curr_time label
-{
-    margin-left: 20px;
-    font-size: 1.2em;
-    line-height: 35px;
-}
+
 /*end header*/
 
 /*###############################################*/
@@ -68,12 +81,7 @@ ul,h1,h2,h3,h4,h5,h6,form
 
 #footer
 {
-    background: #333;
-    overflow: hidden;
-    width: 100%;
-    height: 80px;
-    bottom: 0;
-    display: none;
+    width: 100%;   
 }
 
 /*end footer*/
@@ -109,12 +117,99 @@ tile-column-span-2 a
     text-align: justify;
     color: white;
 }
-/*###############################################*/
-/*Page all_list*/
+
+
+
+
+/*###########################################################################################*/
+
+.tile.align-center .container
+{
+    background: none !important;
+    
+}
+.tile.align-center .container h3
+{
+    color: white !important;
+    padding: 0 2px;
+}
+/*footer #list-detail-footer*/
+#list-detail-footer
+{
+    position:relative;
+    margin: 0 2px;
+    height: 100px;
+    margin-right: -4px;
+margin-left: 0px;
+
+}
+
+#headerWrapper > img 
+{
+    margin-left: 0px;
+    height: 100px;
+}
+#list-detail-footer >img{
+    margin-left: -2px;
+    height: 100px;
+}
+#wrp-all {
+overflow: hidden;
+width: 94%;
+padding: 0 3%;
+}
+
+.list-detail-list header
+{
+    padding-bottom:  0;
+}
+.list-detail-list #headerWrapper > h2
+{
+   color: red;
+   line-height: 65px;
+   text-align: center;
+   position: absolute;
+   top: 40px;
+   width: 100%;
+}
+.list-detail-list
+{
+    background: #043B95 url(images/bg_metro.jpg);
+    /*background: #043B95;*/
+    position: relative;
+}
+.list-detail-list *
+{
+    color: #56B0E2;
+}
 .all-list
 {
-    padding: 0 20px
+    border: 3px solid rgba(29, 67, 131, 0.89);
+    background-color: #FCFAFA;;
+    border-top: 0;
+    border-bottom: none !important;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: -25px;
+    padding-top: 10px;
+    padding: 20px 20px;
 }
+
+td,tr,th
+{
+ border: 1px solid #CACACA;   
+ font-weight: bold;
+}
+table
+{
+    border-top: solid 10px #CACACA;
+    border-bottom: solid 10px #CACACA;
+    border-radius: 10px;
+    border-left: solid 5px #CACACA;
+    border-right: solid 5px #CACACA;
+    
+}
+/*Page all_list*/
 .all-list .panorama
 {
     margin: 0;
@@ -125,6 +220,18 @@ tile-column-span-2 a
     width: 100%;
     padding: 0;
     margin: 10px 0;
+    background: #CACACA;
+    border-radius: 10px;
+}
+#main > div > div.record-type-title > h3
+{
+    line-height: 50px;
+    margin-left: 10px;
+    color: rgb(207, 34, 34);;
+}
+#main > div > div.record-type-title > h3 span
+{
+    color: #CE4B27;
 }
 .all-list .title
 {
@@ -133,26 +240,28 @@ tile-column-span-2 a
     line-height: 50px;
     font-size: 1.1em;
     float: left;
-    width: 58%;
+    width: 53%;
     padding-left: 20px;
 }
 .all-list .box-search
 {
-    overflow: hidden;
     float: right;
-    height: 50px;
-    width:39%;
+    overflow: hidden;
+    height: 40px;
+    width:340px;
+    margin: 5px 15px 0 5px;
 }
-.all-list .box-search #search
+.all-list .box-search #search 
 {
-    border: solid 2px transparent;;
-    height: 50px;
-    width: 75%;
+    border: none;
+    height: 38px;
+    width: 260px;
     float: left;
-    border-right: none; 
     padding-left: 5px;
     font-family: Time-new-roman;
     font-size: 1.2em;
+    border-radius: 5px 0 0 5px;
+    color: black;
 }
 .all-list .box-search #search:focus,.all-list .box-search #search:focus + #submit
 {
@@ -164,16 +273,13 @@ tile-column-span-2 a
 }
 .all-list .box-search #submit,.all-list .box-search #search:focus + #submit
 {
-    width: 19%;
-    background: #4285f4 url(images/icon_searh.png) no-repeat right center;
-    border: none;
-    height: 50px;
+    width: 55px;
+    background: #444447 url(images/icon_search.png) no-repeat 15px center;
+    height: 40px;
     border: solid 2px transparent;
     border-left: none;
-}
-.all-list .box-search #submit:hover
-{
-    background: #4285f4 url(images/icon_searh.png) no-repeat right center;
+    border-radius: 0 7px 7px 0;
+    cursor: pointer;
 }
 
 .all-list table
@@ -192,7 +298,7 @@ tile-column-span-2 a
     line-height: 30px;
     text-align: left;
     vertical-align: top;
-    border-top: 1px solid #dddddd;
+    /*border-top: 1px solid #dddddd;*/
 }
 .all-list .even td a,.all-list .odd td a
 {
@@ -200,6 +306,7 @@ tile-column-span-2 a
     line-height: 50px;
     font-size: 1.1em;
     display: block;
+  
 }
 
 .all-list .all-list-content 
@@ -211,26 +318,11 @@ tile-column-span-2 a
 }
 .all-list tr.odd
 {
-    background: #d9edf7;
+    background: rgba(211, 213, 213, 0.99);;
 }
 .all-list tr.even
 {
-    background: #dddddd;;
-}
-.all-list tr:hover
-{
-    outline: 2px solid #ce4b27;;
-    -moz-box-shadow: 0 0 15px #CCC;
-    -webkit-box-shadow: 0 0 15px #CCC;
-    box-shadow: 0 0 15px #CCC;
-    ext-decoration: none;
-    color: #FFF;
-    cursor: pointer;
-}
-.all-list thead tr:hover,.all-list tr.last:hover
-{
-    outline: 0px solid #ce4b27;
-    border: none;
+    background: white;
 }
 .all-list td a
 {
@@ -240,23 +332,19 @@ tile-column-span-2 a
 {
     line-height: 50px;
 }
-.all-list td.stt:hover
+
+/*---------------------paging ------------------------------*/
+
+#list-detail-footer .last
 {
-    color: black;
-    border: none;
-    cursor: auto;
-    outline:none;
-    moz-box-shadow: 0 0 0 #dddddd;;
-    -webkit-box-shadow: 0 0 0 #dddddd;;
-    box-shadow: 0 0 0 #dddddd;;
-    ext-decoration: none;
-    
+    position:absolute;
+    margin: 0 auto;
+    /*bottom: 25px;*/
+    top:0;
+    text-align: center;
+    width: 100%;
 }
-.all-list .last
-{
-    background: #0CA6BB;;
-}
-.all-list .last td:hover
+#list-detail-footer .last td:hover
 {
     outline: 0px solid #ce4b27;;
     -moz-box-shadow: 0 0 0px #CCC;
@@ -265,63 +353,70 @@ tile-column-span-2 a
     ext-decoration: none;
     cursor: auto;
 }
-.all-list .last .prev-next
+#list-detail-footer .last .prev-next
 {
     display: block;
     position: relative;
     height:60px;
 }
-.all-list .last td
+#list-detail-footer .last td
 {
     padding: 0;
 }
-.all-list .last .prev-next a
+#list-detail-footer .last .prev-next a
 {
     color: white;
     font-size: 1.2em;
 }
-.all-list .last .prev,.all-list .last .next
+#list-detail-footer .last .prev,#list-detail-footer .last .next
 {
-    padding: 16px 10px 20px 50px;
-    position: absolute;
+    /*padding: 8px 5px 24px 50px;*/
+    padding: 17px 5px 19px 50px;
     overflow: hidden;
     border: none;
     font-size: 1.1em;
     color: white;
     cursor: pointer;
-    margin: 0;
+    margin-left: -7px;
+    margin-right: -7px;
 }
-.all-list .last .prev:active
-{
-    border: none;
-    margin: 0;
-}
-.all-list .last .prev:hover,.all-list .last .next:hover,.all-list .last .back-home:hover
+#list-detail-footer .last .prev:hover,#list-detail-footer .last .next:hover,#list-detail-footer .last .back-home:hover
 {
     background-color:  #009600;
 }
-.all-list .last .prev
+#list-detail-footer .last .prev
 {
     left: 0;
-    background: transparent url(images/prev.png)  no-repeat 10px center  ;
+    background: #0CA6BB url(images/prev.png)  no-repeat center center;
+    border-radius: 25px 0px 0px 25px;
+    height: 59px;
 }
 
-.all-list .last .next
+#list-detail-footer .last .next
 {
-    right: 0;
-    background: transparent url(images/next.png)  no-repeat 10px center  ;
+    background: #0CA6BB url(images/next.png)  no-repeat center center;
+    border-radius: 0 25px 25px 0;
+    height: 59px;
 }
-.all-list .last .prev-next
+#list-detail-footer .last .prev-next
 {
     text-align: center
 }
-.all-list .last .back-home
+#frmPaging
 {
-    position: absolute;
-    padding: 16px 10px 16px 80px;
-    background: transparent url(images/home.png)  no-repeat 10px center  ;
     overflow: hidden;
-    left: 40%;
+    height: 59px;
+}
+#list-detail-footer .last .back-home
+{
+    padding: 20px 10px 19px 64px;
+    background: url('images/home.png') no-repeat scroll center center #0CA6BB;
+    border: none;
+    height: 59px;
+    /*padding: 17px 10px 20px 64px;*/
+/*    padding:32px 10px 14px 64px;
+    background: #0CA6BB url(images/home.png)  no-repeat center center;
+    margin-bottom: -5px;*/
 }
 
 /*end page all_list_guidance*/
@@ -370,7 +465,7 @@ tile-column-span-2 a
 {
     padding: 16px 50px;
     position: absolute;
-    background: transparent url(images/prev.png)  no-repeat left center  ;
+    background: transparent url(images/qqq.png)  no-repeat left center  ;
     overflow: hidden;
 }
 
@@ -387,7 +482,7 @@ tile-column-span-2 a
 .single .last .top
 {
     right: 0;
-    background: transparent url(images/icon_top.png)  no-repeat 10px center  ;
+    background: transparent url(images/icon_top.png)  no-repeat 125px center  ;
 }
 .single .last .prev-top
 {
@@ -399,7 +494,7 @@ tile-column-span-2 a
     padding: 16px 10px 16px 80px;
     background: transparent url(images/home.png)  no-repeat 10px center  ;
     overflow: hidden;
-    left: 40%;
+    left: 44%;
 }
 .single .box-item
 {
@@ -455,39 +550,128 @@ tile-column-span-2 a
 .tile-column-span-2{
     width: 645px;
 }
-@media all and (min-width: 790px) and (max-width: 995px)
+.title-type
 {
-    .all-list .box-search #submit, .all-list .box-search #search:focus + #submit 
-    {
-        width: 17%;
-    }
+    margin: 0 5px;
+   color: #b06700;;
 }
-@media all and (min-width: 645px) and (max-width: 790px)
+.title-type span
 {
-    .all-list .title
+    color: #CE4B27;
+}
+/*#########################        995     ###############*/
+
+@media all and (min-width: 790px) 
+{
+        .record-type-title h3 
     {
-        width: 50%;
+        line-height: 45px !important;
+        font-size: 18px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+     .all-list .box-search #search 
+    {
+        width: 245px;
+        font-size: 1.1em;
     }
     .all-list .box-search
     {
-        width: 40%;
-    }
-    .all-list .box-search{width: 46%;}
-    .all-list .box-search #search
-    {
-        width: 73%;
-    }
+        margin-top: 10px;
+    
+        width: 310px;
+        margin-bottom: 6px;
+        margin-right: 5px;
+    }   
+        .all-list {
+            margin-left:-1px;
+            margin-right: -1px;
+            border: 2px solid rgba(29, 67, 131, 0.89);
+            border-top: 0;
+        }
+    
 }
+/*#########################        790     ###############*/
+@media all and (min-width: 645px) and (max-width: 790px)
+{
+    .all-list {
+margin-left: -3px;
+margin-right: -3px;
+border: 2px solid rgba(29, 67, 131, 0.89);
+border-top: 0;
+}
+    .record-type-title h3 
+    {
+        line-height: 45px !important;
+        font-size: 18px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+    .all-list .box-search #search 
+    {
+        width: 245px;
+        font-size: 1.1em;
+    }
+    .all-list .box-search
+    {
+        margin-top: 10px;
+    
+        width: 310px;
+        margin-bottom: 6px;
+        margin-right: 5px;
+    }   
+    
+    h1,h2,h3,h4,h5,h6
+    {
+        font-size: 1.6em;
+        margin: 0;padding: 0;
+        font-family: Arial, Time-New-Roman
+    }
+    .all-list .title
+    {
+        width: 100%;
+    }
+
+}
+/*#########################        645     ###############*/
 @media all and (min-width: 480px) and (max-width: 645px)
 {
+    .record-type-title h3
+     {
+        line-height: 20px !important;
+        font-size: 18px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+     }
+     .all-list {
+        margin-left: -4px;
+        margin-right: -4px;
+        border: 2px solid rgba(29, 67, 131, 0.89);
+        border-top: 0;
+    }
+    .all-list .box-search #search 
+    {
+        width: 245px;
+        font-size: 1.1em;
+    }
+    .all-list .box-search
+    {
+        margin-top: 10px;
+    
+        width: 310px;
+        margin-bottom: 6px;
+        margin-right: 5px;
+    }   
+    
+    h1,h2,h3,h4,h5,h6
+    {
+        font-size: 1.5em;
+        margin: 0;padding: 0;
+        font-family: Arial, Time-New-Roman
+    }
     .metro .tile.wide.imagetext.wideimage
     {
         width: 220px;
-    }
-    .all-list .box-search
-    {
-        width: 100%;
-        margin-top: 10px;
     }
         .all-list .title
     {
@@ -498,62 +682,47 @@ tile-column-span-2 a
     {
         font-weight: bold;
     }
-    .all-list .last .back-home
-    {
-        position: inherit;
-        display: block;
-    }
-    .all-list .title
-    {
-        width: 100%;
-        padding: 0;
-    }
     
-    /*foot*/
-    .all-list .last .prev, .all-list .last .next
-    {
-        position: inherit;
-        display: block;
-        width: 100%;
-        padding: 16px 0px 20px 50px;
-        text-align: left;
-    }
-    .all-list .last .prev-next,.single .last .prev-top
-    {
-        height: auto;
-        overflow: hidden;
-    }
-    .single .last .prev, .single .last .top,.single .last .back-home
-    {
-        position: inherit;
-        display: inline-block;
-        width: 100%;
-        left: 0;
-        padding: 16px 60px;
-        text-align: left;
-    }
-    .single .last .back-home
-    {
-        padding-left: 80px;
-    }
-    .all-list .last .back-home
-    {
-        padding-left: 80px;
-        text-align: left;
-    }
 }
 
-
+/*#########################        480     ###############*/
 @media all and (min-width: 0px) and (max-width: 480px) 
 {
-    .all-list .box-search #submit, .all-list .box-search #search:focus + #submit 
+     .record-type-title h3
+     {
+        line-height: 18px !important;
+         font-size: 16px;
+     }
+     .all-list{
+        margin-left: -4px;
+        margin-right: -4px;
+    
+        border: 2px solid rgba(29, 67, 131, 0.89);
+        border-top: 0;
+    }
+    h1,h2,h3,h4,h5,h6
     {
-        width: 17%;
+        font-size: 1.3em;
+        margin: 0;padding: 0;
+        font-family: Arial, Time-New-Roman
     }
     .all-list .box-search #search 
     {
-        width: 74%;
+        width: 180px;
+        font-size: 0.9em;
     }
+    .all-list .box-search
+    {
+        margin-top: 10px;
+    
+        width: 245px;
+        margin-bottom: 6px;
+        margin-right: 5px;
+    }
+    .single .last .top {
+        background: transparent url(images/prev.png) no-repeat 10px center;
+    }
+    
      .metro .tile.wide.imagetext.wideimage
      {
          width: 250PX;
@@ -581,11 +750,7 @@ tile-column-span-2 a
     {
         display: none !important;
     }
-    .all-list .box-search
-    {
-        width: 100%;
-        margin-top: 10px;
-    }
+
     /*button next-prev*/
     th
     {
@@ -618,11 +783,13 @@ tile-column-span-2 a
     }
     .single .last .prev, .single .last .top,.single .last .back-home
     {
-        position: inherit;
+       position: inherit;
         display: inline-block;
         width: 100%;
         left: 0;
-        padding: 16px 0px;
+        padding: 16px 50px;
+        float: left;
+        text-align: left;
     }
     .single .last .back-home
     {
@@ -638,13 +805,4 @@ tile-column-span-2 a
         height: auto !important;
     }
 }
-.tile.align-center .container
-{
-    background: none !important;
-    
-}
-.tile.align-center .container h3
-{
-    color: white !important;
-    padding: 0 2px;
-}
+

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -45,7 +44,11 @@ $dom_xml_report = simplexml_load_file($v_xml_report_file_path);
 
 //thong tin chung
 $dom_unit_info = simplexml_load_file('public/xml/xml_unit_info.xml');
-$v_unit_short_name = get_xml_value($dom_unit_info, '/unit/name');
+
+if (Session::get('la_can_bo_cap_xa') == true)
+    $v_unit_short_name = session::get('ou_name');
+else
+    $v_unit_short_name = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
 
 include SERVER_ROOT . 'libs' . DS . 'tcpdf' . DS . 'config' . DS . 'lang' . DS . 'vn.php';
 
@@ -337,17 +340,43 @@ else
             top: 0px;
             left: 0px;
         }
+        
+        table.report_list tr td, table.report_list tr th 
+        {
+            page-break-inside: avoid;
+        }
+        @media print
+        {
+            .formPrint
+            {
+                display: none;
+            }   
+            .page-breark
+            {
+                page-break-after: always;
+            }
+            .report_list tr
+            {
+                page-break-after: always;
+            }
+            
+            @page
+            {
+                margin: 10px;
+            }
+        }
     </style>
     <form class="formPrint" action="" method="POST">
         <?php echo $this->hidden('hdn_print_pdf','1');?>
         <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="In" onclick="javascript:window.print();"/>
         <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();" />
     </form>
     <table class="reprot_header">
         <tr>
             <td class="item">
                 <?php
-                 echo mb_strtoupper(get_xml_value($dom_unit_info, '/unit/full_name'), 'UTF-8');
+                 echo $v_unit_short_name;
                  echo '<br>';
                  echo 'VĂN PHÒNG';
                  echo '<br>';
@@ -380,3 +409,4 @@ else
 <?php
     echo $html;
 }
+?>

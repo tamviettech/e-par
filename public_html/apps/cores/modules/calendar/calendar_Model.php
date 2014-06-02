@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class calendar_Model extends Model {
@@ -182,6 +181,9 @@ class calendar_Model extends Model {
         $v_year         = $this->replace_bad_char($_POST['sel_year']);
         $arr_date_off   = explode(',', $this->replace_bad_char($_POST['hdn_date_off']));
         $arr_date_work  = explode(',', $this->replace_bad_char($_POST['hdn_date_work']));
+        
+        //var_dump($arr_date_off);
+        //var_dump($arr_date_work);
 
         //$ok = TRUE;
         //$this->db->BeginTrans();

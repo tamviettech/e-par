@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -26,72 +25,23 @@ class record_Controller extends Controller
 {
 
     //Roles
-    protected $_arr_roles       = array(
-        //BP Mot-Cua
-        _CONST_TIEP_NHAN_ROLE                       => 'Tiếp nhận'
-        , _CONST_BAN_GIAO_ROLE                        => 'Bàn giao'
-        , _CONST_RUT_ROLE                             => 'Rút hồ sơ'
-        , _CONST_BO_SUNG_ROLE                         => 'Bổ sung'
-        , _CONST_TRA_THONG_BAO_NOP_THUE_ROLE          => 'Trả TB thuế'
-        , _CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE          => 'Nhận BL thuế'
-        , _CONST_THU_PHI_ROLE                         => 'Thu phí'
-        , _CONST_TRA_KET_QUA_ROLE                     => 'Trả KQ'
-        , _CONST_IN_PHIEU_TIEP_NHAN_ROLE              => 'In lại phiếu TN'
-        , _CONST_CHUYEN_LEN_HUYEN_ROLE                => 'Chuyển HS lên Huyện'
-        , _CONST_TRA_HO_SO_VE_XA_ROLE                 => 'Trả KQ về xã'
-        , _CONST_XAC_NHAN_HO_SO_LIEN_THONG_ROLE       => 'Giải quyết/xác nhận HS liên thông'
-        , _CONST_XAC_NHAN_HO_SO_NOP_QUA_INTERNET_ROLE => 'Hồ sơ Internet'
-        , _CONST_KIEM_TRA_TRUOC_HO_SO_ROLE            => 'Kiểm tra trước hồ sơ'
-        //BO SUNG
-        , _CONST_THONG_BAO_BO_SUNG_ROLE               => 'Thông báo bổ sung'
-        , _CONST_TRINH_KY_ROLE                        => 'Trình ký'
-
-        //Bo phan Thue
-        , _CONST_NOP_HO_SO_SANG_CHI_CUC_THUE_ROLE         => 'Chuyển HS sang thuế'
-        , _CONST_NHAN_THONG_BAO_CUA_CHI_CUC_THUE_ROLE     => 'Nhận TB của chi cục thuế'
-        , _CONST_CHUYEN_THONG_BAO_THUE_VE_BP_MOT_CUA_ROLE => 'Chuyển TB thuế về "Môt-cửa"'
-
-        //Phong chuyen mon
-        , _CONST_PHAN_CONG_ROLE                        => 'Phân công thụ lý'
-        , _CONST_PHAN_CONG_LAI_ROLE                    => 'Thay đổi thụ lý'
-        , _CONST_THU_LY_ROLE                           => 'Thụ lý'
-        , _CONST_CHUYEN_HO_SO_LEN_SO_ROLE              => 'Chuyển HS lên Sở'
-        , _CONST_NHAN_HO_SO_TU_SO_ROLE                 => 'Nhận HS từ Sở'
-        , _CONST_CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA_ROLE => 'Chuyển giải quyết/xác nhận xuống xã'
-        , _CONST_THU_LY_HO_SO_LIEN_THONG_ROLE          => 'Thụ lý HS liên thông'
-        , _CONST_YEU_CAU_THU_LY_LAI_ROLE               => 'Yêu cầu thụ lý lại'
-        , _CONST_XET_DUYET_ROLE                        => 'Xét duyệt HS'
-        , _CONST_XET_DUYET_BO_SUNG_ROLE                => 'Xét duyệt HS bổ sung'
-        , _CONST_CHUYEN_LAI_BUOC_TRUOC_ROLE            => 'Trả hồ sơ về bước trước'
-
-        //Lanh dao don vi
-        , _CONST_KY_ROLE              => 'Ký duyệt hồ sơ'
-        , _CONST_Y_KIEN_LANH_DAO_ROLE => 'Ý kiến lãnh đạo'
-
-        //Chung
-        , _CONST_TRA_CUU_ROLE            => 'Tra cứu'
-        , _CONST_TRA_CUU_LIEN_THONG_ROLE => 'Tra cứu hồ sơ liên thông'
-        , _CONST_TRA_CUU_TAI_XA_ROLE     => 'Tra cứu hồ sơ tại xã'
-        , _CONST_BAO_CAO_ROLE            => 'Báo cáo'
-        , 'REJECT'                       => 'Từ chối HS'
-        , 'KHONG_NHAN_HO_SO'             => 'Không nhận hồ sơ'
-    );
+    protected $_arr_roles ;
     protected $_active_role;
     protected $_arr_user_role   = array();
     protected $_record_type;
     protected $_activity_filter = array(
-        0  => 'Tất cả hồ sơ'
-        , 1  => 'Hồ sơ vừa tiếp nhận'
-        , 2  => 'Hồ sơ chờ bổ sung'
-        , 10 => 'Hồ sơ đang tạm dừng'
-        , 3  => 'Hồ sơ bị từ chối'
-        , 4  => 'Hồ sơ đang giải quyết'
-        , 5  => 'Hồ sơ đang trình ký'
-        , 6  => 'Hồ sơ chờ trả kết quả'
-        , 7  => 'Hồ sơ đã trả kết quả'
-        , 8  => 'Hồ sơ đang chậm tiến độ'
-        , 9  => 'Hồ sơ quá hạn trả kết quả'
-        , 11 => 'Khôi phục hồ sơ bị xoá'
+        0  => 'Tất cả'
+        , 1  => 'Mới tiếp nhận'
+        , 2  => 'Chờ bổ sung'
+        , 10 => 'Tạm dừng'
+        , 3  => 'Bị từ chối'
+        , 4  => 'Đang thụ lý'
+        , 5  => 'Đang trình ký'
+        , 6  => 'Chờ trả KQ'
+        , 7  => 'Đã trả KQ'
+        , 8  => 'Chậm tiến độ'
+        , 9  => 'Quá hạn trả'
+//        , 11 => 'Khôi phục HS'
     );
 
     /**
@@ -103,20 +53,30 @@ class record_Controller extends Controller
     function __construct()
     {
         //Kiem tra session
+        session::init();
+        
+        //Kiem tra dang nhap
         session::check_login();
         
+        
         parent::__construct('r3', 'record');
-        $this->view->template->show_left_side_bar = FALSE;
+        
+        //tao array role tu r3_const
+        $this->_arr_roles = json_decode(CONST_ALL_R3_ROLES,true);
+        
+        $this->view->show_left_side_bar = $this->view->template->show_left_side_bar = TRUE;
         //$this->view->template->arr_roles = $this->model->qry_all_user_role(Session::get('user_code'));// $this->_arr_roles;
         $this->view->template->controller_url     = $this->view->get_controller_url();
         $this->view->template->activity_filter    = $this->_activity_filter;
         $this->view->role_text                    = $this->_arr_roles;
         
+        
         deny_bad_http_referer();
-
+        
         $menu = Array();
 
         $arr_my_role = $this->model->qry_all_user_role(Session::get('user_code'));
+        
         foreach ($this->_arr_roles as $key => $val)
         {
             if ($this->check_permission($key) && in_array($key, $arr_my_role))
@@ -262,7 +222,8 @@ class record_Controller extends Controller
      */
     private function _require_office_hour()
     {
-        return true;
+        return TRUE; 
+        
         if (DEBUG_MODE)
         {
             return;
@@ -280,7 +241,7 @@ class record_Controller extends Controller
      */
     private function _deny_bad_user_token()
     {
-        if (! check_user_token())
+        if (!check_user_token())
         {
             require_once (SERVER_ROOT . '403.php');
             die();
@@ -299,7 +260,6 @@ class record_Controller extends Controller
         $this->_require_office_hour();
 
         $v_xml_workflow_file_name = $this->view->get_xml_config($v_record_type, 'workflow');
-
 
         $VIEW_DATA['arr_single_record']   = $this->model->qry_single_record($record_id, $v_record_type, $v_xml_workflow_file_name);
         $VIEW_DATA['dom_workflow']        = simplexml_load_file($v_xml_workflow_file_name);
@@ -597,7 +557,7 @@ class record_Controller extends Controller
      */
     public function dsp_add_comment()
     {
-        $this->view->render('dsp_add_comment', NULL);
+        $this->view->render('dsp_add_comment');
     }
 
     /**
@@ -728,6 +688,20 @@ class record_Controller extends Controller
 
         $this->view->render('dsp_exec_record', $VIEW_DATA);
     }
+    
+    public function dsp_exec_by_village($record_id_list)
+    {
+        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
+
+        //$task_code ??????????
+        $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_THU_LY_CAP_XA_ROLE;
+
+        $VIEW_DATA['record_id_list']       = $record_id_list;
+        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
+        $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+
+        $this->view->render('dsp_exec_record_by_village', $VIEW_DATA);
+    }
 
     public function dsp_inter_exec($record_id_list)
     {
@@ -784,6 +758,13 @@ class record_Controller extends Controller
     public function do_exec_record()
     {
         $this->model->do_exec_record();
+    }
+    /**
+     * hoan thanh thu ly o thu ly xa
+     */
+    public function do_exec_record_by_village()
+    {
+        $this->model->do_exec_record_by_village();
     }
 
     /**
@@ -842,29 +823,6 @@ class record_Controller extends Controller
 
         $this->view->render('dsp_approval_record', $VIEW_DATA);
     }
-    
-    public function dsp_submit_to_sign($record_id_list)
-    {
-        $this->_require_office_hour();
-        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
-        $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRINH_KY_ROLE;
-
-        $VIEW_DATA['record_id_list'] = $record_id_list;
-
-        $arr_all_record = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
-        //Gia tri chinh xac cua TASK_CODE (cong viec chuan bi thuc hien)
-        if (count($arr_all_record) > 0)
-        {
-            $v_task_code = $arr_all_record[0]['C_NEXT_TASK_CODE'];
-        }
-
-        $VIEW_DATA['arr_all_record']       = $arr_all_record;
-        $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
-
-        $VIEW_DATA['arr_all_next_user'] = $this->model->qry_all_user_on_next_task($v_task_code);
-
-        $this->view->render('dsp_submit_to_sign_record', $VIEW_DATA);
-    }
 
     /**
      * Hiển thị màn hình phê duyệt HS bổ sung
@@ -897,11 +855,6 @@ class record_Controller extends Controller
     {
         $this->_require_office_hour();
         $this->model->do_approval_record();
-    }
-    public function do_submit_to_sign_record()
-    {
-        $this->_require_office_hour();
-        $this->model->do_submit_to_sign_record();
     }
 
     public function do_reject_record()
@@ -1115,9 +1068,9 @@ class record_Controller extends Controller
         $VIEW_DATA['record_id_list']       = $record_id_list;
         $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_allot($record_id_list);
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
-        $VIEW_DATA['arr_all_user']         = $this->model->db->GetAssoc("Select C_LOGIN_NAME, C_NAME
-            From t_cores_user u Inner Join t_r3_user_task ut On u.C_LOGIN_NAME=ut.C_USER_LOGIN_NAME
-            Where ut.C_TASK_CODE=?", array(strtoupper($v_record_type_code) . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE));
+//        $VIEW_DATA['arr_all_user']         = $this->model->db->GetAssoc("Select C_LOGIN_NAME, C_NAME
+//            From t_cores_user u Inner Join t_r3_user_task ut On u.C_LOGIN_NAME=ut.C_USER_LOGIN_NAME
+//            Where ut.C_TASK_CODE=?", array(strtoupper($v_record_type_code) . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE));
         
         $this->view->render('dsp_supplement_request_record', $VIEW_DATA);
     }
@@ -1350,12 +1303,13 @@ class record_Controller extends Controller
 
         $this->view->render($v_dsp_file, $VIEW_DATA);
     }
-
-    private function thu_phi()
+    
+    private function thu_ly_cap_xa()
     {
         $this->_regular_role(__FUNCTION__);
     }
-    private function trinh_ky()
+    
+    private function thu_phi()
     {
         $this->_regular_role(__FUNCTION__);
     }
@@ -1599,7 +1553,7 @@ class record_Controller extends Controller
     {
         $this->view->template->show_left_side_bar = TRUE;
         $this->view->template->activity_filter    = $this->_activity_filter;
-
+        
         $VIEW_DATA['arr_all_record_type'] = $this->model->qry_all_record_type_option();
         //Nếu không chọn loại HS, lấy loại HS đầu tiên trong danh sách
         $v_record_type_code               = $this->_record_type;
@@ -1610,14 +1564,20 @@ class record_Controller extends Controller
 
         //Luu dieu kien loc
         $activity_filter = get_request_var('tt', 0);
-
+        if (!is_numeric($activity_filter))
+        {
+            $activity_filter = 0;
+        }
+        
         $arr_all_record                = $this->model->qry_all_record_for_lookup($v_record_type_code, $activity_filter);
         $VIEW_DATA['record_type_code'] = $v_record_type_code;
         $VIEW_DATA['active_role']      = strtoupper(__FUNCTION__);
         $VIEW_DATA['active_role_text'] = $this->_arr_roles[strtoupper(__FUNCTION__)];
         $VIEW_DATA['arr_all_record']   = $arr_all_record;
         $VIEW_DATA['arr_all_spec']     = $this->model->assoc_list_get_all_by_listtype_code(_CONST_DANH_MUC_LINH_VUC, CONST_USE_ADODB_CACHE_FOR_REPORT);
-        
+        //tao menu tra cuu
+        $VIEW_DATA['activity_filter']   = $this->_activity_filter;
+
         $this->view->render('dsp_all_record_tra_cuu', $VIEW_DATA);
     }
 
@@ -1994,7 +1954,11 @@ class record_Controller extends Controller
         $this->_require_office_hour();
         $this->model->do_stop_cross_over_record();
     }
-
+    
+    /**
+     * in mau don (tien do)
+     * @param type $v_record_id (mã hồ sơ)
+     */
     public function dsp_print_record_form($v_record_id)
     {
         $this->_require_office_hour();
@@ -2002,9 +1966,25 @@ class record_Controller extends Controller
 
         $VIEW_DATA['arr_single_record'] = $this->model->qry_single_record($v_record_id);
 
-        $this->view->render('dsp_print_record_form', $VIEW_DATA);
+        $this->view->render('dsp_print_assistance_form', $VIEW_DATA);
     }
+    
+    /**
+     * in mau ho tro thu ly (tien do)
+     * @param type $v_record_id (mã hồ sơ)
+     */
+    public function dsp_print_assistance_form($v_record_id)
+    {
+        $this->_require_office_hour();
+        $v_record_id = replace_bad_char($v_record_id);
 
+        $VIEW_DATA['arr_single_record'] = $this->model->qry_single_record($v_record_id);
+        //tao current url => in mau thu ly ra doc
+//        $tpl_file_dir = get_request_var('tpl_file_dir','');
+//        $VIEW_DATA['url_assistance_for_to_doc'] = $this->view->get_controller_url() . "dsp_print_assistance_form/$v_record_id&tpl_file_dir=$tpl_file_dir&print_to_doc=1";
+        $this->view->render('dsp_print_assistance_form', $VIEW_DATA);
+    }
+    
     public function dsp_print_record_reject_for_citizen($v_record_id)
     {
         $this->_require_office_hour();
@@ -2033,5 +2013,108 @@ class record_Controller extends Controller
     	
     	echo 'File: ' . __FILE__ . '<br>Line: ' . __LINE__;var_dump::display($arr_pasing_record); 
     }
+    
+    /**
+     * dsp chon phong ban tiep nhan ho so de in
+     */
+    public function dsp_select_bu_to_print()
+    {
+        $VIEW_DATA['arr_all_bu'] = $this->model->qry_all_bu(_CONST_BAN_GIAO_ROLE);
+        
+        $this->view->render('dsp_select_bu_to_print',$VIEW_DATA);
+    }
+    
+    /**
+     * In bien ban ban giao tat ca ho so cho phong ban tieo nhan
+     * @param unknown_type $record_id_list
+     */
+    public function dsp_print_all_record_for_bu()
+    {
+        $record_id_list = get_post_var('sel_bu','');
+        $VIEW_DATA['bu_name'] = get_post_var('hdn_bu_name','');
+        
+        $v_task_code        =  _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
+        
+        $arr_all_record                    = $this->model->qry_all_ho_record($record_id_list);
+        $VIEW_DATA['arr_all_record']       = $arr_all_record;
+        
+        $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+
+        $this->view->render('dsp_print_all_record_for_bu', $VIEW_DATA);
+     
+    }
+    /**
+     * Fc từ chối hồ sơ bổ xung
+     * @param string $item_id_list
+     */
+    public function dsp_reject_supplement($record_id_list)
+    {
+        $this->_require_office_hour();
+        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
+        $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BO_SUNG_ROLE;
+
+        $VIEW_DATA['record_id_list']       = $record_id_list;
+        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_allot($record_id_list,_CONST_BO_SUNG_ROLE);
+        $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+
+        $this->view->render('dsp_reject_supplement', $VIEW_DATA);
+    }
+    /**
+     * Fc từ chối hồ sơ bổ xung
+     * @param string $item_id_list
+     */
+    public function dsp_reject_tax($record_id_list)
+    {
+        $this->_require_office_hour();
+        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
+        $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE;
+
+        $VIEW_DATA['record_id_list']       = $record_id_list;
+        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_allot($record_id_list,_CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE);
+        $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+
+        $this->view->render('dsp_reject_supplement', $VIEW_DATA);
+    }
+    
+    /**
+     * 
+     */
+    public function liveboard()
+    {
+        $this->_require_office_hour();
+        $this->view->template->activity_filter = array();
+        $this->view->template->active_role = Session::get('active_role');
+        $this->view->render('dsp_all_liveboard');
+    }
+    /**
+     * ho so cong dan rut
+     */
+    public function drawn_record()
+    {
+        $this->model->goback_url = $this->view->get_controller_url() . 'ho_so/' . strtolower(_CONST_RUT_ROLE);
+        $this->model->drawn_record();
+    }
+    /**
+     * Hien thi box nhap thong ly do rut ho so
+     */
+    public function dsp_reject_drawn_record($record_id_list)
+    {
+        $VIEW_DATA = $results = array();
+        $VIEW_DATA =array();
+        $this->_require_office_hour();
+        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
+        $this->check_permission(_CONST_RUT_ROLE) or die('Bạn không có quyền rút hồ sơ');
+        
+        $VIEW_DATA['record_id_list']        = $record_id_list;
+        $results                            = $this->model->get_list_drawn_record($record_id_list,$v_record_type_code);
+        $VIEW_DATA['arr_all_record']        = $results['arr_all_record'];         
+        $VIEW_DATA['arr_single_type_record']= $results['arr_single_type_record'];
+        
+        $this->view->render('dsp_reject_drawn_record',$VIEW_DATA);
+    }
+    
+    
+    
+
 }
 

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -90,8 +89,8 @@ $v_citizen_name_filter = isset($_POST['txt_citizen_name_filter']) ? replace_bad_
 			        <label>Người đăng ký:</label>
 			    </td>
 			    <td>
-			        <input type="text" name="txt_citizen_name_filter" style="width: 50%" value="<?php echo $v_citizen_name_filter;?>" />
-			        <input type="button" name="btn_search" value="Lọc" class="solid search" onclick="this.form.submit()" />
+			        <input  type="text" name="txt_citizen_name_filter" style="width: 50%" value="<?php echo $v_citizen_name_filter;?>" />
+			        <input type="button" name="btn_search" value="Lọc" class="btn solid search" onclick="this.form.submit()" />
 			    </td>
 			</tr>
 		</table>

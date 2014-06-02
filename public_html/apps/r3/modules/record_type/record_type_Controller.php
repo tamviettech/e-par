@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -45,6 +44,8 @@ class record_type_Controller extends Controller
         $this->view->template->app_name = 'R3';
 
         //Kiem tra session
+        session::init();
+        //Kiem tra dang nhap
         session::check_login();
     }
 
@@ -92,7 +93,8 @@ class record_type_Controller extends Controller
             $v_record_type_id = 0;
         }
 
-
+        
+        $VIEW_DATA['arr_all_template_file']  = $this->model->get_all_template_file($v_record_type_id);
         $VIEW_DATA['arr_all_spec']           = $this->model->assoc_list_get_all_by_listtype_code('DANH_MUC_LINH_VUC');
         $VIEW_DATA['arr_single_record_type'] = $this->model->qry_single_record_type($v_record_type_id);
         $VIEW_DATA['arr_all_report_books']   = $this->model->qry_all_report_books($v_record_type_id);
@@ -115,11 +117,6 @@ class record_type_Controller extends Controller
     public function dsp_plaintext_form_struct()
     {
         $this->view->render('dsp_plaintext_form_struct');
-    }
-    
-    public function dsp_edit_all_form()
-    {
-        $this->view->render('dsp_edit_all_form');
     }
 
     public function update_plaintext_form_struct()
@@ -149,29 +146,6 @@ class record_type_Controller extends Controller
         {
             $this->model->popup_exec_fail($v_message);
         }
-    }
-    
-    public function update_all_form()
-    {
-        $v_file_path = get_post_var('sel_form','', FALSE);
-        $v_file_content = get_post_var('txt_file_content','', FALSE);
-        
-        $ok = file_put_contents($v_file_path, $v_file_content);
-        $ok = ($ok > 0) ? 1 : 0;
-        
-        $v_record_type_code = get_post_var('hdn_record_type_code');
-        $v_record_type_name = get_request_var('hdn_record_type_name');
-
-        $QS = check_htacces_file() ? '?' : '&';
-        $v_url_back = $this->view->get_controller_url() . 'dsp_edit_all_form/' . $QS . 'sel_record_type=' . $v_record_type_code;
-        $v_url_back .= '&pop_win=1&record_type_name=' . $v_record_type_name;
-        $v_url_back .= '&ok=' . $ok;
-        
-        $filter= array(
-            'sel_form' => $v_file_path
-        );
-
-        $this->model->exec_done($v_url_back, $filter);
     }
 
     private function create_temp_workflow()
@@ -364,5 +338,6 @@ class record_type_Controller extends Controller
         }
     }
 
+        
 //end func
 }

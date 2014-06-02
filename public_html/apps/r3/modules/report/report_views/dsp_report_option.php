@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 /* @var $this \View */
 //header
@@ -39,14 +38,18 @@ function check_vilage_id()
         return false;
     }
 }
-
 ?>
 <form name="frmMain" id="frmMain" action="" method="POST">
 <?php
     echo $this->hidden('hdn_group_level','');
     function _dsp_print_button($url)
     {
-        echo '<center><input type="button" name="print" class="solid print" value="In báo cáo" onclick="showPopWin(\'' . $url . '\', 1000, 600, null, true);" /></center>';
+        echo '<center>
+                <button type="button" name="trash" class="btn btn-info" onclick="showPopWin(\'' . $url . '\', 1000, 600, null, true);">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
+              </center>';
     }
     
     switch (strtolower($report_type))
@@ -184,7 +187,10 @@ function check_vilage_id()
             </script>
             <center>
                 <!--button in-->
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <?php
             break;
@@ -219,7 +225,11 @@ function check_vilage_id()
             </div>
             <div class="clear" style="height: 10px">&nbsp;</div>
             <center>
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <!--button in -->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <script>
                 function btn_print_onclick(report_type)
@@ -258,7 +268,11 @@ function check_vilage_id()
             </div>
             <div class="clear" style="height: 10px">&nbsp;</div>
             <center>
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <!--button in phi le phi-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <script>
                 function btn_print_onclick()
@@ -298,7 +312,11 @@ function check_vilage_id()
             </div>
             <div class="clear" style="height: 10px">&nbsp;</div>
             <center>
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <!--button in phi le phi-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.chained.mini.js" type="text/javascript"></script>
             <script>
@@ -370,7 +388,11 @@ function check_vilage_id()
                 </tr>
             </table>
             <center>
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <!--button in-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
 
             <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.chained.mini.js" type="text/javascript"></script>
@@ -453,7 +475,6 @@ function check_vilage_id()
                     <?php endforeach?>
                 </select>
             </label>
-            <br>
             <label>
                 <strong>Lĩnh vực:</strong>
                 &nbsp;&nbsp;&nbsp;
@@ -465,7 +486,11 @@ function check_vilage_id()
                 </select>
             </label>
             <center>
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <!--button in-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <script>
                 function btn_print_onclick()
@@ -495,7 +520,6 @@ function check_vilage_id()
                     <?php endforeach?>
                 </select>
             </label>
-            <br>
             <label>
                 <strong>Lĩnh vực:</strong>
                 &nbsp;&nbsp;&nbsp;
@@ -507,7 +531,11 @@ function check_vilage_id()
                 </select>
             </label>
             <center>
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <!--button in-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <script>
                 function btn_print_onclick()
@@ -549,7 +577,11 @@ function check_vilage_id()
                 </select>
             </label>
             <center>
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <!--button in-->
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </center>
             <script>
                 function btn_print_onclick()
@@ -566,15 +598,20 @@ function check_vilage_id()
             break;
 
         default:
-            ?>
-            <iframe src="<?php echo SITE_ROOT?>r3/liveboard" style="width:100%;height:500px; border:0; overflow: scroll;"></iframe>
-            <a href="<?php echo SITE_ROOT?>r3/liveboard" target="blank"><label>Xem bảng tổng hợp đầy đủ</label></a>
-            <?php 
+            $QS = check_htacces_file() ? '?' : '&';
+            $v_url = $this->get_controller_url() . 'type/' . $report_type . '/' . $QS . 'pdf=1';
+            _dsp_print_button($v_url);
     }
     ?>
 </form>
 <!--script dung chung cho don vi-->
 <script>
+    $(document).ready(function(){
+        if(typeof $('#sel_group').val() != 'undefined')
+        {
+            sel_group_onchange($('#sel_group'));
+        }
+    });
     function sel_group_onchange(group)
     {
         var level = $(group).find(':selected').attr('data-level');

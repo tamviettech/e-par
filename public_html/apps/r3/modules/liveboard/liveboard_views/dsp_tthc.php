@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('DS') or die;
 /* @var $this \View */
@@ -66,7 +65,7 @@ $this->template->display('dsp_header_pop_win.php');
         <label id="unit_full_name"><?php echo $ou_name ?></label>
         <h5>Danh mục thủ tục hành chính</h5>
     </div>
-    <table width="100%" id="th-only" class="adminlist liveboard">
+    <table width="100%" id="th-only" class="adminlist table table-bordered table-striped">
 
         <script type="text/javascript">
             document.write(build_col_width());
@@ -83,7 +82,7 @@ $this->template->display('dsp_header_pop_win.php');
             </head>
     </table>
     <div class="detail_table">
-        <table width="100%" class="adminlist liveboard">
+        <table width="100%" class="adminlist table table-bordered table-striped">
 
             <script type="text/javascript">
                 document.write(build_col_width());

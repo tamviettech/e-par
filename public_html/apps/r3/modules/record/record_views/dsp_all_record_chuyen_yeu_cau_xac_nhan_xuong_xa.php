@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -50,10 +49,13 @@ $this->template->display('dsp_header.php');
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     <div id="solid-button">
-        <input type="button" class="solid transfer" value="Chuyển yêu cầu xác nhận xuống xã"
-               name="btn_display_send_confirmation_request" onclick="btn_display_send_confirmation_request_onclick();" />
-        <input type="button" name="addnew" class="solid print" value="In giấy bàn giao"
-               onclick="print_record_ho_for_bu();" />
+        <button type="button"  class="btn btn btn-warning solid transfer"
+               name="btn_display_send_confirmation_request" onclick="btn_display_send_confirmation_request_onclick();" >
+           
+            Chuyển yêu cầu xác nhận xuống xã</button>
+         
+        <button onclick="print_record_ho_for_bu();" type="button" name="addnew" class="btn btn btn-info solid print" ><i class="icon-print"></i>In giấy bàn giao</button>
+        
     </div>
     <div class="clear"></div>
 

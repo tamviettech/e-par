@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -49,9 +48,13 @@ $this->template->display('dsp_header.php');
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     <div id="solid-button">
-        <input type="button" name="addnew" class="solid delete" value="Xoá" onclick="btn_delete_onclick();">
+        <!--button xoa-->
+        <button type="button" name="trash" class="btn btn-danger" onclick="btn_delete_onclick();">
+            <i class="icon-trash"></i>
+            <?php echo __('delete');?>
+        </button>
     </div>
-    <div class="clear"></div>
+    <div class="clear" style="height: 10px;"></div>
 
     <div id="procedure">
         <?php

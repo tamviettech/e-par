@@ -16,15 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
-
-/**
- * @package record
- * @author tamviettech <goat91@gmail.com>
- * @abstract 
- * Chỉ để thừa kế, gửi mail thông báo cho công dân
- */
 require_once SERVER_ROOT . 'libs/Swift/lib/swift_required.php';
 
 abstract class announce_abstract

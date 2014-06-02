@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('SERVER_ROOT') or die;
 
@@ -34,7 +33,7 @@ $this->template->display('dsp_header_pop_win.php');
     ?>
     <label for="txt_search"><b>Tìm theo tên:</b></label>
     <input type="text" id="txt_search" name="txt_search" value="<?php echo $keywords ?>" size="50"/>
-    <table class="adminList" style="width:100%">
+    <table class="adminlist table table-bordered table-striped" style="width:100%">
         <colgroup>
             <col width="10%">
             <col width="45%">

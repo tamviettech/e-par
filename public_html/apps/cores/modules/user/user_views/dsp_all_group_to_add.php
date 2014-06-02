@@ -27,7 +27,7 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
 $arr_all_group_to_add = $VIEW_DATA['arr_all_group_to_add'];
 ?>
 <form name="frmMain" method="post" id="frmMain" action="#">
-    <table width="100%" class="adminlist" cellspacing="0" border="1">
+    <table width="100%" class="table" cellspacing="0" border="1">
                 <colgroup>
                 <col width="5%" />
                 <col width="95%" />
@@ -39,7 +39,7 @@ $arr_all_group_to_add = $VIEW_DATA['arr_all_group_to_add'];
             </tr>
     </table>
     <div style="height:200px;overflow: scroll">
-        <table width="100%" class="adminlist" cellspacing="0" border="1">
+        <table width="100%" class="table" cellspacing="0" border="1">
                 <colgroup>
                 <col width="5%" />
                 <col width="95%" />
@@ -61,8 +61,10 @@ $arr_all_group_to_add = $VIEW_DATA['arr_all_group_to_add'];
                         />
                     </td>
                     <td>
-                        <img src="<?php echo $this->template_directory;?>images/user-group16.png" border="0" align="absmiddle" />
-                        <label for="group_<?php echo $v_group_id;?>"><?php echo $v_group_name;?></label>
+                        <label for="group_<?php echo $v_group_id;?>">
+                            <img src="<?php echo $this->template_directory;?>images/user-group16.png" border="0" align="absmiddle" />
+                            <?php echo $v_group_name;?>
+                        </label>
                     </td>
                 </tr>
             <?php endfor; ?>
@@ -70,10 +72,10 @@ $arr_all_group_to_add = $VIEW_DATA['arr_all_group_to_add'];
         </table>
     </div>
     <!-- Button -->
-    <div class="button-area">
-        <input type="button" name="update" class="button add" value="<?php echo __('update'); ?>" onclick="get_selected_group();"/>
+    <div class="form-actions">
+        <button type="button" name="update" class="btn btn-primary" onclick="get_selected_group();"><i class="icon-save"></i><?php echo __('update');?></button>
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('cancel'); ?>" onclick="<?php echo $v_back_action;?>"/>
+        <button type="button" class="btn" onclick="<?php echo $v_back_action;?>"><i class="icon-reply"></i><?php echo __('cancel');?></button>
     </div>
 </form>
 <script>
@@ -96,5 +98,4 @@ $arr_all_group_to_add = $VIEW_DATA['arr_all_group_to_add'];
         window.parent.hidePopWin(true);
     }
 </script>
-
 <?php $this->template->display('dsp_footer' .$v_pop_win . '.php');

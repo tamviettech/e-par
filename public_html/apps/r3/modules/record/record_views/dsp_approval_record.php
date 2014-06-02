@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -130,7 +129,9 @@ if ($v_promote == '')
     }
     ?>
 
-    <div class="panel_color_form">Danh sách hồ xét duyệt</div>
+    <div class="widget-head blue">
+        <h3>Danh sách hồ xét duyệt</h3>
+    </div>
     <div class="Row">
         <div class="left-Col">
             <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
@@ -142,7 +143,7 @@ if ($v_promote == '')
 
     <!-- Record list -->
     <div id="record_list">
-        <table cellpadding="4" cellspacing="0" width="100%" class="list">
+        <table style="width: 100%;" class="adminlist table table-bordered table-striped">
             <tr>
                 <th>STT</th>
                 <th>Mã hồ sơ</th>
@@ -164,38 +165,48 @@ if ($v_promote == '')
         </table>
     </div>
     <!-- End: Record list -->
-    <div class="panel_color_form">Xét duyệt hồ sơ</div>
+    <div class="widget-head bondi-blue">
+        <h3>Xét duyệt hồ sơ</h3>
+    </div>
     <div class="Row">
         <div class="left-Col">
             Kết quả:
         </div>
         <div class="right-Col">
+            
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
                    onclick="rad_approval_onclick(this.value)"
                    <?php echo ($v_promote == _CONST_RECORD_APPROVAL_ACCEPT) ? ' checked' : ''; ?>
                    />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>">Phê duyệt hồ sơ</label>
+            Phê duyệt hồ sơ</label>
 
+            
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>" class="approval-reexec">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>"
                    onclick="rad_approval_onclick(this.value)"
                    />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>" class="approval-reexec">Trả lại, yêu cầu thụ lý</label>
+            Trả lại, yêu cầu thụ lý</label>
 
+            
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>" class="approval-supplement">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
                    onclick="rad_approval_onclick(this.value)"
                    <?php echo ($v_promote == _CONST_RECORD_APPROVAL_SUPPLEMENT) ? ' checked' : ''; ?>
                    />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>" class="approval-supplement">Yêu cầu bổ sung hồ sơ</label>
+            Yêu cầu bổ sung hồ sơ</label>
 
+            
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>" class="approval-reject">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
                    onclick="rad_approval_onclick(this.value)"
                    <?php echo ($v_promote == _CONST_RECORD_APPROVAL_REJECT) ? ' checked' : ''; ?>
                    />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>" class="approval-reject">Từ chối hồ sơ</label>
+            Từ chối hồ sơ</label>
         </div>
     </div>
 
@@ -207,7 +218,7 @@ if ($v_promote == '')
                 </div>
                 <div class="right-Col">
                     <input type="text" name="txt_fee" id="txt_fee"
-                           size="8" maxlength="10" class="text ui-widget-content ui-corner-all"
+                           size="8" maxlength="10" class="span12"
                            value="<?php echo $v_fee; ?>"/> (đ)
                 </div>
             </div>
@@ -218,7 +229,7 @@ if ($v_promote == '')
                 <div class="right-Col">
                     <textarea style="width:100%;height:100px;" rows="2"
                               name="txt_fee_description" id="txt_fee_description" cols="20" maxlength="400"
-                              class="text ui-widget-content ui-corner-all"><?php echo $v_fee_description; ?></textarea>
+                              class="span12"><?php echo $v_fee_description; ?></textarea>
                 </div>
             </div>
         <?php endif; ?>
@@ -230,25 +241,22 @@ if ($v_promote == '')
                         <label>Cán bộ thu phí <span class="required">*</span></label>
                     <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '$/', $v_next_task_code)): ?>
                         <label>Cán bộ trả kết quả:<span class="required">*</span></label>
-                    <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_TRINH_KY_ROLE . '$/', $v_next_task_code)): ?>
-                        <label>Cán bộ trình ký:<span class="required">*</span></label>
+                    <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_THU_LY_ROLE . '$/', $v_next_task_code)): ?>
+                        <label>Cán bộ thụ lý:<span class="required">*</span></label>
                     <?php else: ?>
                         <label>Lãnh đạo ký duyệt:<span class="required">*</span></label>
                     <?php endif; ?>
                 </div>
                 <div class="right-Col">
-                    <ul id="signer">
                         <?php for ($i = 0; $i < count($arr_all_next_user); $i++): ?>
-                            <li>
-                                <input type="radio" value="<?php echo $arr_all_next_user[$i]['C_USER_LOGIN_NAME']; ?>"
-                                       id="rad_signer_<?php echo $i; ?>" name="rad_signer"
-                                       <?php echo ($i == 0) ? ' checked' : ''; ?> />
+                                
                                 <label for="rad_signer_<?php echo $i; ?>">
+                                    <input type="radio" value="<?php echo $arr_all_next_user[$i]['C_USER_LOGIN_NAME']; ?>"
+                                    id="rad_signer_<?php echo $i; ?>" name="rad_signer"
+                                    <?php echo ($i == 0) ? ' checked' : ''; ?> />
                                     <?php echo $arr_all_next_user[$i]['C_NAME']; ?> <i>(<?php echo $arr_all_next_user[$i]['C_JOB_TITLE']; ?>)</i>
                                 </label>
-                            </li>
                         <?php endfor; ?>
-                    </ul>
                 </div>
             </div>
         <?php endif; ?>
@@ -258,7 +266,7 @@ if ($v_promote == '')
             <div class="Row">
                 <div class="left-Col">&nbsp;</div>
                 <div class="right-Col">
-                    <input type="button" class="solid print" value="In phiếu bàn giao" name="btn_print_record_list_to_handover_back" onclick="btn_print_record_list_to_handover_back_onclick();" />
+                    <input type="button" class="btn btn-success" value="In phiếu bàn giao" name="btn_print_record_list_to_handover_back" onclick="btn_print_record_list_to_handover_back_onclick();" />
                 </div>
             </div>
         <?php else: ?>
@@ -280,13 +288,13 @@ if ($v_promote == '')
         <div class="right-Col">
             <textarea style="width:100%;height:100px;" rows="3"
                       name="txt_reason" id="txt_reason" cols="20" maxlength="4000"
-                      class="text ui-widget-content ui-corner-all"><?php echo $v_reason; ?></textarea>
+                      class="span12"><?php echo $v_reason; ?></textarea>
         </div>
     </div>
     <div id="print_reject" class="Row" <?php echo ($v_promote == _CONST_RECORD_APPROVAL_REJECT) ? '' : ' style="display: none;"'; ?>>
         <div class="left-Col">&nbsp;</div>
         <div class="right-Col">
-            <input type="button" class="solid print" value="In phiếu từ chối" name="btn_print_supplement_request" onclick="btn_print_reject_onclick();" />
+            <input type="button" class="btn btn-success" value="In phiếu từ chối" name="btn_print_supplement_request" onclick="btn_print_reject_onclick();" />
         </div>
     </div>
 
@@ -296,16 +304,20 @@ if ($v_promote == '')
             <span id="spanLyDo">Sau khi bổ sung:</span> <span class="required">*</span>
         </div>
         <div class="right-Col">
+            
+            <label for="rad_after_supplement_1">
             <input type="radio" name="rad_after_supplement" id="rad_after_supplement_1" value="1" checked/>
-            <label for="rad_after_supplement_1">Chuyển đến bước phê duyệt hồ sơ bổ sung</label>
+            Chuyển đến bước phê duyệt hồ sơ bổ sung</label>
 
+            
+            <label for="rad_after_supplement_0">
             <input type="radio" name="rad_after_supplement" id="rad_after_supplement_0" value="0" />
-            <label for="rad_after_supplement_0">Duyệt lại từ đầu</label>
+            Duyệt lại từ đầu</label>
         </div>
 
         <div class="left-Col">&nbsp;</div>
         <div class="right-Col">
-            <input type="button" class="solid print" value="In phiếu yêu cầu bổ sung" name="btn_print_supplement_request" onclick="btn_print_supplement_request_onclick();" />
+            <input type="button" class="btn btn-success" value="In phiếu yêu cầu bổ sung" name="btn_print_supplement_request" onclick="btn_print_supplement_request_onclick();" />
         </div>
     </div>
 
@@ -313,9 +325,15 @@ if ($v_promote == '')
     <!-- Buttons -->
     <div class="button-area">
         <hr/>
-        <input type="button" name="btn_do_approval" class="button save" value="<? echo __('update'); ?>" onclick="btn_do_approval_onclick();" />
+        <button type="button" name="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();" accesskey="2">
+            <i class="icon-save"></i>
+            <?php echo __('update'); ?>
+        </button>
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action; ?>"/>
+        <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action;?>" >
+            <i class="icon-remove"></i>
+            <?php echo __('close window'); ?>
+        </button> 
     </div>
 </form>
 <script>

@@ -1,3 +1,21 @@
+<?php
+/**
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
  <?php 
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
@@ -14,7 +32,8 @@ class guidance_Model extends Model {
         {
             $stml = "SELECT
                             PK_LIST,
-                            C_NAME
+                            C_NAME,
+                            C_CODE
                           from t_cores_list
                           where FK_LISTTYPE = (select
                                                  PK_LISTTYPE
@@ -22,6 +41,7 @@ class guidance_Model extends Model {
                                                where C_CODE = 'DANH_MUC_LINH_VUC'
                                                    and C_STATUS = 1)
                                 and C_STATUS =1
+                                and C_CODE <> 'PD'
                                 order by C_ORDER ASC
                             ";
             return $this->db->getAll($stml);
@@ -63,6 +83,12 @@ class guidance_Model extends Model {
                             PK_RECORD_TYPE,
                             C_CODE,
                             C_NAME,
+                            case when C_SCOPE  = 3 then 'Thủ tục cấp huyện'
+                                when C_SCOPE   = 1 then 'Thủ tục liên thông xã huyện'
+                                when C_SCOPE   = 2 then 'Thủ tục liên thông huyện xã'
+                                else 'Thủ tục cấp xã'
+                                end as C_SCOPE
+                            ,
                             (select
                                count(PK_RECORD_TYPE)
                              from t_r3_record_type rt

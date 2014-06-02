@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) { exit('No direct script access allowed');}
 error_reporting(1);
 $dom_unit_info = simplexml_load_file('public/xml/xml_unit_info.xml');
@@ -38,6 +37,11 @@ if (!file_exists($v_xml_report_file_path))
     die('Chưa cấu hình xml báo cáo cho mẫu này!');
 }
 $dom_xml_report = simplexml_load_file($v_xml_report_file_path);
+
+if (Session::get('la_can_bo_cap_xa') == true)
+    $v_unit_name = session::get('ou_name');
+else
+    $v_unit_name = mb_strtoupper(xpath($dom_unit_info, '//full_name', XPATH_STRING), 'UTF-8');
 
 include SERVER_ROOT . 'libs' . DS . 'tcpdf' . DS . 'config' . DS . 'lang' . DS . 'vn.php';
 
@@ -238,7 +242,7 @@ if((int) get_post_var('hdn_print_pdf',0) == 1)
     $pdf->AddPage('LANDSCAPE');
 
     $pdf->SetFont('liennd.times', '', 16);
-    $v_unit_name = mb_strtoupper(get_xml_value($dom_unit_info,'/unit/full_name'), 'UTF-8') . "\nVĂN PHÒNG \n ________";
+    $v_unit_name = mb_strtoupper($v_unit_name, 'UTF-8') . "\nVĂN PHÒNG \n ________";
     $pdf->MultiCell(140, 3, $v_unit_name, 0, 'C', 0, 0, '', '', true);
     $txt = "Cộng hoà xã hội chủ nghĩa Việt Nam \n Độc lập - Tự do - Hạnh phúc \n _________";
     $pdf->MultiCell(140, 5, $txt, 0, 'C', 0, 0, '', '', true);
@@ -332,17 +336,29 @@ else
             top: 0px;
             left: 0px;
         }
+        @media print
+        {
+            .formPrint
+            {
+                display: none;
+            }    
+            @page
+            {
+                margin: 10px;
+            }
+        }
     </style>
     <form class="formPrint" action="" method="POST">
         <?php echo $this->hidden('hdn_print_pdf','1');?>
         <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="In" onclick="javascript:window.print();"/>
         <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();"/>
     </form>
     <table class="reprot_header">
         <tr>
             <td class="item">
                 <?php
-                 echo mb_strtoupper(get_xml_value($dom_unit_info, '/unit/full_name'), 'UTF-8');
+                 echo $v_unit_name;
                  echo '<br>';
                  echo 'VĂN PHÒNG';
                  echo '<br>';

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -29,7 +28,8 @@ $this->template->title = 'Hồ sơ phải bổ sung, đã nhận bổ sung';
 $this->template->display('dsp_header_pop_win.php');
 
 ?>
-<form name="frmMain" id="frmMain" action="" method="POST">
+<div id="overDiv" style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></div>
+<form name="frmMain" id="frmMain" action="" method="POST" style="background-color: white;">
     <?php
     echo $this->hidden('controller',$this->get_controller_url());
     echo $this->hidden('hdn_item_id','0');
@@ -47,20 +47,22 @@ $this->template->display('dsp_header_pop_win.php');
     echo $this->hidden('hdn_supplement_status', 2);
 
     ?>
-    <div class="page-title">Hồ sơ phải bổ sung, đã nhận giấy tờ bổ sung</div>
-    <div class="page-notice">
-        <div id="notice">
-            <div class="notice-title">Thống kê hồ sơ</div>
-            <div class="notice-container" id="notice-container"><ul></ul></div>
-        </div>
-    </div>
+     <div class="clear" style="height: 10px">&nbsp;</div>
+    <!--<div class="page-title">Hồ sơ phải bổ sung, đã nhận giấy tờ bổ sung</div>-->
+    <?php echo $this->dsp_div_notice();?>
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     <div id="solid-button">
-        <input type="button" class="solid transfer" value="Bàn giao bổ sung"
-               onclick="btn_handover_onclick();" />
-        <input type="button" class="solid print" value="In biên bàn bàn giao bổ sung"
-               onclick="print_record_ho_for_bu();" />
+        <!--button ban giao-->
+        <button type="button" name="trash" class="btn btn-primary" onclick="btn_handover_onclick();" >
+            <i class="icon-exchange"></i>
+            Bàn giao bổ sung
+        </button>            
+        <!--button in-->
+        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_bu();">
+            <i class="icon-print"></i>
+            In biên bàn bàn giao bổ sung
+        </button>
     </div>
     <div class="clear"></div>
 

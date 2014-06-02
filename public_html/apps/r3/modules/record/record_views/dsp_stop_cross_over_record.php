@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
@@ -59,9 +58,10 @@ $v_reason = '';
     <!-- Buttons -->
     <div class="button-area">
         <hr/>
-        <input type="button" name="btn_do_approval" class="button save" value="Cập nhật" onclick="btn_do_approval_onclick();" />
+        <button nam="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();"><i class="icon-save"></i>Cập nhật</button>        
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>"/>
+        <button class="btn btn-danger" name="cancel" onclick="<?php echo $v_back_action;?>"><i class="icon-remove"><?php echo __('close window'); ?></i></button>
+        
     </div>
 </form>
 <script>

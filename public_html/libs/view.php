@@ -1,5 +1,7 @@
 <?php
 /**
+
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <?php
 
@@ -32,6 +33,8 @@ class View{
     public $msg;
     /** @var \Savant3 */
     public $template;
+    
+    public $url_layout;
 
     function __construct($app, $module) {
         $this->app_name = $app;
@@ -42,12 +45,14 @@ class View{
         //Savant3
         $this->template = new Savant3();
         //load local javascript
-        $this->template->local_js = SITE_ROOT . 'apps/' . $app . '/modules/' . $module . '/' . $module . '_views/js_' . $module . '.js';
+        $this->local_js = $this->template->local_js = SITE_ROOT . 'apps/' . $app . '/modules/' . $module . '/' . $module . '_views/js_' . $module . '.js';
         $this->template->controller_url = $this->get_controller_url();
         $this->template->function_url = $this->template->controller_url;
 
         $this->template->template_directory = 'apps' . DS . $app . DS;
-        $this->template->stylesheet_url = SITE_ROOT . 'apps/' . $app . '/style.css';
+        $this->stylesheet_url = $this->template->stylesheet_url = SITE_ROOT . 'apps/' . $app . '/style.css';
+        
+        $this->url_layout = SERVER_ROOT . 'apps' .DS. 'layout'.DS;
     }
 
     private function _render_error($code)
@@ -182,7 +187,7 @@ class View{
             $table_col_size .= '<col width="' . $col->attributes()->size . '" />';
             if (strval($col->attributes()->type != 'checkbox'))
             {
-                $table_header .= '<th>' . __($col->attributes()->name) . '</th>';
+                $table_header .= '<th class="center">' . __($col->attributes()->name) . '</th>';
             }
             else
             {
@@ -196,12 +201,13 @@ class View{
                }
             }
         }
-        $html .= '<table width="100%" class="adminlist" cellspacing="0" border="1">' . $table_col_size
+        $html .= '<table width="100%" class="adminlist table table-bordered table-striped" cellspacing="0" border="1">' . $table_col_size
                 . '<tr>' . $table_header . '</tr></table>';
 
         //List item
-        $html .= '<table width="100%" class="adminlist" cellspacing="0" border="1">';
+        $html = '<table width="100%" class="table table-bordered table-striped">';
         $html .= $table_col_size;
+        $html .= '<thead><tr>' . $table_header . '</tr></thead>';
         $i = 0;
         for ($i = 0; $i < sizeof($data); $i++) {
             $v_row_class = 'row' . ($i % 2);
@@ -369,11 +375,11 @@ class View{
         $html .= '<div class="pager" id="pager">';
         $html .= __('total') . ' ' . $v_total_page . ' ' . __('page');
 
-        $html .= '. ' . __('go to') . '<select name="sel_goto_page" onchange="this.form.submit();">';
+        $html .= '. ' . __('go to') . '<select class="input-small" name="sel_goto_page" onchange="this.form.submit();">';
         $html .= self::generate_select_option($arr_page, $page);
         $html .= '</select>';
 
-        $html .= __('display') . '<select name="sel_rows_per_page" onchange="this.form.sel_goto_page.value=1;this.form.submit();">';
+        $html .= __('display') . '<select class="input-small" name="sel_rows_per_page" onchange="this.form.sel_goto_page.value=1;this.form.submit();">';
         $html .= self::generate_select_option(null, $rows_per_page, 'xml_rows_per_page.xml');
         $html .= '</select> ' . __('record'). '/1 ' . __('page');
 
@@ -414,11 +420,11 @@ class View{
         $html .= '<div class="pager" id="pager">';
         $html .= __('total') . ' ' . $v_total_page . ' ' . __('page');
 
-        $html .= '. ' . __('go to') . '<select name="sel_goto_page" onchange="this.form.submit();">';
+        $html .= '. ' . __('go to') . ': <select name="sel_goto_page" class="input-small" id="sel_goto_page" onchange="this.form.submit();">';
         $html .= self::generate_select_option($arr_page, $page);
         $html .= '</select>';
 
-        $html .= __('display') . '<select name="sel_rows_per_page" onchange="this.form.sel_goto_page.value=1;this.form.submit();">';
+        $html .= __('display') . ' <select name="sel_rows_per_page" class="input-small" id="sel_rows_per_page" onchange="this.form.sel_goto_page.value=1;this.form.submit();">';
         $html .= self::generate_select_option(null, $rows_per_page, 'xml_rows_per_page.xml');
         $html .= '</select> ' . __('record'). '/1 ' . __('page');
 
@@ -478,4 +484,43 @@ class View{
 
         return $html;
     }
+    
+    public function layout_render($layout,$view,$data=array())
+    {
+       ob_start();
+       $this->render($view,$data);
+       $html_content = ob_get_clean();
+       $LAYOUT_DATA['content'] = $html_content;
+       $this->get_layout($layout,$LAYOUT_DATA);
+    }
+
+    public function get_layout($layout,$LAYOUT_DATA)
+    {
+       $v_layout_file = $this->url_layout . $layout .'.php';
+       if (file_exists($v_layout_file))
+       {
+           //Tự động sinh các biến cho VIEW_DATA
+           if (is_array($LAYOUT_DATA))
+           {
+               foreach ($LAYOUT_DATA as $key => $val)
+               {
+                   $$key = $val;
+               }
+           }
+           require $v_layout_file;
+       }
+       else
+       {
+           $this->_layout_render_error(1);
+       }
+    }
+    private function _layout_render_error($code)
+   {
+       switch ($code)
+       {
+           case 1:
+               die('layout ko ton tai');
+               break;
+       }
+   }
 }

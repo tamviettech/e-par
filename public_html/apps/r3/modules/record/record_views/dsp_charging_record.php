@@ -1,4 +1,22 @@
 <?php
+/**
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 $arr_single_record = $VIEW_DATA['arr_single_record'];
@@ -93,7 +111,7 @@ if (strtolower($v_advance_cost_is_full) == 'true')
                        value="<?php echo number_format($v_default_fee); ?>"
                        onchange="txt_fee_onkeyup()"
                        /> (đ)
-                <label id="lbl_text_fee"></label>
+                <span id="lbl_text_fee"></span>
             </td>
         </tr>
         <tr>
@@ -104,7 +122,7 @@ if (strtolower($v_advance_cost_is_full) == 'true')
                        value="<?php echo $v_cost; ?>" readonly
                        onchange="txt_cost_onkeyup()"
                        /> (đ)
-                <label id="lbl_text_cost"></label>
+                <span id="lbl_text_cost"></span>
             </td>
         </tr>
         <tr>
@@ -113,7 +131,7 @@ if (strtolower($v_advance_cost_is_full) == 'true')
                 <input type="text" name="txt_avanced_cost" id="txt_avanced_cost" readonly
                        size="8" maxlength="10" class="text valid"
                        value="<?php echo number_format($v_advance_cost); ?>" readonly="1"/> (đ)
-                <label id="lbl_text_advanced_cost"></label>
+                <span id="lbl_text_advanced_cost"></span>
             </td>
     
         </tr>
@@ -123,7 +141,7 @@ if (strtolower($v_advance_cost_is_full) == 'true')
                 <input type="text" name="additional_fee" id="additional_fee" style="color:purple"
                        size="8" maxlength="10" class="text valid"
                        readonly="1"/> (đ)
-                <label id="lbl_text_additional_fee"></label>
+                <span id="lbl_text_additional_fee"></span>
     
             </td>
         </tr>
@@ -177,6 +195,12 @@ if (strtolower($v_advance_cost_is_full) == 'true')
 <script>
                        function btn_do_charging_onclick()
                        {
+//                          var f = document.frmMain;
+//                          if(f.txt_fee <0)
+//                            {
+//                                alert('Giá phí không được nhập giá trị âm');
+//                                return false;
+//                            }
                            document.frmMain.submit();
                        }
 

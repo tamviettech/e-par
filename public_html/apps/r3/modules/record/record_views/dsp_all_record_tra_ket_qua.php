@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -51,10 +50,12 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid certificate" value="Trả kết quả"
-               onclick="btn_return_onclick();" />
+        <!--button tra ket qua-->
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_return_onclick();" >
+            Trả kết quả
+        </button>    
     </div>
-    <div class="clear"></div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
 
     <div id="procedure">
         <?php

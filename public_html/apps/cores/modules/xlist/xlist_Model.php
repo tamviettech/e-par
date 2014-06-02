@@ -131,7 +131,11 @@ class xlist_Model extends Model {
                         , C_XML_FILE_NAME
                         , C_ORDER
                         , C_STATUS
-                    From t_cores_listtype
+                        ,(SELECT GROUP_CONCAT(C_ORDER)
+                             FROM t_cores_listtype
+                            where  PK_LISTTYPE <> lt.PK_LISTTYPE
+                            ) as C_EXITS_ORDER
+                    From t_cores_listtype lt
                     Where PK_LISTTYPE=?';
             $params = array($v_listtype_id);
 
@@ -139,7 +143,12 @@ class xlist_Model extends Model {
         }
         else
         {
-            return array('C_ORDER' => $this->get_max('t_cores_listtype', 'C_ORDER'));
+            $stmt = "SELECT GROUP_CONCAT(C_ORDER) as C_EXITS_ORDER,
+                            max(C_ORDER) as C_ORDER
+                             FROM t_cores_listtype
+                            where  PK_LISTTYPE
+                           ";
+            return  $this->db->GetRow($stmt);
         }
     }
 
@@ -155,7 +164,7 @@ class xlist_Model extends Model {
         $v_order              = get_post_var('txt_order');
         $v_status             = isset($_POST['chk_status']) ? 1 : 0;
         $v_save_and_addnew    = isset($_POST['chk_save_and_addnew']) ? 1 : 0;
-
+        
         //Kiem tra trung ma, ten
         $stmt = 'Select Count(*) From t_cores_listtype Where PK_LISTTYPE <>? And (C_CODE=? Or C_NAME=?)';
         $params = array($v_listtype_id, $v_listtype_code, $v_listtype_name);
@@ -218,7 +227,7 @@ class xlist_Model extends Model {
 
             } //endif $v_listtype_id
 
-            $this->ReOrder('t_cores_listtype','PK_LISTTYPE','C_ORDER', $v_listtype_id, $v_order);
+        $this->ReOrder('t_cores_listtype','PK_LISTTYPE','C_ORDER', $v_listtype_id, $v_order);
         }//end Kiem tra trung ten, ma
 
         //Luu dieu kien loc
@@ -289,7 +298,7 @@ class xlist_Model extends Model {
         $code           = replace_bad_char($code);
         $listtype_id    = replace_bad_char($listtype_id);
         $list_id        = replace_bad_char($list_id);
-
+        
         $sql = "Select count(*) count from t_cores_list Where (PK_LIST <> $list_id) AND (C_CODE='$code') AND (FK_LISTTYPE=$listtype_id)";
         $this->db->debug=0;
         return json_encode($this->db->getRow($sql));
@@ -417,58 +426,28 @@ class xlist_Model extends Model {
         $v_xml_data     = isset($_POST['XmlData']) ? $_POST['XmlData'] : '<root/>';
 
         $v_save_and_addnew = isset($_POST['chk_save_and_addnew']) ? 1 : 0;
-
-        if ($v_list_id > 0) {
-            //Update
-            $stmt = "Update t_cores_list Set
-                        FK_LISTTYPE=$v_listtype_id
-                        ,C_CODE='$v_list_code'
-                        ,C_NAME='$v_list_name'
-                        ,C_OWNER_CODE_LIST=''
-                        ,C_XML_DATA='$v_xml_data'
-                        ,C_ORDER=$v_order
-                        ,C_STATUS=$v_status
-                    Where PK_LIST=$v_list_id";
-        }
-        else
-        {
-            //Insert
-            $stmt = "Insert Into t_cores_list (
-                        FK_LISTTYPE,
-                        C_CODE,
-                        C_NAME,
-                        C_OWNER_CODE_LIST,
-                        C_XML_DATA,
-                        C_ORDER,
-                        C_STATUS
-
-                    ) values (
-                        $v_listtype_id,
-                        '$v_list_code',
-                        '$v_list_name',
-                        '',
-                        '$v_xml_data',
-                        $v_order,
-                        $v_status
-                    )";
-            if (DATABASE_TYPE == 'MSSQL')
-            {
-                $v_list_id = $this->db->getOne("SELECT IDENT_CURRENT('t_cores_list')");
-            }
-            elseif (DATABASE_TYPE == 'MYSQL')
-            {
-                $v_list_id = $this->db->Insert_ID('t_cores_list','PK_LIST');
-            }
-        }
-        //echo $stmt; exit;
-        $this->db->Execute($stmt);
-        $this->ReOrder('t_cores_list','PK_LIST','C_ORDER', $v_list_id, $v_order, "FK_LISTTYPE=$v_listtype_id");
-
+        
+        //Kiem tra trung ten doi tuong
+        $sql = "select count(*) "
+                . "From t_cores_list "
+                . "Where C_NAME = ? "
+                . " And FK_LISTTYPE = $v_listtype_id "
+                . " And PK_LIST <> $v_list_id";        
+        $count_exist_name  = $this->db->GetOne($sql,$v_list_name);
+        
+        //Kiem tra trung ma
+        $sql = "select count(*) "
+                . "From t_cores_list "
+                . "Where C_CODE = $v_list_code "
+                . " And FK_LISTTYPE = $v_listtype_id "
+                . " And PK_LIST <> $v_list_id";        
+        $count_exist_code  = $this->db->GetOne($sql,$v_list_name);
+        
+        
         //Luu dieu kien loc
         $v_filter = isset($_POST['txt_filter']) ? $_POST['txt_filter'] : '';
         $v_page = isset($_POST['sel_goto_page']) ? replace_bad_char($_POST['sel_goto_page']) : 1;
         $v_rows_per_page = isset($_POST['sel_rows_per_page']) ? replace_bad_char($_POST['sel_rows_per_page']) : _CONST_DEFAULT_ROWS_PER_PAGE;
-
 
         $arr_filter = get_filter_condition(array(
                                                 'sel_listtype_filter'
@@ -477,10 +456,72 @@ class xlist_Model extends Model {
                                                 ,'sel_rows_per_page'
                                             )
                         );
+        
+        //Khong trung ten + khong trung ma thi update
+        if ( $count_exist_name + $count_exist_code == 0)
+        {
+            if ($v_list_id > 0) 
+            {
+                //Update
+                $stmt = "Update t_cores_list Set
+                            FK_LISTTYPE=$v_listtype_id
+                            ,C_CODE='$v_list_code'
+                            ,C_NAME='$v_list_name'
+                            ,C_OWNER_CODE_LIST=''
+                            ,C_XML_DATA='$v_xml_data'
+                            ,C_ORDER=$v_order
+                            ,C_STATUS=$v_status
+                        Where PK_LIST=$v_list_id " ;
 
-        if ($v_save_and_addnew > 0) {
+                $this->db->Execute($stmt);
+            }
+            else
+            {
+                //Insert
+                $stmt = "Insert Into t_cores_list (
+                            FK_LISTTYPE,
+                            C_CODE,
+                            C_NAME,
+                            C_OWNER_CODE_LIST,
+                            C_XML_DATA,
+                            C_ORDER,
+                            C_STATUS
+
+                        ) values (
+                            $v_listtype_id,
+                            '$v_list_code',
+                            '$v_list_name',
+                            '',
+                            '$v_xml_data',
+                            $v_order,
+                            $v_status
+                        ) ";
+
+                $this->db->Execute($stmt);
+
+                if (DATABASE_TYPE == 'MSSQL')
+                {
+                    $v_list_id = $this->db->getOne("SELECT IDENT_CURRENT('t_cores_list')");
+                }
+                elseif (DATABASE_TYPE == 'MYSQL')
+                {
+                    $v_list_id = $this->db->Insert_ID('t_cores_list','PK_LIST');
+                }
+            }//end if ($v_list_id > 0) 
+        
+            $this->ReOrder('t_cores_list','PK_LIST','C_ORDER', $v_list_id, $v_order,'1',"FK_LISTTYPE=$v_listtype_id");
+        }
+        else
+        {
+            $this->exec_fail($this->goforward_url, 'Mã hoặc tên đối tượng đã tồn tại!', $arr_filter);
+        }
+            
+        if ($v_save_and_addnew > 0) 
+        {
             $this->exec_done($this->goforward_url, $arr_filter);
-        } else {
+        } 
+        else
+        {
             $this->exec_done($this->goback_url, $arr_filter);
         }
     } //end func update_list

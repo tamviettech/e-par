@@ -1,5 +1,7 @@
 <?php
 /**
+
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed'); ?>
 <?php
 
@@ -859,4 +860,266 @@ class Model
         return $str;
     }
 
+//=====public_service=========//
+        /**
+     * Dem so tin bai theo tung trang thai
+     * @return array
+     */
+    public function gp_qry_count_article()
+    {
+        $sql = "Select
+                    count(PK_ARTICLE)as 'count_editor'
+                     From t_ps_article
+                     ";
+        return $this->db->getrow($sql);
+    }
+    
+    
+    public function build_internal_order($table_name, $pk_column_name, $parent_column_name, $order_column_name,  $internal_order_column_name,$pk_value=-1,$other_clause='')
+    {
+        $this->db->SetFetchMode(ADODB_FETCH_BOTH);
+
+        //Stack
+        $arr_stack = array();
+
+        $id = $pk_value;
+        //Kiem tra ID co ton tai khong
+        $sql = "Select Count(*) From $table_name Where $pk_column_name=$id";
+        if ($this->db->getOne($sql) < 1)
+        {
+            $sql = "Select $pk_column_name From $table_name Where ($parent_column_name Is Null Or $parent_column_name < 1) $other_clause";
+            $id = $this->db->getOne($sql);
+        }
+
+        /*/Cập nhật Internal Order của node
+        $v_order = $this->db->getOne("Select $order_column_name From $table_name Where $pk_column_name=$id");
+        $v_order = str_repeat('0', 3 - strlen($v_order)) . $v_order;
+
+        $v_parent_internal_order = $this->db->getOne("Select $internal_order_column_name From $table_name Where $pk_column_name=(Select $parent_column_name From $table_name Where $pk_column_name=$id)");
+                $v_new_internal_order = $v_parent_internal_order . $v_order;
+$sql = "Update $table_name Set $internal_order_column_name='$v_new_internal_order' Where $pk_column_name=$id";
+$this->db->Execute($sql);
+*/
+        // Cập nhật Internal Order tất cả các node ngang hàng
+        $v_parent_id = $this->db->getOne("Select $parent_column_name From $table_name Where $pk_column_name=$id $other_clause");
+        if($v_parent_id == '' || $v_parent_id == Null)
+        {
+            $v_condition_parent = "$parent_column_name IS NULL";
+        }
+        else
+        {
+            $v_condition_parent = "$parent_column_name = $v_parent_id";
+        }
+        $v_parent_internal_order = $this->db->getOne("Select $internal_order_column_name From $table_name Where $pk_column_name=(Select $parent_column_name From $table_name Where $pk_column_name=$id $other_clause)");
+
+        $sql = "Update $table_name
+        Set $internal_order_column_name = Concat ('$v_parent_internal_order', Case
+                                        When $order_column_name < 10 Then Concat('00', $order_column_name)
+                                        When $order_column_name >= 10 And $order_column_name < 100 Then Concat('0', $order_column_name)
+                                        Else $order_column_name
+                                    End
+                )
+            WHERE  $v_condition_parent $other_clause";
+
+        $this->db->Execute($sql);
+
+        //Cập nhật Internal Order của tất cả các node con
+        $sql = "Select
+                $pk_column_name
+                ,$internal_order_column_name
+                ,$order_column_name
+                From $table_name Where $v_condition_parent $other_clause
+                Order by $order_column_name";
+        $arr_stack = $this->db->getAll($sql);
+        $i=1;
+        while (sizeof($arr_stack) > 0 && $i < 10000)
+        {
+            //Pop stack
+            $arr_single_row = array_pop($arr_stack);
+
+            $v_ou_id             = $arr_single_row[$pk_column_name];
+            $v_internal_order    = $arr_single_row[$internal_order_column_name];
+            $v_order             = $arr_single_row[$order_column_name];
+
+            //Update all children internal order
+            if (DATABASE_TYPE == 'MSSQL')
+            {
+            $sql = "Update $table_name
+            Set $internal_order_column_name = '$v_internal_order' + Case
+                                            When $order_column_name < 10 Then '00' + Convert(varchar(1),$order_column_name)
+                                            When $order_column_name >= 10 And $order_column_name < 100 Then '0' + Convert(varchar(2),$order_column_name)
+                                            Else Convert(varchar(3),$order_column_name)
+                                        End
+
+            WHERE $parent_column_name=$v_ou_id $other_clause";
+            }
+            elseif (DATABASE_TYPE == 'MYSQL')
+            {
+                $sql = "Update $table_name
+                Set $internal_order_column_name = Concat ('$v_internal_order', Case
+                                                When $order_column_name < 10 Then Concat('00', $order_column_name)
+                                                When $order_column_name >= 10 And $order_column_name < 100 Then Concat('0', $order_column_name)
+                                                Else $order_column_name
+                                            End
+                        )
+                WHERE $parent_column_name=$v_ou_id $other_clause";
+            }
+            $this->db->Execute($sql);
+
+            //Push stack
+            $stmt = "Select
+                $pk_column_name
+                ,$internal_order_column_name
+                ,$order_column_name
+                From $table_name Where $parent_column_name=$v_ou_id $other_clause
+                Order by $order_column_name";
+            $arr_all_sub_ou = $this->db->getAll($stmt);
+            foreach ($arr_all_sub_ou as $ou)
+            {
+                array_push($arr_stack, $ou);
+            }
+                $i++;
+        }//end while
+    }
+    /**
+     * funcction order      : Xap sep thu tu order
+     * @param string $table             : Table name
+     * @param string $pk_col            : Column name "column primary key"
+     * @param string $order_col         : Column order name
+     * @param string $orther_clause     : Condition order 
+ */
+    public function build_order($table, $pk_col, $order_col, $orther_clause = '')
+    {
+
+        $order = "$order_col";
+
+        if(DATABASE_TYPE == 'MSSQL')
+        {
+            $sql = "  Update $table
+                  Set $order_col = B.rn
+                  From $table
+                  Inner Join (
+                                Select $pk_col,ROW_NUMBER() Over(Order By $order) As rn
+                                From $table
+                                WHERE (1>0) $orther_clause
+                              ) B
+                  On $table.$pk_col = B.$pk_col
+                    ";
+            $this->db->Execute($sql);
+        }
+        else if(DATABASE_TYPE == 'MYSQL')
+        {
+            $sql = "SELECT $pk_col FROM $table WHERE (1>0) $orther_clause Order By $order";
+            $arr_all_record = $this->db->getCol($sql);
+            for($i=0;$i<count($arr_all_record);$i++)
+            {
+                $v_id    = $arr_all_record[$i];
+                $v_value = $i + 1;
+                $sql = "UPDATE $table SET $order_col = $v_value
+                        WHERE (1>0) AND $pk_col = $v_id $orther_clause";
+                $this->db->Execute($sql);
+            }
+        }
+
+    }
+    
+    function prepare_tinyMCE($val)
+    {
+        $val = strval($val);
+        //$val = str_replace("&", '&amp;', $val);
+        // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
+        // this prevents some character re-spacing such as <java\0script>
+        // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
+        $val = preg_replace('/([\x00-\x08][\x0b-\x0c][\x0e-\x20])/', '', $val);
+
+        //$val = stripslashes($val);
+        //$val = strip_tags($val); # Remove tags HTML e PHP.
+        //$val = addslashes($val); # Adiciona barras invertidas à uma string.
+        //$val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
+        // straight replacements, the user should never need these since they're normal characters
+        // this prevents like <IMG SRC=&#X40&#X61&#X76&#X61&#X73&#X63&#X72&#X69&#X70&#X74&#X3A&#X61
+        // &#X6C&#X65&#X72&#X74&#X28&#X27&#X58&#X53&#X53&#X27&#X29>
+        $search = 'abcdefghijklmnopqrstuvwxyz';
+        $search.= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $search.= '1234567890!@#$%^&*()';
+        $search.= '~`";:?+/={}[]-_|\'\\';
+
+        for ($i = 0; $i < strlen($search); $i++)
+        {
+            // ;? matches the ;, which is optional
+            // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
+            // &#x0040 @ search for the hex values
+            $val = preg_replace('/(&#[x|X]0{0,8}' . dechex(ord($search[$i])) . ';?)/i', $search[$i], $val); // with a ;
+            // &#00064 @ 0{0,7} matches '0' zero to seven times
+            $val = preg_replace('/(&#0{0,8}' . ord($search[$i]) . ';?)/', $search[$i], $val); // with a ;
+        }
+
+        // now the only remaining whitespace attacks are \t, \n, and \r
+        $ra1 = array(
+            'javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink'
+            , 'link', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset'
+            , 'ilayer', 'layer', 'bgsound', 'title'
+        );
+        $ra2 = array(
+            'onabort', 'onactivate', 'onafterprint', 'onafterupdate'
+            , 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate'
+            , 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload'
+            , 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange'
+            , 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut'
+            , 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick'
+            , 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave'
+            , 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate'
+            , 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout'
+            , 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete'
+            , 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave'
+            , 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel'
+            , 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange'
+            , 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart'
+            , 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll'
+            , 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop'
+            , 'onsubmit', 'onunload'
+        );
+        $ra = array_merge($ra1, $ra2);
+
+        $found = true; // keep replacing as long as the previous round replaced something
+        while ($found == true)
+        {
+            $val_before = $val;
+            for ($i = 0; $i < sizeof($ra); $i++)
+            {
+                $pattern = '/';
+                for ($j = 0; $j < strlen($ra[$i]); $j++)
+                {
+                    if ($j > 0)
+                    {
+                        $pattern .= '(';
+                        $pattern .= '(&#[x|X]0{0,8}([9][a][b]);?)?';
+                        $pattern .= '|(&#0{0,8}([9][10][13]);?)?';
+                        $pattern .= ')?';
+                    }
+                    $pattern .= $ra[$i][$j];
+                }
+                $pattern .= '/i';
+                $replacement = substr($ra[$i], 0, 2) . '<x>' . substr($ra[$i], 2); // add in <> to nerf the tag
+                $val         = preg_replace($pattern, $replacement, $val); // filter out the hex tags
+                if ($val_before == $val)
+                {
+                    // no replacements were made, so exit the loop
+                    $found = false;
+                }
+            }
+        }
+    $val = str_replace('\'', '&#39', $val);
+    return $val;
+    }
+    /**
+     * lay default module
+     * @param type string
+     * @return type string
+     */
+    public function get_default_module($app)
+    {
+        $stmt = "SELECT C_DEFAULT_MODULE FROM t_cores_application WHERE C_CODE = ?";
+        return strtolower($this->db->getOne($stmt,array($app)));
+    }
 }

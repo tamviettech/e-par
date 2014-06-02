@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE('ohhh');
@@ -57,19 +56,24 @@ $v_reason = '';
     //KQ thu ly
     echo $this->hidden('hdn_approval_value', $v_promote);
     ?>
-
-    <div class="panel_color_form">Danh sách hồ từ chối</div>
-    <div class="Row">
-        <div class="left-Col">
-            <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
-        </div>
-        <div class="right-Col">
-            <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
-        </div>
+    <div class="widget-head blue">
+        <h3>Danh sách hồ từ chối</h3>
     </div>
+    <table class="none" width="100%" cellspacing="0" cellpadding="4" border="0">
+        <tbody>
+            <tr>
+                <td style="font-weight: bold">
+                    Loại hồ sơ: 
+                </td>
+                <td>
+                    <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <!-- Record list -->
-    <table cellpadding="4" cellspacing="0" width="100%" class="list">
+    <table width="100%" class="adminlist table table-bordered table-striped">
         <tr>
             <th>STT</th>
             <th>Mã hồ sơ</th>
@@ -88,25 +92,34 @@ $v_reason = '';
         <?php endfor;?>
     </table>
     <!-- End: Record list -->
-    <div class="panel_color_form">Lý do từ chối</div>
-    <div id="divNote" class="Row">
-        <div class="left-Col">
-        </div>
-        <div class="right-Col">
-            <textarea style="width:100%;height:100px;" rows="3"
-            	name="txt_reason" id="txt_reason" cols="20" maxlength="4000"
-            	class="text ui-widget-content ui-corner-all"><?php echo $v_reason;?></textarea>
-        </div>
-    </div>
 
-
+    <table class="none" width="100%" cellspacing="0" cellpadding="4" border="0">
+        <tbody>
+            <tr>
+                <td style="font-weight: bold" width="15%">
+                    Lý do từ chối:
+                </td>
+                <td>
+                    <textarea style="width:100%;height:100px;" rows="3"
+                	name="txt_reason" id="txt_reason" cols="20" maxlength="4000"
+                	class="span12"><?php echo $v_reason;?></textarea>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <div class="clear">&nbsp;</div>
     <!-- Buttons -->
     <div class="button-area">
         <hr/>
-        <input type="button" name="btn_do_approval" class="button save" value="Cập nhật" onclick="btn_do_approval_onclick();" />
-        <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>"/>
+        <button type="button" name="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();" accesskey="2">
+            <i class="icon-save"></i>
+            <?php echo __('update'); ?>
+        </button>
+        <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
+        <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action;?>" >
+            <i class="icon-remove"></i>
+            <?php echo __('close window'); ?>
+        </button> 
     </div>
 </form>
 <script>

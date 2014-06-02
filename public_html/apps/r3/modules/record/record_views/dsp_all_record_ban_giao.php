@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -63,13 +62,30 @@ $this->template->display('dsp_header.php');
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     <div id="solid-button">
-        <input type="button" class="solid transfer" value="Bàn giao"
-               onclick="btn_handover_onclick();" />
-        <input type="button" name="addnew" class="solid print" value="In giấy bàn giao"
-               onclick="print_record_ho_for_bu();" />
+        <!--button ban giao-->
+        <button type="button" name="trash" class="btn btn-primary" onclick="btn_handover_onclick();" accesskey="9">
+            <i class="icon-exchange"></i>
+            Bàn giao
+        </button>
+        
+        <!--button in-->
+        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_bu();">
+            <i class="icon-print"></i>
+            In giấy bàn giao
+        </button>
+        <!--button in-->
+        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_bu(1);">
+            <i class="icon-print"></i>
+            In và bàn giao
+        </button>
+        <!--button in theo don vi tiep nhan (tat ca cac loai ho so don vi tiep nhan)-->
+        <button type="button" name="trash" class="btn btn-info" onclick="select_bu_to_print();">
+            <i class="icon-print"></i>
+            In giấy bàn giao theo đơn vị tiếp nhận
+        </button>
     </div>
-    <div class="clear"></div>
-
+    <div class="clear" style="height: 10px;"></div>
+    
     <div id="procedure">
         <?php
         if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list')))
@@ -86,6 +102,7 @@ $this->template->display('dsp_header.php');
     </div> -->
 </form>
 <script>
+    var ret_ho_count = 0;
     $(function() {
     	//Pham vi thu tuc?
         v_cope = $("#sel_record_type>option:selected").attr("data-scope");
@@ -145,14 +162,22 @@ $this->template->display('dsp_header.php');
         {
             f.submit();
         }
+        else
+        {
+          ret_ho_count = 0;
+        }
     }
-
-    function print_record_ho_for_bu()
+    //in ho so theo 1 loai thu tuc
+    function print_record_ho_for_bu(ho)
     {
         var f = document.frmMain;
-
+        if(typeof ho == 'undefined')
+        {
+            ho = 0;
+        }
+        
         //Danh sach ID Ho so da chon
-        v_selected_record_id_list = get_all_checked_checkbox(f.chk, ',');
+        var v_selected_record_id_list = get_all_checked_checkbox(f.chk, ',');
 
         if (v_selected_record_id_list != '')
         {
@@ -162,13 +187,30 @@ $this->template->display('dsp_header.php');
             url += '&record_type_code=' + $("#record_type_code").val();
             url += '&record_type_name=' + encodeURI($("#sel_record_type>option:selected").text());
             url += '&type=' + $("#hdn_handover_type").val();
-
-            showPopWin(url, 1000, 600, null, true);
+            url += '&ho=' + ho;
+            showPopWin(url, 1000, 600, returnPrint, true);
+           
         }
         else
         {
             alert('Chưa có hồ sơ nào được chọn!');
         }
+    }
+    function returnPrint(retVal)
+    {
+        var ho = retVal.ho;
+        if(parseInt(ho) == 1 && ret_ho_count == 0)
+        {
+            btn_handover_onclick();
+            ret_ho_count++;
+        }
+    }
+    //in ho so theo nhieu loai thu tuc
+    function select_bu_to_print()
+    {
+        url =  url = '<?php echo $this->get_controller_url();?>dsp_select_bu_to_print/';
+        
+        showPopWin(url, 1000, 600, null, true);
     }
 </script>
 <?php $this->template->display('dsp_footer.php');

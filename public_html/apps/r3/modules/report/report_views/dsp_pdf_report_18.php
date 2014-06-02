@@ -1,8 +1,30 @@
 <?php
-defined('SERVER_ROOT') or die;
+/**
 
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+<?php
+defined('SERVER_ROOT') or die;
 $dom_unit      = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
-$unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
+
+if (Session::get('la_can_bo_cap_xa'))
+    $unit_fullname = Session::get('ou_name');
+else
+    $unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
+
 ob_end_clean();
 ob_start();
 ?>
@@ -84,6 +106,8 @@ $html = ob_get_clean();
 
 if((int) get_post_var('hdn_print_pdf',0) == 1)
 {
+    require_once SERVER_ROOT . 'libs/tcpdf/zreport.php';
+    
     $pdf = new ZREPORT(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     // set document information
     $pdf->SetCreator(PDF_CREATOR);
@@ -185,10 +209,22 @@ else
                 top: 0px;
                 left: 0px;
             }
+            @media print
+            {
+                .formPrint
+                {
+                    display: none;
+                }
+                @page
+                {
+                    margin: 10px;
+                }
+            }
     </style>
     <form class="formPrint" action="" method="POST">
         <?php echo $this->hidden('hdn_print_pdf','1');?>
         <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="In" onclick="javascript:window.print();"/>
         <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();"/>
     </form>
     <?php

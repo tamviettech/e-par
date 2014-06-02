@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -144,25 +143,64 @@ class record_type_Model extends Model
         $params = array($p_record_type_id);
         return $this->db->GetRow($stmt, $params);
     }
+    
+    public function get_all_template_file($v_record_type_id)
+    {
+        $arr_single_record_type = $this->qry_single_record_type($v_record_type_id);
+        
+        $xml_data     = isset($arr_single_record_type['C_XML_DATA']) ? $arr_single_record_type['C_XML_DATA'] : '';
+        if(trim($xml_data) == '' OR $xml_data == NULL)
+        {
+            return;
+        }
+        $dom          = simplexml_load_string($xml_data);
+        
+        $v_xpath      = '//data/media/file/text()';
+        $r            = $dom->xpath($v_xpath);
+        $arr_all_file = array();
+        foreach ($r as $item)
+        {
+            $item = (string)$item ;
 
+            if(trim($item) != '' && $item != NULL)
+            {   
+                $v_path_file = CONST_TYPE_FILE_UPLOAD . 'template_files_types' .DS . $item;
+                                
+                if(is_file($v_path_file))
+                {
+                    $arr_string = explode('_', $item,2);
+                    $key_file   = isset($arr_string[0]) ? $arr_string[0] : '';
+                    $arr_all_file[$item]['file_name'] =  isset($arr_string[1]) ? $arr_string[1] : '';
+                    $arr_all_file[$item]['path']      =  $v_path_file;
+                    $arr_all_file[$item]['type']      = filetype($v_path_file);
+                }
+            }            
+        }
+        return $arr_all_file;
+    }
+    
+    
+    
     public function update_record_type($arr_filter)
     {
-        $v_record_type_id = get_post_var('hdn_item_id', 0);
-        $v_code           = get_post_var('txt_code', '');
-        $v_name           = get_post_var('txt_name', '');
-        $v_xml_data       = get_post_var('XmlData', '', FALSE);
-        $v_scope          = get_post_var('rad_scope', 3);
-        $v_order          = get_post_var('txt_order', 1);
-        $v_spec_code      = get_post_var('sel_spec_code', 'XX');
-        
-        $arr_report_books = get_post_var('chk_report_book', array(), false);
-
+         
+        $v_record_type_id   = get_post_var('hdn_item_id', 0);
+        $v_code             = get_post_var('txt_code', '');
+        $v_name             = get_post_var('txt_name', '');       
+        $v_xml_data         = get_post_var('XmlData', '<data></data>', FALSE);
+        $v_scope            = get_post_var('rad_scope', 3);
+        $v_order            = get_post_var('txt_order', 1);
+        $v_spec_code        = get_post_var('sel_spec_code', 'XX');
+        $arr_file           = isset($_FILES['uploader']['name']) ? $_FILES['uploader']['name'] : array();
+        $arr_report_books   = get_post_var('chk_report_book', array(), false);
+        $v_list_file_key    = get_post_var('hdn_delete_file_list_id',''); 
         $v_status             = isset($_POST['chk_status']) ? 1 : 0;
         $v_save_and_addnew    = isset($_POST['chk_save_and_addnew']) ? 1 : 0;
         $v_send_over_internet = isset($_POST['chk_send_over_internet']) ? '1' : '0';
         
         $v_allow_verify       = isset($_POST['chk_allow_verify_record']) ? '1' : '0';
-
+        $v_xml_data           = isset($_POST['XmlData']) ? $_POST['XmlData'] : '<data/>';
+        
         //Kiem tra trung ma
         $sql = "Select Count(*)
                 From t_r3_record_type
@@ -182,18 +220,54 @@ class record_type_Model extends Model
             $this->exec_fail($this->goback_url, 'Tên loại hồ sơ đã tồn tại', $arr_filter);
             return;
         }
-
+        
         if ($v_record_type_id < 1) //Insert
         {
+            // add dom media vao xml_data khi them moi
+            $doc = new SimpleXMLElement($v_xml_data);
+            $media = $doc->addChild('media');
+            $v_xml_data = $doc->asXML();
+            
             $stmt   = 'Insert Into t_r3_record_type (C_CODE, C_NAME, C_XML_DATA,C_STATUS,C_SCOPE,C_ORDER, C_SEND_OVER_INTERNET,C_SPEC_CODE,C_ALLOW_VERIFY_RECORD) Values (?,?,?,?,?,?,?,?,?)';
             $params = array($v_code, $v_name, $v_xml_data, $v_status, $v_scope, $v_order, $v_send_over_internet, $v_spec_code, $v_allow_verify);
-
             $this->db->Execute($stmt, $params);
 
             $v_record_type_id = $this->get_last_inserted_id('t_r3_record_type', 'PK_RECORD_TYPE');
+            
         }
         else //Update
         {
+            
+            //Lay xml hien tai
+            $xml_data_current = $this->db->GetOne("select C_XML_DATA from t_r3_record_type where PK_RECORD_TYPE = ? ",array($v_record_type_id));
+            
+            $dom                   = simplexml_load_string($xml_data_current);
+            
+            //Lay danh sach file name dang luu tru
+            $v_xpath_file          = '//data/media/file';
+            $arr_results      = $dom->xpath($v_xpath_file);
+            $doc = new SimpleXMLElement($v_xml_data);
+            $media = $doc->addChild('media');
+            foreach ($arr_results as $item)
+            {
+                $media->addChild('file',$item);
+            }
+            $v_xml_data = $doc->asXML();
+            
+            // lay xml luu tru ma linh vuc
+            $v_xpath_item          = '//item/value';
+            $obj_listype_code_spcode   = $dom->xpath($v_xpath_item);
+            $v_listype_code_spcode = isset($obj_listype_code_spcode[0]) ? (string)$obj_listype_code_spcode[0] : '';
+            
+            if(trim($v_listype_code_spcode) != '' && $v_listype_code_spcode != null)
+            {
+                $xml = new SimpleXMLExtended($v_xml_data);
+                $xml_crr = $xml->addChild('item');
+                $xml_crr->addAttribute('id','sel_spec_code');            
+                $xml_crr->addChild('value')->addCData($v_listype_code_spcode);            
+                $v_xml_data = $xml->asXML();
+            }
+
             $stmt   = 'Update t_r3_record_type Set
                         C_CODE=?
                         ,C_NAME=?
@@ -215,7 +289,7 @@ class record_type_Model extends Model
                 $v_send_over_internet,
                 $v_spec_code,
                 $v_allow_verify,
-                $v_record_type_id,
+                $v_record_type_id
             );
 
             $this->db->Execute($stmt, $params);
@@ -223,9 +297,21 @@ class record_type_Model extends Model
 
         $this->ReOrder('t_r3_record_type', 'PK_RECORD_TYPE', 'C_ORDER', $v_record_type_id, $v_order);
         $this->update_report_book_report_type($v_record_type_id, $arr_report_books);
-
+        
+        //Them file dinh kem
+        if(count($arr_file) > 0)
+        {
+            $this->update_template_file_type($v_record_type_id,$arr_file);
+        }
+        //xoa file dinh kem da chon xoa
+        if(trim($v_list_file_key) != '')
+        {
+            $this->delete_file_tempate_type($v_record_type_id,$v_list_file_key);
+        }
+        
         //Luu dieu kien loc
         $arr_filter = get_filter_condition(array('txt_filter', 'sel_goto_page', 'sel_rows_per_page'));
+        
         //Done
         if ($v_save_and_addnew > 0)
         {
@@ -236,7 +322,7 @@ class record_type_Model extends Model
            $this->exec_done($this->goback_url, $arr_filter);
         }
     }
-
+    
     function update_report_book_report_type($v_record_type_id, $arr_new_books)
     {
         if (!is_array($arr_new_books))
@@ -264,5 +350,138 @@ class record_type_Model extends Model
             AND lt.c_code = 'DM_SO_THEO_DOI_HO_SO'";
         $this->db->Execute($sql_insert, array($v_record_type_id));
     }
+    
+    function update_template_file_type($v_record_type_id,$arr_file)
+    {
+        //Lay danh sach cac file da tai len
+       $sql = "SELECT ExtractValue(C_XML_DATA,'count(/data/media)') as C_COUNT_MEDIA, C_XML_DATA
+                    FROM t_r3_record_type 
+                    WHERE PK_RECORD_TYPE = ?";
+        $resluts = $this->db->GetRow($sql,$v_record_type_id);
+        $v_xml_data       = $resluts['C_XML_DATA'];        
+        
+        $dom              = simplexml_load_string($v_xml_data);
+        
+        $arr_new_file     = array();
+        if((int)$resluts['C_COUNT_MEDIA'] >0 )
+        {
+            $v_xpath        = '//data/media/file/text()';
+            $arr_results    = $dom->xpath($v_xpath);
+            
+            foreach ($arr_results as $item)
+            {
+                $arr_new_file[] = '<file>'.(string)$item.'</file>';
+            }
+        }
+       
+        // add file moi
+        $v_count_file = count($arr_file);
+        if($v_count_file > 0)
+        {
+            for($i = 0;$i < $v_count_file; $i ++)
+            {
+                 if ($_FILES['uploader']['error'][$i] == 0)
+                 {
+                    $v_file_name     = $this->vn_str_filter($_FILES['uploader']['name'][$i]);
+                    $v_tmp_name      = $_FILES['uploader']['tmp_name'][$i];
+                    
+                    $v_file_ext      = array_pop(explode('.', $v_file_name));
+                    $v_user_id       = session::get('user_id');
+                    $v_cur_file_name = uniqid().'_' . $v_file_name;
+                    $v_upload_date = date('Y-m-d');
+                    
+                    if (in_array($v_file_ext, explode(',', _CONST_TYPE_FILE_ACCEPT)))
+                    {                     
+                        //check folder root
+                        $v_dir_file = CONST_TYPE_FILE_UPLOAD . 'template_files_types' ;
+                        if(file_exists($v_dir_file) == FALSE)
+                        {
+                            mkdir($v_dir_file, 0777, true);
+                        }
+                        if (!move_uploaded_file($v_tmp_name, CONST_TYPE_FILE_UPLOAD . 'template_files_types' . DS . $v_cur_file_name))
+                        {
+                            $this->popup_exec_fail('Xảy ra sự cố khi upload file!');
+                        }
+                        else
+                        {
+                            $arr_new_file[] = '<file>'.$v_cur_file_name.'</file>';
+                        }
+                    }
+                }
+            }
+            
+            $tring_xml_file  = (string)implode('', $arr_new_file);
+            $sql = "
+                UPDATE t_r3_record_type 
+                        SET	
+                         C_XML_DATA = UpdateXML(C_XML_DATA,'//data/media','<media>$tring_xml_file</media>') 	
+                        WHERE
+                        PK_RECORD_TYPE = ? ";
+            $this->db->Execute($sql,array($v_record_type_id));
+        }
+    }
+    
+    
+    
+    
+    public function delete_file_tempate_type($v_record_type_id,$v_list_file_key)
+    {
+        $arr_file_id  = explode('|',$v_list_file_key);
+        $v_xml_data = '';
+        
+        if(count($arr_file_id) >0 )
+        {
+            for($i = 0; $i <count($arr_file_id); $i++)
+            {
+                $v_file_id = trim($arr_file_id[$i]);
+                 $sql = "
+                        UPDATE t_r3_record_type 
+                                SET	
+                                 C_XML_DATA = UpdateXML(C_XML_DATA,'//data/media/file[node()=\"$v_file_id\"]',' ') 	
+                                WHERE
+                                PK_RECORD_TYPE = ? ";
+                $this->db->Execute($sql,array($v_record_type_id));                
+                //Xoa thong tun file
+                $v_path_file = CONST_TYPE_FILE_UPLOAD . 'template_files_types' .DS . $arr_file_id[$i];
+                if(is_file($v_path_file))
+                {
+                    unlink($v_path_file);
+                }
 
+            }
+        }
+    }
+ //Loai bo dau va khi thu xau khi upload file
+function vn_str_filter ($str){
+
+    $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", 'a', $str);
+    $str = preg_replace("/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/", 'e', $str);
+    $str = preg_replace("/(ì|í|ị|ỉ|ĩ)/", 'i', $str);
+    $str = preg_replace("/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/", 'o', $str);
+    $str = preg_replace("/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/", 'u', $str);
+    $str = preg_replace("/(ỳ|ý|ỵ|ỷ|ỹ)/", 'y', $str);
+    $str = preg_replace("/(đ)/", 'd', $str);
+    $str = preg_replace("/(À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ)/", 'A', $str);
+    $str = preg_replace("/(È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ)/", 'E', $str);
+    $str = preg_replace("/(Ì|Í|Ị|Ỉ|Ĩ)/", 'I', $str);
+    $str = preg_replace("/(Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ)/", 'O', $str);
+    $str = preg_replace("/(Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ)/", 'U', $str);
+    $str = preg_replace("/(Ỳ|Ý|Ỵ|Ỷ|Ỹ)/", 'Y', $str);
+    $str = preg_replace("/(Đ)/", 'D', $str);
+    $str = preg_replace("/( )/", '-', $str);
+    $str = preg_replace("/,/", '-', $str);
+    $str = preg_replace('/(?|\'|"|&|#)/', '', $str);
+    //$str = str_replace(" ", "-", str_replace("&*#39;","",$str));
+    return $str;
+   }
+}
+//add Cdata to xml
+class SimpleXMLExtended extends SimpleXMLElement // http://coffeerings.posterous.com/php-simplexml-and-cdata
+{
+  public function addCData($cdata_text)
+  {
+    $node= dom_import_simplexml($this); 
+    $no = $node->ownerDocument; 
+    $node->appendChild($no->createCDATASection($cdata_text)); 
+  } 
 }

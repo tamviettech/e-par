@@ -90,6 +90,9 @@
         <item type="Checkbox" value="2" id="THU_LY" name="" allownull="" validate="" title="Thụ lý hồ sơ" label="" view="true"/>
     </line>
     <line label="" cols="1">
+        <item type="Checkbox" value="2" id="THU_LY_CAP_XA" name="" allownull="" validate="" title="Thụ lý hồ sơ cấp xã" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
         <item type="Checkbox" value="2" id="THU_LY_HO_SO_LIEN_THONG" name="" allownull="" validate="" title="Thụ lý hồ sơ liên thông" label="" view="true"/>
     </line>
     <line label="" cols="1">
@@ -113,9 +116,6 @@
     <line label="" cols="1">
         <item type="Checkbox" value="2" id="Y_KIEN_LANH_DAO" name="" allownull="" validate="" title="Ý kiến chỉ đạo" label="" view="true"/>
     </line>
-    <line label="" cols="1">
-        <item type="Checkbox" value="2" id="TRINH_KY" name="" allownull="" validate="" title="Trình ký" label="" view="true"/>
-    </line>
 
     <!-- Chung, tra cứu, báo cáo -->
     <line label="Tra cứu, báo cáo" cols="1">
@@ -136,5 +136,4 @@
     <line label="" cols="1">
         <item type="Checkbox" value="2" id="QUAN_TRI_SO_THEO_DOI_HO_SO" name="" allownull="" validate="" title="Quản trị sổ theo dõi hồ sơ" label="" view="true"/>
     </line>
-    
 </form>

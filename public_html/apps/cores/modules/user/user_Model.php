@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -132,7 +131,7 @@ class user_Model extends Model
         $v_order        = get_post_var('txt_order');
         $v_xml_data     = get_post_var('XmlData', '<data/>', 0);
         $v_level        = get_post_var('rad_level', 1);
-
+        
         //Kiem tra trung ten
         $stmt             = 'Select Count(*) From t_cores_ou Where C_NAME=? And PK_OU <> ?';
         $params           = array($v_name, $v_ou_id);
@@ -165,11 +164,13 @@ class user_Model extends Model
                         C_NAME=N?
                         ,C_ORDER=?
                         ,C_LEVEL=?
+                        ,FK_OU = ? 
                     Where PK_OU=?';
             $params          = array(
                 $v_name
                 , $v_order
                 , $v_level
+                , $v_parent_ou_id
                 , $v_ou_id
             );
 
@@ -241,7 +242,14 @@ class user_Model extends Model
         $v_login_name = str_replace(',', '', $v_login_name);
 
         $v_group_id_list = get_post_var('hdn_group_id_list', '');
-
+        
+        $v_user_idc_id = get_post_var('txt_idc_id', '');
+        
+        if(strlen($v_password)<5 && strlen($v_password) != 0)
+        {
+            echo"<script>alert('Độ dài mật khẩu ít nhất 5 ký tự');try{window.parent.hidePopWin();}catch(e){window.close();};;</script>";
+            return;
+        }
         //Kiem tra trung ten dang nhap
         $stmt                   = 'Select Count(*) From t_cores_user Where C_LOGIN_NAME=? And PK_USER <> ?';
         $params                 = array($v_login_name, $v_user_id);
@@ -262,6 +270,7 @@ class user_Model extends Model
                         ,FK_OU=?
                         ,C_XML_DATA=?
                         ,C_JOB_TITLE=?
+                        ,C_IDC_ID=?
                     Where PK_USER=?';
             $params = array(
                 $v_name
@@ -270,6 +279,7 @@ class user_Model extends Model
                 , $v_ou_id
                 , $v_xml_data
                 , $v_job_title
+                , $v_user_idc_id
                 , $v_user_id
             );
             $this->db->Execute($stmt, $params);

@@ -1,5 +1,7 @@
 <?php
 /**
+
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 //Frag function
@@ -395,10 +396,73 @@ function deny_bad_user_token()
 
 function deny_bad_http_referer()
 {
+    return TRUE;
+    /*
     $v_http_referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
     if ( (DEBUG_MODE < 1) &&  ! is_sub_string($v_http_referer, FULL_SITE_ROOT))
     {
         require_once SERVER_ROOT . '403.php';
         exit;
     }
+    */
+}
+
+/**
+ * Verifies that an email is valid.
+ *
+ * @param string $email Email address to verify.
+ * @return string|bool Either false or the valid email address.
+ */
+function is_email( $email ) 
+{
+    $atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]';    // allowed characters for part before "at" character
+    $domain = '([a-z]([-a-z0-9]*[a-z0-9]+)?)'; // allowed characters for part after "at" character
+
+    $regex = '^' . $atom . '+' .         // One or more atom characters.
+    '(\.' . $atom . '+)*'.               // Followed by zero or more dot separated sets of one or more atom characters.
+    '@'.                                 // Followed by an "at" character.
+    '(' . $domain . '{1,63}\.)+'.        // Followed by one or max 63 domain characters (dot separated).
+    $domain . '{2,63}'.                  // Must be followed by one set consisting a period of two
+    '$';                                 // or max 63 domain characters.
+    if (eregi($regex, $email))
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+// Fixes the encoding to uf8 
+function fixEncoding($in_str)
+{
+    $cur_encoding = mb_detect_encoding($in_str);
+    if ($cur_encoding == "UTF-8" && mb_check_encoding($in_str, "UTF-8"))
+    {
+        return $in_str;
+    }
+    else
+    {
+        return utf8_encode($in_str);
+    }
+}
+// fixEncoding 
+
+function cookie_password_encode($password_string)
+{
+    if ( ! defined('CONST_COOKIE_PASSWORD_ENCODE_KEY'))
+    {
+        define('CONST_COOKIE_PASSWORD_ENCODE_KEY','tamviettech.vn');
+    }
+    
+    return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5(CONST_COOKIE_PASSWORD_ENCODE_KEY), $password_string, MCRYPT_MODE_CBC, md5(md5(CONST_COOKIE_PASSWORD_ENCODE_KEY))));
+}
+
+function cookie_password_decode($encrypted_password_string)
+{
+    if ( ! defined('CONST_COOKIE_PASSWORD_ENCODE_KEY'))
+    {
+        define('CONST_COOKIE_PASSWORD_ENCODE_KEY','tamviettech.vn');
+    }
+    
+    return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5(CONST_COOKIE_PASSWORD_ENCODE_KEY), base64_decode($encrypted_password_string), MCRYPT_MODE_CBC, md5(md5(CONST_COOKIE_PASSWORD_ENCODE_KEY))), "\0");
 }

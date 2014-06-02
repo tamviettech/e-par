@@ -52,6 +52,7 @@ define('_CONST_TAI_CHINH_ROLE', 'TAI_CHINH');
 define('_CONST_PHAN_CONG_ROLE', 'PHAN_CONG');
 define('_CONST_PHAN_CONG_LAI_ROLE', 'PHAN_CONG_LAI');
 define('_CONST_THU_LY_ROLE', 'THU_LY');
+define('_CONST_THU_LY_CAP_XA_ROLE', 'THU_LY_CAP_XA');
 define('_CONST_CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA_ROLE', 'CHUYEN_YEU_CAU_XAC_NHAN_XUONG_XA');
 define('_CONST_THU_LY_HO_SO_LIEN_THONG_ROLE', 'THU_LY_HO_SO_LIEN_THONG');
 define('_CONST_YEU_CAU_THU_LY_LAI_ROLE', 'YEU_CAU_THU_LY_LAI');
@@ -73,7 +74,6 @@ define('_CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE', 'NHAN_BIEN_LAI_NOP_THUE');
 define('_CONST_CHUYEN_LAI_BUOC_TRUOC_ROLE', 'CHUYEN_LAI_BUOC_TRUOC');
 define('_CONST_CHUYEN_HO_SO_LEN_SO_ROLE', 'CHUYEN_HO_SO_LEN_SO');
 define('_CONST_NHAN_HO_SO_TU_SO_ROLE', 'NHAN_HO_SO_TU_SO');
-define('_CONST_TRINH_KY_ROLE', 'TRINH_KY');
 define('_CONST_FINISH_NO_CHAIN_STEP_TASK', 'FINISH_NO_CHAIN_STEP');
 
 //Sau thue
@@ -98,7 +98,7 @@ define('_CONST_AFTERNOON_END_WORKING_TIME', '16:00');
 define('_CONST_EDOC_VBDEN', 'VBDEN');
 define('_CONST_EDOC_VBDI', 'VBDI');
 define('_CONST_EDOC_VBNOI_BO', 'VBNOI_BO');
-define('_CONST_GET_NEW_DOC_NOTICE_INTERVAL', 30000);
+define('_CONST_GET_NEW_DOC_NOTICE_INTERVAL', 3000);
 
 //Role VBDEN
 define('_CONST_VAO_SO_VAN_BAN_DEN_ROLE', 'VAO_SO_VAN_BAN_DEN');
@@ -148,3 +148,32 @@ define('EXT_DOCUMENT', 'doc,docx,odt,pdf,txt,rtf');
 define('EXT_SPREADSHEET', 'xls,xlsx,ods,cvs');
 /** File đính kèm hồ sơ */
 define('_CONST_RECORD_FILE_ACCEPT', 'pdf');
+//File dinh kem mau dang ky
+define('_CONST_TYPE_FILE_ACCEPT', 'doc,pdf');
+//ext file media
+define('_CONST_MEDIA_FILE_ACCEPT', 'pdf,jpg,png');
+
+
+//dành cho media
+$media_categories = array(
+    'image'       => 'bmp, gif, jpg, png, psd, pspimage, thm, tif, yuv, swf',
+    'text'        => 'doc, docx, log, msg, pages ,rtf, txt, wpd, wps',
+    'spreadsheet' => 'xlr, xls, xlsx',
+    'data'        => 'csv, dat, efx, gbr, key, pps, ppt, pptx, sdf, tax2010, vcf, xml',
+    'audio'       => 'aif, iff, m3u, m4a, mid, mp3, mpa, ra, wav, wma',
+    'video'       => '3g2, 3gp, asf, asx, avi, flv, mov, mp4, mpg, rm, swf, vob, wmv, mp3',
+    'compressed'  => '7z, deb, gz, pkg, rar, rpm, sit, sitx, tar.gz, zip, zipx'
+);
+
+foreach ($media_categories as $categoryname => $categorydata)
+{
+    $categoryname = str_replace(' ', '', strtoupper($categoryname));
+    if (!defined("EXT_{$categoryname}"))
+    {
+        define("EXT_$categoryname", $categorydata);
+    }
+}
+define('EXT_ALL', implode(',', $media_categories));
+define('_CONST_IMAGE_FILE_EXT', preg_replace('/\s+/', '', 'jpg, png, gif, bmp,swf'));
+define('_CONST_WELLKNOWN_FILE_EXT', preg_replace('/\s+/', '', ' accdb,  avi, csv, doc, docx, mp3, mp4, mpeg, pdf, pps, rar, zip, swf, txt, flv'));
+define('_CONST_UPLOAD_FILE_EXT', preg_replace('/\s+/', '', 'jpg, png, gif, bmp,swf, accdb,  avi, csv, doc, docx, mp3, mp4, mpeg, pdf, pps, rar, zip, swf, txt, xls'));

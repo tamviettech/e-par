@@ -16,12 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('DS') or die;
 
 $dom_unit      = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
 $unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
+
+if (Session::get('la_can_bo_cap_xa') == true)
+    $unit_fullname = session::get('ou_name');
+else
+    $unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
+
 ob_end_clean();
 ob_start();
 error_reporting(0);
@@ -299,10 +304,24 @@ else
             top: 0px;
             left: 0px;
         }
+        @media print
+        {
+            .formPrint
+            {
+                display: none;
+            }    
+            @page
+            {
+                margin: 10px;
+            }
+            .page-break	{ display: block; page-break-before: always; }
+        }
+        
     </style>
     <form class="formPrint" action="" method="POST">
         <?php echo $this->hidden('hdn_print_pdf','1');?>
         <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="In" onclick="javascript:window.print();"/>
         <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();" />
     </form>
 <?php

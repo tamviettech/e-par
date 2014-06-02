@@ -51,7 +51,6 @@ class xlist_Controller extends Controller {
 
         $VIEW_DATA['v_filter']         = get_post_var('txt_filter');
         $VIEW_DATA['arr_all_listtype'] = $this->model->qry_all_listtype();
-
         $this->view->render('dsp_all_listtype',$VIEW_DATA);
     }
 

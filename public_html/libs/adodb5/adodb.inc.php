@@ -14,7 +14,7 @@
 /**
 	\mainpage
 	
-	 @version V5.18 3 Sep 2012   (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
+	 @version V5.15 19 Jan 2012   (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
 
 	Released under both BSD license and Lesser GPL library license. You can choose which license
 	you prefer.
@@ -177,7 +177,7 @@
 		/**
 		 * ADODB version as a string.
 		 */
-		$ADODB_vers = 'V5.18 3 Sep 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved. Released BSD & LGPL.';
+		$ADODB_vers = 'V5.15 19 Jan 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved. Released BSD & LGPL.';
 	
 		/**
 		 * Determines whether recordset->RecordCount() is used. 
@@ -227,7 +227,7 @@
 	function _adodb_safedateq($s)
 	{
 		$len = strlen($s);
-		if ($s[0] !== "'") $s2 = "'".$s[0];
+		if ($s[0] !== "'") $s2 = "'";
 		else $s2 = "'";
 		for($i=1; $i<$len; $i++) {
 			$ch = $s[$i];
@@ -242,7 +242,7 @@
 			$s2 .= $ch;
 		}
 		
-		return strlen($s2) == 0 ? 'null' : $s2;
+		return $s2;
 	}
 
 	
@@ -315,12 +315,10 @@
 		// create temp directories
 		function createdir($hash, $debug)
 		{
-		global $ADODB_CACHE_PERMS;
-		
 			$dir = $this->getdirname($hash);
 			if ($this->notSafeMode && !file_exists($dir)) {
 				$oldu = umask(0);
-				if (!@mkdir($dir, empty($ADODB_CACHE_PERMS) ? 0771 : $ADODB_CACHE_PERMS)) if(!is_dir($dir) && $debug) ADOConnection::outp("Cannot create $dir");
+				if (!@mkdir($dir,0771)) if(!is_dir($dir) && $debug) ADOConnection::outp("Cannot create $dir");
 				umask($oldu);
 			}
 		
@@ -2282,29 +2280,6 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			return false;
 		}
 	
-	  /**
-      * List procedures or functions in an array.
-      * @param procedureNamePattern  a procedure name pattern; must match the procedure name as it is stored in the database
-      * @param catalog a catalog name; must match the catalog name as it is stored in the database;
-      * @param schemaPattern a schema name pattern;
-      *
-      * @return array of procedures on current database.
-	  
-		 Array (
-		    [name_of_procedure] => Array
-		      (
-		      [type] => PROCEDURE or FUNCTION
-		      [catalog] => Catalog_name
-		      [schema] => Schema_name
-		      [remarks] => explanatory comment on the procedure 
-		      )
-                 )		
-      */
-     function MetaProcedures($procedureNamePattern = null, $catalog  = null, $schemaPattern  = null)
-     {
-            return false;
-     }
-
 		
 	/**
 	 * @param ttype can either be 'VIEW' or 'TABLE' or false. 
@@ -2850,7 +2825,6 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		function FieldCount(){ return 0;}
 		function Init() {}
 		function getIterator() {return new ADODB_Iterator_empty($this);}
-		function GetAssoc() {return array();}
 	}
 	
 	//==============================================================================================	
@@ -3161,7 +3135,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			$false = false;
 			return $false;
 		}
-		$numIndex = isset($this->fields[0]) && isset($this->fields[1]);
+		$numIndex = isset($this->fields[0]);
 		$results = array();
 		
 		if (!$first2cols && ($cols > 2 || $force_array)) {
@@ -3502,22 +3476,22 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
    *
    * $upper  0 = lowercase, 1 = uppercase, 2 = whatever is returned by FetchField
    */
-	function GetRowAssoc($upper=1) 
+	function GetRowAssoc($upper=1)
 	{
 		$record = array();
-		if (!$this->bind) {
+	 //	if (!$this->fields) return $record;
+		
+	   	if (!$this->bind) {
 			$this->GetAssocKeys($upper);
 		}
+		
 		foreach($this->bind as $k => $v) {
-			if( isset( $this->fields[$v] ) ) {
-				$record[$k] = $this->fields[$v];
-			} else if (isset($this->fields[$k])) {
-				$record[$k] = $this->fields[$k];
-			} else
-				$record[$k] = $this->fields[$v];
+			$record[$k] = $this->fields[$v];
 		}
+
 		return $record;
 	}
+	
 	
 	/**
 	 * Clean up recordset

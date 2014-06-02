@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <html>
     <?php echo $v_record_list;?>
 <table cellpadding="0" cellspacing="0" width="100%">

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -50,19 +49,33 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid allot" value="Phân công thụ lý"
-               onclick="btn_dsp_allot_onclick();" />
+         <!--button yeu cau bo sung ho so-->
+        <button type="button" name="trash" class="btn btn-primary" onclick="btn_dsp_allot_onclick();">
+            <i class="icon-cog"></i>
+            Phân công thụ lý
+        </button>
          
         <?php if (isset($this->arr_roles['XET_DUYET'])): ?>
-            <input type="button" name="addnew" class="solid reject" value="Từ chối phê duyệt hồ sơ" onclick="btn_reject_onclick();" />
-            <input type="button" name="btn_supplement_request" class="solid supplement" value="Yêu cầu bổ sung hồ sơ" onclick="btn_supplement_request_onclick();" />
+            <!--button tu choi ho so-->
+           <button type="button" name="trash" class="btn btn-danger" onclick="btn_reject_onclick();">
+               <i class="icon-ban-circle"></i>
+               Từ chối hồ sơ
+           </button>
+            <!--button yeu cau bo sung ho so-->
+            <button type="button" name="trash" class="btn btn-primary" onclick="btn_supplement_request_onclick();">
+                <i class="icon-plus"></i>
+                Yêu cầu bổ sung hồ sơ
+            </button>
         <?php endif;?>
         
-        <input type="button" name="addnew" class="solid rollback" value="Không nhận, do chưa bàn giao đủ giấy tờ"
-               onclick="btn_rollback_onclick();" />
+            
+       <!--button khong nhan ho so-->
+        <button type="button" name="trash" class="btn btn-danger" onclick="btn_rollback_onclick();">
+            <i class="icon-step-backward"></i>
+            Không nhận, do chưa bàn giao đủ giấy tờ
+        </button>
     </div>
-    <div class="clear"></div>
-
+    <div class="clear" style="height: 10px">&nbsp;</div>
     <div id="procedure">
         <?php if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list'))): ?>
             <?php echo $this->render_form_display_all_record($arr_all_record, FALSE); ?>

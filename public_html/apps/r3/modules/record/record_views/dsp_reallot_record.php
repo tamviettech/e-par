@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_single_record']) > 0 OR DIE();
@@ -45,6 +44,7 @@ $v_prev_allot_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_PH
 $v_user_code = Session::get('user_code');
 $r = $d->xpath("//step[contains(@code,'$v_prev_allot_task_code') and user_code='$v_user_code'][last()]/datetime");
 $v_prev_allot_date = $r[0];
+
 ?>
 <form name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url();?>do_reallot_record">
     <?php
@@ -68,18 +68,23 @@ $v_prev_allot_date = $r[0];
     //Ma Loai HS
     echo $this->hidden('hdn_record_type_code', $v_record_type_code);
     ?>
-    <div class="panel_color_form">Hồ sơ thay đổi phân công thụ lý</div>
-    <div class="Row">
-        <div class="left-Col">
-            <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
-        </div>
-        <div class="right-Col">
-            <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
-        </div>
+    <div class="widget-head blue">
+        <h3>Hồ sơ thay đổi phân công thụ lý</h3>
     </div>
-
+    <table class="none" width="100%" cellspacing="0" cellpadding="4" border="0">
+        <tbody>
+            <tr>
+                <td style="font-weight: bold">
+                    Loại hồ sơ: 
+                </td>
+                <td>
+                    <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <!-- Record list -->
-    <table cellpadding="4" cellspacing="0" width="100%" class="list">
+    <table width="100%" class="adminlist table table-bordered table-striped">
         <tr>
             <th>STT</th>
             <th>Mã hồ sơ</th>
@@ -97,92 +102,112 @@ $v_prev_allot_date = $r[0];
     </table>
     <!-- End: Record list -->
 
-    <div class="panel_color_form">Đã phân công</div>
-    <div class="Row">
-        <div class="left-Col">
-            <label>Ngày phân công: </label>
-        </div>
-        <div class="right-Col">
-            <?php echo jwDate::yyyymmdd_to_ddmmyyyy($v_prev_allot_date, 1);?>
-        </div>
+    <div class="widget-head bondi-blue">
+        <h3>Đã phân công</h3>
     </div>
-    <div class="Row">
-        <div class="left-Col">
-            <label>Thụ lý chính: </label>
-        </div>
-        <div class="right-Col">
-            <?php echo $prev_allot_info->attributes()->user_name?>
-            <?php if ($prev_allot_info->attributes()->user_job_title != ''): ?>
-                <i>(<?php echo $prev_allot_info->attributes()->user_job_title;?>)</i>
-            <?php endif; ?>
-        </div>
+    <table class="none" width="100%" cellspacing="0" cellpadding="4" border="0">
+        <tr>
+            <td style="font-weight: bold" width="15%">
+                Ngày phân công: 
+            </td>
+            <td>
+                <?php echo jwDate::yyyymmdd_to_ddmmyyyy($v_prev_allot_date, 1);?>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold" width="15%">
+                Thụ lý chính: 
+            </td>
+            <td>
+                <?php echo $prev_allot_info->attributes()->user_name?>
+                <?php if ($prev_allot_info->attributes()->user_job_title != ''): ?>
+                    <i>(<?php echo $prev_allot_info->attributes()->user_job_title;?>)</i>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold" width="15%">
+                Người phối hợp thụ lý: 
+            </td>
+            <td>
+                <?php
+                    $arr_all_co_user = explode(',', $arr_single_record['C_NEXT_CO_USER_CODE']);
+                    foreach($arr_all_exec_user as $arr_exec_user)
+                    {
+                        $v_user_code = $arr_exec_user['C_USER_LOGIN_NAME'];
+                        if(in_array($v_user_code, $arr_all_co_user))
+                        {
+                            echo $arr_exec_user['C_NAME'] . '<br>';
+                        }
+                    }
+                ?>
+            </td>
+        </tr>
+    </table>
+    <div class="widget-head green">
+        <h3>Phân công lại:</h3>
     </div>
-    <div class="Row">
-        <div class="left-Col">
-            <label>Người phối hợp thụ lý: </label>
-        </div>
-        <div class="right-Col">
-        </div>
-    </div>
-
-    <div class="panel_color_form">Phân công lại:</div>
-    <div class="Row">
-        <div class="left-Col">
-            <label>
-                Phòng thụ lý:
-            </label>
-        </div>
-        <div class="right-Col">
-            <?php echo $v_group_name;?>
-        </div>
-    </div>
-    <div class="Row">
-        <div class="left-Col">
-            <label>
-                Người thụ lý chính:
-            </label>
-        </div>
-        <div class="right-Col">
-            <select style="width:203px;border:1px solid #D5D5D5;" name="sel_exec_user"
-                    id="sel_exec_user" onchange="sel_exec_user_onchange(this);">
-                <option value="">--- Chọn người thụ lý chính ---</option>
-                <?php foreach ($arr_all_exec_user as $user):?>
-                    <?php $v_selected = ($user['C_USER_LOGIN_NAME'] == $prev_allot_info->attributes()->user) ? ' selected' : '';?>
-                    <option value="<?php echo $user['C_USER_LOGIN_NAME'];?>" <?php echo $v_selected;?>><?php echo $user['C_NAME'];?></option>
-                <?php endforeach; ?>
-            </select>&nbsp;
-            
-            <label>Số ngày thực hiện:</label>
-            <b style="color:red;"><?php echo $VIEW_DATA['exec_task_time'];?></b> ngày
-        </div>
-    </div>
-    <div class="Row">
-        <div class="left-Col">
-            <label>
-                Người phối hợp thụ lý:
-            </label>
-        </div>
-        <div class="right-Col">
-            <span id="spantreeuser">
-                <?php reset($arr_all_exec_user);?>
-                <?php foreach ($arr_all_exec_user as $user):?>
-                    <span class="span_co_exec_user" id="span_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>">
-                        <input type="checkbox" value="<?php echo $user['C_USER_LOGIN_NAME'];?>"
-                            name="chk_co_exec_user" id="chk_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>"
-                        />
-                        <label for="chk_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>"><?php echo $user['C_NAME'];?></label>
-                    </span><br />
-                <?php endforeach; ?>
-            </span>
-        </div>
-    </div>
+    <table class="none" width="100%" cellspacing="0" cellpadding="4" border="0">
+        <tr>
+            <td style="font-weight: bold" width="15%">
+                    Phòng thụ lý:
+            </td>
+            <td>
+                <?php echo $v_group_name;?>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold" width="15%">
+                    Người thụ lý chính:
+            </td>
+            <td>
+                <select style="width:203px;border:1px solid #D5D5D5;" name="sel_exec_user"
+                        id="sel_exec_user" onchange="sel_exec_user_onchange(this);">
+                    <option value="">--- Chọn người thụ lý chính ---</option>
+                    <?php foreach ($arr_all_exec_user as $user):?>
+                        <?php $v_selected = ($user['C_USER_LOGIN_NAME'] == $prev_allot_info->attributes()->user) ? ' selected' : '';?>
+                        <option value="<?php echo $user['C_USER_LOGIN_NAME'];?>" <?php echo $v_selected;?>><?php echo $user['C_NAME'];?></option>
+                    <?php endforeach; ?>
+                </select>&nbsp;
+                
+                <span>Số ngày thực hiện:</span>
+                <b style="color:red;"><?php echo $VIEW_DATA['exec_task_time'];?></b> ngày
+            </td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold" width="15%">
+                    Người phối hợp thụ lý:
+            </td>
+            <td>
+                <span id="spantreeuser">
+                    <?php reset($arr_all_exec_user);?>
+                    <?php foreach ($arr_all_exec_user as $user):?>
+                        <span class="span_co_exec_user" id="span_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>" style="display: block; clear: both">
+                            <label for="chk_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>">
+                                <input type="checkbox" value="<?php echo $user['C_USER_LOGIN_NAME'];?>"
+                                name="chk_co_exec_user" id="chk_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>"
+                                />
+                                <?php echo $user['C_NAME'];?>
+                            </label>
+                        </span>
+                    <?php endforeach; ?>
+                </span>
+            </td>
+        </tr>
+    </table>
     <div class="clear">&nbsp;</div>
     <!-- Buttons -->
     <div class="button-area">
         <hr>
-        <input type="button" name="btn_do_allot" class="button allot" value="Phân công thụ lý" onclick="btn_do_allot_onclick();" />
+        <button type="button" name="btn_do_allot" class="btn btn-primary" onclick="btn_do_allot_onclick();" accesskey="2">
+            <i class="icon-save"></i>
+            <?php echo __('update'); ?>
+        </button>
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>"/>
+        <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action;?>" >
+            <i class="icon-remove"></i>
+            <?php echo __('close window'); ?>
+        </button> 
     </div>
 </form>
 <script>

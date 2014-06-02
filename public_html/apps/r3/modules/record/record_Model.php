@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -50,6 +49,10 @@ class record_Model extends Model
     {
         return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . $v_record_type_code . DS . $v_record_type_code . '_workflow' . '.xml';
     }
+    private function _get_xml_form_struct_file_path($v_record_type_code)
+    {
+        return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . $v_record_type_code . DS . $v_record_type_code . '_form_struct' . '.xml';
+    }
 
     private function _get_xml_processing($record_id)
     {
@@ -65,7 +68,7 @@ class record_Model extends Model
         $v_start = $v_start - 1;
         $v_limit = $v_end - $v_start;
 
-        $condition_query = "R.C_DELETED = 0 And R.C_CLEAR_DATE Is Null And R.C_REJECTED = 0 
+        $condition_query = "R.C_DELETED = 0 And R.C_CLEAR_DATE Is Null And (R.C_REJECTED = 0 OR R.C_REJECTED IS NULL)
             And R.C_CREATE_BY='$v_user_code' And R.C_RECORD_NO Like '$v_record_type_code-%'";
 
         //Dem tong ban ghi
@@ -234,7 +237,7 @@ class record_Model extends Model
                     On a.C_USER_LOGIN_NAME = U.C_LOGIN_NAME";
 
         $params            = array($current_task_code, $v_user_code);
-        $a                 = $this->db->getRow($stmt, $params); //Chi lay nguoi dau tien
+        $a                  = $this->db->getRow($stmt, $params); //Chi lay nguoi dau tien
         //LienND update 2013-01-29
         $v_count           = $this->db->getOne("Select Count(*) From ($stmt) a", $params);
         $a['C_TOTAL_USER'] = $v_count;
@@ -255,7 +258,64 @@ class record_Model extends Model
 
         return $a;
     }
+    
+    /**
+     * Lấy thông tin về bước xử lý tiếp theo của tất cả NSD, dựa trên quy trình và thông tin phân công CB vào quy trình
+     * @param string $current_task_code Mã công việc đang thực hiện
+     * @return array Mảng thông tin về công việc tiếp theo
+     * @access Private
+     */
+    private function _qry_full_next_task_info($current_task_code)
+    {
+        $v_user_code       = Session::get('user_code');
+        $current_task_code = replace_bad_char($current_task_code);
 
+        $stmt = "Select
+                    a.C_TASK_CODE As C_NEXT_TASK_CODE
+                  , U.C_NAME AS C_NEXT_USER_NAME
+                  , a.C_USER_LOGIN_NAME AS C_NEXT_USER_LOGIN_NAME
+                  , U.C_JOB_TITLE AS C_NEXT_USER_JOB_TITLE
+                  , a.C_GROUP_CODE AS C_NEXT_GROUP_CODE
+                From t_cores_user U
+                    Right join
+                    (
+                        Select
+                          takeover.C_TASK_CODE
+                        , takeover.C_USER_LOGIN_NAME
+                        , takeover.C_GROUP_CODE
+                        From t_r3_user_task sender
+                        Left join t_r3_user_task takeover
+                         On sender.C_NEXT_TASK_CODE = takeover.C_TASK_CODE
+                        Where sender.C_TASK_CODE = ?
+                        And sender.C_USER_LOGIN_NAME = ?
+                    ) a
+                    On a.C_USER_LOGIN_NAME = U.C_LOGIN_NAME";
+
+        $params            = array($current_task_code, $v_user_code);
+        $a                  = $this->db->getAll($stmt, $params); //Chi lay nguoi dau tien
+        //                  
+        for($i=0;$i<count($a);$i++)
+        {
+            $v_count           = $this->db->getOne("Select Count(*) From ($stmt) a", $params);
+            $a[$i]['C_TOTAL_USER'] = $v_count;
+
+            //Công việc tiếp theo thuộc về một bước khác??
+            $stmt              = 'Select distinct C_GROUP_CODE From t_r3_user_task Where C_TASK_CODE=?';
+            $v_next_group_code = $this->db->getOne($stmt, $current_task_code);
+
+            $stmt             = 'Select distinct C_NEXT_TASK_CODE From t_r3_user_task Where C_TASK_CODE=?';
+            $v_next_task_code = $this->db->getOne($stmt, $current_task_code);
+
+            $stmt             = 'Select COUNT(*)
+                        From t_r3_user_task
+                        Where C_GROUP_CODE=?
+                            And C_TASK_CODE=?';
+            $params           = array($v_next_group_code, $v_next_task_code);
+            $a[$i]['IS_NEW_STEP'] = ($this->db->getOne($stmt, $params) == 0) ? TRUE : FALSE;
+        }
+        return $a;
+    }
+    
     private function _insert_record_processing_step($record_id, $xml_step)
     {
         if (DATABASE_TYPE == 'MSSQL')
@@ -347,7 +407,7 @@ class record_Model extends Model
                 $v_next_task_code      = get_xml_value($dom, '//next_task[1]/@code[1]');
                 //die(get_role($v_executing_task_code));
                 //Group name
-                $sql                   = "SELECT
+                $sql    = "SELECT
                             C_NAME
                         FROM t_cores_group
                         WHERE C_CODE = (SELECT
@@ -477,7 +537,7 @@ class record_Model extends Model
                 if ($v_next_no_chain_task_code != NULL && strlen($v_next_no_chain_task_code) > 0)
                 {
                     //Lay danh sach can bo thuc hien no_chain task
-                    $stmt                      = "Select Concat(',', Group_Concat(C_USER_LOGIN_NAME SEPARATOR ','),',') C_USER_LOGIN_NAME
+                    $stmt = "Select Concat(',', Group_Concat(C_USER_LOGIN_NAME SEPARATOR ','),',') C_USER_LOGIN_NAME
                             From t_r3_user_task 
                             Where C_TASK_CODE = ?";
                     $params                    = array($v_next_no_chain_task_code);
@@ -562,8 +622,8 @@ class record_Model extends Model
                             From view_processing_record
                             Where PK_RECORD = $v_record_id";
                     $r                 = $this->db->getRow($sql);
-                    $v_paused_days     = $r[C_PAUSED_DAYS];
-                    $v_old_return_date = $r[C_RETURN_DATE];
+                    $v_paused_days     = $r['C_PAUSED_DAYS'];
+                    $v_old_return_date = $r['C_RETURN_DATE'];
 
                     //Tinh ra ngay tra ket qua moi
                     $v_new_return_date = $this->next_working_day($v_paused_days, $v_old_return_date);
@@ -571,10 +631,91 @@ class record_Model extends Model
                             Set C_RETURN_DATE='$v_new_return_date' 
                             Where PK_RECORD=$v_record_id";
                     $this->db->Execute($sql);
-                }
+                } //end UNPAUSE
+                
+                
+                //LienND 2013-12-25: Ho co chuyen di sang mot he thong khac khong?
+                $v_exchange = get_xml_value($dom_xml_workflow, "//task[@code='$v_executing_task_code']/@exchange");
+                if (is_email($v_exchange))
+                {
+                    $v_email_to = $v_exchange;
+                    
+                    $v_xml_system_config = $this->db->getOne("Select C_OPTION_VALUE From t_cores_option Where C_OPTION_KEY='SYSTEM_CONFIG'");
+                    $v_xml_system_config = fixEncoding($v_xml_system_config);
+                    
+                    $dom_system_config = new SimpleXMLElement(xml_add_declaration($v_xml_system_config), LIBXML_NOCDATA);
+                    //Dia chi email gui di
+                    $v_email_from        = get_xml_value($dom_system_config, "//item[@id='email_address'][last()]/value/text()");
+                    $v_smtp_server       = get_xml_value($dom_system_config, "//item[@id='email_server'][last()]/value/text()");
+                    $v_email_server_port = get_xml_value($dom_system_config, "//item[@id='email_server_port'][last()]/value/text()");
+                    $v_email_server_ssl  = get_xml_value($dom_system_config, "//item[@id='email_server_ssl'][last()]/value/text()");
+                    $v_email_account     = get_xml_value($dom_system_config, "//item[@id='email_account'][last()]/value/text()");
+                    $v_email_password    = get_xml_value($dom_system_config, "//item[@id='email_password'][last()]/value/text()");
+                    
+                    require_once SERVER_ROOT . 'libs/Swift/lib/swift_required.php';
+                    $ssl = ($v_email_server_ssl == 'true') ? 'ssl' : NULL;
+                    
+                    // Tạo đối tượng transport
+                    $transport   = Swift_SmtpTransport::newInstance($v_smtp_server, $v_email_server_port, $ssl);
+                    $transport->setUsername($v_email_account);
+                    $transport->setPassword($v_email_password);
+
+                    // Mailer Object
+                    $mailer = Swift_Mailer::newInstance($transport);
+
+                    //Tạo message Object
+                    $message = Swift_Message::newInstance('Xac nhan ho so lien thong - ' . Date('YmdHis'));
+                    
+                    //On-the-Fly Attach
+                    $v_record_no = $this->db->getOne('Select C_RECORD_NO From view_processing_record Where PK_RECORD=?', array($v_record_id));
+                    // Create the attachment with your data
+                    $xml_record = '<?xml version="1.0"?>';
+                    $xml_record .= '<data>';
+                    $xml_record .= '<return>' . $v_email_from . '</return>';
+                    $xml_record .= '<record_no>' . $v_record_no . '</record_no>';
+                    $xml_record .= '</data>';
+                    $record_info_attachment = Swift_Attachment::newInstance($xml_record, 'xml_record_info', 'text/xml');
+                    // Attach it to the message
+                    $message->attach($record_info_attachment);
+                    
+                    //Attach C_XML_DATA
+                    $v_xml_data = $this->db->getOne("Select C_XML_DATA From t_r3_record Where PK_RECORD=$v_record_id");
+                    $xml_data_attachment = Swift_Attachment::newInstance($v_xml_data, 'xml_record_data', 'text/xml');
+                    // Attach it to the message
+                    $message->attach($xml_data_attachment);
+                    
+                    //Attach form_struct
+                    $v_xml_form_struct_file_name = $this->_get_xml_form_struct_file_path($v_record_type_code);
+                    $form_struct_attachment = Swift_Attachment::fromPath($v_xml_form_struct_file_name, 'text/xml')->setFilename('form_struct.xml');
+                    $message->attach($form_struct_attachment);    
+                    
+                    //Các file đình kèm khác                    
+                    
+                    //Cac thanh phan khac
+                    $message_content = 'Xac nhan ho so lien thong'; 
+                    $message->setBody($message_content, 'text/plain');
+                    $message->setFrom($v_email_from);
+                    $message->addTo($v_email_to);
+
+                    //Gui di
+                    $result = $mailer->send($message);//TRUE - FALSE
+                    //Ghi meta log
+                    $v_count = "Select Count(*) From t_r3_record_meta Where FK_RECORD={$v_record_id} And C_META_KEY='exchange'";
+                    if ($v_count < 1)
+                    {
+                        $sql = "Insert Into t_r3_record_meta(FK_RECORD,C_META_KEY,C_META_VALUE) Values({$v_record_id}, 'exchange',$result)";
+                    }
+                    else
+                    {
+                        $sql = "Update t_r3_record_meta Set C_META_VALUE='{$result}' Where FK_RECORD=$v_record_id And C_META_KEY,'exchange')";
+                    }
+                    $this->db->Execute($sql);
+                    
+                } //end if Exchange
             }//end main task
         }//end MYSQL
-        return true;
+        
+        return TRUE;
     }
 
     /**
@@ -796,7 +937,7 @@ class record_Model extends Model
         {
             $v_village_id_condition = "FK_VILLAGE_ID > 0 AND ";
         }
-
+        
         //neu la tra cuu hs lien thong: chi lay hs lien thong
         if (strtoupper(Session::get('active_role')) == _CONST_TRA_CUU_LIEN_THONG_ROLE)
         {
@@ -811,6 +952,13 @@ class record_Model extends Model
                         FROM t_r3_record_type 
                         WHERE pk_record_type = fk_record_type";
             $v_village_id_condition .= " ($scope)=0 AND ";
+        }
+        elseif (strtoupper(Session::get('active_role')) == _CONST_TRA_CUU_ROLE)
+        {
+            $scope = "SELECT c_scope 
+                        FROM t_r3_record_type 
+                        WHERE pk_record_type = fk_record_type";
+            $v_village_id_condition .= " ($scope)=3 AND ";
         }
 
         //Trang thai HS
@@ -830,7 +978,7 @@ class record_Model extends Model
                 break;
             case 3:
                 //3: Bi tu choi
-                $v_from_and_where = " view_record Where $v_village_id_condition C_REJECTED=1";
+                $v_from_and_where = " view_record Where $v_village_id_condition C_REJECTED <> 0 AND C_REJECTED IS NOT NULL";
                 break;
             case 4:
                 //--4: Dang giai quyet - dang nam o phong chuyen mon
@@ -858,7 +1006,7 @@ class record_Model extends Model
                 break;
             case 7:
                 //--7: Da tra ket qua
-                $v_from_and_where = " view_record Where $v_village_id_condition C_CLEAR_DATE Is Not Null And C_REJECTED <> 1";
+                $v_from_and_where = " view_record Where $v_village_id_condition C_CLEAR_DATE Is Not Null And (C_REJECTED  = 0 OR C_REJECTED IS NULL)";
                 break;
             case 8:
                 //--8: Chua tra, Cham tien do - dang nam o phong chuyen mon, (Khong nam trong buoc thu phi, tra ket qua
@@ -1137,8 +1285,8 @@ class record_Model extends Model
             {
                 $stmt   = 'Select *
                             , NULL as C_XML_PROCESSING
-                            ,0 as RN
-                        From t_r3_internet_record R
+                            , @rownum:=@rownum + 1 AS RN
+                        From t_r3_internet_record R, (SELECT @rownum := 0) foo
                         Where FK_RECORD_TYPE=(Select PK_RECORD_TYPE From t_r3_record_type Where C_CODE=?)
                             And R.C_DELETED=0
                             And R.C_IS_REAL_RECORD=1';
@@ -1171,7 +1319,8 @@ class record_Model extends Model
                 //Pham vi thu tuc
                 $v_scope          = $arr_record_type_info['C_SCOPE'];
                 //$this->db->getOne("Select C_SCOPE From t_r3_record_type Where PK_RECORD_TYPE=$v_record_type_id");
-
+                
+                //role tiep nhan tai huyen
                 if (strtoupper($v_real_role) == strtoupper(_CONST_TIEP_NHAN_ROLE) && $v_scope == 1)
                 {
                     $v_task_code              = $record_type_code . _CONST_XML_RTT_DELIM . $v_real_role;
@@ -1188,6 +1337,18 @@ class record_Model extends Model
                         And C_NEXT_TASK_CODE = '$v_task_code_handover' 
                         And FK_VILLAGE_ID=$v_village_id
                         And (C_NEXT_USER_CODE='$v_user_code' Or C_NEXT_USER_CODE Like '%,$v_user_code,%')";
+                }
+                /**
+                 * tiep nhan ho so cua xa
+                 * update 07/01/2014
+                 */
+                elseif(strtoupper($v_real_role) == strtoupper(_CONST_TIEP_NHAN_ROLE) && $v_scope == 0)
+                {
+                    $last_task_code = $record_type_code . _CONST_XML_RTT_DELIM . $v_real_role;
+                    $condition_query = " FK_RECORD_TYPE='$v_record_type_id' 
+                        And C_LAST_TASK_CODE = '$last_task_code' 
+                        And FK_VILLAGE_ID=$v_village_id
+                        And (C_LAST_USER_CODE='$v_user_code' Or C_LAST_USER_CODE Like '%,$v_user_code,%')";
                 }
                 elseif (strtoupper($v_real_role) == strtoupper(_CONST_TRA_KET_QUA_ROLE) && ($v_scope == 1))
                 {
@@ -1295,11 +1456,12 @@ class record_Model extends Model
                                   , C_NEXT_TASK_CODE
                                   , C_NEXT_USER_CODE
                                 From view_processing_record
-                                Where $condition_query
+                                Where $condition_query 
+                                Order by C_RECEIVE_DATE DESC 
                                 Limit $v_start, $v_limit
                             ) RID Left join t_r3_user_task UT On (RID.C_NEXT_TASK_CODE = UT.C_TASK_CODE And RID.C_NEXT_USER_CODE = UT.C_USER_LOGIN_NAME)
                         ) a Left join view_processing_record R On a.PK_RECORD=R.PK_RECORD
-                        Order by R.C_RECEIVE_DATE DESC
+                        
                         ";
                 return $this->db->getAll($sql);
             }
@@ -1320,14 +1482,13 @@ class record_Model extends Model
         //left join t_r3_mapping
         $v_join_mapping = "  LEFT JOIN (SELECT C_RECORD_TYPE_CODE,C_CODE FROM t_r3_mapping WHERE FK_USER = $v_user_id) M
                                 ON RT.C_CODE = M.C_RECORD_TYPE_CODE";
-        
         if (check_permission('THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO', $this->app_name))
         {
             $v_from_qry = "From t_r3_record_type RT Right Join (Select distinct UT.C_RECORD_TYPE_CODE
                                             From t_r3_user_task UT) as RTU
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
                                             $v_join_mapping
-                    Where RT.C_STATUS > 0 ";
+                    Where RT.C_STATUS > 0";
         }
         else
         {
@@ -1378,6 +1539,7 @@ class record_Model extends Model
                         RT.C_CODE
                         , (RT.C_CODE + ' - ' + RT.C_NAME) as C_NAME
                         , RT.C_SCOPE 
+                        , RT.C_SPEC_CODE
                     $other_clause
                     $v_from_qry";
         }
@@ -1402,28 +1564,38 @@ class record_Model extends Model
      */
     public function qry_all_internet_record_type_option()
     {
+        $v_user_id   = Session::get('user_id');
         $v_user_code = Session::get('user_code');
+        
         if (DATABASE_TYPE == 'MSSQL')
         {
             $stmt = "Select RT.C_CODE, (RT.C_CODE + ' - ' + RT.C_NAME) as C_NAME
-                    From t_r3_record_type RT Right Join (Select distinct UT.C_RECORD_TYPE_CODE
+                    From t_r3_record_type RT 
+                    Right Join (Select distinct UT.C_RECORD_TYPE_CODE
                                             From t_r3_user_task UT
                                             Where UT.C_USER_LOGIN_NAME=?) as RTU
-                                            On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
+                    On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
                     Where RT.C_STATUS > 0
                         And RT.C_SEND_OVER_INTERNET='1'
                     Order By RT.C_CODE";
         }
         elseif (DATABASE_TYPE == 'MYSQL')
         {
+            //left join t_r3_mapping
+            $v_join_mapping = "  LEFT JOIN (SELECT C_RECORD_TYPE_CODE,C_CODE FROM t_r3_mapping WHERE FK_USER = $v_user_id) M
+                                ON RT.C_CODE = M.C_RECORD_TYPE_CODE";
             $stmt = "Select 
                         RT.C_CODE
                         , Concat(RT.C_CODE, ' - ',  RT.C_NAME) as C_NAME
                         ,RT.C_SCOPE
-                    From t_r3_record_type RT Right Join (Select distinct UT.C_RECORD_TYPE_CODE
+                        , RT.C_SPEC_CODE
+                        , M.C_CODE as C_MAPPING_CODE
+                    From t_r3_record_type RT 
+                    Right Join (Select distinct UT.C_RECORD_TYPE_CODE
                                             From t_r3_user_task UT
                                             Where UT.C_USER_LOGIN_NAME=?) as RTU
-                                            On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
+                    On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
+                    $v_join_mapping
                     Where RT.C_STATUS > 0
                         And RT.C_SEND_OVER_INTERNET='1'
                     Order By RT.C_CODE";
@@ -1605,7 +1777,20 @@ class record_Model extends Model
         {
             return NULL;
         }
-        $stmt = 'Select PK_RECORD_FILE, C_FILE_NAME FROM t_r3_record_file Where FK_RECORD=?';
+        $stmt = "SELECT
+                    RF.PK_RECORD_FILE,
+                    RF.C_FILE_NAME,
+                    RF.FK_MEDIA,
+                    DATE_FORMAT(M.C_UPLOAD_DATE,'%Y') AS C_YEAR,
+                    DATE_FORMAT(M.C_UPLOAD_DATE,'%m') AS C_MONTH,
+                    DATE_FORMAT(M.C_UPLOAD_DATE,'%d') AS C_DAY,
+                    M.C_FILE_NAME AS C_MEDIA_FILE_NAME,
+                    M.C_NAME,
+                    M.C_EXT
+                  FROM t_r3_record_file RF
+                    LEFT JOIN t_r3_media M
+                      ON RF.FK_MEDIA = M.PK_MEDIA
+                  WHERE RF.FK_RECORD = ?";
         return $this->db->getAll($stmt, array($item_id));
     }
 
@@ -1646,7 +1831,20 @@ class record_Model extends Model
         $v_return_date         = isset($_POST['hdn_return_date']) ? replace_bad_char($_POST['hdn_return_date']) : '';
         $v_return_email        = isset($_POST['txt_return_email']) ? replace_bad_char($_POST['txt_return_email']) : '';
         $v_village_id          = Session::get('village_id');
-
+        //neu id > 0 => lay record type da co san
+        if($v_record_id > 0)
+        {
+            $sql = "SELECT
+                        C_CODE
+                      FROM t_r3_record_type
+                      WHERE PK_RECORD_TYPE = (SELECT
+                                                FK_RECORD_TYPE
+                                              FROM t_r3_record
+                                              WHERE PK_RECORD = $v_record_id)";
+            $v_record_type_code = $this->db->getOne($sql);
+        }
+        
+        
         $v_xml_data = isset($_POST['XmlData']) ? $_POST['XmlData'] : '<root/>';
 
         //blacklist
@@ -1685,7 +1883,7 @@ class record_Model extends Model
                     }
                 }
             }
-
+            
             if ($v_is_black_listed)
             {
                 echo '<center><h4>Hồ sơ không được phép tiếp nhận!';
@@ -1727,7 +1925,7 @@ class record_Model extends Model
                     //Dem so lan lock
                     $stmt         = "SELECT
                               COUNT(*) AS C_COUNT
-                            FROM VIRE_RECORD 
+                            FROM view_record
                             WHERE FK_RECORD_TYPE = (SELECT PK_RECORD_TYPE
                                                     FROM t_r3_record_type
                                                     WHERE C_CODE = '$v_lock_record_type_code')
@@ -1749,6 +1947,7 @@ class record_Model extends Model
                 }
             }
         }
+        
         //End: blacklist
         //Change date format
         $v_receive_date = jwDate::ddmmyyyy_to_yyyymmdd($v_receive_date, TRUE);
@@ -1757,13 +1956,13 @@ class record_Model extends Model
         //$v_xml_workflow_file_name = $v_record_type_code . '_workflow.xml';
         //$v_xml_workflow_file_path = __DIR__ . '/../../xml-config' . DS . $v_record_type_code . DS . $v_xml_workflow_file_name;
         $v_xml_workflow_file_path = $this->_get_xml_workflow_file_path($v_record_type_code);
-
+        
         if (!file_exists($v_xml_workflow_file_path))
         {
             $this->exec_done($this->goback_url);
             exit;
         }
-
+        
         $v_user_code = Session::get('user_code');
 
         $dom = simplexml_load_file($v_xml_workflow_file_path);
@@ -1865,10 +2064,11 @@ class record_Model extends Model
                     . '" user_name="' . $v_next_user_name
                     . '" user_job_title="' . $v_next_user_job_title
                     . '" group_name="' . $v_group_name
+                    . '" group_code="' . $v_group_code
                     . '" step_time="' . $v_step_time
                     . '" co_user=""
                     />';
-
+			
             $step = '<step seq="' . uniqid() . '" code="' . $v_current_task . '">';
             $step .= '<user_code>' . Session::get('user_code') . '</user_code>';
             $step .= '<user_name>' . Session::get('user_name') . '</user_name>';
@@ -1883,7 +2083,6 @@ class record_Model extends Model
                      Where PK_RECORD=?';
             $params = array($xml_processing, $v_record_id);
             $this->db->Execute($stmt, $params);
-
 //            require_once dirname(__FILE__) . '/classes/announce.inc.php';
 //
 //            $arr_single_record = $this->qry_single_record($v_record_id);
@@ -1895,16 +2094,18 @@ class record_Model extends Model
         }
         else  //Update
         {
+            /**
+             * ko duoc thay doi ma ho so khi cap nhat ho so
+             * bỏ FK_RECORD_TYPE          = (Select PK_RECORD_TYPE From t_r3_record_type Where C_CODE=?)
+             */
             $stmt   = 'Update t_r3_record Set
-                            FK_RECORD_TYPE          = (Select PK_RECORD_TYPE From t_r3_record_type Where C_CODE=?)
-                            ,C_RECORD_NO            = ?
+                            C_RECORD_NO            = ?
                             ,C_RETURN_PHONE_NUMBER  = ?
                             ,C_XML_DATA             = ?
                             ,C_RETURN_EMAIL         = ?
                         Where PK_RECORD = ? And FK_VILLAGE_ID = ? ';
             $params = array(
-                $v_record_type_code
-                , $v_record_no
+                 $v_record_no
                 , $v_return_phone_number
                 , $v_xml_data
                 , $v_return_email
@@ -1957,6 +2158,57 @@ class record_Model extends Model
 
         //Upload file
         $count = count($_FILES['uploader']['name']);
+        $year_now  = date('Y');
+        $month_now = date('m');
+        $day_now   = date('d');
+        $v_upload_date = date('Y-m-d');
+        $v_user_id = session::get('user_id');
+        
+        /**
+         * kiem tra da co thu muc mac dinh trong t_r3_media chua
+         * 1 Quản lý file theo thu muc [năm]/[tháng]/[ngày]
+         */
+        //1.1 quan ly theo nam
+        $sql = "SELECT
+                    PK_MEDIA
+                  FROM t_r3_media
+                  WHERE C_NAME = '$year_now'
+                      AND FK_USER = $v_user_id
+                      AND FK_PARENT IS NULL ORDER BY C_UPLOAD_DATE";
+        $year_id = $this->db->getOne($sql);
+        if($year_id == '' OR $year_id == NULL OR $year_id == 0)
+        {
+            $arr_infor = $this->create_folder('', $year_now);
+            $year_id = $arr_infor['new_id'];
+        }
+        //1.2 quan ly theo thang
+        $sql = "SELECT
+                    PK_MEDIA
+                  FROM t_r3_media
+                  WHERE C_NAME = '$month_now'
+                      AND FK_USER = $v_user_id
+                      AND FK_PARENT = $year_id ORDER BY C_UPLOAD_DATE";
+        $month_id = $this->db->getOne($sql);
+        if($month_id == '' OR $month_id == NULL OR $month_id == 0)
+        {
+            $arr_infor = $this->create_folder($year_id, $month_now);
+            $month_id = $arr_infor['new_id'];
+        }
+        //1.2 quan ly theo ngay
+        $sql = "SELECT
+                    PK_MEDIA
+                  FROM t_r3_media
+                  WHERE C_NAME = '$day_now'
+                      AND FK_USER = $v_user_id
+                      AND FK_PARENT = $month_id ORDER BY C_UPLOAD_DATE";
+        $day_id = $this->db->getOne($sql);
+        if($day_id == '' OR $day_id == NULL OR $day_id == 0)
+        {
+            $arr_infor = $this->create_folder($month_id, $day_now);
+            $day_id = $arr_infor['new_id'];
+        }
+        
+        //thuc hien upload tung file
         for ($i = 0; $i < $count; $i++)
         {
             if ($_FILES['uploader']['error'][$i] == 0)
@@ -1965,14 +2217,38 @@ class record_Model extends Model
                 $v_tmp_name  = $_FILES['uploader']['tmp_name'][$i];
 
                 $v_file_ext = array_pop(explode('.', $v_file_name));
+                
+                $v_cur_file_name = uniqid() . '.' .$v_file_ext;
 
                 if (in_array($v_file_ext, explode(',', _CONST_RECORD_FILE_ACCEPT)))
                 {
-                    if (move_uploaded_file($v_tmp_name, SERVER_ROOT . "uploads" . DS . 'r3' . DS . $v_file_name))
+                    //upload file len server
+                    $v_dir_file = CONST_FILE_UPLOAD_PATH . date('Y') . DS . date('m') . DS . date('d');
+                    if(file_exists($v_dir_file) == FALSE)
                     {
-                        $stmt   = 'Insert Into t_r3_record_file(FK_RECORD, C_FILE_NAME) Values(?,?)';
-                        $params = array($v_record_id, $v_file_name);
-                        $this->db->Execute($stmt, $params);
+                        mkdir($v_dir_file, 0777, true);
+                    }
+                    
+                    if (move_uploaded_file($v_tmp_name, $v_dir_file . DS . $v_cur_file_name))
+                    {
+                        //insert to media
+                        $stmt = "Insert Into t_r3_media
+                                            (C_NAME,
+                                             C_EXT,
+                                             C_TYPE,
+                                             FK_USER,
+                                             C_FILE_NAME,
+                                             FK_PARENT,
+                                             C_UPLOAD_DATE)
+                                values (?,?,?,?,?,?,?)";
+                        $this->db->Execute($stmt,array($v_file_name,$v_file_ext,0,$v_user_id,$v_cur_file_name,$day_id,$v_upload_date));
+                        if($this->db->Affected_Rows() > 0)
+                        {
+                            $media_id = $this->db->Insert_ID('t_r3_media');
+                            $stmt   = 'Insert Into t_r3_record_file(FK_RECORD, C_FILE_NAME,FK_MEDIA) Values(?,?,?)';
+                            $params = array($v_record_id, $v_file_name,$media_id);
+                            $this->db->Execute($stmt, $params);
+                        }
                     }
                 }
             }
@@ -1982,6 +2258,12 @@ class record_Model extends Model
         $v_deleted_file_id_list = ltrim($_POST['hdn_deleted_file_id_list'], ',');
         if ($v_deleted_file_id_list != '')
         {
+            //xoa media
+            $sql = "SELECT GROUP_CONCAT(FK_MEDIA) FROM t_r3_record_file WHERE PK_RECORD_FILE IN ($v_deleted_file_id_list)";
+            $v_list_media_delete = $this->db->getOne($sql);
+            $this->do_delete_media($v_list_media_delete);
+            
+            //xoa t_r3_record_file
             $sql = "Delete From t_r3_record_file Where PK_RECORD_FILE in ($v_deleted_file_id_list)";
             $this->db->Execute($sql);
         }
@@ -1989,7 +2271,6 @@ class record_Model extends Model
         $arr_filter = array(
             'sel_record_type' => $v_record_type_code,
         );
-
         $this->exec_done($this->goback_url, $arr_filter);
     }
 
@@ -2048,7 +2329,7 @@ class record_Model extends Model
         if ($v_item_id_list != '')
         {
             $sql = "Update t_r3_record Set C_DELETED=$delete, C_CLEAR_DATE=$clear_date
-                    Where PK_RECORD In ($v_item_id_list) And C_REJECTED = 0";
+                    Where PK_RECORD In ($v_item_id_list) And (C_REJECTED = 0 OR C_REJECTED IS NULL)";
             $this->db->Execute($sql);
         }
 
@@ -2654,6 +2935,7 @@ class record_Model extends Model
             else
             {
                 //Nếu là thủ tục cấp xã, sau khi bổ sung, chuyển lại cho Cán bộ thụ lý
+                
                 $v_current_task = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
                 //Insert Step
                 $v_step_seq     = uniqid();
@@ -2821,10 +3103,13 @@ class record_Model extends Model
         {
             $this->db->debug = 0;
         }
-
+        
         $v_user_code  = Session::get('user_code');
         $v_village_id = Session::get('village_id');
         $task         = $role         = strtoupper(replace_bad_char($role));
+        //lay village level
+        $sql = "select C_LEVEL from t_cores_ou where PK_OU = $v_village_id";
+        $village_level = $this->db->GetOne($sql);
 
         $v_real_role = strtoupper($role);
         $params      = array();
@@ -2839,12 +3124,25 @@ class record_Model extends Model
                 
                 
                 //$v_task_code_handover = "ExtractValue(C_XML_PROCESSING, '//step[Contains(@code, \"" . _CONST_BAN_GIAO_ROLE . "\")][1]/@code')";
-                $stmt = "Select ? role,  COUNT(*) count
+                //cap huyen
+                if($village_level != 3)
+                {
+                    $stmt = "Select ? role,  COUNT(*) count
 	                    From view_processing_record
 	                    Where (C_NEXT_USER_CODE = '$v_user_code' Or C_NEXT_USER_CODE Like '%,$v_user_code,%')
 	                    	And (C_LAST_TASK_CODE like '$task_tiep_nhan' Or C_LAST_TASK_CODE like '$task_chuyen_lai_buoc_truoc')
 	                    	And FK_VILLAGE_ID = $v_village_id
                 			And C_NEXT_TASK_CODE like '$task_ban_giao'";
+                }
+                //cap xa
+                elseif($village_level == 3)
+                {
+                    $stmt = "Select ? role,  COUNT(*) count
+	                    From view_processing_record
+	                    Where (C_LAST_USER_CODE = '$v_user_code' Or C_LAST_USER_CODE Like '%,$v_user_code,%')
+	                    	And (C_LAST_TASK_CODE like '$task_tiep_nhan' Or C_LAST_TASK_CODE like '$task_chuyen_lai_buoc_truoc')
+	                    	And FK_VILLAGE_ID = $v_village_id";
+                }
                 
                 $params               = array($v_real_role);
                 break;
@@ -3145,7 +3443,7 @@ class record_Model extends Model
                     }
 
                     //Ghi log HS da bi tu choi
-                    $stmt   = 'Update t_r3_record Set C_REJECTED=1,C_REJECT_REASON=? Where PK_RECORD=?';
+                    $stmt   = 'Update t_r3_record Set C_REJECTED = 1,C_REJECT_REASON=?, C_REJECT_DATE=' . $this->build_getdate_function() . ' Where PK_RECORD=?';
                     $params = array($v_reason, $v_record_id);
                     $this->db->Execute($stmt, $params);
 
@@ -3295,22 +3593,83 @@ class record_Model extends Model
             elseif ($v_approval_value == _CONST_RECORD_APPROVAL_REJECT)
             {
                 //Từ chối, về Một-Cửa để trả công dân
-                //1. Tim ra nguoi tiep nhan
-                $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
-                $dom_processing   = simplexml_load_string($v_xml_processing);
-                $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
-                $next_user_info   = xpath($dom_processing, "//step[@code='$v_code'][last()]", XPATH_DOM);
-
+                //1. lay tat ca nguoi tra ket qua tu choi
+                $v_respond_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE;
+                $sql = "Select C_USER_LOGIN_NAME From t_r3_user_task Where C_TASK_CODE = '$v_respond_code'";
+                $arr_respond_user = $this->db->getCol($sql);
+                //2.Neu nguoi tra ket qua lon hon 1 nguoi
+                if(count($arr_respond_user > 1))
+                {
+                    //2.1 tim nguoi tiep nhan trong processing
+                    $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                    $dom_processing   = simplexml_load_string($v_xml_processing);
+                    $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+                    $next_user        = xpath($dom_processing, "//step[@code='$v_code'][last()]/user_code", XPATH_DOM);
+                    
+                    //2.2 neu nguoi tra ko nam trong $arr_respond_user => ho so dua ve tat ca nguoi tra ket qua
+                    if(!in_array($next_user, $arr_respond_user))
+                    {
+                        $next_user = '';
+                        foreach($arr_respond_user as $respond_user)
+                        {
+                            if($next_user == '')
+                            {
+                                $next_user .= $respond_user;
+                            }
+                            else
+                            {
+                                $next_user .= ','.$respond_user;
+                            }
+                        }
+                    }
+                }
+                //3.neu nguoi tra ket qua co 1 nguoi
+                else
+                {
+                    $next_user = $arr_respond_user[0];
+                }
+                //lay thong tin cua nguoi thuc hien cong viec tiep theo
+                $v_next_user_code       = '';
+                $v_next_user_name       = '';
+                $v_next_user_job_title  = '';
+                $arr_next_user = explode(',', $next_user);
+                foreach($arr_next_user as $user)
+                {
+                    $sql  = "Select
+                            U.C_LOGIN_NAME
+                            , U.C_NAME
+                            , U.C_JOB_TITLE
+                        From t_r3_user_task UT
+                            Left Join t_cores_user U
+                              On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                        Where UT.C_USER_LOGIN_NAME = '$next_user'
+                        Limit 1; ";
+                    $arr_next_user_info = $this->db->GetRow($sql);
+                    if($v_next_user_code == '')
+                    {
+                        $v_next_user_code       .= $arr_next_user_info['C_LOGIN_NAME'];
+                        $v_next_user_name       .= $arr_next_user_info['C_NAME'];
+                        $v_next_user_job_title  .= $arr_next_user_info['C_JOB_TITLE'];
+                    }
+                    else
+                    {
+                        $v_next_user_code       .= ',' . $arr_next_user_info['C_LOGIN_NAME'];
+                        $v_next_user_name       .= ',' . $arr_next_user_info['C_NAME'];
+                        $v_next_user_job_title  .= ',' . $arr_next_user_info['C_JOB_TITLE'];
+                    }
+                }
+                
                 $xml_next_task = '<next_task ';
                 $xml_next_task .= ' code="' . $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '"';
-                $xml_next_task .= ' user="' . $next_user_info->user_code . '"';
-                $xml_next_task .= ' user_name="' . $next_user_info->user_name . '"';
-                $xml_next_task .= ' user_job_title="' . $next_user_info->user_job_title . '"';
+                $xml_next_task .= ' user="' . $v_next_user_code . '"';
+                $xml_next_task .= ' user_name="' . $v_next_user_name . '"';
+                $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
                 $xml_next_task .= ' promote="' . $v_approval_value . '"';
                 $xml_next_task .= ' reason="' . $v_reason . '"';
                 $xml_next_task .= ' />';
+                
                 //Ghi log HS da bi tu choi
-                $stmt          = 'Update t_r3_record Set C_REJECTED=1,C_REJECT_REASON=? Where PK_RECORD=?';
+                $stmt          = 'Update t_r3_record Set C_REJECTED = 1,C_REJECT_REASON=?, C_REJECT_DATE=' . $this->build_getdate_function() . ' Where PK_RECORD=?';
                 $params        = array($v_reason, $v_record_id);
                 $this->db->Execute($stmt, $params);
 
@@ -3397,21 +3756,71 @@ class record_Model extends Model
             }
             elseif ($v_approval_value == _CONST_RECORD_APPROVAL_SUPPLEMENT)
             {
-                //Yêu cầu bổ sung, về Một-Cửa để yêu cầu bổ sung
-                //1. Tim lai nguoi tiep nhan
-                //NEXT_TASK = 'BO SUNG'
-                //1. Tim ra nguoi tiep nhan
-                $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
-                $dom_processing   = simplexml_load_string($v_xml_processing);
-                $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
-
-                $next_user_info = xpath($dom_processing, "//step[1]", XPATH_DOM);
+                //Yêu cầu bổ sung hồ sơ
+                //1.Tìm lại nguời tiếp nhận trong t_r3_user_task
+                $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+                
+                $sql = "Select DISTINCT
+                            C_USER_LOGIN_NAME
+                          From t_r3_user_task
+                          Where C_RECORD_TYPE_CODE = '$v_record_type_code'
+                              And C_TASK_CODE = '$v_task_code'";
+                $arr_next_user_code = $this->db->getCol($sql);
+                //2.Kiem tra neu tiep nhan > 1
+                if(count($arr_next_user_code) > 1)
+                {
+                    //2.1 lay user code cua nguoi tiep nhan
+                    $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                    $dom_processing   = simplexml_load_string($v_xml_processing);
+                    $next_user_code   = xpath($dom_processing, "//step[@code='$v_task_code']/user_code", XPATH_DOM);  
+                    //2.2 kiem tra t_r3_user_task NSD co con dc xu ly ho so ko
+                    $v_role = _CONST_TIEP_NHAN_ROLE;
+                    $sql = "Select
+                                COUNT(*)
+                              From t_r3_user_task
+                              Where C_RECORD_TYPE_CODE = '$v_record_type_code'
+                                  And C_TASK_CODE = '$v_task_code'
+                                  And C_USER_LOGIN_NAME = '$next_user_code'";
+                    $check_next_user = $this->db->getOne($sql);
+                    //2.3 kiemt ra neu can bo da bi doi => lay can bo doi t_r3_swap_user_log
+                    if($check_next_user <= 0)
+                    {
+                        $sql = "Select
+                                    C_TO_USER_CODE
+                                  From t_r3_swap_user_log
+                                  Where C_FROM_USER_CODE = '$next_user_code' And C_ROLE = '$v_role' 
+                                      And (C_RECORD_TYPE_CODE is NULL OR C_RECORD_TYPE_CODE = $v_record_type_code)
+                                  Order by C_SWAP_DATE desc";
+                        //lay can bo da thay the
+                        $next_user_code = $this->db->getOne($sql);
+                    }
+                }
+                //3.Neu chi co 1 nguoi tra ho so ve dung nguoi do
+                else
+                {
+                    $next_user_code = $arr_next_user_code[0];
+                }
+                
+                //lay thong tin cua nguoi thuc hien cong viec tiep theo
+                $sql  = "Select
+                            U.C_LOGIN_NAME
+                            , U.C_NAME
+                            , U.C_JOB_TITLE
+                        From t_r3_user_task UT
+                            Left Join t_cores_user U
+                              On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                        Where UT.C_USER_LOGIN_NAME = '$next_user_code'
+                        Limit 1; ";
+                $arr_next_user_info = $this->db->GetRow($sql);
+                $v_next_user_code       = $arr_next_user_info['C_LOGIN_NAME'];
+                $v_next_user_name       = $arr_next_user_info['C_NAME'];
+                $v_next_user_job_title  = $arr_next_user_info['C_JOB_TITLE'];
 
                 $xml_next_task = '<next_task ';
                 $xml_next_task .= ' code="' . $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BO_SUNG_ROLE . '"';
-                $xml_next_task .= ' user="' . $next_user_info->user_code . '"';
-                $xml_next_task .= ' user_name="' . $next_user_info->user_name . '"';
-                $xml_next_task .= ' user_job_title="' . $next_user_info->user_job_title . '"';
+                $xml_next_task .= ' user="' . $v_next_user_code . '"';
+                $xml_next_task .= ' user_name="' . $v_next_user_name . '"';
+                $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
                 $xml_next_task .= ' promote="' . $v_approval_value . '"';
                 $xml_next_task .= ' reason="' . $v_reason . '"';
                 $xml_next_task .= ' />';
@@ -3438,89 +3847,6 @@ class record_Model extends Model
 
         $this->popup_exec_done();
     }
-    
-    /**
-     * trinh ky
-     */
-    public function do_submit_to_sign_record()
-    {
-        //Ma loai HS
-        $v_record_type_code = get_post_var('hdn_record_type_code');
-        ($v_record_type_code != '') OR DIE();
-
-        //Ket qua thu ly
-        $v_approval_value = get_post_var('rad_approval');
-        ($v_approval_value != '') OR DIE();
-
-        //Danh sach ma HS
-        $v_record_id_list = get_post_var('hdn_item_id_list');
-        ($v_record_id_list != '') OR DIE();
-
-        //Ly do chua duyet HS
-        $v_reason = get_post_var('txt_reason');
-
-        //Phí, lệ phí
-        $v_fee             = get_post_var('txt_fee');
-        $v_fee_description = get_post_var('txt_fee_description');
-
-        $arr_record_id = explode(',', $v_record_id_list);
-
-        foreach ($arr_record_id as $v_record_id)
-        {
-            if (!$this->_check_inhand_record($v_record_id))
-            {
-                continue;
-            }
-            
-            $this->db->Execute('Update t_r3_record Set C_ROLLBACKABLE=1 Where PK_RECORD=?', array($v_record_id));
-            //$v_current_task ?????
-            $stmt           = 'Select C_NEXT_TASK_CODE From view_processing_record Where PK_RECORD=?';
-            $v_current_task = $this->db->getOne($stmt, array($v_record_id));
-            
-            //Phe duyet, chuyen den buoc tiep theo
-                
-            $arr_next_task_info    = $this->_qry_next_task_info($v_current_task);
-            $v_next_task_code      = $arr_next_task_info['C_NEXT_TASK_CODE'];
-            $v_next_task_user_code = replace_bad_char($_POST['rad_signer']);
-            $arr_single_user_info  = $this->db->getRow('Select C_NAME, C_JOB_TITLE From t_cores_user Where C_LOGIN_NAME=?', array($v_next_task_user_code));
-            $v_next_task_user_name = $arr_single_user_info['C_NAME'];
-            $v_next_user_job_title = $arr_single_user_info['C_JOB_TITLE'];
-               
-
-            $xml_next_task = '<next_task ';
-            $xml_next_task .= ' code="' . $v_next_task_code . '"';
-            $xml_next_task .= ' user="' . $v_next_task_user_code . '"';
-            $xml_next_task .= ' user_name="' . $v_next_task_user_name . '"';
-            $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
-            $xml_next_task .= ' fee="' . $v_fee . '"';
-            $xml_next_task .= ' fee_description="' . $v_fee_description . '"';
-            $xml_next_task .= ' />';
-            if (!$v_next_task_code)
-            {
-                continue;
-            }
-            
-            //Step log
-            $v_step_seq = uniqid();
-            $v_deadline = $this->db->GetOne("Select C_DOING_STEP_DEADLINE_DATE
-                From t_r3_record Where PK_RECORD=?", array($v_record_id));
-            $step       = '<step seq="' . $v_step_seq . '" code="' . $v_current_task . '">';
-            $step .= '<user_code>' . Session::get('user_code') . '</user_code>';
-            $step .= '<user_name>' . Session::get('user_name') . '</user_name>';
-            $step .= '<user_job_title>' . Session::get('user_job_title') . '</user_job_title>';
-            $step .= '<datetime>' . $this->getDate() . '</datetime>';
-            $step .= '<fee>' . $v_fee . '</fee>';
-            $step .= '<fee_description>' . $v_fee_description . '</fee_description>';
-            $step .= '<to_group_code>' . $arr_next_task_info['C_NEXT_GROUP_CODE'] . '</to_group_code>';
-            $step .= "<deadline>$v_deadline</deadline>";
-            $step .= '</step>';
-            $this->_insert_record_processing_step($v_record_id, $step);
-            $this->_update_next_task_info($v_record_id, $xml_next_task);
-            
-            $this->popup_exec_done();
-                
-        }
-    }
 
     public function do_reject_record()
     {
@@ -3543,23 +3869,83 @@ class record_Model extends Model
         foreach ($arr_record_id as $v_record_id)
         {
             //Từ chối, về Một-Cửa để trả công dân
-            //1. Tim ra nguoi tiep nhan
-            $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
-            $dom_processing   = simplexml_load_string($v_xml_processing);
-            $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
-            $next_user_info   = xpath($dom_processing, "//step[@code='$v_code'][last()]", XPATH_DOM);
+            //1. lay tat ca nguoi tra ket qua tu choi
+            $v_respond_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE;
+            $sql = "Select C_USER_LOGIN_NAME From t_r3_user_task Where C_TASK_CODE = '$v_respond_code'";
+            $arr_respond_user = $this->db->getCol($sql);
+            //2.Neu nguoi tra ket qua lon hon 1 nguoi
+            if(count($arr_respond_user > 1))
+            {
+                //2.1 tim nguoi tiep nhan trong processing
+                $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                $dom_processing   = simplexml_load_string($v_xml_processing);
+                $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+                $next_user        = xpath($dom_processing, "//step[@code='$v_code'][last()]/user_code", XPATH_DOM);
+
+                //2.2 neu nguoi tra ko nam trong $arr_respond_user => ho so dua ve tat ca nguoi tra ket qua
+                if(!in_array($next_user, $arr_respond_user))
+                {
+                    $next_user = '';
+                    foreach($arr_respond_user as $respond_user)
+                    {
+                        if($next_user == '')
+                        {
+                            $next_user .= $respond_user;
+                        }
+                        else
+                        {
+                            $next_user .= ','.$respond_user;
+                        }
+                    }
+                }
+            }
+            //3.neu nguoi tra ket qua co 1 nguoi
+            else
+            {
+                $next_user = $arr_respond_user[0];
+            }
+            //lay thong tin cua nguoi thuc hien cong viec tiep theo
+            $v_next_user_code       = '';
+            $v_next_user_name       = '';
+            $v_next_user_job_title  = '';
+            $arr_next_user = explode(',', $next_user);
+            foreach($arr_next_user as $user)
+            {
+                $sql  = "Select
+                        U.C_LOGIN_NAME
+                        , U.C_NAME
+                        , U.C_JOB_TITLE
+                    From t_r3_user_task UT
+                        Left Join t_cores_user U
+                          On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                    Where UT.C_USER_LOGIN_NAME = '$next_user'
+                    Limit 1; ";
+                $arr_next_user_info = $this->db->GetRow($sql);
+                if($v_next_user_code == '')
+                {
+                    $v_next_user_code       .= $arr_next_user_info['C_LOGIN_NAME'];
+                    $v_next_user_name       .= $arr_next_user_info['C_NAME'];
+                    $v_next_user_job_title  .= $arr_next_user_info['C_JOB_TITLE'];
+                }
+                else
+                {
+                    $v_next_user_code       .= ',' . $arr_next_user_info['C_LOGIN_NAME'];
+                    $v_next_user_name       .= ',' . $arr_next_user_info['C_NAME'];
+                    $v_next_user_job_title  .= ',' . $arr_next_user_info['C_JOB_TITLE'];
+                }
+            }
 
             $xml_next_task = '<next_task ';
             $xml_next_task .= ' code="' . $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '"';
-            $xml_next_task .= ' user="' . $next_user_info->user_code . '"';
-            $xml_next_task .= ' user_name="' . $next_user_info->user_name . '"';
-            $xml_next_task .= ' user_job_title="' . $next_user_info->user_job_title . '"';
+            $xml_next_task .= ' user="' . $v_next_user_code . '"';
+            $xml_next_task .= ' user_name="' . $v_next_user_name . '"';
+            $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
             $xml_next_task .= ' promote="' . $v_approval_value . '"';
             $xml_next_task .= ' reason="' . $v_reason . '"';
             $xml_next_task .= ' />';
 
             //Ghi log HS da bi tu choi
-            $stmt   = 'Update t_r3_record Set C_REJECTED=1,C_REJECT_REASON=?,C_REJECT_DATE=' . $this->build_getdate_function() . ' Where PK_RECORD=?';
+            $stmt   = 'Update t_r3_record Set C_REJECTED = 1,C_REJECT_REASON=?,C_REJECT_DATE=' . $this->build_getdate_function() . ' Where PK_RECORD=?';
             $params = array($v_reason, $v_record_id);
             $this->db->Execute($stmt, $params);
 
@@ -3851,24 +4237,83 @@ class record_Model extends Model
             elseif ($v_approval_value == _CONST_RECORD_APPROVAL_REJECT)
             {
                 //Từ chối, về Một-Cửa để trả công dân
-                //1. Tim ra nguoi tiep nhan
-                $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
-                $dom_processing   = simplexml_load_string($v_xml_processing);
-                $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
-
-                $next_user_info = xpath($dom_processing, "//step[@code='$v_code'][last()]", XPATH_DOM);
-
+                //1. lay tat ca nguoi tra ket qua tu choi
+                $v_respond_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE;
+                $sql = "Select C_USER_LOGIN_NAME From t_r3_user_task Where C_TASK_CODE = '$v_respond_code'";
+                $arr_respond_user = $this->db->getCol($sql);
+                //2.Neu nguoi tra ket qua lon hon 1 nguoi
+                if(count($arr_respond_user > 1))
+                {
+                    //2.1 tim nguoi tiep nhan trong processing
+                    $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                    $dom_processing   = simplexml_load_string($v_xml_processing);
+                    $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+                    $next_user       = xpath($dom_processing, "//step[@code='$v_code'][last()]/user_code", XPATH_DOM);
+                    
+                    //2.2 neu nguoi tra ko nam trong $arr_respond_user => ho so dua ve tat ca nguoi tra ket qua
+                    if(!in_array($next_user, $arr_respond_user))
+                    {
+                        $next_user = '';
+                        foreach($arr_respond_user as $respond_user)
+                        {
+                            if($next_user == '')
+                            {
+                                $next_user .= $respond_user;
+                            }
+                            else
+                            {
+                                $next_user .= ','.$respond_user;
+                            }
+                        }
+                    }
+                }
+                //3.neu nguoi tra ket qua co 1 nguoi
+                else
+                {
+                    $next_user = $arr_respond_user[0];
+                }
+                //lay thong tin cua nguoi thuc hien cong viec tiep theo
+                $v_next_user_code       = '';
+                $v_next_user_name       = '';
+                $v_next_user_job_title  = '';
+                $arr_next_user = explode(',', $next_user);
+                foreach($arr_next_user as $user)
+                {
+                    $sql  = "Select
+                            U.C_LOGIN_NAME
+                            , U.C_NAME
+                            , U.C_JOB_TITLE
+                        From t_r3_user_task UT
+                            Left Join t_cores_user U
+                              On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                        Where UT.C_USER_LOGIN_NAME = '$next_user'
+                        Limit 1; ";
+                    $arr_next_user_info = $this->db->GetRow($sql);
+                    if($v_next_user_code == '')
+                    {
+                        $v_next_user_code       .= $arr_next_user_info['C_LOGIN_NAME'];
+                        $v_next_user_name       .= $arr_next_user_info['C_NAME'];
+                        $v_next_user_job_title  .= $arr_next_user_info['C_JOB_TITLE'];
+                    }
+                    else
+                    {
+                        $v_next_user_code       .= ',' . $arr_next_user_info['C_LOGIN_NAME'];
+                        $v_next_user_name       .= ',' . $arr_next_user_info['C_NAME'];
+                        $v_next_user_job_title  .= ',' . $arr_next_user_info['C_JOB_TITLE'];
+                    }
+                }
+                
                 $xml_next_task = '<next_task ';
                 $xml_next_task .= ' code="' . $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '"';
-                $xml_next_task .= ' user="' . $next_user_info->user_code . '"';
-                $xml_next_task .= ' user_name="' . $next_user_info->user_name . '"';
-                $xml_next_task .= ' user_job_title="' . $next_user_info->user_job_title . '"';
+                $xml_next_task .= ' user="' . $v_next_user_code . '"';
+                $xml_next_task .= ' user_name="' . $v_next_user_name . '"';
+                $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
                 $xml_next_task .= ' promote="' . $v_approval_value . '"';
                 $xml_next_task .= ' reason="' . $v_reason . '"';
                 $xml_next_task .= ' />';
 
                 //Ghi log HS da bi tu choi
-                $stmt   = 'Update t_r3_record Set C_REJECTED=1,C_REJECT_REASON=? Where PK_RECORD=?';
+                $stmt   = 'Update t_r3_record Set C_REJECTED=1,C_REJECT_REASON=?, C_REJECT_DATE=' . $this->build_getdate_function() . ' Where PK_RECORD=?';
                 $params = array($v_reason, $v_record_id);
                 $this->db->Execute($stmt, $params);
 
@@ -4097,6 +4542,44 @@ class record_Model extends Model
         $sql               = "Update t_r3_record 
                 Set C_RETURN_DATE='$v_new_return_date' 
                 Where PK_RECORD=$v_record_id";
+        
+        
+        $stmt           = 'Select C_SCOPE From t_r3_record_type Where C_CODE=?';
+        $v_scope        = $this->db->getOne($stmt, array($v_record_type_code));
+        //neu la cap xa
+        if($v_scope == 0)
+        {
+            //lay next task code sau khi bo sung
+            $v_user_login_name = Session::get('user_code'); 
+            $sql  = "Select
+                                C_NEXT_TASK_CODE
+                              From t_r3_user_task
+                              Where C_RECORD_TYPE_CODE = '$v_record_type_code'
+                                  And C_TASK_CODE = '$v_current_task'
+                                  And (C_USER_LOGIN_NAME = '$v_user_login_name'
+                                        Or C_USER_LOGIN_NAME like '%$v_user_login_name%')";
+            $v_next_task_code = $this->db->getOne($sql);
+            $v_task_ho = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
+            //neu buoc tiep theo ko phai ban giao => chuyen thang ho so len buoc tiep
+            if(strtoupper($v_next_task_code) != strtoupper($v_task_ho))
+            {
+                //Next task
+                $arr_next_task_info = $this->_qry_next_task_info($v_current_task);
+
+                $v_next_task_code      = $arr_next_task_info['C_NEXT_TASK_CODE'];
+                $v_next_task_user_code = $arr_next_task_info['C_NEXT_USER_LOGIN_NAME'];
+                $v_next_task_user_name = $arr_next_task_info['C_NEXT_USER_NAME'];
+                $v_next_user_job_title = $arr_next_task_info['C_NEXT_USER_JOB_TITLE'];
+
+                $xml_next_task = '<next_task ';
+                $xml_next_task .= ' code="' . $v_next_task_code . '"';
+                $xml_next_task .= ' user="' . $v_next_task_user_code . '"';
+                $xml_next_task .= ' user_name="' . $v_next_task_user_name . '"';
+                $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
+                $xml_next_task .= ' />';
+                $this->_update_next_task_info($v_record_id, $xml_next_task);
+            }
+        }
         $this->db->Execute($sql);
 
 
@@ -4429,11 +4912,79 @@ class record_Model extends Model
             }
 
             //Next task
-            $arr_next_task_info    = $this->_qry_next_task_info($v_current_task);
-            $v_next_task_code      = $arr_next_task_info['C_NEXT_TASK_CODE'];
-            $v_next_task_user_code = $arr_next_task_info['C_NEXT_USER_LOGIN_NAME'];
-            $v_next_task_user_name = $arr_next_task_info['C_NEXT_USER_NAME'];
-            $v_next_user_job_title = $arr_next_task_info['C_NEXT_USER_JOB_TITLE'];
+            $arr_next_task_info    = $this->_qry_full_next_task_info($v_current_task);
+            if(count($arr_next_task_info) > 1)
+            {
+                //kiem tra role tiep theo co phai role can xu ly ko
+                //neu next task la THU_LY
+                $arr_next_task = explode(_CONST_XML_RTT_DELIM, $arr_next_task_info[0]['C_NEXT_TASK_CODE']);
+                if(in_array(_CONST_THU_LY_ROLE, $arr_next_task))
+                {
+                     //tim nguoi thu ly trong processing
+                    $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                    $dom_processing   = simplexml_load_string($v_xml_processing);
+                    $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_THU_LY_ROLE;
+                    $next_user       = xpath($dom_processing, "//step[@code='$v_code'][last()]/user_code", XPATH_DOM);
+                    
+                    //1. Nếu NSD co nam trong arr_full_task_info => đẩy hồ sơ về chính người đấy
+                    $v_check = false;
+                    foreach($arr_next_task_info as $arr_next_task)
+                    {
+                        //NSD nam trong arr_full_task_info
+                        if($arr_next_task['C_NEXT_USER_LOGIN_NAME']  == $next_user)
+                        {
+                            $v_next_task_code      = $arr_next_task['C_NEXT_TASK_CODE'];
+                            $v_next_task_user_code = $arr_next_task['C_NEXT_USER_LOGIN_NAME'];
+                            $v_next_task_user_name = $arr_next_task['C_NEXT_USER_NAME'];
+                            $v_next_user_job_title = $arr_next_task['C_NEXT_USER_JOB_TITLE'];
+                            
+                            $v_check = TRUE;
+                        }
+                    }
+                    
+                    //2. NSD đã bị thay đổi (đổi quy trình) ko nam trong arr_next_task_infor
+                    if($v_check == false)
+                    {
+                        $v_role = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_THU_LY_ROLE;
+                        //lay nguoi thay doi trong t_r3_swap_user
+                        $sql = "Select
+                                    C_TO_USER_CODE
+                                  From t_r3_swap_user_log
+                                  Where C_FROM_USER_CODE = '$next_user' And C_ROLE = '$v_role' 
+                                        And (C_RECORD_TYPE_CODE is NULL OR C_RECORD_TYPE_CODE = '$v_record_type_code')
+                                  Order by C_SWAP_DATE desc";
+                        $next_user = $this->db->getOne($sql);
+                        
+                        //lay thong tin NSD
+                        $sql  = "Select
+                                        U.C_LOGIN_NAME
+                                        , U.C_NAME
+                                        , U.C_JOB_TITLE
+                                    From t_r3_user_task UT
+                                        Left Join t_cores_user U
+                                          On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                                    Where UT.C_USER_LOGIN_NAME = '$next_user'
+                                    Limit 1; ";
+                        $arr_next_user_info = $this->db->getRow($sql);
+                                
+                        $v_next_task_code      = $arr_next_task['C_NEXT_TASK_CODE'];
+                        
+                        $v_next_task_user_code = $arr_next_user_info['C_LOGIN_NAME'];
+                        $v_next_task_user_name = $arr_next_user_info['C_NAME'];
+                        $v_next_user_job_title = $arr_next_user_info['C_JOB_TITLE'];
+                    }
+                }
+            }
+            else
+            {
+                $v_next_task_code      = $arr_next_task_info[0]['C_NEXT_TASK_CODE'];
+                $v_next_task_user_code = $arr_next_task_info[0]['C_NEXT_USER_LOGIN_NAME'];
+                $v_next_task_user_name = $arr_next_task_info[0]['C_NEXT_USER_NAME'];
+                $v_next_user_job_title = $arr_next_task_info[0]['C_NEXT_USER_JOB_TITLE'];
+            }
+           
+            
+            
 
             $xml_next_task = '<next_task ';
             $xml_next_task .= ' code="' . $v_next_task_code . '"';
@@ -4441,6 +4992,7 @@ class record_Model extends Model
             $xml_next_task .= ' user_name="' . $v_next_task_user_name . '"';
             $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
             $xml_next_task .= ' />';
+            
             if (!$v_next_task_code && !$v_is_no_chain)
             {
                 continue;
@@ -4572,7 +5124,7 @@ class record_Model extends Model
         //Check add_comment_token
         if (get_post_var('add_comment_token','tamviet!@#') !== Session::get('add_comment_token'))
         {
-            require_once '403.php';
+            require '403.php';
             exit;
         }
                 
@@ -4800,7 +5352,7 @@ class record_Model extends Model
         //Xem theo trang
         page_calc($v_start, $v_end);
         $v_spec_code = get_post_var('sel_spec','');
-
+        
         $v_receive_date_from = isset($_POST['txt_receive_date_from']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_receive_date_from']), 0) : '';
         $v_receive_date_to   = isset($_POST['txt_receive_date_to']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_receive_date_to'])) : '';
 
@@ -4811,6 +5363,7 @@ class record_Model extends Model
         $v_free_text = isset($_POST['txt_free_text']) ? replace_bad_char($_POST['txt_free_text']) : '';
 
         $v_year = get_post_var('sel_year', 2013);
+        $v_receive_month_from = $v_receive_month_to = "";
         if (get_post_var('hdn_search_mode') == 1)
         {
             $v_month     = get_post_var('sel_month');
@@ -4821,10 +5374,14 @@ class record_Model extends Model
                 $start_month = $end_month   = $v_month;
             }
             //tìm kiếm cơ bản
-            $v_return_date_from  = '';
-            $v_return_date_to    = '';
-            $v_receive_date_from = "$v_year-$start_month-1";
-            $v_receive_date_to   = "$v_year-$end_month-31";
+//            $v_return_date_from  = '';
+//            $v_return_date_to    = '';
+//            $v_receive_date_from = "$v_year-$start_month-1";
+//            $v_receive_date_to   = "$v_year-$end_month-31";
+            
+            $v_receive_month_from = "$v_year-$start_month-1";
+            $v_receive_month_to   = "$v_year-$end_month-31";
+            
         }
 
         //Danh sach ID loai thu tuc ma NSD da được phân công
@@ -4888,17 +5445,28 @@ class record_Model extends Model
             //Cac dieu kien loc
             $v_and_condition = '';
 
-
+            //tim theo record type code
             if ($p_record_type_code != '' && $p_record_type_code != NULL)
             {
                 $v_record_type_id = $this->db->GetOne("SELECT PK_RECORD_TYPE FROM t_r3_record_type WHERE C_CODE='$p_record_type_code'");
 
                 $v_and_condition .= " And FK_RECORD_TYPE=$v_record_type_id";
             }
+            //Loc theo thang
+            if($v_receive_month_from != ''&& $v_receive_month_from != NULL)
+            {
+                $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_month_from') >= 0";
+            }
+            if($v_receive_month_to != '' && $v_receive_month_to != NULL)
+            {
+                $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_month_to') <= 0";
+            }
+            //loc theo ma ho so
             if ($v_record_no != '' && $v_record_no != NULL)
             {
                 $v_and_condition .= " And C_RECORD_NO like '%$v_record_no'";
             }
+            //loc theo ngay tiep nhan ho so
             if ($v_receive_date_from != '' && $v_receive_date_from != NULL)
             {
                 $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_date_from') >= 0";
@@ -4907,15 +5475,18 @@ class record_Model extends Model
             {
                 $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_date_to') <= 0";
             }
+            
+            //loc theo ngay tra ket qua
             if ($v_return_date_from != '' && $v_return_date_from != NULL)
             {
                 $v_and_condition .= " And Datediff(C_RETURN_DATE,'$v_return_date_from') >=0";
             }
-            if ($v_return_date_from != '' && $v_return_date_from != NULL)
+            if ($v_return_date_to != '' && $v_return_date_to != NULL)
             {
-                $v_and_condition .= " And Datediff(C_RETURN_DATE,'$v_return_date_from') <=0";
+                $v_and_condition .= " And Datediff(C_RETURN_DATE,'$v_return_date_to') <=0";
             }
-
+            
+            //loc theo record type
             if ($v_record_type_id_list != '')
             {
                 $v_and_condition .= " And FK_RECORD_TYPE In ($v_record_type_id_list)";
@@ -4926,6 +5497,10 @@ class record_Model extends Model
             {
                 $v_spec_condition = " And C_SPEC_CODE = '$v_spec_code'";
             }
+            
+            //them dieu kien de chi tra cuu ho so cap xa
+//            $v_and_condition .= " And FK_VILLAGE_ID = 0";
+            
             /*
               if (sizeof($arr_record_type_id_list) > 0)
               {
@@ -4965,7 +5540,7 @@ class record_Model extends Model
             $sql = "SELECT
                         @rownum:=@rownum + 1 AS RN
                         , CASE WHEN R.C_NEXT_USER_CODE='$v_user_code' THEN 1 ELSE 0 END AS C_OWNER
-                        ,Case When (R.C_REJECTED = 1) Then 3 When (R.C_REJECTED <> 1 And (R.C_CLEAR_DATE Is Not Null)) Then 2 Else 1 End as C_ACTIVITY
+                        ,Case When (R.C_REJECTED <> 0) Then 3 When ((R.C_REJECTED = 0 OR R.C_REJECTED IS NULL) And (R.C_CLEAR_DATE Is Not Null)) Then 2 Else 1 End as C_ACTIVITY
                         , $v_total_record AS TOTAL_RECORD
                         , CASE WHEN (DATEDIFF(NOW(), R.C_DOING_STEP_DEADLINE_DATE)>0) THEN (SELECT -1 * (COUNT(*)) FROM view_working_date WD WHERE DATEDIFF(WD.C_DATE, NOW())<=0 AND DATEDIFF(WD.C_DATE, R.C_DOING_STEP_DEADLINE_DATE)>0 ) ELSE (SELECT (COUNT(*)) FROM view_working_date WD WHERE DATEDIFF(WD.C_DATE, NOW())>=0 AND DATEDIFF(WD.C_DATE, R.C_DOING_STEP_DEADLINE_DATE)<0 ) END AS C_DOING_STEP_DAYS_REMAIN
                         , CASE WHEN (DATEDIFF(NOW(),R.C_RETURN_DATE)>0) THEN (SELECT -1 * (COUNT(*)) FROM view_working_date WD WHERE DATEDIFF(WD.C_DATE, NOW())<=0 AND DATEDIFF(WD.C_DATE, R.C_RETURN_DATE)>0 ) ELSE (SELECT (COUNT(*)) FROM view_working_date WD WHERE DATEDIFF(WD.C_DATE, NOW())>=0 AND DATEDIFF(WD.C_DATE, R.C_RETURN_DATE)<0 ) END AS C_RETURN_DAYS_REMAIN
@@ -5032,7 +5607,6 @@ class record_Model extends Model
 
     public function count_record_by_activity($activity)
     {
-        $v_count     = 0;
         $v_user_code = Session::get('user_code');
 
         if (DEBUG_MODE < 10)
@@ -5184,8 +5758,8 @@ class record_Model extends Model
                                     AND DATEDIFF(WD.C_DATE, R.C_RETURN_DATE)<0 )
                         END AS C_RETURN_DAYS_REMAIN
                         ,Case
-                            When (C_REJECTED = 1) Then 3
-                            When (C_REJECTED <> 1 And (C_CLEAR_DATE Is Not Null)) Then 2
+                            When (C_REJECTED <> 0) Then 3
+                            When ((C_REJECTED = 0 OR C_REJECTED IS NULL) And (C_CLEAR_DATE Is Not Null)) Then 2
                             Else 1 -- Dang xu ly
                         End  as C_ACTIVITY
                         , R.PK_RECORD
@@ -5706,7 +6280,7 @@ class record_Model extends Model
         $v_total_time             = get_post_var('hdn_total_time');
         $v_response_by            = get_post_var('rad_accept', 'email');
         $v_xml_workflow_file_name = get_post_var('hdn_xml_workflow_file_name');
-
+        
         if (file_exists($v_xml_workflow_file_name))
         {
             $dom            = simplexml_load_file($v_xml_workflow_file_name);
@@ -5871,15 +6445,16 @@ class record_Model extends Model
                 From t_r3_internet_record_file
                 Where FK_RECORD=$v_internet_record_id";
         $this->db->Execute($stmt);
-//        $arr_single_record = $this->qry_single_record($v_record_id);
-//
-//        if ($arr_single_record['C_RETURN_EMAIL'])
-//        {
-//            //Gui email cho cong dan
-//            require_once dirname(__FILE__) . '/classes/announce.inc.php';
-//            $mail = new announce_accept($v_return_email, $arr_single_record);
-//            $mail->send();
-//        }
+        $arr_single_record = $this->qry_single_record($v_record_id);
+
+        if ($arr_single_record['C_RETURN_EMAIL'])
+        {
+            //Gui email cho cong dan
+            require_once dirname(__FILE__) . '/classes/announce.inc.php';
+            $mail = new announce_accept($v_return_email, $arr_single_record);
+            $mail->send();
+        }
+        
         $this->popup_exec_done(null, SITE_ROOT . 'r3/record');
     }
 
@@ -6170,29 +6745,84 @@ class record_Model extends Model
 
         $v_approval_value = _CONST_RECORD_APPROVAL_SUPPLEMENT;
         //người phụ trách bổ sung hồ sơ
-        $v_user           = get_post_var('sel_user');
+//        $v_user           = get_post_var('sel_user');
 
         foreach ($arr_record_id as $v_record_id)
         {
-            $arr_single_user = $this->db->GetRow('Select * From t_cores_user Where C_LOGIN_NAME=?', array($v_user));
-            if (!$this->_check_inhand_record($v_record_id) Or !$arr_single_user)
+//            $arr_single_user = $this->db->GetRow('Select * From t_cores_user Where C_LOGIN_NAME=?', array($v_user));
+            
+            if (!$this->_check_inhand_record($v_record_id))
             {
                 continue;
             }
-            $v_current_task   = $this->db->GetOne('Select C_NEXT_TASK_CODE From t_r3_record
-                Where PK_RECORD=?', array($v_record_id));
+            
+            $v_current_task   = $this->db->GetOne('Select C_NEXT_TASK_CODE From t_r3_record Where PK_RECORD=?', array($v_record_id));
+                
             //Yêu cầu bổ sung, về Một-Cửa để yêu cầu bổ sung
-            //NEXT_TASK = 'BO SUNG'
-            $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
-            $dom_processing   = simplexml_load_string($v_xml_processing);
-            $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
-            //$next_user_info   = xpath($dom_processing, "//step[1]", XPATH_DOM);
+            //1.Tìm lại nguời tiếp nhận trong t_r3_user_task
+            $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+            
+            $sql = "Select DISTINCT
+                        C_USER_LOGIN_NAME
+                      From t_r3_user_task
+                      Where C_RECORD_TYPE_CODE = '$v_record_type_code'
+                          And C_TASK_CODE = '$v_task_code'";
+            $arr_next_user_code = $this->db->getCol($sql);
+            //2.Kiem tra neu tiep nhan > 1
+            if(count($arr_next_user_code) > 1)
+            {
+                //2.1 lay user code cua nguoi tiep nhan
+                $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                $dom_processing   = simplexml_load_string($v_xml_processing);
+                $next_user_code   = (string) xpath($dom_processing, "//step[@code='$v_task_code']/user_code", XPATH_DOM);  
+                //2.2 kiem tra t_r3_user_task NSD co con dc xu ly ho so ko
+                $v_role = _CONST_TIEP_NHAN_ROLE;
+                $sql = "Select
+                            COUNT(*)
+                          From t_r3_user_task
+                          Where C_RECORD_TYPE_CODE = '$v_record_type_code'
+                              And C_TASK_CODE = '$v_task_code'
+                              And C_USER_LOGIN_NAME = '$next_user_code'";
+                $check_next_user = $this->db->getOne($sql);
+                //2.3 kiemt ra neu can bo da bi doi => lay can bo doi t_r3_swap_user_log
+                if($check_next_user <= 0)
+                {
+                    $sql = "Select
+                                C_TO_USER_CODE
+                              From t_r3_swap_user_log
+                              Where C_FROM_USER_CODE = '$next_user_code' And C_ROLE = '$v_role' 
+                                  And (C_RECORD_TYPE_CODE is NULL OR C_RECORD_TYPE_CODE = '$v_record_type_code')
+                              Order by C_SWAP_DATE desc";
+                    //lay can bo da thay the
+                    $next_user_code = $this->db->getOne($sql);
+                }
+            }
+            //3.Neu chi co 1 nguoi tra ho so ve dung nguoi do
+            else
+            {
+                $next_user_code = $arr_next_user_code[0];
+            }
 
+            //lay thong tin cua nguoi thuc hien cong viec tiep theo
+            $sql  = "Select
+                        U.C_LOGIN_NAME
+                        , U.C_NAME
+                        , U.C_JOB_TITLE
+                    From t_r3_user_task UT
+                        Left Join t_cores_user U
+                          On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                    Where UT.C_USER_LOGIN_NAME = '$next_user_code'
+                    Limit 1; ";
+            $arr_next_user_info = $this->db->GetRow($sql);
+            $v_next_user_code       = $arr_next_user_info['C_LOGIN_NAME'];
+            $v_next_user_name       = $arr_next_user_info['C_NAME'];
+            $v_next_user_job_title  = $arr_next_user_info['C_JOB_TITLE'];
+                
             $xml_next_task = '<next_task pause="true"';
             $xml_next_task .= ' code="' . $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BO_SUNG_ROLE . '"';
-            $xml_next_task .= ' user="' . $arr_single_user['C_LOGIN_NAME'] . '"';
-            $xml_next_task .= ' user_name="' . $arr_single_user['C_NAME'] . '"';
-            $xml_next_task .= ' user_job_title="' . $arr_single_user['C_JOB_TITLE'] . '"';
+            $xml_next_task .= ' user="' . $v_next_user_code . '"';
+            $xml_next_task .= ' user_name="' . $v_next_user_name . '"';
+            $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
             $xml_next_task .= ' promote="' . $v_approval_value . '"';
             $xml_next_task .= ' reason="' . $v_reason . '"';
             $xml_next_task .= ' />';
@@ -6219,5 +6849,599 @@ class record_Model extends Model
 
         $this->popup_exec_done();
     }
+    /**
+     * lay tat ca phong ban tiep nhan ho so
+     * @param type $role ma quyen
+     * @return type
+     */
+    public function qry_all_bu($role)
+    {
+        //lay id cua nguoi dung
+        $user_login_name = session::get('user_login_name');
+        //lay danh sach ten phong ban va cac loai thu tuc phong ban tiep nhan
+        $sql = "Select
+                    G.C_GROUP_CODE,
+                    (Select
+                       C_NAME
+                     FROM t_cores_group
+                     Where C_CODE = G.C_GROUP_CODE) as C_GROUP_NAME,
+                    GROUP_CONCAT((Select DISTINCT PK_RECORD_TYPE From t_r3_record_type Where C_CODE = G.C_RECORD_TYPE_CODE)) as C_RECORD_TYPE_GROUP
+                  From t_r3_user_task G
+                    Left Join t_r3_user_task U
+                      On G.C_TASK_CODE = U.C_NEXT_TASK_CODE
+                  Where U.C_USER_LOGIN_NAME = '$user_login_name'
+                      And U.C_TASK_CODE like '%::$role' Group By C_GROUP_CODE";
+        $MODEL_DATA =  $this->db->getAll($sql);
+        //query lay list record
+        for($i=0;$i<count($MODEL_DATA);$i++)
+        {
+            $list_group_type = $MODEL_DATA[$i]['C_RECORD_TYPE_GROUP'];
+            
+            $sql = "Select
+                        GROUP_CONCAT(PK_RECORD)
+                      From view_processing_record 
+                      Where FK_RECORD_TYPE in ($list_group_type)
+                          AND ((
+                              C_NEXT_TASK_CODE LIKE '%::BAN_GIAO'
+                                    AND 
+                                    (C_NEXT_USER_CODE='$user_login_name'
+                                         OR C_NEXT_USER_CODE LIKE '%,$user_login_name,%'
+                                         OR C_NEXT_CO_USER_CODE LIKE '%,$user_login_name,%')
+                              )
+                                   OR (C_NEXT_NO_CHAIN_TASK_CODE LIKE '%::$role'
+                                       AND C_NEXT_NO_CHAIN_USER_CODE LIKE '%,$user_login_name,%'))";
+            //them id thu tuc vao array
+            $MODEL_DATA[$i]['PK_RECORD'] = $this->db->getOne($sql);
+        }
+        
+        return $MODEL_DATA;
+    }
+    /**
+     * cap nhat ho so (thu ly cap xa)
+     */
+    public function do_exec_record_by_village()
+    {
+        //Ma loai HS
+        $v_record_type_code = isset($_POST['hdn_record_type_code']) ? replace_bad_char($_POST['hdn_record_type_code']) : '';
 
-}
+        ($v_record_type_code != '') OR DIE();
+
+        //Ket qua thu ly
+        $v_exec_value = isset($_POST['hdn_exec_value']) ? replace_bad_char($_POST['hdn_exec_value']) : '';
+        ($v_exec_value != '') OR DIE();
+
+        //Phi
+        $v_fee             = isset($_POST['txt_fee']) ? replace_bad_char($_POST['txt_fee']) : '';
+        $v_fee_description = isset($_POST['txt_fee_description']) ? replace_bad_char($_POST['txt_fee_description']) : '';
+
+        //Danh sach ma HS
+        $v_record_id_list = isset($_POST['hdn_item_id_list']) ? replace_bad_char($_POST['hdn_item_id_list']) : '';
+
+        //Ly do chua duyet HS
+        $v_reason = isset($_POST['txt_reason']) ? replace_bad_char($_POST['txt_reason']) : '';
+
+        $arr_record_id = explode(',', $v_record_id_list);
+
+        //Xác định phạm vi thủ tục
+        $stmt    = 'Select C_SCOPE From t_r3_record_type Where C_CODE=?';
+        $v_scope = $this->db->getOne($stmt, array($v_record_type_code));
+
+        foreach ($arr_record_id as $v_record_id)
+        {
+            $stmt    = 'Select Count(*) From view_processing_record Where PK_RECORD=? And (C_NEXT_USER_CODE like ? OR C_NEXT_USER_CODE=?)';
+            $v_count = $this->db->getOne($stmt, array($v_record_id, '%,' . Session::get('user_code') . ',%', Session::get('user_code')));
+            if ($v_count < 1)
+            {
+                continue;
+            }
+
+            //$v_current_task ?????
+            $stmt           = 'Select C_NEXT_TASK_CODE From view_processing_record Where PK_RECORD=?';
+            $v_current_task = $this->db->getOne($stmt, array($v_record_id));
+
+            $v_step_seq = uniqid();
+            $v_xml_step_log = '<step seq="' . $v_step_seq . '" code="' . $v_current_task . '">';
+            $v_xml_step_log .= '<user_code>' . Session::get('user_code') . '</user_code>';
+            $v_xml_step_log .= '<user_name>' . Session::get('user_name') . '</user_name>';
+            $v_xml_step_log .= '<user_job_title>' . Session::get('user_job_title') . '</user_job_title>';
+            $v_xml_step_log .= '<datetime>' . $this->getDate() . '</datetime>';
+
+            if ($v_exec_value != _CONST_RECORD_APPROVAL_ACCEPT)
+            {
+                $v_xml_step_log .= '<promote>' . $v_exec_value . '</promote>';
+                $v_xml_step_log .= '<reason>' . $v_reason . '</reason>';
+            }
+            else
+            {
+                $v_xml_step_log .= '<fee>' . $v_fee . '</fee>';
+                $v_xml_step_log .= '<fee_description>' . $v_fee_description . '</fee_description>';
+            }
+
+            $v_xml_step_log .= '</step>';
+
+            //Tính toán về công việc tiếp theo
+            if ($v_scope == 0) //là thủ tục cấp xã
+            {
+                //Next task
+                    $arr_next_task_info         = $this->_qry_next_task_info($v_current_task);
+                    $v_next_task_code           = $arr_next_task_info['C_NEXT_TASK_CODE'];
+                    $v_next_task_user_code      = $arr_next_task_info['C_NEXT_USER_LOGIN_NAME'];
+                    $v_next_task_user_name      = $arr_next_task_info['C_NEXT_USER_NAME'];
+                    $v_next_task_user_job_title = $arr_next_task_info['C_NEXT_USER_JOB_TITLE'];
+                    
+                //Neu duyet, tìm bước thiếp kế tiếp theo quy trình
+                if ($v_exec_value == _CONST_RECORD_APPROVAL_ACCEPT)
+                {
+                    //Nguoi duyet, la nguoi thuoc nhom LANH_DAO_CAP_XA & cung OU voi can bo thu ly.
+
+                    //Lay ten dang nhap cua chu tich ky duyet
+                    $v_ou_id                    = Session::get('ou_id');
+                    $sql                        = "Select 
+                                                        C_LOGIN_NAME
+                                                        ,C_NAME
+                                                        ,C_JOB_TITLE
+                                                    From t_cores_user
+                                                    Where FK_OU = $v_ou_id
+                                                          And PK_USER In(Select
+                                                                             FK_USER
+                                                                         From t_cores_user_group UG
+                                                                             Left Join t_cores_group G
+                                                                               On UG.FK_GROUP = G.PK_GROUP
+                                                                        Where G.C_CODE = 'LANH_DAO_CAP_XA'
+                                                                         )";
+                    $arr_single_next_user       = $this->db->getRow($sql);
+                    $v_next_task_user_code      = $arr_single_next_user['C_LOGIN_NAME'];
+                    $v_next_task_user_name      = $arr_single_next_user['C_NAME'];
+                    $v_next_task_user_job_title = $arr_single_next_user['C_JOB_TITLE'];
+
+                    $xml_next_task = '<next_task';
+                    $xml_next_task .= ' code="' . $v_next_task_code . '"';
+                    $xml_next_task .= ' user="' . $v_next_task_user_code . '"';
+                    $xml_next_task .= ' user_name="' . $v_next_task_user_name . '"';
+                    $xml_next_task .= ' user_job_title="' . $v_next_task_user_job_title . '"';
+                    $xml_next_task .= ' fee="' . $v_fee . '"';
+                    $xml_next_task .= ' fee_description="' . $v_fee_description . '"';
+                    $xml_next_task .= ' />';
+                    
+                    $this->_insert_record_processing_step($v_record_id, $v_xml_step_log);
+                    $this->_update_next_task_info($v_record_id, $xml_next_task);
+                }
+                //Neu yeu cau bo sung, tra ve 1 cua de bo sung
+                elseif ($v_exec_value == _CONST_RECORD_APPROVAL_SUPPLEMENT)
+                {
+                    //Yêu cầu bổ sung, về Một-Cửa để yêu cầu bổ sung
+                    //1.Tìm lại nguời tiếp nhận trong t_r3_user_task
+                    $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+
+                    $sql = "Select DISTINCT
+                                C_USER_LOGIN_NAME
+                              From t_r3_user_task
+                              Where C_RECORD_TYPE_CODE = '$v_record_type_code'
+                                  And C_TASK_CODE = '$v_task_code'";
+                    $arr_next_user_code = $this->db->getCol($sql);
+                    //2.Kiem tra neu tiep nhan > 1
+                    if(count($arr_next_user_code) > 1)
+                    {
+                        //2.1 lay user code cua nguoi tiep nhan
+                        $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                        $dom_processing   = simplexml_load_string($v_xml_processing);
+                        $next_user_code   = xpath($dom_processing, "//step[@code='$v_task_code']/user_code", XPATH_DOM);  
+                        //2.2 kiem tra t_r3_user_task NSD co con dc xu ly ho so ko
+                        $v_role = _CONST_TIEP_NHAN_ROLE;
+                        $sql = "Select
+                                    COUNT(*)
+                                  From t_r3_user_task
+                                  Where C_RECORD_TYPE_CODE = '$v_record_type_code'
+                                      And C_TASK_CODE = '$v_task_code'
+                                      And C_USER_LOGIN_NAME = '$next_user_code'";
+                        $check_next_user = $this->db->getOne($sql);
+                        //2.3 kiemt ra neu can bo da bi doi => lay can bo doi t_r3_swap_user_log
+                        if($check_next_user <= 0)
+                        {
+                            $sql = "Select
+                                        C_TO_USER_CODE
+                                      From t_r3_swap_user_log
+                                      Where C_FROM_USER_CODE = '$next_user_code' And C_ROLE = '$v_role' 
+                                          And (C_RECORD_TYPE_CODE is NULL OR C_RECORD_TYPE_CODE = '$v_record_type_code')
+                                      Order by C_SWAP_DATE desc";
+                            //lay can bo da thay the
+                            $next_user_code = $this->db->getOne($sql);
+                        }
+                    }
+                    //3.Neu chi co 1 nguoi tra ho so ve dung nguoi do
+                    else
+                    {
+                        $next_user_code = $arr_next_user_code[0];
+                    }
+
+                    //lay thong tin cua nguoi thuc hien cong viec tiep theo
+                    $sql  = "Select
+                                U.C_LOGIN_NAME
+                                , U.C_NAME
+                                , U.C_JOB_TITLE
+                            From t_r3_user_task UT
+                                Left Join t_cores_user U
+                                  On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                            Where UT.C_USER_LOGIN_NAME = '$next_user_code'
+                            Limit 1; ";
+                    $arr_next_user_info = $this->db->GetRow($sql);
+                    $v_next_user_code       = $arr_next_user_info['C_LOGIN_NAME'];
+                    $v_next_user_name       = $arr_next_user_info['C_NAME'];
+                    $v_next_user_job_title  = $arr_next_user_info['C_JOB_TITLE'];
+            
+                    $v_approval_value = _CONST_RECORD_APPROVAL_SUPPLEMENT ;
+                    
+                    $xml_next_task = '<next_task ';
+                    $xml_next_task .= ' code="' . $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BO_SUNG_ROLE . '"';
+                    $xml_next_task .= ' user="' . $v_next_user_code . '"';
+                    $xml_next_task .= ' user_name="' . $v_next_user_name . '"';
+                    $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
+                    $xml_next_task .= ' promote="' . $v_approval_value . '"';
+                    $xml_next_task .= ' reason="' . $v_reason . '"';
+                    $xml_next_task .= ' />';
+
+                    if (!$v_next_task_code)
+                    {
+                        continue;
+                    }
+                    
+                    //Chuyển hồ sơ vào danh sách bổ sung
+                    $v_goto = isset($_POST['rad_after_supplement']) ? replace_bad_char($_POST['rad_after_supplement']) : '1';
+                    $stmt   = 'Insert Into t_r3_record_supplement(FK_RECORD, C_GOTO) Values(?,?)';
+                    $this->db->Execute($stmt, array($v_record_id, $v_goto));
+                    
+                    $this->_insert_record_processing_step($v_record_id, $v_xml_step_log);
+                    $this->_update_next_task_info($v_record_id, $xml_next_task);
+                }
+                //Neu tu choi, tra ve 1 cua => tra ket qua cho cong dan
+                elseif ($v_exec_value == _CONST_RECORD_APPROVAL_REJECT)
+                {
+                    //Từ chối, về Một-Cửa để trả công dân
+                    //1. lay tat ca nguoi tra ket qua tu choi
+                    $v_respond_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE;
+                    $sql = "Select C_USER_LOGIN_NAME From t_r3_user_task Where C_TASK_CODE = '$v_respond_code'";
+                    $arr_respond_user = $this->db->getCol($sql);
+                    //2.Neu nguoi tra ket qua lon hon 1 nguoi
+                    if(count($arr_respond_user > 1))
+                    {
+                        //2.1 tim nguoi tiep nhan trong processing
+                        $v_xml_processing = $this->db->getOne("Select C_XML_PROCESSING From view_processing_record Where PK_RECORD=$v_record_id");
+                        $dom_processing   = simplexml_load_string($v_xml_processing);
+                        $v_code           = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+                        $next_user       = xpath($dom_processing, "//step[@code='$v_code'][last()]/user_code", XPATH_DOM);
+
+                        //2.2 neu nguoi tra ko nam trong $arr_respond_user => ho so dua ve tat ca nguoi tra ket qua
+                        if(!in_array($next_user, $arr_respond_user))
+                        {
+                            $next_user = '';
+                            foreach($arr_respond_user as $respond_user)
+                            {
+                                if($next_user == '')
+                                {
+                                    $next_user .= $respond_user;
+                                }
+                                else
+                                {
+                                    $next_user .= ','.$respond_user;
+                                }
+                            }
+                        }
+                    }
+                    //3.neu nguoi tra ket qua co 1 nguoi
+                    else
+                    {
+                        $next_user = $arr_respond_user[0];
+                    }
+                    //lay thong tin cua nguoi thuc hien cong viec tiep theo
+                    $v_next_user_code       = '';
+                    $v_next_user_name       = '';
+                    $v_next_user_job_title  = '';
+                    $arr_next_user = explode(',', $next_user);
+                    foreach($arr_next_user as $user)
+                    {
+                        $sql  = "Select
+                                U.C_LOGIN_NAME
+                                , U.C_NAME
+                                , U.C_JOB_TITLE
+                            From t_r3_user_task UT
+                                Left Join t_cores_user U
+                                  On UT.C_USER_LOGIN_NAME = U.C_LOGIN_NAME
+                            Where UT.C_USER_LOGIN_NAME = '$next_user'
+                            Limit 1; ";
+                        $arr_next_user_info = $this->db->GetRow($sql);
+                        if($v_next_user_code == '')
+                        {
+                            $v_next_user_code       .= $arr_next_user_info['C_LOGIN_NAME'];
+                            $v_next_user_name       .= $arr_next_user_info['C_NAME'];
+                            $v_next_user_job_title  .= $arr_next_user_info['C_JOB_TITLE'];
+                        }
+                        else
+                        {
+                            $v_next_user_code       .= ',' . $arr_next_user_info['C_LOGIN_NAME'];
+                            $v_next_user_name       .= ',' . $arr_next_user_info['C_NAME'];
+                            $v_next_user_job_title  .= ',' . $arr_next_user_info['C_JOB_TITLE'];
+                        }
+                    }
+                    
+                    $v_approval_value = _CONST_RECORD_APPROVAL_REJECT ;
+                    
+                    $xml_next_task = '<next_task ';
+                    $xml_next_task .= ' code="' . $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '"';
+                    $xml_next_task .= ' user="' . $v_next_user_code . '"';
+                    $xml_next_task .= ' user_name="' . $v_next_user_name . '"';
+                    $xml_next_task .= ' user_job_title="' . $v_next_user_job_title . '"';
+                    $xml_next_task .= ' promote="' . $v_approval_value . '"';
+                    $xml_next_task .= ' reason="' . $v_reason . '"';
+                    $xml_next_task .= ' />';
+
+                    if (!$v_next_task_code)
+                    {
+                        continue;
+                    }
+
+                    //Ghi log HS da bi tu choi
+                    $stmt   = 'Update t_r3_record Set C_REJECTED=1,C_REJECT_REASON=?, C_REJECT_DATE=' . $this->build_getdate_function() . ' Where PK_RECORD=?';
+                    $params = array($v_reason, $v_record_id);
+                    $this->db->Execute($stmt, $params);
+
+                    //Step log
+                    //Lay ca ten GROUP
+                    $stmt         = 'Select C_NAME From t_cores_group Where C_CODE=(Select Top 1 C_GROUP_CODE From t_r3_user_task Where C_TASK_CODE=?)';
+                    $params       = array($v_current_task);
+                    $v_group_name = $this->db->getOne($stmt, $params);
+
+                    $v_step_seq = uniqid();
+                    $v_xml_step_log = '<step seq="' . $v_step_seq . '" code="REJECT">';
+                    $v_xml_step_log .= '<user_code>' . Session::get('user_code') . '</user_code>';
+                    $v_xml_step_log .= '<user_name>' . Session::get('user_name') . '</user_name>';
+                    $v_xml_step_log .= '<user_job_title>' . Session::get('user_job_title') . '</user_job_title>';
+                    $v_xml_step_log .= '<datetime>' . $this->getDate() . '</datetime>';
+                    $v_xml_step_log .= '<reason>' . $v_reason . '</reason>';
+                    $v_xml_step_log .= '<group_name>' . $v_group_name . '</group_name>';
+                    $v_xml_step_log .= '</step>';
+                    $this->_insert_record_processing_step($v_record_id, $v_xml_step_log);
+                    $this->_update_next_task_info($v_record_id, $xml_next_task);
+                }
+                //update C_ROLLBACK_ABLE
+                $sql = "UPDATE t_r3_record
+                        SET C_ROLLBACKABLE = 1
+                        WHERE PK_RECORD = ?
+                            AND C_ROLLBACKABLE = 0";
+                $this->db->Execute(array($sql,$v_record_id));
+            }//end if $v_scope
+        }//end for
+
+        $this->popup_exec_done();
+    }
+    
+    
+    /**
+     * tao thu muc cho media
+     * @param type $parent_id: id thu muc cha
+     * @param type $dirname: ten thu muc
+     * @return string
+     */
+    public function create_folder($parent_id,$dirname)
+    {
+        //kiem tra bien
+        $parent_id = ($parent_id != '' && $parent_id != NULL && is_numeric($parent_id))?$parent_id:NULL;
+        $dirname   = ($dirname == '' OR $dirname == NULL)?'':$dirname;
+        
+        $v_user_id = session::get('user_id');
+        $v_upload_date = date('Y-m-d');
+                
+        //kiem tra dieu kien
+        if($dirname == '')
+        {
+            return 'false';
+        }
+        
+        $stmt = "Insert into t_r3_media
+                            (C_NAME,
+                             C_TYPE,
+                             FK_USER,
+                             FK_PARENT,
+                             C_UPLOAD_DATE)
+                Values (?,
+                        ?,
+                        ?,
+                        ?,
+                        ?)";
+        $this->db->Execute($stmt,array($dirname,1,$v_user_id,$parent_id,$v_upload_date));
+        
+        if($this->db->Affected_Rows() > 0)
+        {
+            $new_id = $this->db->Insert_ID('t_r3_media');
+            return array('success'=>'true','new_id'=>$new_id);
+        }
+        else 
+        {
+            return array('success'=>'false');
+        }
+    }
+     /**
+    * thuc hien xoa media theo list
+    * @param type $list_id
+    * @return type string check
+    */
+    public function do_delete_media($list_id,$user_id='')
+    {
+        if($list_id == '' OR $list_id == NULL)
+        {
+            return array('message'=>'Bạn cần chọn thư mục hoặc file cần xóa !!!','deleted_id'=>'');
+        }
+        
+        //khoi tao bien
+        $message = '';
+        $deleted_id = '';
+        $v_user_id = ($user_id == '')?session::get('user_id'):$user_id;
+        
+        $sql = "Select 
+                PK_MEDIA,
+                C_NAME,
+                C_EXT,
+                C_TYPE,
+                FK_USER,
+                C_FILE_NAME,
+                FK_PARENT,
+                C_UPLOAD_DATE,
+                DATE_FORMAT(C_UPLOAD_DATE,'%Y') as C_YEAR,
+                DATE_FORMAT(C_UPLOAD_DATE,'%m') as C_MONTH,
+                DATE_FORMAT(C_UPLOAD_DATE,'%d') as C_DAY
+            From t_r3_media Where PK_MEDIA in ($list_id) And FK_USER = $v_user_id";
+        $arr_all = $this->db->getAll($sql);
+        
+        //thuc hien xoa
+        foreach($arr_all as $arr_info)
+        {
+            //lay thong tin xu ly
+            $v_media_id   = $arr_info['PK_MEDIA'];
+            $v_media_type = $arr_info['C_TYPE'];
+            $v_file_name  = $arr_info['C_FILE_NAME'];
+            $v_year       = $arr_info['C_YEAR'];
+            $v_month      = $arr_info['C_MONTH'];
+            $v_day        = $arr_info['C_DAY'];
+            $v_name       = $arr_info['C_NAME'];
+            
+            //kiem tra neu la file => xoa
+            if($v_media_type == 0)
+            {
+                //xoa share
+                $stmt = "Delete From t_r3_media_shared Where FK_MEDIA = ?";
+                $this->db->Execute($stmt,array($v_media_id));
+                //xoa media
+                $stmt = "Delete From t_r3_media Where PK_MEDIA = ? And FK_USER = ?";
+                $this->db->Execute($stmt,array($v_media_id,$v_user_id));
+                //xoa file that
+                if($this->db->Affected_Rows()>0)
+                {
+                    $real_path = CONST_FILE_UPLOAD_PATH . $v_year . DS . $v_month . DS . $v_day . DS . $v_file_name;
+                    unlink($real_path);
+                }
+                //tao thong bao loi
+                else
+                {
+                    $message .= "FILE: $v_name - không thể xóa do gặp sự cố \n";
+                }
+            }
+            //neu la folder
+            else 
+            {
+                //kiem tra xem co media con ko
+                $sql = "Select count(*) From t_r3_media Where FK_PARENT = $v_media_id And FK_USER = $v_user_id";
+                $v_check = $this->db->GetOne($sql);
+                
+                //neu ko co media con => xoa
+                if($v_check < 1)
+                {
+                    //xoa share
+                    $stmt = "Delete From t_r3_media_shared Where FK_MEDIA = ?";
+                    $this->db->Execute($stmt,array($v_media_id));
+                    //xoa media
+                    $stmt = "Delete From t_r3_media Where PK_MEDIA = ? And FK_USER = ?";
+                    $this->db->Execute($stmt,array($v_media_id,$v_user_id));
+                    
+                    if($deleted_id == '')
+                    {
+                        $deleted_id .= $v_media_id;
+                    }
+                    else
+                    {
+                        $deleted_id .= ',' . $v_media_id;
+                    }
+                }
+                else
+                {
+                    $message .= "FOLDER: $v_name - Vẫn còn chứa file hoặc thư mục con \n";
+                }
+            }
+        }
+        
+        return array('message'=>$message,'deleted_id'=>$deleted_id);
+    }
+    public function get_list_drawn_record($record_id_list = '',$v_record_type = '')
+    {
+        $MODE_DATA =array();
+        if($record_id_list != '' && $v_record_type != '')
+        {
+         $stmt = "Select R.PK_RECORD
+                        ,R.C_RECORD_NO
+                        ,R.C_RECEIVE_DATE
+                        ,R.C_RETURN_DATE
+                        ,R.C_CITIZEN_NAME
+                        ,RT.C_CODE as C_RECORD_TYPE_CODE
+                        ,RT.C_NAME as C_RECORD_TYPE_NAME
+                        , R.C_NEXT_TASK_CODE
+                        ,R.C_PAUSE_DATE
+                        ,R.C_UNPAUSE_DATE
+                        ,R.C_XML_PROCESSING
+                    From view_processing_record R Left Join t_r3_record_type RT On R.FK_RECORD_TYPE=RT.PK_RECORD_TYPE
+                    Where R.PK_RECORD IN ($record_id_list)";
+            $MODE_DATA['arr_all_record'] = $this->db->getAll($stmt);
+            
+            $stmt_qry_type = "SELECT
+                                    C_CODE,
+                                    C_NAME
+                            FROM t_r3_record_type
+                            WHERE C_CODE = ?";
+            $MODE_DATA['arr_single_type_record'] = $this->db->GetRow($stmt_qry_type,array($v_record_type));
+        }
+        return $MODE_DATA;
+    }
+    /**
+     * ho so cong dan rut
+     */
+    public function drawn_record()
+    {
+
+        $v_list_id          = get_post_var('hdn_item_id_list','');
+        $v_record_type_code = get_post_var('record_type_code','');
+        $v_role             = get_post_var('hdn_role','');
+        $v_current_task     = _CONST_RUT_ROLE;
+        $arr_id             = explode(',',$v_list_id);
+        $v_reason           = get_post_var('txt_reason','');
+        $v_controller       =  get_post_var('controller');
+        
+  
+        foreach($arr_id as $v_record_id)
+        {
+            //update record 
+            //
+            //Hoan thanh nghiep vu nhanh/cham bao nhieu ngay ?
+            $v_return_days_remain = $this->_return_days_remain_calc($v_record_id);
+            //rut ho so: dk-> deleted = 1 va status = 1 va clear date not null
+            $stmt = "UPDATE t_r3_record
+                        SET C_REJECTED = 2,
+                          C_CLEAR_DATE = ?,
+                          C_REJECT_DATE = ?,
+                          C_BIZ_DAYS_EXCEED = ? 
+                        WHERE PK_RECORD = ?";
+            $this->db->execute($stmt,array('NOW()','NOW()',$v_record_id,$v_return_days_remain));
+            
+            //update xml processing
+            $v_step_seq = uniqid();
+            $step       = '<step seq="' . $v_step_seq . '" code="' . $v_current_task . '">';
+            $step .= '<user_code>' . Session::get('user_code') . '</user_code>';
+            $step .= '<user_name>' . Session::get('user_name') . '</user_name>';
+            $step .= '<user_job_title>' . Session::get('user_job_title') . '</user_job_title>';
+            $step .= '<reason>' . Session::get('$v_reason') . '</reason>';
+            $step .= '<datetime>' . $this->getDate() . '</datetime>';
+            $step .= '</step>';
+            
+            $xml_next_task = '<next_task ';
+            $xml_next_task .= ' code=""';
+            $xml_next_task .= ' user=""';
+            $xml_next_task .= ' user_name=""';
+            $xml_next_task .= ' user_job_title=""';
+            $xml_next_task .= ' />';
+
+            $this->_insert_record_processing_step($v_record_id, $step);
+            $this->_update_next_task_info($v_record_id, $xml_next_task);
+        }
+        $this->popup_exec_done();
+    }
+    
+    
+    
+
+}  

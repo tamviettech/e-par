@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -50,12 +49,17 @@ $this->template->display('dsp_header.php');
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     <div id="solid-button">
-        <input type="button" class="solid transfer" value="Trả hồ sơ về xã"
-               onclick="btn_handover_onclick();" />
-        <input type="button" name="addnew" class="solid print" value="In giấy bàn giao"
-               onclick="print_record_ho_for_village();" />
+        <!--button tra ket qua-->
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_handover_onclick();" >
+            Trả hồ sơ về xã
+        </button>    
+        <!--button in-->
+        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_village();">
+            <i class="icon-print"></i>
+            In giấy bàn giao
+        </button>
     </div>
-    <div class="clear"></div>
+     <div class="clear" style="height: 10px">&nbsp;</div>
 
     <div id="procedure">
         <?php

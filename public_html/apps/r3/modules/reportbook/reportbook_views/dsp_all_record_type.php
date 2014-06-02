@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('SERVER_ROOT') or die();
 
@@ -35,9 +34,13 @@ $this->template->display('dsp_header.php');
     echo $this->hidden('hdn_item_code', $arr_single_book['c_code']);
     ?>
     <h3 class="page-title"><?php echo $this->template->title; ?></h3>
-    <div id="solid-button">
-        <input type="button" class="solid add" value="Thêm thủ tục vào sổ" onclick="show_all_record_type()"/>
-        <input type="button" class="solid delete" value="Loại thủ tục khỏi sổ" onclick="btn_delete_onclick()"/>
+    <div id="solid-button" style="margin-bottom: 5px;overflow: hidden">
+        <button style="float: left;margin-right: 5px;" class="btn btn-success" type="button" onclick="show_all_record_type()" ><i class="icon-plus"></i> Thêm thủ tục vào sổ</button>
+        <button style="float: left" class="btn btn-danger" type="button" onclick="btn_delete_onclick()" ><i class="icon-remove"></i> Loại thủ tục khỏi sổ</button>
+          <button style="float: right" data-toggle="dropdown" value="Lọc" class="btn btn-default" onclick="window.location.href = '<?php echo SITE_ROOT; ?>r3/reportbook/';" >
+            <i class="icon-reply"></i>
+            Quay lại
+        </button>
     </div>
     <table width="100%" class="adminlist" cellspacing="0" cellpading="0" border="1">
         <colgroup>

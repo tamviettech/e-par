@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -49,14 +48,17 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid commit" value="Hoàn thành thụ lý"
-               onclick="btn_dsp_exec_onclick();" />
+        <!--button tra ket qua-->
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();" >
+            Hoàn thành thụ lý
+        </button>
+        
 
                <!-- 
         <input type="button" name="btn_rollback" class="solid exchange" value="Trả hồ sơ về bước trước" onclick="btn_rollback_onclick();" />
          -->
     </div>
-    <div class="clear"></div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
 
     <div id="procedure">
         <?php if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list'))): ?>
@@ -67,7 +69,9 @@ $this->template->display('dsp_header.php');
 
     <!-- Buttons -->
     <div class="button-area">
-        <input type="button" name="btn_dsp_exec" class="button commit" value="Hoàn thành thụ lý" onclick="btn_dsp_exec_onclick();" />
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();">
+            Hoàn thành thụ lý
+        </button>
         
         <!-- 
         <input type="button" name="btn_rollback" class="button exchange" value="Trả hồ sơ về bước trước" onclick="btn_rollback_onclick();" />
@@ -154,7 +158,8 @@ $this->template->display('dsp_header.php');
     {
         var url = '<?php echo $this->get_controller_url();?>statistics/' + record_id + '/'
                 + '&hdn_item_id=' + record_id
-                + '&pop_win=1';
+                + '&pop_win=1'
+                + '&assistance=1';
 
         showPopWin(url, 1000, 600, null, true);
     }
@@ -217,5 +222,6 @@ $this->template->display('dsp_header.php');
             alert('Chưa có hồ sơ nào được chọn!');
         }
     }
+    
 </script>
 <?php $this->template->display('dsp_footer.php');

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
 {
@@ -68,7 +67,6 @@ if (!defined('SERVER_ROOT'))
                         <div style="width: 96%; padding: 4px;">
                             <div class="menuLeft" id="menuLeft">
                                 <ul class="menu">
-                                    <li><a href="http://langgiang.gov.vn" target="_blank">Trang thông tin điện tử huyện Lạng Giang</a></li>
                                     <li><a href="<?php echo SITE_ROOT; ?>mavach">Tra cứu hồ sơ </a></li>
                                         <li>
                                             <a class="current" href="<?php echo SITE_ROOT . 'nop_ho_so/danh_sach_thu_tuc' ?>">

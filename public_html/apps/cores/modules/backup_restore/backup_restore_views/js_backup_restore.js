@@ -3,7 +3,7 @@
 /**
  * Show theme backup
  */
-function onclick_backup() 
+function btn_backup_onclick() 
 {
     var f= document.forms.frmMain;
     f.hdn_status_tab.value = '1';
@@ -13,7 +13,7 @@ function onclick_backup()
 /**
  * Hiển thị tất các tập tin trong thư mục
  */
-function onclick_show_all_item() 
+function btn_show_all_item_onclick() 
 {
     var f= document.forms.frmMain;
     f.hdn_status_tab.value = '0';
@@ -66,32 +66,35 @@ function onlcik_restore(v_item_name)
 /**
  * fc start backup
  */
-function start_backup() 
+function btn_do_backup_onclick() 
 {
      
-        var f   = document.forms.frmMain;
-        status_backup = f.hdn_backup_status.value;
-        var v_url = f.controller.value + f.hdn_backup_method.value;
+        var f             = document.forms.frmMain;
+        var status_backup = f.hdn_backup_status.value;
+        var v_url         = f.controller.value + f.hdn_backup_method.value;
+        var rad_type      = $('[name="rad_type"]').val();
+        $('#frmMain').attr('action',v_url);
+        $('#frmMain').submit();
+        return false;
         $.ajax({
+           type: 'POST',
            url: v_url,
            sync: true,
-           beforeSend: function()
-                                {
-                                    if(status_backup == 0)
-                                    {
-                                        $('#loading').show();
-                                        f.hdn_backup_status.value = 1;
-                                    }
-                                    else
-                                    {
-                                        return false; 
-                                    }
-                                },
+           data:{rad_type:rad_type},
+//           beforeSend: function()
+//                                {
+//                                    if(status_backup == 0)
+//                                    {
+//                                        $('#loading').show();
+//                                        f.hdn_backup_status.value = 1;
+//                                    }
+//                                    else
+//                                    {
+//                                        return false; 
+//                                    }
+//                                },
            success: function(data){
                 alert(data);
-                f.hdn_backup_status.value  = 0;
-                $('#loading').hide();
-                window.location.href = f.controller.value;
             }
         });
 }

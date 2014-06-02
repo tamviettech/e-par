@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -428,10 +427,22 @@ else
             top: 0px;
             left: 0px;
         }
+        @media print
+        {
+            .formPrint
+            {
+                display: none;
+            }  
+            @page
+            {
+                margin: 10px;
+            }
+        }
     </style>
     <form class="formPrint" action="" method="POST">
         <?php echo $this->hidden('hdn_print_pdf','1');?>
         <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="In" onclick="javascript:window.print();"/>
         <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();"/>
     </form>
     <table class="reprot_header">

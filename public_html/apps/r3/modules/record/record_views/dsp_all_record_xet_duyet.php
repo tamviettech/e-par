@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -47,14 +46,20 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid approval" value="Xét duyệt"
-               onclick="btn_dsp_approval_onclick();" />
+        <!--button xet duyet-->
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_approval_onclick();">
+            <i class="icon-ok-sign"></i>
+            Xét duyệt
+        </button>
+        <!--button in-->
+        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_bu_onclick();">
+            <i class="icon-print"></i>
+            In giấy bàn giao
+        </button>
         <!-- 
         <input type="button" class="solid print" value="In danh sách ký duyệt"
                onclick="print_record_ho_for_bu_onclick();" />
         -->
-        <input type="button" class="solid print" value="In giấy bàn giao"
-               onclick="print_record_ho_for_bu_onclick();" />
     </div>
     <div class="clear">&nbsp;</div>
 

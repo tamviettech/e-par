@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) {
     exit('No direct script access allowed');
 }
@@ -53,7 +52,8 @@ $v_xml_data = '';
 
 $arr_rule_content = json_decode($v_rule_content,1);
 //display header
-$this->template->title = 'Cập nhật quy luật lọc hồ sơ';
+$this->template->title = $this->title = 'Cập nhật quy luật lọc hồ sơ';
+$this->active_menu = $this->template->active_menu =  'quan_tri_ho_so';
 $this->template->display('dsp_header.php');
 ?>
 <form name="frmMain" id="frmMain" action="" method="POST">
@@ -173,14 +173,10 @@ $this->template->display('dsp_header.php');
 	</table>
 	
 	<!-- Button -->
-	<div class="button-area">
-		<input type="button" name="update" class="button save"
-			value="<?php echo __('update'); ?> (Alt+2)"
-			onclick="btn_update_onclick();" accesskey="2" /> <input type="button"
-			name="cancel" class="button close"
-			value="<?php echo __('go back'); ?>"
-			onclick="btn_back_onclick();" accesskey="9" />
-	</div>
+    <div class="form-actions">
+        <button type="button" name="update" class="btn btn-primary" onclick="btn_update_onclick();" accesskey="2"><i class="icon-save"></i><?php echo __('update');?></button>
+        <button type="button" name="cancel" class="btn" onclick="btn_back_onclick();" accesskey="9"><i class="icon-reply"></i><?php echo __('go back');?></button>
+    </div>
 </form>
 <script>
 function txt_record_type_code_onkeypress(evt)

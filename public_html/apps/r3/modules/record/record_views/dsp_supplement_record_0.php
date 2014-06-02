@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -29,7 +28,8 @@ $this->template->title = 'Hồ sơ phải bổ sung, chưa thông báo cho công
 $this->template->display('dsp_header_pop_win.php');
 
 ?>
-<form name="frmMain" id="frmMain" action="" method="POST">
+<div id="overDiv" style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></div>
+<form name="frmMain" id="frmMain" action="" method="POST" style="background-color: white;">
     <?php
     echo $this->hidden('controller',$this->get_controller_url());
     echo $this->hidden('hdn_item_id','0');
@@ -47,13 +47,10 @@ $this->template->display('dsp_header_pop_win.php');
     echo $this->hidden('hdn_supplement_status', 0);
 
     ?>
-    <div class="page-title">Hồ sơ phải bổ sung, chưa thông báo cho công dân</div>
-    <div class="page-notice">
-        <div id="notice">
-            <div class="notice-title">Thống kê hồ sơ</div>
-            <div class="notice-container" id="notice-container"><ul></ul></div>
-        </div>
-    </div>
+     <div class="clear" style="height: 10px">&nbsp;</div>
+    <!--<div class="page-title">Hồ sơ phải bổ sung, chưa thông báo cho công dân</div>-->
+    
+    <?php echo $this->dsp_div_notice();?>
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     <!-- 
@@ -62,8 +59,9 @@ $this->template->display('dsp_header_pop_win.php');
                onclick="btn_announce_onclick();" />
     </div>
      -->
-    <div class="clear"></div>
 
+     <div class="clear"></div>
+    
     <div id="procedure">
         <?php
         if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list')))
@@ -179,6 +177,7 @@ $this->template->display('dsp_header_pop_win.php');
     	v_url += '&pop_win=1';
     	showPopWin(v_url, 700, 450, null, true);
     }
-
+    
+    
 </script>
 <?php $this->template->display('dsp_footer_pop_win.php');

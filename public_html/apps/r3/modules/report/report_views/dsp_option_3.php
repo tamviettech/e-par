@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('DS') or die;
 /* @var $this \View */
@@ -36,6 +35,7 @@ function check_vilage_id()
         return false;
     }
 }
+
 ?>
 <style>
     table td{padding: 3px;}
@@ -127,7 +127,10 @@ function check_vilage_id()
             <td></td>
             <td class="">
                 <!--button in-->
-                <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+                    <i class="icon-print"></i>
+                    In báo cáo
+                </button>
             </td>
         </tr>
     </table>
@@ -137,6 +140,10 @@ function check_vilage_id()
 
 
 <script type="text/javascript">
+$(document).ready(function(){
+    sel_group_onchange($('#sel_group'));
+});
+
 function filter() {
     this.type = 'm';
     this.begin_month;

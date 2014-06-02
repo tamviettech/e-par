@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -54,6 +53,7 @@ $dom_flow                  = simplexml_load_file($v_xml_workflow);
 //$r = $dom_flow->xpath("//process/@fee");
 $v_default_fee             = 0;
 $v_default_fee_description = 'Phí giải quyết hồ sơ';
+
 ?>
 <form name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_exec_record">
     <?php
@@ -73,9 +73,16 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
     //KQ thu ly
     echo $this->hidden('hdn_exec_value', _CONST_RECORD_APPROVAL_ACCEPT);
     ?>
-    <div class="page-title"><?php echo $v_step_name; ?></div>
-
-    <div class="panel_color_form">Danh sách hồ sơ thụ lý</div>
+    <div class="primary-head">
+        <h3 class="page-header">
+            <?php echo $v_step_name; ?>
+        </h3>
+    </div>
+    
+    <div class="widget-head blue">
+        <h3>Danh sách hồ sơ thụ lý</h3>
+    </div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
     <div class="Row">
         <div class="left-Col">
             <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
@@ -86,7 +93,7 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
     </div>
 
     <!-- Record list -->
-    <table cellpadding="4" cellspacing="0" width="100%" class="list">
+    <table class="adminlist table table-bordered table-striped">
         <tr>
             <th>STT</th>
             <th>Mã hồ sơ</th>
@@ -104,31 +111,46 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
             </tr>
         <?php endfor; ?>
     </table>
+    <div class="clear" style="height: 10px">&nbsp;</div>
     <!-- End: Record list -->
-
-    <div class="panel_color_form">Thụ lý hồ sơ</div>
+    
+    <div class="widget-head blue">
+        <h3>Thụ lý hồ sơ</h3>
+    </div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
+    
     <div class="Row">
         <div class="left-Col">
             Kết quả:
         </div>
         <div class="right-Col">
-            <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
-                   value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
-                   onclick="rad_exec_onclick(this.value)" checked
-                   />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>">Đề nghị phê duyệt hồ sơ</label>
-
-            <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
-                   value="<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
-                   onclick="rad_exec_onclick(this.value)"
-                   />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>">Đề nghị bổ sung hồ sơ</label>
-
-            <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
-                   value="<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
-                   onclick="rad_exec_onclick(this.value)"
-                   />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>">Đề nghị từ chối hồ sơ</label>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox inline">
+                        <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
+                       value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
+                       onclick="rad_exec_onclick(this.value)" checked
+                       />
+                        Đề nghị phê duyệt hồ sơ
+                    </label>
+    
+                    <label class="checkbox inline">
+                        <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
+                           value="<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
+                           onclick="rad_exec_onclick(this.value)"
+                           />
+                        Đề nghị bổ sung hồ sơ
+                    </label>
+    
+                    <label class="checkbox inline">
+                        <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
+                           value="<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
+                           onclick="rad_exec_onclick(this.value)"
+                           />
+                        Đề nghị từ chối hồ sơ
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
     <div id="divFee" class="Row">
@@ -138,7 +160,7 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
             </div>
             <div class="right-Col">
                 <input type="text" name="txt_fee" id="txt_fee"
-                       size="8" maxlength="10" class="text ui-widget-content ui-corner-all"
+                       size="8" maxlength="10" class="text valid"
                        value="<?php echo $v_default_fee; ?>"
                        onchange="ReadNumberToString('txt_fee', 'lbl_fee')" /> (đ)
                 &nbsp;
@@ -152,7 +174,7 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
             <div class="right-Col">
                 <textarea style="width:100%;height:100px;" rows="2"
                           name="txt_fee_description" id="txt_fee_description" cols="20" maxlength="400"
-                          class="text ui-widget-content ui-corner-all"><?php echo $v_default_fee_description; ?></textarea>
+                          class="span12"><?php echo $v_default_fee_description; ?></textarea>
             </div>
         </div>
     </div>
@@ -163,7 +185,7 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
         <div class="right-Col">
             <textarea style="width:100%;height:100px;" rows="2"
                       name="txt_reason" id="txt_reason" cols="20" maxlength="400"
-                      class="text ui-widget-content ui-corner-all"></textarea>
+                      class="span12"></textarea>
         </div>
     </div>
 
@@ -171,9 +193,19 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
     <!-- Buttons -->
     <div class="button-area">
         <hr/>
-        <input type="button" name="btn_do_exec" class="button save" value="Cập nhật" onclick="btn_do_exec_onclick();" />
+        <!--button xet duyet-->
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_do_exec_onclick();">
+            <i class="icon-ok-sign"></i>
+            Cập nhật
+        </button>
+        
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action; ?>"/>
+        
+        <!--Button close window-->
+        <button type="button" name="trash" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
+            <i class="icon-remove"></i>
+            <?php echo __('close window'); ?>
+        </button> 
     </div>
 </form>
 <script>

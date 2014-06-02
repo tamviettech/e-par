@@ -1,4 +1,22 @@
 <?php
+/**
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
@@ -30,7 +48,7 @@ $v_current_tab               = isset($_REQUEST['hdn_status_tab']) ? $_REQUEST['h
     	<li class="active">Quản trị hệ thống<span class="divider"><i class="icon-angle-right"></i></span></li>
     	<li class="active">Sao lưu và khôi phục dữ liệu</li>
     </ul>
-<form name="frmMain" id="frmMain" method="post">
+<form name="frmMain" id="frmMain" method="post" class="form-inline">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
     echo $this->hidden('hdn_item_id', '');
@@ -42,7 +60,7 @@ $v_current_tab               = isset($_REQUEST['hdn_status_tab']) ? $_REQUEST['h
     echo $this->hidden('hdn_restore_status', isset($_REQUEST['hdn_restore_status']) ? $_REQUEST['hdn_restore_status'] : 0 );
 
     //start backup
-    echo $this->hidden('hdn_backup_method', 'dsp_backup');
+    echo $this->hidden('hdn_backup_method', 'do_backup');
     echo $this->hidden('hdn_backup_status', isset($_REQUEST['hdn_backup_status']) ? $_REQUEST['hdn_backup_status'] : 0 );
 
     // Trạng thái hiển thị tab
@@ -52,8 +70,8 @@ $v_current_tab               = isset($_REQUEST['hdn_status_tab']) ? $_REQUEST['h
     <div class="row-fluid">
         <div id="all-folder" class="span4">
             <div class="btn-backup-restore" style="margin-bottom: 5px;">
-                <button class="btn btn-primary" type="button" onclick="onclick_backup()">Sao lưu</button>
-                <button class="btn btn-danger" type="button" onclick="onclick_show_all_item();">Danh sách tập tin</button>
+                <button class="btn btn-primary" type="button" onclick="btn_backup_onclick()">Sao lưu</button>
+                <button class="btn btn-danger" type="button" onclick="btn_show_all_item_onclick();">Danh sách tập tin</button>
             </div>
             <!--end button-->
             <div class="widget-head orange" style="display:<?php echo ($v_current_tab == 0) ? 'block;' : 'none'; ?>">
@@ -115,7 +133,18 @@ $v_current_tab               = isset($_REQUEST['hdn_status_tab']) ? $_REQUEST['h
         <div style="display:<?php echo ($v_current_tab == 1) ? 'block' : 'none'; ?>; text-align: center;" >
             <div class="clearfix" ></div>
             <h3 style="border-top:solid 1px #0e90d2;margin-top: 20px;">Chức năng sao lưu dữ liệu</h3>
-            <button class="btn btn-primary" type="button" onclick="start_backup()">Bắt đầu</button>
+            <center style="margin: 10px 0px"> 
+                <label class="checkbox">
+                    <input type="radio" id="rad_text" name="rad_type" value="0" checked/>
+                    Thông thường
+                </label>
+                &nbsp;&nbsp;
+                <label class="checkbox">
+                    <input type="radio" id="rad_dump" name="rad_type" value="1"/>
+                    Dữ liệu từ server
+                </label>
+            </center>
+            <button class="btn btn-primary" type="button" onclick="btn_do_backup_onclick();">Bắt đầu</button>
         </div>
 
         <div class="btn_delete_file" style="float: right;margin-top: 5px; display:<?php echo ($v_current_tab == 0) ? 'table;' : 'none'; ?>">

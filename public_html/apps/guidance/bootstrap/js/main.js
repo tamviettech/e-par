@@ -234,7 +234,7 @@ $(window).resize(function(){
 							}
 						}
 					});
-					t += (spaceUsed.length+0.5)*scaleSpacing
+					t += (spaceUsed.length)*scaleSpacing
 				}
 			}
 			setTimeout(function(){
@@ -248,146 +248,148 @@ $(window).resize(function(){
 			$tileContainer.show();
 		}	
 		setTileOpacity();	
-	}else if(autoRearrangeTiles && windowWidth < rearrangeTreshhold+1.2){		
-		if(!$("body").hasClass("small") || ($("body").hasClass("small") && Math.ceil(windowWidth) != $page.smallWidth)){
-			$("body").removeClass("column").removeClass("full").addClass("small");
-			$page.layout = "small";
-			$page.smallWidth = (Math.ceil(windowWidth)>rearrangeTreshhold ? rearrangeTreshhold+1 : Math.ceil(windowWidth) );
-			$("nav").appendTo("#headerCenter").children("a").css("display","inline-block")
-			$("#navTitle").remove()
-			var w =$page.smallWidth-1;
-			if($group.direction=="horizontal"){
-				for(var i in $group.spacing){
-					$group.spacing[i] = w+1;
-				}
-				for(i=0;i<$group.count;i++){
-					$("#groupTitle"+i).css("margin-left",i*scaleSpacing*(w+1)).css("margin-top",0);
-					var spaceUsed = []
-					var j = 0; // the row we'll be working on
-					var t = getMarginLeft(i);
-					$tileContainer.children(".group"+i).each(function(){
-						$(this).css("width",parseInt($(this).data("pos").split("-")[2]));
-						
-						var j = spaceUsed.length;
-						var thisw = Math.round(($(this).width()-scale)/scaleSpacing+1); //tile width in tiles
-						if(thisw>w){ // if tile is as width as the max width or wider	
-							if(autoResizeTiles){
-								$(this).width(scaleSpacing*(w-1)+scale);
-							}
-							$(this).css("margin-left",t).css("margin-top",45+j*scaleSpacing);
-							var s = strRepeat(w,"1")
-							for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-								spaceUsed[j+l] = s;
-							}	
-						}else{ // fit it somewhere!
-							var f = true;
-							for(var k in spaceUsed){
-								k = parseInt(k);
-								var s = strRepeat(thisw,"0");
-								var pos = spaceUsed[k].indexOf(s);
-								if(pos>-1){
-									var e = true
-									for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-										if(typeof spaceUsed[k+l] !== "undefined" && spaceUsed[k+l].substr(pos,thisw) != s){
-											e = false;
-											break;
-										}
-									}
-									if(e){ // yeps, tile will fit!
-										$(this).css("margin-left",t+pos*scaleSpacing).css("margin-top",45+k*scaleSpacing);
-										var s = strRepeat(thisw,"1");
-										for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-											if(typeof spaceUsed[k+l] === "undefined"){
-												var c = strRepeat(w,"0");
-											}else{
-												var c = spaceUsed[k+l];	
-											}
-											spaceUsed[k+l] = c.substr(0, pos) + s + c.substr(pos + thisw);
-										}
-										f=false;
-										break;
-									}
-								}
-							}
-							if(f){	
-								$(this).css("margin-left",t).css("margin-top",(45+j*scaleSpacing));
-								var s = strRepeat(thisw,"1")+strRepeat(w-thisw,"0");
-								for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-									spaceUsed[j+l]=s;
-								}
-							}
-						}
-					});
-				}
-			}else if($group.direction=="vertical"){
-				var j = 0; // the max row we've worked on
-				for(i=0;i<$group.count;i++){
-					var spaceUsed = []
-					$("#groupTitle"+i).css("margin-left",0).css("margin-top",j*scaleSpacing);
-
-					$tileContainer.children(".group"+i).each(function(){
-						var thisw = Math.round(($(this).width()-scale)/scaleSpacing+1); //tile width in tiles
-						$(this).css("width",parseInt($(this).data("pos").split("-")[2]));
-						if(thisw>w){ // if tile is as width as the max width or wider	
-							if(autoResizeTiles){
-								$(this).width(scaleSpacing*(w-1)+scale);
-							}
-							$(this).css("margin-left",0).css("margin-top",45+(spaceUsed.lenght+j)*scaleSpacing);
-							var s = strRepeat(w,"1")
-							for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-								spaceUsed[spaceUsed.lenght] = s;
-							}	
-						}else{ // fit it somewhere!
-							var f = true;
-							for(var k in spaceUsed){
-								k = parseInt(k);
-								var s = strRepeat(thisw,"0");
-								var pos = spaceUsed[k].indexOf(s);
-								if(pos>-1){
-									var e = true
-									for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-										if(typeof spaceUsed[k+l] !== "undefined" && spaceUsed[k+l].substr(pos,thisw) != s){
-											e = false;
-											break;
-										}
-									}
-									if(e){ // yeps, tile will fit!
-										$(this).css("margin-left",pos*scaleSpacing).css("margin-top",45+(j+k)*scaleSpacing);
-										var s = strRepeat(thisw,"1");
-										for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-											if(typeof spaceUsed[k+l] === "undefined"){
-												var c = strRepeat(w,"0");
-											}else{
-												var c = spaceUsed[k+l];	
-											}
-											spaceUsed[k+l] = c.substr(0, pos) + s + c.substr(pos + thisw);
-										}
-										f=false;
-										break;
-									}
-								}
-							}
-							if(f){	
-								$(this).css("margin-left",0).css("margin-top",(45+(spaceUsed.length+j)*scaleSpacing));
-								var s = strRepeat(thisw,"1")+strRepeat(w-thisw,"0");
-								for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
-									spaceUsed[spaceUsed.length+l]=s;
-								}
-							}								
-						}	
-					});
-					j += spaceUsed.length+0.5;
-				}
-			}
-			setTimeout(function(){
-				recalcScrolling();
-				fixScrolling();
-			},500);
-			setTileOpacity();
-			$arrows.place(400);
-			$events.toSmall();
-		}
-	}else{
+	}
+//	else if(autoRearrangeTiles && windowWidth < rearrangeTreshhold+1.2){		
+//		if(!$("body").hasClass("small") || ($("body").hasClass("small") && Math.ceil(windowWidth) != $page.smallWidth)){
+//			$("body").removeClass("column").removeClass("full").addClass("small");
+//			$page.layout = "small";
+//			$page.smallWidth = (Math.ceil(windowWidth)>rearrangeTreshhold ? rearrangeTreshhold+1 : Math.ceil(windowWidth) );
+//			$("nav").appendTo("#headerCenter").children("a").css("display","inline-block")
+//			$("#navTitle").remove()
+//			var w =$page.smallWidth-1;
+//			if($group.direction=="horizontal"){
+//				for(var i in $group.spacing){
+//					$group.spacing[i] = w+1;
+//				}
+//				for(i=0;i<$group.count;i++){
+//					$("#groupTitle"+i).css("margin-left",i*scaleSpacing*(w+1)).css("margin-top",0);
+//					var spaceUsed = []
+//					var j = 0; // the row we'll be working on
+//					var t = getMarginLeft(i);
+//					$tileContainer.children(".group"+i).each(function(){
+//						$(this).css("width",parseInt($(this).data("pos").split("-")[2]));
+//						
+//						var j = spaceUsed.length;
+//						var thisw = Math.round(($(this).width()-scale)/scaleSpacing+1); //tile width in tiles
+//						if(thisw>w){ // if tile is as width as the max width or wider	
+//							if(autoResizeTiles){
+//								$(this).width(scaleSpacing*(w-1)+scale);
+//							}
+//							$(this).css("margin-left",t).css("margin-top",45+j*scaleSpacing);
+//							var s = strRepeat(w,"1")
+//							for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//								spaceUsed[j+l] = s;
+//							}	
+//						}else{ // fit it somewhere!
+//							var f = true;
+//							for(var k in spaceUsed){
+//								k = parseInt(k);
+//								var s = strRepeat(thisw,"0");
+//								var pos = spaceUsed[k].indexOf(s);
+//								if(pos>-1){
+//									var e = true
+//									for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//										if(typeof spaceUsed[k+l] !== "undefined" && spaceUsed[k+l].substr(pos,thisw) != s){
+//											e = false;
+//											break;
+//										}
+//									}
+//									if(e){ // yeps, tile will fit!
+//										$(this).css("margin-left",t+pos*scaleSpacing).css("margin-top",45+k*scaleSpacing);
+//										var s = strRepeat(thisw,"1");
+//										for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//											if(typeof spaceUsed[k+l] === "undefined"){
+//												var c = strRepeat(w,"0");
+//											}else{
+//												var c = spaceUsed[k+l];	
+//											}
+//											spaceUsed[k+l] = c.substr(0, pos) + s + c.substr(pos + thisw);
+//										}
+//										f=false;
+//										break;
+//									}
+//								}
+//							}
+//							if(f){	
+//								$(this).css("margin-left",t).css("margin-top",(45+j*scaleSpacing));
+//								var s = strRepeat(thisw,"1")+strRepeat(w-thisw,"0");
+//								for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//									spaceUsed[j+l]=s;
+//								}
+//							}
+//						}
+//					});
+//				}
+//			}else if($group.direction=="vertical"){
+//				var j = 0; // the max row we've worked on
+//				for(i=0;i<$group.count;i++){
+//					var spaceUsed = []
+//					$("#groupTitle"+i).css("margin-left",0).css("margin-top",j*scaleSpacing);
+//
+//					$tileContainer.children(".group"+i).each(function(){
+//						var thisw = Math.round(($(this).width()-scale)/scaleSpacing+1); //tile width in tiles
+//						$(this).css("width",parseInt($(this).data("pos").split("-")[2]));
+//						if(thisw>w){ // if tile is as width as the max width or wider	
+//							if(autoResizeTiles){
+//								$(this).width(scaleSpacing*(w-1)+scale);
+//							}
+//							$(this).css("margin-left",0).css("margin-top",45+(spaceUsed.lenght+j)*scaleSpacing);
+//							var s = strRepeat(w,"1")
+//							for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//								spaceUsed[spaceUsed.lenght] = s;
+//							}	
+//						}else{ // fit it somewhere!
+//							var f = true;
+//							for(var k in spaceUsed){
+//								k = parseInt(k);
+//								var s = strRepeat(thisw,"0");
+//								var pos = spaceUsed[k].indexOf(s);
+//								if(pos>-1){
+//									var e = true
+//									for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//										if(typeof spaceUsed[k+l] !== "undefined" && spaceUsed[k+l].substr(pos,thisw) != s){
+//											e = false;
+//											break;
+//										}
+//									}
+//									if(e){ // yeps, tile will fit!
+//										$(this).css("margin-left",pos*scaleSpacing).css("margin-top",45+(j+k)*scaleSpacing);
+//										var s = strRepeat(thisw,"1");
+//										for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//											if(typeof spaceUsed[k+l] === "undefined"){
+//												var c = strRepeat(w,"0");
+//											}else{
+//												var c = spaceUsed[k+l];	
+//											}
+//											spaceUsed[k+l] = c.substr(0, pos) + s + c.substr(pos + thisw);
+//										}
+//										f=false;
+//										break;
+//									}
+//								}
+//							}
+//							if(f){	
+//								$(this).css("margin-left",0).css("margin-top",(45+(spaceUsed.length+j)*scaleSpacing));
+//								var s = strRepeat(thisw,"1")+strRepeat(w-thisw,"0");
+//								for(l=0;l<=($(this).height()-scale)/scaleSpacing;l++){
+//									spaceUsed[spaceUsed.length+l]=s;
+//								}
+//							}								
+//						}	
+//					});
+//					j += spaceUsed.length+0.5;
+//				}
+//			}
+//			setTimeout(function(){
+//				recalcScrolling();
+//				fixScrolling();
+//			},500);
+//			setTileOpacity();
+//			$arrows.place(400);
+//			$events.toSmall();
+//		}
+//	}
+        else{
 		if(!$("body").hasClass("full")){
 			$("body").removeClass("column").removeClass("small").addClass("full");
 			$page.layout = "full";

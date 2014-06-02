@@ -16,15 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
+<?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed'); ?>
 
 <?php
-
-if (!defined('SERVER_ROOT'))
-    exit('No direct script access allowed');
-
 class workflow_Controller extends Controller
 {
-
     /**
      *
      * @var \workflow_Model 
@@ -83,9 +79,17 @@ class workflow_Controller extends Controller
         $this->view->template->app_name           = 'R3';
         //Kiem tra session
         session::init();
-        intval(Session::get('is_admin')) > 0 OR die('Bạn không có quyền truy cập chức năng này');
-        
+        //Kiem tra dang nhap
         session::check_login();
+        
+        intval(Session::get('is_admin')) > 0 OR die('Bạn không có quyền truy cập chức năng này');
+        $login_name                               = session::get('login_name');
+        if ($login_name == NULL)
+        {
+            session::destroy();
+            header('location:' . SITE_ROOT . 'login.php');
+            exit;
+        }
     }
 
     public function main()
@@ -341,7 +345,8 @@ class workflow_Controller extends Controller
 
         $_POST['txt_plaintext_workflow'] = $domDocObj->saveXML();
         $_POST['txt_plaintext_workflow'] = trim(preg_replace('/^[ ]+(?=<)/m', '$0$0', $_POST['txt_plaintext_workflow']));
-        echo $this->model->update_workflow();
+        ob_get_clean();
+        echo trim($this->model->update_workflow());
     }
 
     public function update_plaintext_workflow()

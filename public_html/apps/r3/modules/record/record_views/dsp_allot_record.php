@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE();
@@ -63,9 +62,14 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
     //Ma Loai HS
     echo $this->hidden('hdn_record_type_code', $v_record_type_code);
     ?>
-<div class="page-title">Phân công thụ lý hồ sơ</div>
-        
-        <div class="panel_color_form">Danh sách hồ sơ chờ phân công:</div>
+    <div class="primary-head">
+        <h3 class="page-header">Phân công thụ lý hồ sơ</h3>
+    </div>
+        <div class="clear" style="height: 10px">&nbsp;</div>
+        <div class="widget-head blue">
+                <h3>Danh sách hồ sơ chờ phân công:</h3>
+        </div>
+    
         <div class="Row">
             <div class="left-Col">
                 <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
@@ -76,7 +80,7 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
         </div>
 
         <!-- Record list -->
-        <table cellpadding="4" cellspacing="0" width="100%" class="list">
+        <table  class="adminlist table table-bordered table-striped">
             <tr>
                 <th>STT</th>
                 <th>Mã hồ sơ</th>
@@ -95,8 +99,13 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
             <?php endfor;?>
         </table>
         <!-- End: Record list -->
-
-    <div class="panel_color_form"><?php echo $v_step_name;?></div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
+    <div class="widget-head blue">
+        <h3>
+            <?php echo $v_step_name;?>
+        </h3>
+    </div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
     <div class="Row">
         <div class="left-Col">
             <label>
@@ -122,8 +131,11 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
                 <?php endforeach; ?>
             </select>&nbsp;
             
-            <label>Số ngày thực hiện:</label>            
-            <b style="color:red;"><?php echo $VIEW_DATA['exec_task_time'];?></b> ngày
+            <i>
+                Số ngày thực hiện:
+                <b style="color:red;"><?php echo $VIEW_DATA['exec_task_time'];?></b> ngày
+            </i>            
+            
         </div>
     </div>
     
@@ -137,12 +149,13 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
             <span id="spantreeuser">
                 <?php reset($arr_all_exec_user);?>
                 <?php foreach ($arr_all_exec_user as $user):?>
-                    <span class="span_co_exec_user" id="span_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>">
-                        <input type="checkbox" value="<?php echo $user['C_USER_LOGIN_NAME'];?>"
+                        
+                        <label class="label_co_exec_user" id="label_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>">
+                            <input type="checkbox" value="<?php echo $user['C_USER_LOGIN_NAME'];?>"
                             name="chk_co_exec_user" id="chk_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>"
                         />
-                        <label for="chk_co_exec_user_<?php echo $user['C_USER_LOGIN_NAME'];?>"><?php echo $user['C_NAME'];?></label>
-                    </span><br />
+                            <?php echo $user['C_NAME'];?>
+                        </label>
                 <?php endforeach; ?>
             </span>
         </div>
@@ -152,9 +165,17 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
     <!-- Buttons -->
     <div class="button-area">
     <hr>
-        <input type="button" name="btn_do_allot" class="button allot" value="Phân công thụ lý" onclick="btn_do_allot_onclick();" />
+        <!--button xet duyet-->
+       <button type="button" name="trash" class="btn btn-success" onclick="btn_do_allot_onclick();">
+           <i class="icon-ok-sign"></i>
+           Phân công thụ lý
+       </button>
+        <!--Button close window-->
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>"/>
+        <button type="button" name="trash" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
+            <i class="icon-remove"></i>
+            <?php echo __('close window'); ?>
+        </button> 
     </div>
 </form>
 <script>
@@ -185,14 +206,14 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
 
         if (v_direct_exec_user_code != '')
         {
-            q = '#' + 'span_co_exec_user_' + v_direct_exec_user_code;;
-            $(q).children('input[type="checkbox"]').attr('checked', false);
+            q = '#' + 'label_co_exec_user_' + v_direct_exec_user_code;;
+            $(q).find('input[type="checkbox"]').attr('checked', false);
             $(q).hide();
         }
     }
     function show_all_co_exec_user()
     {
-        $(".span_co_exec_user").each(function() {
+        $(".label_co_exec_user").each(function() {
             $(this).show();
         });
     }

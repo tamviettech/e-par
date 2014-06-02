@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -49,10 +48,15 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid commit" value="Hoàn thành thụ lý"
-               onclick="btn_dsp_exec_onclick();" />
+        
+        <!--button xet duyet-->
+       <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();">
+           <i class="icon-ok-sign"></i>
+           Hoàn thành thụ lý
+       </button>
     </div>
-    <div class="clear"></div>
+     <div class="clear" style="height: 10px">&nbsp;</div>
+
 
     <div id="procedure">
         <?php if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list'))): ?>
@@ -63,7 +67,10 @@ $this->template->display('dsp_header.php');
 
     <!-- Buttons -->
     <div class="button-area">
-        <input type="button" name="btn_dsp_exec" class="button commit" value="Hoàn thành thụ lý" onclick="btn_dsp_exec_onclick();" />
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();">
+           <i class="icon-ok-sign"></i>
+           Hoàn thành thụ lý
+       </button>
     </div>
 
     <!-- Context menu -->

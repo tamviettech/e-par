@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -39,10 +38,22 @@ class login_Model extends Model
         }
 
         $v_login_name = isset($_POST['txt_login_name']) ? $this->replace_bad_char($_POST['txt_login_name']) : null;
-        $v_password   = isset($_POST['hdn_password_md5']) ? $this->replace_bad_char($_POST['hdn_password_md5']) : null;
+        $v_password   = isset($_POST['txt_password']) ? $this->replace_bad_char($_POST['txt_password']) : null;
+        
+        
+        //Cookie
+        if (isset($_POST['chk_remember_me']))
+        {
+            Cookie::set('c_secure_login', cookie_password_encode($v_login_name), 0, COOKIE_ROOT);
+            Cookie::set('c_secure_pass', cookie_password_encode($v_password), 0, COOKIE_ROOT);
+        }
+        else
+        {
+            Cookie::set('c_secure_login', NULL, 0, COOKIE_ROOT);
+            Cookie::set('c_secure_pass', NULL, 0, COOKIE_ROOT);
+        }
 
-        //$v_password = md5($v_password);
-
+        $v_password = md5($v_password);
         if ($v_password == NULL)
         {
             echo '<script>alert("Phai nhap [Mat khau]!"); document.location.replace("index.php");</script>\n';
@@ -69,7 +80,7 @@ class login_Model extends Model
             //authenticate the user
             if ($adldap->authenticate($v_login_name, $v_password))
             {
-                $stmt   = 'Select u.PK_USER
+                $stmt            = 'Select u.PK_USER
                             ,u.FK_OU
                             ,u.C_NAME as C_USER_NAME
                             ,u.C_LOGIN_NAME
@@ -216,31 +227,23 @@ class login_Model extends Model
 	            session::set('arr_all_village', $arr_all_village);
             }
             
-            //Ghi log thong tin dang nhap
-            $sql = "SHOW TABLES LIKE 't_cores_user_login_log'";
-            $r = $this->db->GetAll($sql);
-            if (sizeof($r) == 0 )
-            {
-                $sql = "Create Table t_cores_user_login_log(
-                            PK_LOG int UNSIGNED AUTO_INCREMENT PRIMARY KEY
-                            , C_DATETIME DATETIME not null
-                            , C_LOGIN_NAME varchar(50) not null
-                            , C_IP_ADDRESS varchar(50)
-                        )";
-                $this->db->Execute($sql);
-            }
-            
-            $stmt = 'Insert Into t_cores_user_login_log(C_DATETIME, C_LOGIN_NAME, C_IP_ADDRESS)Values(Now(),?,?)';
-            $params = array(session::get('user_login_name'),$_SERVER['REMOTE_ADDR']);
-            $this->db->Execute($stmt, $params);
             //set sjacking -> chong loi session jacking
             $remote_addr = $_SERVER['REMOTE_ADDR'];
             $user_agent = $_SERVER['HTTP_USER_AGENT'];
             $signature = md5($remote_addr.$user_agent);
             session::set('signature',$signature);
             
-            $this->exec_done(SITE_ROOT . build_url('r3/record/'));
-
+            //kiem tra bien back
+            $v_back = get_post_var('hdn_back','');
+            if($v_back == '')
+            {
+                $this->exec_done(SITE_ROOT . build_url('r3/record/'));
+            }
+            else
+            {
+                $this->exec_done(SITE_ROOT . build_url($v_back));
+            }
+            
             exit;
         }
         else

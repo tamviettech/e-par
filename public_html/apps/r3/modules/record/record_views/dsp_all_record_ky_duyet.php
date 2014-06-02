@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -51,8 +50,11 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid sign" value="Ký duyệt"
-               onclick="btn_sign_onclick();" />
+         <!--button xet duyet-->
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_sign_onclick();">
+            <i class="icon-ok-sign"></i>
+            Ký duyệt
+        </button>
     </div>
     <div class="clear">&nbsp;</div>
 
@@ -66,9 +68,12 @@ $this->template->display('dsp_header.php');
     </div>
     <div><?php echo $this->paging2($arr_all_record);?></div>
     <div class="button-area">
-        <input type="button" name="btn_sign" class="button transfer" value="Ký duyệt" onclick="btn_sign_onclick();"/>
+        <button class="btn btn-success" onclick="btn_sign_onclick();" name="trash" type="button">
+            <i class="icon-ok-sign"></i>
+            Ký duyệt
+        </button>
     </div>
-
+    
     <!-- Context menu -->
     <ul id="myMenu" class="contextMenu">
         <li class="sign">

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('SERVER_ROOT') or die();
 
@@ -28,8 +27,9 @@ $this->template->display('dsp_header_pop_win.php');
     <label for="txt_search_name">
         <b>Mã, hoặc tên loại hồ sơ</b>
     </label>
-    <input type="text" id="txt_search_name" value="<?php echo get_post_var('txt_search_name') ?>" name="txt_search_name"/>
-    <input type="button" class="solid search" value="Lọc" onclick="this.form.submit();"/>
+    <input style="height: 30px;margin-bottom: 0" type="text" id="txt_search_name" value="<?php echo get_post_var('txt_search_name') ?>" name="txt_search_name"/>
+    <button type="button" class="btn btn-primary" onclick="this.form.submit();"><i class="icon-search"></i>Lọc</button>
+    <div style="height: 5px;width: 100%"></div>
     <table width="100%" class="adminlist" cellspacing="0" cellpading="0" border="1">
         <colgroup>
             <col width="15%">
@@ -76,8 +76,8 @@ $this->template->display('dsp_header_pop_win.php');
     </table>
     <?php echo $this->paging2($arr_all_record_type) ?>
     <div class="button-area">
-        <input type="button" class="button save" value="Cập nhật" onclick="do_attach()"/>
-        <input type="button" class="button close" value="Huỷ bỏ" onclick="window.parent.hidePopWin(false)"/>
+        <button type="button" class="btn btn-success" onclick="do_attach()"><i class="icon-save"></i>Cập nhật</button>
+        <button type="button" class="btn btn-danger" onclick="window.parent.hidePopWin(false)"><i class="icon-remove"></i>Hủy bỏ</button>
     </div>
 </form>
 <script>

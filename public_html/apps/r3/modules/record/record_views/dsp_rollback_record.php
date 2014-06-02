@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -55,47 +54,56 @@ $v_reason  = '';
     echo $this->hidden('hdn_approval_value', $v_promote);
     ?>
 
-    <div class="panel_color_form">Danh sách hồ sơ trả lại</div>
-
-    <!-- Record list -->
-    <table cellpadding="4" cellspacing="0" width="100%" class="list">
-        <tr>
-            <th>STT</th>
-            <th>Mã hồ sơ</th>
-            <th>Người đăng ký</th>
-            <th>Ngày nhận</th>
-            <th>Ngày hẹn trả</th>
-        </tr>
-        <?php for ($i = 0; $i < count($arr_all_record); $i++): ?>
-            <tr>
-                <td class="right"><?php echo ($i + 1); ?></td>
-                <td><?php echo $arr_all_record[$i]['C_RECORD_NO']; ?></td>
-                <td><?php echo $arr_all_record[$i]['C_CITIZEN_NAME']; ?></td>
-                <td><?php echo jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE); ?></td>
-                <td><?php echo r3_View::return_date_by_text($arr_all_record[$i]['C_RETURN_DATE']); ?></td>
-            </tr>
-        <?php endfor; ?>
-    </table>
-    <!-- End: Record list -->
-    <div class="panel_color_form">Lý do:</div>
-    <div id="divNote" class="Row">
-        <div class="left-Col">
-        </div>
-        <div class="right-Col">
-            <textarea style="width:100%;height:100px;" rows="2"
-                      name="txt_reason" id="txt_reason" cols="20" maxlength="400"
-                      class="text ui-widget-content ui-corner-all"><?php echo $v_reason; ?></textarea>
-        </div>
+    <div class="widget-head blue">
+        <h3>Danh sách hồ sơ trả lại</h3>
+        <!-- Record list -->
     </div>
+    <div class='widget-container'>
+        <table width="100%" class="adminlist table table-bordered table-striped">
+            <tr>
+                <th>STT</th>
+                <th>Mã hồ sơ</th>
+                <th>Người đăng ký</th>
+                <th>Ngày nhận</th>
+                <th>Ngày hẹn trả</th>
+            </tr>
+            <?php for ($i = 0; $i < count($arr_all_record); $i++): ?>
+                <tr>
+                    <td class="right"><?php echo ($i + 1); ?></td>
+                    <td><?php echo $arr_all_record[$i]['C_RECORD_NO']; ?></td>
+                    <td><?php echo $arr_all_record[$i]['C_CITIZEN_NAME']; ?></td>
+                    <td><?php echo jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE); ?></td>
+                    <td><?php echo r3_View::return_date_by_text($arr_all_record[$i]['C_RETURN_DATE']); ?></td>
+                </tr>
+            <?php endfor; ?>
+        </table>
+        <!-- End: Record list -->
+        <div class="panel_color_form">Lý do:</div>
+        <div id="divNote" class="Row">
+            <div class="left-Col">
+            </div>
+            <div class="right-Col">
+                <textarea style="width:100%;height:100px;" rows="2"
+                          name="txt_reason" id="txt_reason" cols="20" maxlength="400"
+                          class="span12"><?php echo $v_reason; ?></textarea>
+            </div>
+        </div>
 
 
-    <div class="clear">&nbsp;</div>
-    <!-- Buttons -->
-    <div class="button-area">
-        <hr/>
-        <input type="button" name="btn_do_approval" class="button save" value="Cập nhật" onclick="btn_do_approval_onclick();" />
-        <?php $v_back_action = ('pop_win' === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action; ?>"/>
+        <div class="clear">&nbsp;</div>
+        <!-- Buttons -->
+        <div class="button-area">
+            <hr/>
+            <button type="button" name="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();" accesskey="2">
+                <i class="icon-save"></i>
+                <?php echo __('update'); ?>
+            </button>
+            <?php $v_back_action = ('pop_win' === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
+            <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
+                <i class="icon-remove"></i>
+                <?php echo __('close window'); ?>
+            </button> 
+        </div>
     </div>
 </form>
 <script>

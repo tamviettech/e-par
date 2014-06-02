@@ -1,4 +1,22 @@
 <?php
+/**
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+<?php
 class backup_restore_Controller extends Controller
 {
     protected $_set_filetype  = 'SQL';
@@ -19,10 +37,11 @@ class backup_restore_Controller extends Controller
     public function __construct()
     {
         //Kiem tra session
+        session::init();
+       //Kiem tra dang nhap
         session::check_login();
         
         (Session::get('is_admin') == 1 OR check_permission('QUAN_TRI_BACKUP_RESTORE','cores')) Or die($this->access_denied());
-        
         parent::__construct('cores', 'backup_restore');
         $this->view->show_left_side_bar = $this->view->template->show_left_side_bar = FALSE;
        
@@ -126,6 +145,7 @@ class backup_restore_Controller extends Controller
 //        $arr_item['folder']['TOTAL_RECORD']         = $total_file_is_folder;
         
         $VIEW_DATA['all_dir_folder']  = json_encode($arr_item);
+        
         $this->view->render('dsp_main',$VIEW_DATA);
     }
     /**
@@ -144,6 +164,7 @@ class backup_restore_Controller extends Controller
        {
            echo  'Không tìm thấy nội dung bạn cần xem!';
            echo '<br/><a href="' . $this->view->get_controller_url() . '">' . 'Bấm vào đây để trở về thư mục gốc' . '</a>';
+           $this->model->exec_fail($this->controller_url);
            return;
        }
     }
@@ -219,18 +240,24 @@ class backup_restore_Controller extends Controller
  */
     
     
-    public function dsp_backup()
+    public function do_backup()
     {
        $file_name       = date("Y_m_d-H_i_s").'.sql';
        //Kiem tra trung ten
-       $v_status_backup  = 1;
        $dir_path_save   = $this->_direct_folder_default.$file_name;
        if(is_file($dir_path_save) or is_dir($dir_path_save))
        {
            echo 'Tên bị trùng xin kiểm tra lại!';
            return;
        }
-       echo $this->model->backup($dir_path_save);      
+       $v_type = get_post_var('rad_type','');
+       if($v_type == '')
+       {
+           echo 'Bạn không thể thực hiện backup !!!';
+           exit();
+       }
+               
+       echo $this->model->do_backup($dir_path_save,$v_type);      
     }
     
     /**
@@ -290,7 +317,7 @@ class backup_restore_Controller extends Controller
             header("Content-Disposition: attachment; filename=$v_file_name");
             header("Content-Type: application/octet-stream; "); 
             header("Content-Transfer-Encoding: binary");
-
             readfile($path_dir);
+            exit();
       }
 }

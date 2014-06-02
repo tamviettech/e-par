@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class blacklist_Controller extends Controller {
@@ -26,6 +25,8 @@ class blacklist_Controller extends Controller {
         $this->view->template->show_left_side_bar = FALSE;
         
         //Kiem tra session
+        session::init();
+       //Kiem tra dang nhap
         session::check_login();
     }
     

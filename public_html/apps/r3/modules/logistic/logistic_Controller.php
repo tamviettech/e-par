@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 defined('SERVER_ROOT') or die();
@@ -45,8 +44,10 @@ class logistic_Controller extends Controller
     {
         parent::__construct('r3', 'logistic');
         $this->view->template->show_left_side_bar = false;
-        
+        Session::init();
+        //Kiem tra dang nhap
         session::check_login();
+        
         check_permission('THEO_DOI_NGUOI_DUNG', 'R3') or die('Bạn không có quyền thực hiện chức năng này');
     }
 

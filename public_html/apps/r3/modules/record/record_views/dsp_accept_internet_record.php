@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -44,7 +43,7 @@ $v_total_time          = $arr_single_record['C_TOTAL_TIME'];
 $v_return_date         = $arr_single_record['C_RETURN_DATE'];
 $v_return_date_by_text = $this->return_date_by_text($v_return_date);
 ?>
-<form name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_accept_internet_record">
+<form style="padding: 10px;"name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_accept_internet_record">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
 
@@ -59,7 +58,9 @@ $v_return_date_by_text = $this->return_date_by_text($v_return_date);
     echo $this->hidden('hdn_return_phone_number', $v_return_phone_number);
     echo $this->hidden('hdn_total_time', $v_total_time);
     echo $this->hidden('hdn_xml_workflow_file_name', $v_xml_workflow_file_name);
-
+    
+    echo $this->hidden('user_token', session::get('user_token'));
+    
     echo $this->hidden('pop_win', $v_pop_win);
     ?>
     <div class="page-title">Phản hồi công dân</div>
@@ -77,9 +78,17 @@ $v_return_date_by_text = $this->return_date_by_text($v_return_date);
 
     <!-- Buttons -->
     <div class="button-area">
-        <input type="button" name="btn_do_approval" class="button save" value="<?php echo __('update'); ?>" onclick="btn_do_approval_internet_record_onclick();" />
+        <!--button update-->
+        <button type="button" name="trash" class="btn btn-primary" onclick="btn_do_approval_internet_record_onclick();">
+            <i class="icon-save"></i>
+            <?php echo __('update'); ?>
+        </button>
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action; ?>"/>
+        <!--Button close window-->
+        <button type="button" name="trash" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
+            <i class="icon-remove"></i>
+            <?php echo __('close window'); ?>
+        </button> 
     </div>
 </form>
 <script>

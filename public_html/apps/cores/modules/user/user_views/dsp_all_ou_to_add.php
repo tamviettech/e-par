@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
@@ -28,16 +27,17 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
 $arr_all_ou_to_add = $VIEW_DATA['arr_all_ou'];
 ?>
 <form name="frmMain" method="post" id="frmMain" action="#">
-    <table width="100%" class="adminlist" cellspacing="0" border="1">
+    <table width="100%" class="table" cellspacing="0" border="1">
                 <colgroup>
                 <col width="95%" />
             </colgroup>
+            <thead>
             <tr>
                 <th>Tên đơn vị</th>
-            </tr>
+            </tr></thead>
     </table>
     <div style="height:200px;overflow: scroll">
-        <table width="100%" class="adminlist" cellspacing="0" border="1">
+        <table width="100%" class="table" cellspacing="0" border="1">
                 <colgroup>
                 <col width="100%" />
             </colgroup>
@@ -82,10 +82,10 @@ $arr_all_ou_to_add = $VIEW_DATA['arr_all_ou'];
         </table>
     </div>
     <!-- Button -->
-    <div class="button-area">
-        <input type="button" name="update" class="ButtonAccept" value="<?php echo __('update'); ?>" onclick="get_selected_group();"/>
+    <div class="form-actions">
+        <button type="button" name="update" class="btn btn-primary" onclick="get_selected_group();"><i class="icon-save"></i><?php echo __('update');?></button>
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="ButtonCancel" value="<?php echo __('cancel'); ?>" onclick="<?php echo $v_back_action;?>"/>
+        <button type="button" class="btn" onclick="<?php echo $v_back_action;?>"><i class="icon-reply"></i><?php echo __('cancel');?></button>
     </div>
 </form>
 <script>

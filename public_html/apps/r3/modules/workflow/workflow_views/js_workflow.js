@@ -72,7 +72,7 @@ function ui_ctrl($scope, $http, $timeout) {
             $scope.proc['no_chain_step'] = [$scope.proc['no_chain_step']];
 
         $.each($scope.proc['step'], function(k, v) {
-            if (typeof($scope.proc['step'][k]['task']) == 'undefined') {
+            if (typeof ($scope.proc['step'][k]['task']) == 'undefined') {
                 $scope.proc['step'][k]['task'] = [];
             }
             if ($scope.get_no_chain_task_code(k)) {
@@ -225,24 +225,22 @@ function ui_ctrl($scope, $http, $timeout) {
             $scope.proc['step'][step_index]['task'] = [$scope.proc['step'][step_index]['task']];
         }
         task_count = $scope.proc['step'][step_index]['task'].length;
-        console.clear();
-        console.log(task_count);
         $scope.step_width = '400';
         task_code = 'UNNAMED_NO_CHAIN_TASK';
         first_task = {
             '@attributes': {
                 'code': $scope['proc']['@attributes']['code'] + '::' + task_code
-                        , 'name': 'Công việc mới'
+                , 'name': 'Công việc mới'
             }
         };
         no_chain_step = {
             "@attributes": {
                 'name': 'Bước song song'
-                        , 'order': step['@attributes']['order']
-                        , 'time': 0
-                        , 'role': ''
-                        , 'code': ''
-                        , 'no_chain': true
+                , 'order': step['@attributes']['order']
+                , 'time': 0
+                , 'role': ''
+                , 'code': ''
+                , 'no_chain': true
             }
             , 'task': [first_task]
         };
@@ -252,7 +250,6 @@ function ui_ctrl($scope, $http, $timeout) {
         if (typeof $scope['proc']['no_chain_step'] == 'undefined')
             $scope['proc']['no_chain_step'] = [];
         $scope['proc']['no_chain_step'].push(no_chain_step);
-        console.log($scope['proc']['step'][step_index]['task'][task_count - 1]);
         $scope['proc']['step'][step_index]['task'][task_count - 1]['@attributes']['next_no_chain'] = first_task['@attributes']['code'];
         $scope.rebuild_data();
         $timeout(function() {
@@ -275,14 +272,14 @@ function ui_ctrl($scope, $http, $timeout) {
         }
         $scope.proc['step'].push({
             "@attributes":
-                    {
-                        "order": $scope.proc['step'].length + 1
-                                ,
-                        "group": ""
-                                ,
-                        "name": "Bước thứ " + ($scope.proc['step'].length + 1),
-                        "time": "0"
-                    }
+                {
+                    "order": $scope.proc['step'].length + 1
+                    ,
+                    "group": ""
+                    ,
+                    "name": "Bước thứ " + ($scope.proc['step'].length + 1),
+                    "time": "0"
+                }
             ,
             "task": []
         });
@@ -307,7 +304,26 @@ function ui_ctrl($scope, $http, $timeout) {
         $scope.rebuild_data();
     }
 
+    $scope.validate_workflow = function() {
+        var arr_validate_proc = {
+            code: "Bạn cần nhập Mã quy trình",
+            name: "Bạn cần nhập Tên quy trình",
+            fee: "Bạn cần nhập Lệ phí quy trình",
+            totaltime: "Bạn cần nhập Tổng thời gian của quy trình"
+        };
+        for (var attr in arr_validate_proc) {
+            var err_msg = arr_validate_proc[attr];
+            if (!$scope.proc['@attributes'][attr]) {
+                $scope.submit_errors.push(err_msg);
+            }
+        }
+
+    };
+
     $scope.submit_workflow = function() {
+        $scope.rebuild_data();
+        $scope.validate_workflow();
+
         if ($scope.submit_errors && $scope.submit_errors.length) {
             return false;
         }
@@ -316,12 +332,13 @@ function ui_ctrl($scope, $http, $timeout) {
             type: 'post',
             url: $scope.controller + 'update_workflow_service',
             data:
-                    {
-                        process: $scope.proc,
-                        hdn_record_type_code: $scope.hdn_record_type_code,
-                        hdn_xml_flow_file_path: $scope.hdn_xml_flow_file_path
-                    },
+                {
+                    process: $scope.proc,
+                    hdn_record_type_code: $scope.hdn_record_type_code,
+                    hdn_xml_flow_file_path: $scope.hdn_xml_flow_file_path
+                },
             success: function(data) {
+                data = data || "Cập nhật quy trình thành công";
                 $scope.submiting = false;
                 if (data) {
                     alert(data);
@@ -329,7 +346,7 @@ function ui_ctrl($scope, $http, $timeout) {
                 $scope.$apply();
             }
         });
-    }
+    };
 
     $scope.dragStart = function(e, ui) {
         ui.item.data('start', ui.item.index());
@@ -337,10 +354,10 @@ function ui_ctrl($scope, $http, $timeout) {
 
     $scope.dragEnd = function(e, ui) {
         var start = ui.item.data('start'),
-                end = ui.item.index();
+            end = ui.item.index();
 
         $scope.proc['step'].splice(end, 0,
-                $scope.proc['step'].splice(start, 1)[0]);
+            $scope.proc['step'].splice(start, 1)[0]);
         $scope.proc['step'][end]['@attributes']['order'] = end;
         $scope.rebuild_data();
         $scope.$apply();
@@ -351,10 +368,10 @@ function ui_ctrl($scope, $http, $timeout) {
     }
     $scope.modal_task.dragEnd = function(e, ui) {
         var start = ui.item.data('start'),
-                end = ui.item.index();
+            end = ui.item.index();
 
         $scope.modal_task.tasks.splice(end, 0,
-                $scope.modal_task.tasks.splice(start, 1)[0]);
+            $scope.modal_task.tasks.splice(start, 1)[0]);
         $scope.rebuild_data();
         $scope.$apply();
     }
@@ -510,11 +527,11 @@ function ui_ctrl($scope, $http, $timeout) {
     $scope.modal_task.modal_edit.save = function() {
         idx = $scope.modal_task.modal_edit.task_index;
         task = $scope.modal_task.tasks[idx];
-        old_task_code = $scope.modal_task.src_step['task'][idx]['@attributes']['code'];
-        new_task_code = $scope.modal_task.modal_edit.task['@attributes']['code'];
 
         //cập nhật lại code của task liên kết no chain
-        if ($scope.modal_task.is_no_chain && idx == 0) {
+        if ($scope.modal_task.is_no_chain && idx == 0 && $scope.modal_task.src_step['task'][idx]) {
+            old_task_code = $scope.modal_task.src_step['task'][idx]['@attributes']['code'];
+            new_task_code = $scope.modal_task.modal_edit.task['@attributes']['code'];
             //cập nhật lại next_no_chain của task thường
             if (typeof $scope['proc']['step'].length == 'undefined')
                 $scope['proc']['step'] = [$scope['proc']['step']];
@@ -554,12 +571,23 @@ function ui_ctrl($scope, $http, $timeout) {
 
         for (i = count_step - 1; i >= 0; i--) {
             v_step = $scope.proc['step'][count_step - 1 - i];
+            v_step.error = null;
             v_step_name = v_step['@attributes']['name'] || '';
             v_step_code = v_step['@attributes']['code'];
+            v_step_group = v_step['@attributes']['group'];
+
+            if (!v_step_name) {
+                v_step.error = 'required';
+                $scope.submit_errors.push("Bạn cần nhập Tên bước tại bước thứ " + i);
+            }
+
+            if (!v_step_group) {
+                v_step.error = 'required';
+                $scope.submit_errors.push('Bạn cần chọn Nhóm cho bước ' + v_step_name);
+            }
 
             if (v_step_code && step_code_repeat[v_step_code]) {
                 v_step.error = 'required';
-
                 $scope.submit_errors.push('Trùng mã bước "' + v_step_code + '" tại "' + v_name + '", bạn cần sửa mã bước bị trùng hoặc để trống');
             } else {
                 step_code_repeat[v_step_code] = 1;
@@ -573,6 +601,14 @@ function ui_ctrl($scope, $http, $timeout) {
             var count_task = $scope.proc['step'][i]['task'].length;
             $scope.proc['step'][i]['@attributes']['order'] = i + 1;
             for (j = count_task - 1; j >= 0; j--) {
+                if (!$scope.proc['step'][i]['task'][j]['@attributes']['name']) {
+                    v_step.error = 'required';
+                    $scope.submit_errors.push('Bạn cần nhập Tên công việc tại bước ' + v_step_name);
+                }
+                if (!$scope.proc['step'][i]['task'][j]['@attributes']['code']) {
+                    v_step.error = 'required';
+                    $scope.submit_errors.push('Bạn cần nhập Mã công việc tại bước ' + v_step_name);
+                }
                 $scope.proc['step'][i]['task'][j]['@attributes']['order'] = j + 1;
                 //next
                 if (i == count_step - 1 && j == count_task - 1) {

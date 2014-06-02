@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteBase /epar-github/
+RewriteBase /e-par-2.0/
 
 <FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh|cmd|exe|bat)$">
     Order Allow,Deny
@@ -20,6 +20,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+
+
+
 
 # Copyright 2012 Country IP Blocks LLC
 #all rights reserved.
@@ -266,3 +269,5 @@ RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
 	allow from 223.27.104.0/21
 	deny from all
 </Limit>
+
+

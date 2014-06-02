@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -30,7 +29,8 @@ $arr_all_record      = $VIEW_DATA['arr_all_record'];
 $this->template->title = 'Hồ sơ phải bổ sung, đã thông báo, chưa nhận giấy tờ bổ sung';
 $this->template->display('dsp_header_pop_win.php');
 ?>
-<form name="frmMain" id="frmMain" action="" method="POST">
+<div id="overDiv" style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></div>
+<form name="frmMain" id="frmMain" action="" method="POST" style="background-color: white;">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
     echo $this->hidden('hdn_item_id', '0');
@@ -48,16 +48,16 @@ $this->template->display('dsp_header_pop_win.php');
 
     echo $this->hidden('hdn_supplement_status', 1);
     ?>
-    <div class="page-title">Hồ sơ phải bổ sung, đã thông báo, chưa nhận giấy tờ bổ sung</div>
-    <div class="page-notice">
-        <div id="notice">
-            <div class="notice-title">Thống kê hồ sơ</div>
-            <div class="notice-container" id="notice-container"><ul></ul></div>
-        </div>
-    </div>
+     <div class="clear" style="height: 10px">&nbsp;</div>
+    <!--<div class="page-title">Hồ sơ phải bổ sung, đã thông báo, chưa nhận giấy tờ bổ sung</div>-->
+    <?php echo $this->dsp_div_notice();?>
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type); ?>
 
+    <button type="button" name="trash" style="margin-bottom:5px;float: right" class="btn btn-danger" onclick="btn_reject_onclick();">
+        <i class="icon-ban-circle"></i>
+        Từ chối hồ sơ
+    </button>
     <div class="clear"></div>
     <div id="procedure">
         <?php
@@ -165,6 +165,29 @@ $this->template->display('dsp_header_pop_win.php');
         var url = '<?php echo $this->get_controller_url(); ?>dsp_print_supplement_ho_for_citizen/' + p_record_id;
 
         showPopWin(url, 700, 450, null, true);
+    }
+    /**
+     * Comment fc hiển thị dialog reject
+     */
+    function btn_reject_onclick()
+    {
+    	var f = document.frmMain;
+
+        //Danh sach ID Ho so da chon
+        v_selected_record_id_list = get_all_checked_checkbox(f.chk, ',');
+
+        if (v_selected_record_id_list != '')
+        {
+            var url = '<?php echo $this->get_controller_url();?>dsp_reject_supplement/' + v_selected_record_id_list
+                + '/?record_type_code=' + $("#record_type_code").val()
+                + '&pop_win=1';
+
+               showPopWin(url, 800, 500, null, true);
+        }
+        else
+        {
+            alert('Chưa có hồ sơ nào được chọn!');
+        }
     }
 
 </script>

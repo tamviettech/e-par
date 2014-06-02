@@ -27,8 +27,8 @@ function chat_ctrl($scope, $http, $timeout) {
     $scope.http_timeout = 3000;
     $scope.show_chat = -1;
     $scope.my_chat_info = {};
-    $scope.chat_boxes = [];
-
+    $scope.chat_boxes = [];    
+    
     //online list
     $scope.get_online_list = function() {
         $http({

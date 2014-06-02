@@ -1,5 +1,7 @@
 <?php
 /**
+
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <?php
 class Bootstrap {
@@ -30,11 +31,13 @@ class Bootstrap {
         }
         else
         {
-            $module = ($app == 'r3') ? 'record' : '';
+            $current_model = new Model();
+            $module = $current_model->get_default_module($app);
         }
 
         //Load Controller
         $file = SERVER_ROOT . 'apps' .DS . $app . DS . 'modules'. DS . $module . DS . $module . '_Controller.php';
+                
         if (file_exists($file))
         {
             require $file;

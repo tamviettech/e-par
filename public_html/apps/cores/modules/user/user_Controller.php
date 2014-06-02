@@ -120,7 +120,7 @@ class user_Controller extends Controller {
 
         $VIEW_DATA['arr_parent_ou_path']    = $this->model->qry_ou_path($v_parent_ou_id);
         $VIEW_DATA['arr_single_ou']         = $this->model->qry_single_ou($ou_id);
-
+        
         $this->view->render('dsp_single_ou', $VIEW_DATA);
     }
 

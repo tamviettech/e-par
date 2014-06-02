@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -41,7 +40,7 @@ class login_Controller extends Controller
         session::init();
         if (empty($_SERVER['HTTPS']))
         {
-            header('location:' . 'https://demo.e-par.vn/cores/login/');
+            //header('location:' . 'https://demo.e-par.vn/cores/login/');
         }
         $this->view->render('dsp_login');
     }

@@ -20,22 +20,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <?php
 
 /******************** Hang so ket noi CSDL ***********************************/
-define('CONST_DB_SERVER_ADDRESS', '10.10.1.200');
-define('CONST_DB_DATABASE_NAME', 'epar-github');
+define('CONST_DB_SERVER_ADDRESS', 'localhost');
+define('CONST_DB_DATABASE_NAME', 'testt');
 define('CONST_DB_USER_NAME', 'root');
-define('CONST_DB_USER_PASSWORD', 'root');
+define('CONST_DB_USER_PASSWORD', '1234$');
 define('DATABASE_TYPE','MYSQL');//Be MSSQL or ORACLE or MYSQL
 /******************************************************************************/
 
 //Che do Debug:
 //          o   FALSE: Chay that
-//          o   TRUE:  Bat che do debug 
+//          o   TRUE:  Bat che do debug
 define('DEBUG_MODE', 0);
+
 
 //Duong dan dia chi goc
 //          o   /virtual-directory/: Chay bang thu muc ao (Virtual Directory)
 //          o   /                  : Chay bang domain     
-define('SITE_ROOT','/epar-github/');
+define('SITE_ROOT','/e-par-2.0/');
+
+define('SITE_THEME_ROOT', SITE_ROOT . 'public/themes/bootstrap/');
 
 //Turn on/off chat module
 //          o   0: Khong su dung chat
@@ -49,7 +52,7 @@ define('CONST_USE_ADODB_CACHE_FOR_REPORT',0);
 //Neu khac, thoi gian duoc lay theo dong ho cua Database server
 define('CONST_DATABASE_IS_SAME_SERVER',0);
 
-define('CONST_IDC_INTERGRATED',0);
+define('CONST_IDC_INTERGRATED',1);
 
 //Xac thuc qua Windows AD
 define('AUTH_MODE', 'AD');
@@ -62,7 +65,7 @@ define('AD_ADMIN_PASSWORD','P@ssw0rd');
 
 //Khong can dieu chinh tham so duoi day
 if (!preg_match('/^http:/', SITE_ROOT) OR !preg_match('/^https:/', SITE_ROOT))
-{
+{       
     if (empty($_SERVER['HTTPS']))
     {
         define('FULL_SITE_ROOT','http://' . $_SERVER['HTTP_HOST'] . SITE_ROOT);
@@ -75,6 +78,16 @@ if (!preg_match('/^http:/', SITE_ROOT) OR !preg_match('/^https:/', SITE_ROOT))
 else
 {
 	define('FULL_SITE_ROOT', SITE_ROOT);
+}
+
+//Cookie root path
+if (empty($_SERVER['HTTPS']))
+{
+     define('COOKIE_ROOT', str_replace('http://' . $_SERVER['HTTP_HOST'], '', FULL_SITE_ROOT));
+}
+else 
+{
+    define('COOKIE_ROOT', str_replace('https://' . $_SERVER['HTTP_HOST'], '', FULL_SITE_ROOT));
 }
 
 //Oracle Setting
@@ -97,14 +110,79 @@ define('CONST_APPS_DIR', SERVER_ROOT . 'apps' . DS);
 define('CONST_SERVER_DOC_FILE_UPLOAD_DIR', SERVER_ROOT . 'uploads/');
 define('CONST_SITE_DOC_FILE_UPLOAD_DIR', SITE_ROOT . 'uploads/');
 
-@require_once _PATH_TO_PEAR . 'Var_Dump.php';
+require_once _PATH_TO_PEAR . 'Var_Dump.php';
+error_reporting(E_ALL);
 if (DEBUG_MODE > 0)
 {
-    error_reporting(E_ALL);
     ini_set('display_errors',1);
 }
 else
 {
-    error_reporting(E_ALL);
     ini_set('display_errors',0);
 }
+
+
+if (!function_exists('http_response_code')) {
+    function http_response_code($code = NULL) {
+
+        if ($code !== NULL) {
+
+            switch ($code) {
+            	case 100: $text = 'Continue'; break;
+            	case 101: $text = 'Switching Protocols'; break;
+            	case 200: $text = 'OK'; break;
+            	case 201: $text = 'Created'; break;
+            	case 202: $text = 'Accepted'; break;
+            	case 203: $text = 'Non-Authoritative Information'; break;
+            	case 204: $text = 'No Content'; break;
+            	case 205: $text = 'Reset Content'; break;
+            	case 206: $text = 'Partial Content'; break;
+            	case 300: $text = 'Multiple Choices'; break;
+            	case 301: $text = 'Moved Permanently'; break;
+            	case 302: $text = 'Moved Temporarily'; break;
+            	case 303: $text = 'See Other'; break;
+            	case 304: $text = 'Not Modified'; break;
+            	case 305: $text = 'Use Proxy'; break;
+            	case 400: $text = 'Bad Request'; break;
+            	case 401: $text = 'Unauthorized'; break;
+            	case 402: $text = 'Payment Required'; break;
+            	case 403: $text = 'Forbidden'; break;
+            	case 404: $text = 'Not Found'; break;
+            	case 405: $text = 'Method Not Allowed'; break;
+            	case 406: $text = 'Not Acceptable'; break;
+            	case 407: $text = 'Proxy Authentication Required'; break;
+            	case 408: $text = 'Request Time-out'; break;
+            	case 409: $text = 'Conflict'; break;
+            	case 410: $text = 'Gone'; break;
+            	case 411: $text = 'Length Required'; break;
+            	case 412: $text = 'Precondition Failed'; break;
+            	case 413: $text = 'Request Entity Too Large'; break;
+            	case 414: $text = 'Request-URI Too Large'; break;
+            	case 415: $text = 'Unsupported Media Type'; break;
+            	case 500: $text = 'Internal Server Error'; break;
+            	case 501: $text = 'Not Implemented'; break;
+            	case 502: $text = 'Bad Gateway'; break;
+            	case 503: $text = 'Service Unavailable'; break;
+            	case 504: $text = 'Gateway Time-out'; break;
+            	case 505: $text = 'HTTP Version not supported'; break;
+            	default:
+            	    exit('Unknown http status code "' . htmlentities($code) . '"');
+            	    break;
+            }
+
+            $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+
+            header($protocol . ' ' . $code . ' ' . $text);
+
+            $GLOBALS['http_response_code'] = $code;
+
+        } else {
+
+            $code = (isset($GLOBALS['http_response_code']) ? $GLOBALS['http_response_code'] : 200);
+
+        }
+
+        return $code;
+
+    }
+}//end if function_exists('http_response_code')

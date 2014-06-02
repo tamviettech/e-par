@@ -16,9 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
-
 require_once __DIR__ . '/../record/record_Model.php';
 
 class report_Model extends record_Model
@@ -446,7 +444,7 @@ class report_Model extends record_Model
 //                From view_processing_record
 //
 //                Where C_BIZ_DAYS_EXCEED Is Null
-//                    And (datediff(C_RETURN_DATE, Now()) < 0)
+//                    And ($this->_datediff(C_RETURN_DATE, Now()) < 0)
 //                    And FK_VILLAGE_ID = $v_village_id
 //                Group by C_GROUP_CODE";
 //        $arr_count_overtime_record_by_group = $this->db->getAll($sql);
@@ -675,7 +673,7 @@ class report_Model extends record_Model
                         From view_processing_record
                         Where C_IS_PAUSING = 0 
                             AND C_BIZ_DAYS_EXCEED Is Null
-                            And (datediff(C_RETURN_DATE, Now()) < 0)
+                            And ($this->_datediff(C_RETURN_DATE, Now()) < 0)
                             $group_condition
                     )  RID LEFT JOIN t_r3_user_task UT ON (RID.C_NEXT_TASK_CODE = UT.C_TASK_CODE AND RID.C_NEXT_USER_CODE = UT.C_USER_LOGIN_NAME)
                     LEFT JOIN t_r3_record_type RT 
@@ -693,7 +691,6 @@ class report_Model extends record_Model
     public function qry_all_report_data_14()
     {
         $v_village_id = Session::get('village_id');
-//        $group_code = get_request_var('group','');
         $spec_code = get_request_var('spec_code','');
         
         $spec_condition = '';
@@ -843,7 +840,7 @@ class report_Model extends record_Model
                           , CAST(DATE_FORMAT(ExtractValue(C_XML_PROCESSING, '//step[@code=''REJECT''][last()]/datetime'),'%Y-%m-%d %H:%i:%s') AS CHAR) AS C_REJECTED_DATE
                           , FK_RECORD_TYPE
                         From view_record
-                        Where C_REJECTED=1 And FK_VILAGE_ID = $v_village_id 
+                        Where C_REJECTED=1 And FK_VILLAGE_ID = $v_village_id 
                     )  RID LEFT JOIN t_r3_user_task UT ON (RID.C_NEXT_TASK_CODE = UT.C_TASK_CODE AND RID.C_NEXT_USER_CODE = UT.C_USER_LOGIN_NAME)
                     LEFT JOIN t_r3_record_type RT 
                     ON RID.FK_RECORD_TYPE = RT.PK_RECORD_TYPE 
@@ -974,7 +971,8 @@ class report_Model extends record_Model
                       , SUM(a.C_FINAL_FEE) AS C_TOTAL_FEE
                       , SUM(a.C_COST) As C_TOTAL_COST
                       , (SUM(a.C_FINAL_FEE) + SUM(a.C_COST)) AS C_SUM
-                      ,a.C_CHARGE_DATE
+                      , a.C_CHARGE_DATE
+                      , C_XML_DATA 
                   From
                   (
                       Select
@@ -983,6 +981,7 @@ class report_Model extends record_Model
                           , RF.C_COST
                           , R.FK_RECORD_TYPE
                           , RT.C_SPEC_CODE
+                          , R.C_XML_DATA 
                           , ExtractValue(R.C_XML_PROCESSING, '//step[contains(@code,''" . _CONST_XML_RTT_DELIM . _CONST_THU_PHI_ROLE . "'')][last()]/datetime[last()]') AS C_CHARGE_DATE
                       From t_r3_record_fee RF Left join view_record R On RF.FK_RECORD = R.PK_RECORD
                         Left join t_r3_record_type RT On R.FK_RECORD_TYPE = RT.PK_RECORD_TYPE
@@ -1036,6 +1035,7 @@ class report_Model extends record_Model
                           , (C_FINAL_FEE+C_COST) As C_SUM
                           , C_FEE_DESCRIPTION
                           , DATE_FORMAT(C_CHARGE_DATE, '%d-%m-%Y %H:%i:%s') C_CHARGE_DATE
+                          , C_XML_DATA
                     From (
                             Select
                                   RT.C_SPEC_CODE
@@ -1045,6 +1045,7 @@ class report_Model extends record_Model
                                 , RF.C_FINAL_FEE
                                 , RF.C_COST
                                 , RF.C_FEE_DESCRIPTION
+                                , R.C_XML_DATA
                                 , ExtractValue(R.C_XML_PROCESSING, '//step[contains(@code,''" . _CONST_XML_RTT_DELIM . _CONST_THU_PHI_ROLE . "'')][last()]/datetime[last()]') AS C_CHARGE_DATE
                             From t_r3_record_fee RF Left join view_record R On RF.FK_RECORD = R.PK_RECORD
                                   Left join t_r3_record_type RT On R.FK_RECORD_TYPE = RT.PK_RECORD_TYPE
@@ -1085,7 +1086,7 @@ class report_Model extends record_Model
                                                     Where Year(C_HISTORY_DATE)=$year
                                                     Group By Year(C_HISTORY_DATE),Month(C_HISTORY_DATE)
                                                     ) a
-                                        On datediff(rhs.C_HISTORY_DATE, a.C_END_OF_MONTH_DATE)=0
+                                        On $this->_datediff(rhs.C_HISTORY_DATE, a.C_END_OF_MONTH_DATE)=0
                                     Where C_SPEC_CODE = '$spec_code'
                                   ) as d
                         On Month(m.C_MONTH)=Month(d.C_HISTORY_DATE)
@@ -1097,7 +1098,7 @@ class report_Model extends record_Model
         return $ret;
     }
 
-    function qry_all_spec()
+    public function qry_all_spec()
     {
         return $this->db->GetAssoc("
             Select ls.C_CODE, ls.C_NAME From t_cores_list ls
@@ -1107,7 +1108,7 @@ class report_Model extends record_Model
         ");
     }
 
-    function qry_all_report_data_18($begin, $end,$spec_code)
+    public function qry_all_report_data_18($begin, $end,$spec_code)
     {
         $date_condition = '';
         $spec_condition = '';
@@ -1130,7 +1131,7 @@ class report_Model extends record_Model
         
         $fields          = "r.C_CITIZEN_NAME, r.C_RECORD_NO, r.C_XML_PROCESSING, r.C_RECEIVE_DATE, r.C_CLEAR_DATE, r.C_BIZ_DAYS_EXCEED";
         $fields .= " ,rt.C_CODE as C_TYPE_CODE ";
-        $sql             = "Select $fields 
+        $sql = "Select $fields 
             From t_r3_record r
                 Left Join t_r3_record_type rt On r.FK_RECORD_TYPE=rt.PK_RECORD_TYPE
             Where C_CLEAR_DATE Is Not Null
@@ -1202,8 +1203,7 @@ class report_Model extends record_Model
                       AND MONTH(C_RECEIVE_DATE) >= $begin_month and MONTH(C_RECEIVE_DATE) <= $end_month
                       AND C_CLEAR_DATE is not null 
                       AND C_REJECTED <> 1
-                      And ((DATEDIFF(C_CLEAR_DATE,C_RETURN_DATE) < 0 AND C_BIZ_DAYS_EXCEED IS NULL)
-                               OR C_BIZ_DAYS_EXCEED > 0) $condition
+                      And C_BIZ_DAYS_EXCEED > 0 $condition
                   GROUP BY RT.C_SPEC_CODE";
         $MODEL_DATA['arr_da_tra_chua_den_han'] = $this->db->GetAssoc($stmt);
         
@@ -1220,8 +1220,7 @@ class report_Model extends record_Model
                       AND MONTH(C_RECEIVE_DATE) >= $begin_month and MONTH(C_RECEIVE_DATE) <= $end_month
                       AND C_CLEAR_DATE is not null 
                       AND C_REJECTED <> 1
-                      AND ((DATEDIFF(C_CLEAR_DATE,C_RETURN_DATE) = 0 AND C_BIZ_DAYS_EXCEED IS NULL)
-                            OR C_BIZ_DAYS_EXCEED = 0) $condition
+                      AND C_BIZ_DAYS_EXCEED = 0 $condition
                   GROUP BY RT.C_SPEC_CODE";
         $MODEL_DATA['arr_da_tra_dung_han'] = $this->db->GetAssoc($stmt);
         
@@ -1238,8 +1237,7 @@ class report_Model extends record_Model
                       AND MONTH(C_RECEIVE_DATE) >= $begin_month and MONTH(C_RECEIVE_DATE) <= $end_month
                       AND C_CLEAR_DATE is not null 
                       AND C_REJECTED <> 1
-                      And ((DATEDIFF(C_CLEAR_DATE,C_RETURN_DATE) > 0 AND C_BIZ_DAYS_EXCEED IS NULL) 
-                             OR C_BIZ_DAYS_EXCEED < 0) $condition
+                      And C_BIZ_DAYS_EXCEED < 0 $condition
                   GROUP BY RT.C_SPEC_CODE";
         $MODEL_DATA['arr_da_tra_cham_han'] = $this->db->GetAssoc($stmt);
         //lay tat ca ho so da tra - bi tu choi
@@ -1273,7 +1271,6 @@ class report_Model extends record_Model
                       AND C_REJECTED = 2 $condition
                   GROUP BY RT.C_SPEC_CODE";
         $MODEL_DATA['arr_da_tra_cong_dan_rut'] = $this->db->GetAssoc($stmt);
-        
         //dang xu ly - cham tien do
         $stmt = "SELECT
                     CL.C_CODE,
@@ -1285,10 +1282,10 @@ class report_Model extends record_Model
                       ON RT.C_SPEC_CODE = CL.C_CODE
                   WHERE YEAR(C_RECEIVE_DATE) = $year
                       AND MONTH(C_RECEIVE_DATE) >= $begin_month and MONTH(C_RECEIVE_DATE) <= $end_month
-                      AND ((C_IS_PAUSING <> 1
-                          and DATEDIFF(NOW(),C_RETURN_DATE) > 0
-                          and ISNULL(C_BIZ_DAYS_EXCEED))
-                          OR C_BIZ_DAYS_EXCEED < 0) $condition
+                      AND C_IS_PAUSING <> 1 
+                      And DATEDIFF(NOW(),C_RETURN_DATE) > 0
+                      
+                    $condition
                   GROUP BY RT.C_SPEC_CODE";
         $MODEL_DATA['arr_dang_xu_ly_cham'] = $this->db->GetAssoc($stmt);
         
@@ -1303,10 +1300,10 @@ class report_Model extends record_Model
                       ON RT.C_SPEC_CODE = CL.C_CODE
                   WHERE YEAR(C_RECEIVE_DATE) = $year
                       AND MONTH(C_RECEIVE_DATE) >= $begin_month and MONTH(C_RECEIVE_DATE) <= $end_month
-                      AND (C_BIZ_DAYS_EXCEED >= 0
-                          OR (C_IS_PAUSING = 1 AND C_NEXT_TASK_CODE NOT LIKE '%"._CONST_BO_SUNG_ROLE."%')
-                          OR (DATEDIFF(NOW(),C_RETURN_DATE) <= 0
-                              And ISNULL(C_BIZ_DAYS_EXCEED))) $condition
+                      AND C_IS_PAUSING <> 1 
+                      AND DATEDIFF(NOW(),C_RETURN_DATE) <= 0
+                      
+                      $condition
                   GROUP BY RT.C_SPEC_CODE";
         $MODEL_DATA['arr_dang_xu_ly_chua_den_han'] = $this->db->GetAssoc($stmt);
         
@@ -1322,6 +1319,7 @@ class report_Model extends record_Model
                   WHERE YEAR(C_RECEIVE_DATE) = $year
                       AND MONTH(C_RECEIVE_DATE) >= $begin_month and MONTH(C_RECEIVE_DATE) <= $end_month
                       AND C_IS_PAUSING = 1 
+                      AND ISNULL(C_BIZ_DAYS_EXCEED)
                       AND C_NEXT_TASK_CODE LIKE '%"._CONST_BO_SUNG_ROLE."%' $condition
                   GROUP BY RT.C_SPEC_CODE";
         $MODEL_DATA['arr_dang_xu_ly_cho_bo_sung'] = $this->db->GetAssoc($stmt);
@@ -1335,7 +1333,9 @@ class report_Model extends record_Model
                       ON VR.FK_RECORD_TYPE = RT.PK_RECORD_TYPE
                     LEFT JOIN t_cores_list CL
                       ON RT.C_SPEC_CODE = CL.C_CODE
-                  WHERE YEAR(C_RECEIVE_DATE) = $year
+                  WHERE YEAR(C_RECEIVE_DATE) = $year 
+                      AND C_PAUSE_DATE IS NOT NULL
+                      AND ISNULL(C_UNPAUSE_DATE)
                       AND MONTH(C_RECEIVE_DATE) >= $begin_month and MONTH(C_RECEIVE_DATE) <= $end_month
                       AND (C_NEXT_TASK_CODE LIKE '"._CONST_NOP_HO_SO_SANG_CHI_CUC_THUE_ROLE."'
                             OR C_NEXT_TASK_CODE LIKE '"._CONST_NHAN_THONG_BAO_CUA_CHI_CUC_THUE_ROLE."'
@@ -1348,5 +1348,310 @@ class report_Model extends record_Model
         
         return $MODEL_DATA;
     }
+    
+   /*
+     * Lay danh sach thu tuc cham tien do theo tieu chi lua chon
+     */
+    public function get_record_biz_days_exceed($speco_code = '',$group_leve = '')
+    {
+        $v_spec_code  = get_request_var('sel_spec','',TRUE);
+        $v_begin_date = get_request_var('txt_begin','');
+        $v_end_date   = get_request_var('txt_end','');
+        $v_record_type= get_request_var('sel_record_type','');  
+                
+        $condition    = '';        
+        if(trim($v_begin_date) != '')
+        {
+            $v_begin_date = jwDate::ddmmyyyy_to_yyyymmdd($v_begin_date);
+            $condition .= " AND r.C_RECEIVE_DATE >= '" . trim($v_begin_date) ."' "; 
+        }
+        if(trim($v_end_date) != '')
+        {
+            $v_end_date = jwDate::ddmmyyyy_to_yyyymmdd($v_end_date);
+            $condition .= " AND r.C_RECEIVE_DATE <= '" . trim($v_end_date) ."' "; 
+        }
+        if($group_leve ==1 && $speco_code > 0)
+        {
+             $condition .= " AND r.FK_VILLAGE_ID = $speco_code"; 
+        }
+        else if($group_leve == 0 && trim($speco_code)  != '')
+        {
+            $condition .= " AND r.FK_VILLAGE_ID = 0"; 
+        }
+        $sql =" SELECT rt.C_CODE as C_RECORD_TYPE_CODE,r.*
+                    FROM t_r3_record r left join t_r3_record_type rt on r.FK_RECORD_TYPE = rt.PK_RECORD_TYPE
+                    WHERE   C_DELETED <> 1 
+                            AND C_CLEAR_DATE is not null
+                            AND C_BIZ_DAYS_EXCEED < 0
+                            $condition
+                            ORDER BY  r.PK_RECORD DESC
+                    ";
+        return $this->db->GetArray($sql);
+    }
+    
+    function get_step_biz_days_exceed($arr_all_record,$speco_code = '',$group_leve = '')
+    {
+       
+        $v_speco    = replace_bad_char($speco_code);
+        $group_leve = replace_bad_char($group_leve);
+        
+        if(sizeof($arr_all_record) <=0)
+        {
+            return array();
+        }      
+        
+        for($i= 0;$i<sizeof($arr_all_record);$i++)
+        {
+            $v_record_id             = isset($arr_all_record[$i]['PK_RECORD']) ? $arr_all_record[$i]['PK_RECORD'] : 0; 
+//            $stmt = "SELECT
+//                        FK_RECORD,
+//                        (DATEDIFF(C_RECEIVE_DATE,C_ANNOUNCE_DATE) - (SELECT (COUNT(*)) FROM t_cores_calendar 
+//                                                                      WHERE C_OFF=1 AND C_DATE >=C_ANNOUNCE_DATE 
+//                                                                      AND C_DATE <= C_RECEIVE_DATE)) AS C_BIZ_DAYS_EXCEED,
+//                        C_CREATE_FROM_TASK
+//                      FROM t_r3_record_supplement
+//                      WHERE FK_RECORD = ?";
+//            
+//            $arr_biz_day_supplement = $this->db->getAll($stmt,array($v_record_id));
+            
+            $v_clear_date            = isset($arr_all_record[$i]['C_CLEAR_DATE']) ? $arr_all_record[$i]['C_CLEAR_DATE'] : '';
+            $v_xml_processing        = isset($arr_all_record[$i]['C_XML_PROCESSING']) ? $arr_all_record[$i]['C_XML_PROCESSING'] : '';
+            $v_record_type_code      = isset($arr_all_record[$i]['C_RECORD_TYPE_CODE']) ? $arr_all_record[$i]['C_RECORD_TYPE_CODE'] : ''; 
+            $v_xml_workflow          = isset($arr_all_record[$i]['C_XML_WORKFLOW']) ? $arr_all_record[$i]['C_XML_WORKFLOW'] : ''; 
+            $v_village               = isset($arr_all_record[$i]['FK_VILLAGE_ID']) ? $arr_all_record[$i]['FK_VILLAGE_ID'] : '';
+           
+            if(trim($v_xml_processing) =='')
+            {
+                continue;
+            }
+            if(trim($v_xml_workflow) != '' && trim($v_xml_processing) !='')
+            {
+                $dom_workflow       = simplexml_load_string($v_xml_workflow);
+                $dom_processing     = simplexml_load_string($v_xml_processing);
+                 
+                if($group_leve  == 1 && $v_village != $v_speco)
+                {
+                    
+                    continue; //Chi lay danh sach ho so cap xa da chon
+                }                
+                else if($group_leve == 0)
+                {
+                    //Chi lay ho so duoc xy ly di qua phong ban lua chon loc.
+                    if(trim($v_speco) == '') continue;
+                    $xpath_speco        = "//step[@group='$v_speco']";
+                    $count_speco        = xpath($dom_workflow, $xpath_speco);         
+                    
+                    if( sizeof($count_speco)<= 0 )
+                    {
+                        continue;
+                    }
+                }   
+                
+                $xpath_step = '//step';
+                $arr_step   = xpath($dom_workflow, $xpath_step);
+                $arr_biz_days_exceed            = array();                            
+                $stt = 0;
+                
+                for($n = 0;$n < sizeof($arr_step); $n ++)
+                {
+                    //Lay thong tin step workflow
+                    $step_time                  = (string)$arr_step[$n]->attributes()->time ;                    
+                    $group                      = (string)$arr_step[$n]->attributes()->group;
+                    $step_name                  = (string)$arr_step[$n]->attributes()->name;                    
+                    
+                    //Step khogn tinh thoi gian n time step =0
+                    if($step_time <= 0 )
+                    {
+                        continue;
+                    }
+                    
+                    //Lay thong tin task cuôi step cua workflow
+                    $arr_task = end($arr_step[$n]);
+                   
+                    if(sizeof($arr_task) >0)
+                    {
+                        $task_last  = end(end($arr_step[$n]));
+                    }
+                    else 
+                    {
+                        $task_last  =  $arr_step[$n][0]->task;
+                    }
+                    
+                    $task_last_code            = (string)$task_last->attributes()->code;
+                   
+                    //Lay thong tin task hien tai cua workflow tuong ung trong processing
+                    $xpath_get_datetime_task    = "//step[@code='$task_last_code']/datetime";
+                    $obj_task_last_datetime    = xpath($dom_processing, $xpath_get_datetime_task);
+                    $task_start_datetime        = isset($obj_task_last_datetime[0])? (string)$obj_task_last_datetime[0] :'';
+                    
+                    $v_date_supplement = 0;
+                    //check thoi gian bo sung ho so
+//                    if(sizeof($arr_biz_day_supplement) >0)
+//                    {
+//                        foreach ($arr_biz_day_supplement as $arr_single_biz_days_supplement)
+//                        {
+//                            $task_code_supplement     = $arr_single_biz_days_supplement['C_CREATE_FROM_TASK'];
+//                            $xpath_step_supplement    = "//step[./task[last()][@code='$task_last_code']]/task[@code = '$task_code_supplement']";                            
+//                            $is_task_supplement       = xpath($dom_workflow, $xpath_step_supplement);                          
+//                            if($is_task_supplement)
+//                            {
+//                                $v_date_supplement  += ($arr_single_biz_days_supplement['C_BIZ_DAYS_EXCEED'] >0) ? $arr_single_biz_days_supplement['C_BIZ_DAYS_EXCEED'] :0;
+//                            }
+//                        }                            
+//                    }       
+                    //check biz_done
+//                    $xpath_step_biz_done    = "//step[./task[last()][@code='$task_last_code']]/task[@biz_done='true']";
+//                    $obj_taks_biz_done      = xpath($dom_workflow, $xpath_step_biz_done);
+//                    if(sizeof($obj_taks_biz_done) >0)
+//                    {
+////                        break;
+//                    }
+                    //check pause
+                    $v_date_pause  = 0;
+                    $xpath_step_pause_code    = "//step[./task[last()][@code='$task_last_code']]/task[@pause='true']/@code";
+                    $obj_taks_pause_code      = xpath($dom_workflow, $xpath_step_pause_code);
+                    $v_task_pause_code        = isset($obj_taks_pause_code[0]->code) ? (string)$obj_taks_pause_code[0]->code : '';
+                    if(trim($v_task_pause_code) !=='')
+                    {
+                        $xpath_get_datetime_task_pause      = "//step[@code='$v_task_pause_code']/task[@pause='true']/datetime";
+                        $obj_task_pause_datetime            = xpath($dom_processing, $xpath_get_datetime_task_pause);
+                        $task_start_datetime_pause          = isset($obj_task_pause_datetime[0])? (string)$obj_task_pause_datetime[0] :'';
 
+
+                        $xpath_step_unpause_code    = "//step[./task[last()][@code='$task_last_code']]/task[@unpause='true']/@code";
+                        $obj_taks_unpause_code      = xpath($dom_workflow, $xpath_step_unpause_code);
+                        $v_task_unpause_code        = isset($obj_taks_unpause_code[0]->code) ? (string)$obj_taks_unpause_code[0]->code : '';
+
+                        if(trim($v_task_unpause_code) !='')
+                        {
+                            $xpath_get_datetime_task_unpause      = "//step[@code='$v_task_unpause_code']/task[@unpause='true']/datetime";
+                            $obj_task_unpause_datetime            = xpath($dom_processing, $xpath_get_datetime_task_unpause);
+                            $v_start_stask_datetime_unpause       = isset($obj_task_unpause_datetime[0])? (string)$obj_task_unpause_datetime[0] :'';
+                        }
+                        if(trim($task_start_datetime_pause) != '' &&  isset($v_start_stask_datetime_unpause) && trim($v_start_stask_datetime_unpause))
+                        {
+                            $v_date_pause = datediff($task_start_datetime_pause,$v_start_stask_datetime_unpause);
+                            $v_date_pause = ($v_date_pause > 0) ? $v_date_pause : 0;
+                        }
+                    }                    
+                                            
+                    //check buoc tiep nhan
+                    if($n == 0)
+                    {
+                        $xpath_step_first_code         = "//step[./task[last()][@code='$task_last_code']]/task[1]";
+                        $obj_task_first_code           = xpath($dom_workflow, $xpath_step_first_code);
+                        $v_task_start_first_code       = (string)$obj_task_first_code[0]->attributes()->code;
+                        
+                        $xpath_step_first_datetime         = "//step[@code='$v_task_start_first_code']/datetime";
+                        $obj_task_first_datetime           = xpath($dom_processing, $xpath_step_first_datetime);
+                        $v_task_start_first_datetime       = isset($obj_task_first_datetime[0]) ? (string)$obj_task_first_datetime[0] : '';
+                         
+                        if(trim($v_task_start_first_datetime) != '')
+                        {
+                            $v_step_biz_days_exceed = $this->_datediff($v_task_start_first_datetime,$task_start_datetime);
+                        }
+                       
+                        if(isset($v_step_biz_days_exceed))
+                        {
+                            $v_step_biz_days_exceed = $v_step_biz_days_exceed - ($step_time) - $v_date_pause - $v_date_supplement;
+                            if($v_step_biz_days_exceed != 0)
+                            {
+                                $arr_biz_days_exceed[$stt]['id_record']             = $v_record_id;
+                                $arr_biz_days_exceed[$stt]['step_name']             = $step_name;
+                                $arr_biz_days_exceed[$stt]['group']                 = $group;
+                                $arr_biz_days_exceed[$stt]['step_biz_days_exceed']  = $v_step_biz_days_exceed ;
+                                $stt ++ ;
+                            }                           
+                        }
+                        continue;
+                    }                              
+                   
+                    //lay thong tin datetime cua step trước step workflow
+                    if($n < (sizeof($arr_step) -1) && $n>0 )
+                    {
+                        $arr_task_of_next = end($arr_step[$n-1]);
+
+                        if(sizeof($arr_task_of_next) >0)
+                        {
+                            $task_last_of_prev_step  = end(end($arr_step[$n-1]));
+                        }
+                        else 
+                        {
+                            $task_last_of_prev_step  =  $arr_step[$n-1][0]->task;
+                        }
+                        
+                        $task_last_code_of_prev_step            = (string)$task_last_of_prev_step->attributes()->code;
+                        
+                        $xpath_get_datetime_task                 = "//step[@code='$task_last_code_of_prev_step']/datetime";
+                        $obj_task_last_datetime_of_prev_step    = xpath($dom_processing, $xpath_get_datetime_task);
+                        $task_start_datetime_of_prev_step        = isset($obj_task_last_datetime_of_prev_step[0])? (string)$obj_task_last_datetime_of_prev_step[0] :'';
+                        
+                        if(trim($task_start_datetime) != '' &&  trim($task_start_datetime_of_prev_step) != '')
+                        {
+                            $v_step_biz_days_exceed = $this->_datediff($task_start_datetime_of_prev_step,$task_start_datetime);                             
+                            $v_step_biz_days_exceed =  $v_step_biz_days_exceed - ($step_time) - $v_date_pause - $v_date_supplement;                            
+                            if($v_step_biz_days_exceed != 0)
+                            {
+                                 $arr_biz_days_exceed[$stt]['step_name'] = $step_name;
+                                 $arr_biz_days_exceed[$stt]['group'] = $group;
+                                 $arr_biz_days_exceed[$stt]['step_biz_days_exceed'] = $v_step_biz_days_exceed ;
+                                 $stt ++ ;
+                            }
+                        }
+                    }
+                }
+                $arr_all_record[$i]['step_biz_days_exceed'] = $arr_biz_days_exceed;
+            }            
+        }
+        return $arr_all_record;
+    }
+    
+    /**
+    * Tinh so ngay chenh lech giua hai thoi gian
+    * @param string $date_before  Ngay bat dau yyyy-mm-dd
+    * @param string $date_after   Ngay ket thuc yyyy-mm-dd
+    * @return int  or  False ; 
+    */
+   private function _datediff($date_before ='',$date_after  = '')
+   {
+       $stmt = "SELECT
+                    (DATEDIFF(?,?) - (SELECT (COUNT(*)) 
+                                        FROM t_cores_calendar 
+                                        WHERE C_OFF=1 
+                                        AND C_DATE >= ? 
+                                        AND C_DATE <= ?)) AS C_BIZ_DAYS_EXCEED";
+       $date_diff = $this->db->getOne($stmt,array($date_after,$date_before,$date_before,$date_after));
+       return $date_diff;
+   }
+   /**
+    * lay tat ca don vi theo quen su dung
+    */
+   public function qry_all_village()
+   {   
+       $conditon = '';
+        if(session::get('is_admin') != 1 && session::get('village_id') != 0)
+        {
+            $conditon = " and PK_OU = ".session::get('ou_id');
+            $sql = "SELECT C_NAME
+                        ,PK_OU as C_CODE
+                        , 1 AS C_SPEC_CODE
+                FROM t_cores_ou 
+                WHERE C_LEVEL = 3 
+                $conditon";
+        }
+        else
+        {
+           $sql = "SELECT C_NAME
+                    ,C_CODE,0 AS C_SPEC_CODE 
+                FROM t_cores_group 
+                WHERE FK_OU IN (SELECT PK_OU  FROM t_cores_ou WHERE C_LEVEL <> 3 AND C_CODE <> 'ADMINISTRATORS')
+            UNION 
+            SELECT C_NAME
+                        ,PK_OU
+                        , 1 AS C_SPEC_CODE
+                FROM t_cores_ou 
+                WHERE C_LEVEL = 3";
+        }
+        return $this->db->GetAll($sql);
+   }
 }

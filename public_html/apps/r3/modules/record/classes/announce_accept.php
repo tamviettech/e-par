@@ -16,15 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
-
-/**
- * @package record
- * @author tamviettech <goat91@gmail.com>
- * @abstract 
- * Thông báo cho công dân tiếp nhận hay từ chối
- */
 class announce_accept extends announce_abstract
 {
 
@@ -74,6 +66,7 @@ class announce_accept extends announce_abstract
                 THÔNG BÁO BIÊN NHẬN HỒ SƠ
                 \n
                 Thủ tục:                            $v_record_type_name
+                Mã hồ sơ:                           $v_record_no
                 Họ và tên người nộp hồ sơ:          $v_citizen_name
                 Địa chỉ thường trú:                 $v_addr
                 Ngày giờ tiếp nhận:                 $v_receive_date

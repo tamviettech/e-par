@@ -15,6 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+?>
+<?php
 
 ini_set('date.timezone', 'Asia/Ho_Chi_Minh');
 
@@ -44,7 +46,6 @@ require_once (SERVER_ROOT . 'libs' . DS . 'model.php');
 require_once (SERVER_ROOT . 'libs' . DS . 'view.php');
 require_once (SERVER_ROOT . 'libs' . DS . 'controller.php');
 require_once (SERVER_ROOT . 'libs' . DS . 'bootstrap.php');
-
 //lang
 //include_once SERVER_ROOT . 'languages/lang_vi.php';
 //Kiem session ngon ngu

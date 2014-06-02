@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('DS') or die;
 /* @var $this \View */
@@ -44,7 +43,11 @@ $this->template->display('dsp_header.php');
     <img class="btndate" style="cursor:pointer" src="<?php echo SITE_ROOT;?>public/images/calendar.gif" onclick="DoCal('txt_end')">
     <br/>
     <center>
-        <input type="button" name="trash" class="solid print" onclick="btn_print_onclick();" value="In báo cáo">
+        <!--button in-->
+        <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
+            <i class="icon-print"></i>
+            In báo cáo
+        </button>
     </center>
 </form>
 

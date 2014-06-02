@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class application_Controller extends Controller {
@@ -26,7 +25,8 @@ class application_Controller extends Controller {
         deny_bad_http_referer();
         
         parent::__construct('cores', 'application');
-        $this->view->template->show_left_side_bar = FALSE;
+        $this->view->template->show_left_side_bar = TRUE;
+        $this->view->template->active_menu = 'application';
 
         //Kiem tra dang nhap
         session::check_login();

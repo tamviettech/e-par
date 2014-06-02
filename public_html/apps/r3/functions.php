@@ -16,8 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
-<?php
+<?php 
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class r3_View extends View {
@@ -28,13 +27,12 @@ class r3_View extends View {
 	
 	private function get_root_record_type_code($record_type_code)
 	{
+        
         return substr($record_type_code, 0, 2) . '00';
-        /*
+        
 	    $ret =  preg_replace('/([0-9]+[A-Z0-9-_]*)/', '00', $record_type_code);
 	    //$ret = str_replace('0000', '00', $ret);
 	    return $ret;
-         * 
-         */
 	}
     
     public function get_book_config($book_code)
@@ -79,18 +77,25 @@ class r3_View extends View {
 		}
 
         if (strtolower($config_type) == 'result')
-		{
-			return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
-			. 'common' . DS . 'xml_record_result.xml';
-		}
+        {
+                return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
+                . 'common' . DS . 'xml_record_result.xml';
+        }
+        //extend congfig
+        if(strtolower($config_type) == 'ext_config')
+        {
+            $v_file_dir = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
+                . strtoupper($record_type_code) . DS . $record_type_code .'_ext_config.xml';
+            return $v_file_dir;
+        }
+        
+        if ($config_type == 'list' && $record_type_code == '')
+        {
+            return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . 'common_list.xml';;
+        }
 
-		if ($config_type == 'list' && $record_type_code == '')
-		{
-		    return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . 'common_list.xml';;
-		}
-
-		$file_path =  SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
-		. $record_type_code . DS . $record_type_code . '_' . $config_type . '.xml';
+        $file_path =  SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
+        . $record_type_code . DS . $record_type_code . '_' . $config_type . '.xml';
 
         if (!is_file($file_path) && ($get_default_config))
         {
@@ -168,48 +173,50 @@ class r3_View extends View {
 	}
 
 	public function dsp_div_filter($v_record_type_code, $arr_all_record_type)
-	{?>
+	{
+            echo $this->hidden('hdn_all_record_type_filter',  json_encode($arr_all_record_type));
+            ?>
 		<div id="div_filter">
     		<table>
     		    <tr>
-    		        <td width="14%">
+    		        <td width="14%" style="text-align: left;">
             			<label>Mã loại hồ sơ (Alt+1)</label>
-        			</td>
-        			<td>
-            			<input type="text" name="txt_record_type_code" id="txt_record_type_code"
-            					value="<?php echo $v_record_type_code; ?>"
-            					class="inputbox upper_text" size="10" maxlength="10"
-            					onkeypress="txt_record_type_code_onkeypress(event);"
-            					autofocus="autofocus"
-            					accesskey="1"
-            			/>
-            			<select name="sel_record_type" id="sel_record_type" style="width:75%; color:#000000;"
+                        </td>
+                        <td style="text-align: left;">
+                            <input type="text" name="txt_record_type_code" id="txt_record_type_code"
+                                            value="<?php echo $v_record_type_code; ?>"
+                                            class="input-small upper_text" maxlength="10"
+                                            onkeypress="txt_record_type_code_onkeypress(event);"
+                                            autofocus="autofocus"
+                                            accesskey="1"
+                            />
+                            <select name="sel_record_type" id="sel_record_type" style="width:75%; color:#000000;"
             				onchange="sel_record_type_onchange(this)">
-            				<option value="">-- Chọn loại hồ sơ --</option>
-            				<?php $v_la_ho_so_lien_thong = FALSE;?>
-            				<?php foreach ($arr_all_record_type as $code=>$info):?>
-            				    <?php 
-                                            $str_selected = ($code == strval($v_record_type_code)) ? ' selected':'';
-                                            $v_mapping_code = (string)$info['C_MAPPING_CODE'];
-                                            ?>
+                                <option value="">-- Chọn loại hồ sơ --</option>
+                                <?php $v_la_ho_so_lien_thong = FALSE;?>
+                                <?php foreach ($arr_all_record_type as $code=>$info):?>
+                                    <?php 
+                                        $str_selected = ($code == strval($v_record_type_code)) ? ' selected':'';
+                                        $v_mapping_code = (string)$info['C_MAPPING_CODE'];
+                                    ?>
                                 <option value="<?php echo $code;?>"<?php echo $str_selected?> data-mapping="<?php echo $v_mapping_code;?>" data-scope="<?php echo $info['C_SCOPE'];?>"><?php echo $info['C_NAME'];?></option>
                                 <?php if (($code == $v_record_type_code) && ($info['C_SCOPE'] == 1)) {$v_la_ho_so_lien_thong = TRUE;}?>
-            				<?php endforeach;?>
+                                <?php endforeach;?>
             	            <?php //echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>
-            	        </select>
+                            </select>
         	        </td>
     	        </tr>
     	        <?php if ( ($v_la_ho_so_lien_thong == TRUE) && (!session::get('la_can_bo_cap_xa')) ):?>
     	            <tr>
-    	                <td>Xã tiếp nhận:</td>
-    	                <td> 
+    	                <td style="text-align: left;">Xã tiếp nhận:</td>
+    	                <td style="text-align: left;"> 
             	            <select name="sel_village_filter" id="sel_village_filter" style="width:25%; color:#000000;"
                 				onchange="sel_can_bo_cap_xa_onchange(this)">
             				    <option value="">-- Tất cả các xã --</option>
             				<?php echo $this->generate_select_option(Session::get('arr_all_village'), get_post_var('sel_village_filter')); ?>
             				</select>
-        				</td>
-    				</tr>
+                        </td>
+                    </tr>
     	        <?php endif;?>
 	        </table>
 	        <input type="text" name="noname" style="visibility: hidden;width:1px;height:1px;" />
@@ -240,12 +247,13 @@ class r3_View extends View {
 				}
 			}
 		}
-		$html .= '<table width="100%" class="adminlist" cellspacing="0" cellpading="0" border="1">' . $table_col_size
-		. '<tr>' . $table_header . '</tr>';
+		$html .= '<table width="100%" class="adminlist table table-bordered table-striped" cellspacing="0" border="1">' . $table_col_size
+                        . '<tr>' . $table_header . '</tr>';
 
 		//List item
-		//$html .= '<table width="100%" class="adminlist" cellspacing="0" cellpading="0" border="1">';
-		//$html .= $table_col_size;
+                $html = '<table width="100%" class="adminlist table table-bordered table-striped">';
+                $html .= $table_col_size;
+                $html .= '<thead><tr>' . $table_header . '</tr></thead>';
 		$i = 0;
 		for ($i = 0; $i < sizeof($data); $i++)
 		{
@@ -425,7 +433,14 @@ class r3_View extends View {
 							{
 							    if (isset($data[$i]['C_LAST_RECORD_COMMENT']))
 							    {
-							        $val .= '<br/><a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' . $data[$i][$primarykey] . '\', \'comment\')" onmouseover="console.log(\'Chức năng đang phát triển\')">
+                                                                $v_last_comment =  isset($data[$i]['C_LAST_RECORD_COMMENT']) ? $data[$i]['C_LAST_RECORD_COMMENT'] : '';
+                                                                $v_tooltip = '';
+                                                                if(trim($v_last_comment) != '')
+                                                                {
+                                                                     $v_tooltip = ' onMouseOver="return overlib(\'<u>Ý kiến mới nhất:</u><br/>' . $v_last_comment . '\',BELOW, RIGHT, CAPTION, \'TỪ CHỐI\');" onMouseOut="return nd();"';
+                                                                }
+                                                                
+							        $val .= '<br/><a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' . $data[$i][$primarykey] . '\', \'comment\')" '.$v_tooltip.' >
 					                        <span class="reason"><i><img src="' . SITE_ROOT . 'public/images/icon-32-warning.png" width="20" height="20"/>' . $data[$i]['C_LAST_RECORD_COMMENT'] . '</i></span></a>';
 							    }
 							    //Co tin nhan voi HS?
@@ -553,8 +568,6 @@ class r3_View extends View {
                                                             $v_step_days_remain = $v_step_days_remain - 0.5;
                                                     }
                                             }
-                                            
-                                            /*
 
                                             $v_biz_done = $data[$i]['C_BIZ_DAYS_EXCEED'];
                                             if ($v_biz_done == NULL && 
@@ -585,7 +598,6 @@ class r3_View extends View {
                                                             $val .= '<span class="days-remain during">Còn ' . abs($v_step_days_remain) . ' ngày</span></b>';
                                                     }
                                             }
-                                            */
                                     }
                                     if ($val == 2)
                                     {
@@ -654,16 +666,18 @@ class r3_View extends View {
 		return $html;
 	}
 
-	public function dsp_div_notice($title)
+	public function dsp_div_notice($title='')
 	{
 		//$html = '<div class="page-title">' . $title . '</div>';
 		$html = '';
 		$html .= '<div class="page-notice">
 				<div id="notice">
-				<div class="notice-title">Thống kê hồ sơ</div>
-				<div class="notice-container" id="notice-container"><ul></ul></div>
+                                    <div class="widget-head blue">
+                                        <h3>Thống kê hồ sơ</h3>
+                                    </div>
+                                    <div class="widget-container" style="min-height: 90px;border: 1px solid #3498DB;" id="notice-container"><ul></ul></div>
 				</div>
-				</div>';
+                        </div>';
 		return $html;
 	}
 	

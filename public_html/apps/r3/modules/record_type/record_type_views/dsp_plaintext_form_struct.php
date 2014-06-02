@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
@@ -43,10 +42,15 @@ else
     <textarea name="txt_xml_string" style="width: 954px; margin: 2px 0px; height: 466px;"><?php echo $v_xml_string;?></textarea>
     <!-- Button -->
 	<div class="button-area">
-		<input type="button" name="update" class="button save" 	value="<?php echo __('update'); ?> (Alt+2)"	onclick="btn_update_plaintext_formstruct_onclick();" accesskey="2" />
+		<button type="button" class="btn btn-primary" type="button" name="update" value="<?php echo __('update'); ?> (Alt+2)"	onclick="btn_update_plaintext_formstruct_onclick();" accesskey="2"><i class="icon-save"></i>Cập nhật</button>
+            
 		<?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>"/>
-	</div>
+        
+        
+                <button style="float: right;margin-bottom: 5px; margin-right: 10px;" type="button" name="trash" class="btn btn-danger" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>">
+        <i class="icon-remove"></i>
+        Đóng cửa sổ    </button>
+        </div>
 </form>
 <script>
     function btn_update_plaintext_formstruct_onclick()

@@ -58,21 +58,7 @@ class Session {
         }
         return TRUE;
     }
-    
-    //Kiem tra timeout, tinh bang giay
-    public static function check_timeout($timeout = 600)
-    {
-    	if( self::get('timeout') )
-    	{
-    		$duration = time() - (int)self::get('timeout');
-    		if($duration > $timeout)
-    		{
-    			@session_destroy();
-    			@session_start();
-    		}
-    	}// Update the timout field with the current time.
-    	self::set('timeout',  time());
-    }
+
 }
 
 Class Cookie {
@@ -80,9 +66,16 @@ Class Cookie {
 
     }
 
-    public static function set($key, $val)
+    public static function set($key, $val,  $expire = 0, $path = NULL)
     {
-        setcookie($key, $val);
+        if ($path != NULL)
+        {
+            setcookie($key, $val, $expire, $path);
+        }
+        else 
+        {
+            setcookie($key, $val, $expire); //default
+        }
     }
 
     public static function get($key)

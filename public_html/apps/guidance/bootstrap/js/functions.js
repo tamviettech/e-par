@@ -151,7 +151,8 @@ $.extend($arrows,{
 				if($group.current!=($group.count-1)){		
 					$("#arrowRight").css('margin-left',$arrows.rightArray[$group.current]+12).fadeTo(speed,0.5);
 				}
-			}else if($page.layout == "small"){
+			}
+                        else if($page.layout == "small"){
 				$("#tileContainer").children(".navArrows").hide();
 				if($group.current!=0){
 					$("#arrowLeft").css('margin-left',getMarginLeft($group.current)-40).fadeTo(speed,0.5);
@@ -159,7 +160,8 @@ $.extend($arrows,{
 				if($group.current!=($group.count-1)){
 					$("#arrowRight").css('margin-left',getMarginLeft($group.current)+scaleSpacing*2+scale+12).fadeTo(speed,0.5);
 				}	
-			}else{
+			}
+                        else{
 				$("#tileContainer").children(".navArrows").hide();
 			}
 			$events.arrowsPlaced();	
@@ -180,19 +182,20 @@ $(document).ready(function(){
 });
 
 /* Scrolls background, if needed */
+//Di chuyen danh nền
 scrollBg = function(){
-	if($page.layout != "column" && device=="desktop" && $group.direction == "horizontal"){
-		if(bgMaxScroll!=0){
-			var t = -$group.current*bgScroll;
-			if(t>0){t=0};
-			if($.browser.name == "msie" && $.browser.version<10){ // IE9 or lower
-				$('#bgImage').stop().animate({marginLeft:t},bgScrollSpeed);
-			}else{ // if IE10 or other browser
-				$('#bgImage').css("margin-left",t);	
-			}
-		}
-		$events.bgScroll();
-	}
+//	if($page.layout != "column" && device=="desktop" && $group.direction == "horizontal"){
+//		if(bgMaxScroll!=0){
+//			var t = -$group.current*bgScroll;
+//			if(t>0){t=0};
+//			if($.browser.name == "msie" && $.browser.version<10){ // IE9 or lower
+//				$('#bgImage').stop().animate({marginLeft:t},bgScrollSpeed);
+//			}else{ // if IE10 or other browser
+//				$('#bgImage').css("margin-left",t);	
+//			}
+//		}
+//		$events.bgScroll();
+//	}
 }
 
 /* Set width so we can scroll to last tilegroup */
@@ -213,7 +216,7 @@ fixScrolling = function(){
 recalcScrolling = function(){
 	mostDown = 0;
 	$("#tileContainer").children(".tile").each(function(){
-		var thisRight = parseInt($(this).css("margin-left"))+$(this).width(); // GLOBAL
+		var thisRight = parseInt($(this).css("margin-left"))+ $(this).width(); // GLOBAL
 		if(thisRight>mostRight){
 			mostRight=thisRight;
 		}

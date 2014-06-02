@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class main_Controller extends Controller {
@@ -26,6 +25,7 @@ class main_Controller extends Controller {
         parent::__construct('cores', 'main');
         $this->view->template->show_left_side_bar =FALSE;
 
+        //Kiem tra dang nhap
         session::check_login();
     }
     function main()

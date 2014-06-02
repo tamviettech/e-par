@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -39,8 +38,11 @@ $v_return_date_to   = isset($_POST['txt_return_date_to']) ? replace_bad_char($_P
 $v_record_no = isset($_POST['txt_record_no']) ? replace_bad_char($_POST['txt_record_no']) : '';
 
 $v_free_text = get_post_var('txt_free_text');
+
 $sel_spec_selected = get_post_var('sel_spec','');
+
 ?>
+
 <form name="frmMain" id="frmMain"
       action="" method="POST">
           <?php
@@ -62,154 +64,171 @@ $sel_spec_selected = get_post_var('sel_spec','');
           //echo $this->hidden('MY_TASK', $MY_TASK);
           ?>
     <!-- filter -->
-    <div class="group" style="margin:10px 0">
-        <h4 class="group_label" >
-            <a href="javascript:;" id="change_search" onclick="change_search(this)" title="Bấm vào đây để hiện tìm kiếm nâng cao">
-                Tìm kiếm cơ bản
-            </a>
-        </h4>
-        <div class="Row">
-            <div class="left-Col">
-                Lĩnh vực
-            </div>
-            <div class="right_col">
-                <select name="sel_spec" id="sel_spec" style="width: 77%; color: #000000;">
-                        <option value="">-- Tất cả lĩnh vực --</option>
-                        <?php echo $this->generate_select_option($arr_all_spec,$sel_spec_selected); ?>
-                </select>
-            </div>
+    
+    <div class="group">
+        <div class="widget-head blue">
+                <h3>
+                    <a  class="widget-head" href="javascript:;" id="change_search" onclick="toggle_filter(this)" title="Bấm vào đây để hiện tìm kiếm nâng cao">
+                        Tìm kiếm
+                        &nbsp;<i class="icon-caret-down"></i>
+                    </a>
+                </h3>
         </div>
-        <div class="Row">
-            <div class="left-Col">
-                <label>Mã loại hồ sơ: (Alt+1) </label>
+        <div class="widget-container" style="min-height: 90px;border: 1px solid #3498DB;" id="filter">
+            <div class="Row">
+                <div class="left-Col">
+                    Lĩnh vực
+                </div>
+                <div class="right_col">
+                    <select name="sel_spec" id="sel_spec" style="width: 77%; color: #000000;">
+                            <option value="">-- Tất cả lĩnh vực --</option>
+                            <?php echo $this->generate_select_option($arr_all_spec,$sel_spec_selected); ?>
+                    </select>
+                </div>
             </div>
-            <div class="right-Col">
-                <input type="text"
-                       name="txt_record_type_code" id="txt_record_type_code"
-                       value="<?php echo $v_record_type_code; ?>"
-                       class="inputbox upper_text" size="10" maxlength="10"
-                       onkeypress="txt_record_type_code_onkeypress(event);"
-                       autofocus="autofocus" accesskey="1" />&nbsp;
+            <div class="Row">
+                <div class="left-Col">
+                    <label>Mã loại hồ sơ: (Alt+1) </label>
+                </div>
+                <div class="right-Col">
+                    <input type="text" class="input-small"
+                           name="txt_record_type_code" id="txt_record_type_code"
+                           value="<?php echo $v_record_type_code; ?>"
+                           class="inputbox upper_text" size="10" maxlength="10"
+                           onkeypress="txt_record_type_code_onkeypress(event);"
+                           autofocus="autofocus" accesskey="1" />&nbsp;
 
-                <select name="sel_record_type" id="sel_record_type"
-                        style="width: 76%; color: #000000;"
-                        onchange="sel_rt_onchange(this)">
-                    <option value="">-- Chọn loại hồ sơ --</option>
-                    <?php foreach ($arr_all_record_type as $code => $info): ?>
-                        <?php $str_selected = ($code == strval($v_record_type_code)) ? ' selected' : ''; ?>
-                        <option value="<?php echo $code; ?>"<?php echo $str_selected ?> data-scope="<?php echo $info['C_SCOPE']; ?>" class="<?php echo $info['C_SPEC_CODE'];?>" ><?php echo $info['C_NAME']; ?></option>
-                    <?php endforeach; ?>
-                    <?php //echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>
-                </select>
-            </div>
-        </div>
-        <div class="Row">
-            <div class="left-Col">
-                <label> Mã hồ sơ: </label>
-            </div>
-            <div class="right-Col">
-                <input type="text" style="width: 250px" name="txt_record_no"
-                       id="txt_record_no" maxlength="100" onkeypress="txt_filter_onkeypress(this.form.btn_filter, event)"
-                       value="<?php echo $v_record_no; ?>" />
-            </div>
-        </div>
-        <div class="Row">
-            <div class="left-Col">
-                <label>
-                    Thông tin khác
-                </label>
-            </div>
-            <div class="right-Col">
-                <input class="text" id="txt_free_text" maxlength="100" name="txt_free_text" 
-                       style="width:250px" type="text" value="<?php echo $v_free_text; ?>" 
-                       onkeypress="txt_filter_onkeypress(this.form.btn_filter, event)"
-                       />
-                <input type="button" name="btn_filter" value="Tìm kiếm" class="solid search" onclick="this.form.submit()" />
-            </div>
-        </div>
-        <div class="Row filter-mode filter-1">
-            <div class="left-Col">Năm</div>
-            <div class="right-Col">
-                <select name="sel_year" id="sel_year" onchange="this.form.submit()">
-                    <?php
-                    $year          = 2012;
-                    $selected_year = get_post_var('sel_year', date('Y'));
-                    ?>
-                    <?php while ($year <= date('Y')): ?>
-                        <?php $selected = $selected_year == $year ? 'selected' : '' ?>
-                        <option value="<?php echo $year ?>" <?php echo $selected ?>><?php echo $year ?></option>
-                        <?php $year++ ?>
-                    <?php endwhile; ?>
-                </select>
-                &nbsp;<b>Tháng</b>&nbsp;
-                <select name="sel_month" onchange="this.form.submit()">
-                    <?php $selected_month = get_post_var('sel_month'); ?>
-                    <option value="0">--Tất cả--</option>
-                    <?php for ($i = 1; $i <= 12; $i++): ?>
-                        <?php $selected = $selected_month == $i ? 'selected' : '' ?>
-                        <option value="<?php echo $i ?>" <?php echo $selected ?>>
-                            <?php echo $i ?>
-                        </option>
-                    <?php endfor; ?>
-                </select>
-            </div>
-        </div>
-        <div class="Row filter-mode filter-2">
-            <div class="left-Col">
-                <label for="NgayNhapHoSo">
-                    Ngày tiếp nhận:
-                </label>
-            </div>
-            <div class="right-Col">
-                <div class="left-Col2">
-                    <div class="left-item-col" style="font-weight: normal">
-                        Từ ngày:
-                    </div>
-                    <div class="right-item-col">
-                        <input class="text" id="txt_receive_date_from" maxlength="100" name="txt_receive_date_from" style="width:70%" type="text" value="<?php echo $v_receive_date_from; ?>" />
-                        <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_receive_date_from')" />
-                    </div>
-                </div>
-                <div class="right-Col2">
-                    <div class="left-item-col" style="font-weight: normal">
-                        Đến ngày:
-                    </div>
-                    <div class="right-item-col">
-                        <input class="text" id="txt_receive_date_to" maxlength="100" name="txt_receive_date_to" style="width:70%" type="text" value="<?php echo $v_receive_date_to; ?>" />
-                        <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_receive_date_to')" />
-                    </div>
+                    <select name="sel_record_type" id="sel_record_type"
+                            style="width: 76%; color: #000000;"
+                            onchange="sel_rt_onchange(this)">
+                        <option value="">-- Chọn loại hồ sơ --</option>
+                        <?php foreach ($arr_all_record_type as $code => $info): ?>
+                            <?php $str_selected = ($code == strval($v_record_type_code)) ? ' selected' : ''; ?>
+                            <option value="<?php echo $code; ?>" <?php echo $str_selected ?> data-mapping="<?php echo $info['C_MAPPING_CODE']?>" class="<?php echo $info['C_SPEC_CODE'];?>" data-scope="<?php echo $info['C_SCOPE']; ?>"><?php echo $info['C_NAME']; ?></option>
+                        <?php endforeach; ?>
+                        <?php //echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>
+                    </select>
                 </div>
             </div>
-        </div>
-        <div class="Row filter-mode filter-2">
-            <div class="left-Col">
-                <label>
-                    Ngày hẹn trả:
-                </label>
+            <div class="Row">
+                <div class="left-Col">
+                    <label> Mã hồ sơ: </label>
+                </div>
+                <div class="right-Col">
+                    <input type="text" style="width: 250px" name="txt_record_no"
+                           id="txt_record_no" maxlength="100" onkeypress="txt_filter_onkeypress(this.form.btn_filter, event)"
+                           value="<?php echo $v_record_no; ?>" />
+                </div>
             </div>
-            <div class="right-Col">
-                <div class="left-Col2">
-                    <div class="left-item-col" style="font-weight: normal">
-                        Từ ngày:
+            <div class="Row">
+                <div class="left-Col">
+                    <label>
+                        Thông tin khác
+                    </label>
+                </div>
+                <div class="right-Col">
+                    <input class="text" id="txt_free_text" maxlength="100" name="txt_free_text" 
+                           style="width:250px" type="text" value="<?php echo $v_free_text; ?>" 
+                           onkeypress="txt_filter_onkeypress(this.form.btn_filter, event)"
+                           />
+                    &nbsp;
+                    &nbsp;
+                </div>
+            </div>
+            <div class="Row filter-mode filter-1">
+                <div class="left-Col">
+                     <label> Năm: </label>
+                </div>
+                <div class="right-Col">
+                    <select name="sel_year" id="sel_year" onchange="this.form.submit()">
+                        <?php
+                        $year          = 2012;
+                        $selected_year = get_post_var('sel_year', date('Y'));
+                        ?>
+                        <?php while ($year <= date('Y')): ?>
+                            <?php $selected = $selected_year == $year ? 'selected' : '' ?>
+                            <option value="<?php echo $year ?>" <?php echo $selected ?>><?php echo $year ?></option>
+                            <?php $year++ ?>
+                        <?php endwhile; ?>
+                    </select>
+                    &nbsp;Tháng&nbsp;
+                    <select name="sel_month" onchange="this.form.submit()">
+                        <?php $selected_month = get_post_var('sel_month'); ?>
+                        <option value="0">--Tất cả--</option>
+                        <?php for ($i = 1; $i <= 12; $i++): ?>
+                            <?php $selected = $selected_month == $i ? 'selected' : '' ?>
+                            <option value="<?php echo $i ?>" <?php echo $selected ?>>
+                                <?php echo $i ?>
+                            </option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="Row filter-mode filter-2">
+                <div class="left-Col">
+                    <label for="NgayNhapHoSo">
+                        Ngày tiếp nhận:
+                    </label>
+                </div>
+                <div class="right-Col">
+                    <div class="left-Col2">
+                        <div class="left-item-col" style="font-weight: normal">
+                            Từ ngày:
+                        </div>
+                        <div class="right-item-col">
+                            <input class="text" id="txt_receive_date_from" maxlength="100" name="txt_receive_date_from" style="width:70%" type="text" value="<?php echo $v_receive_date_from; ?>" />
+                            <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_receive_date_from')" />
+                        </div>
                     </div>
-                    <div class="right-item-col">
-                        <input class="text" id="txt_return_date_from" maxlength="100" name="txt_return_date_from" style="width:70%" type="text" value="<?php echo $v_return_date_from; ?>" />
-                        <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_return_date_from')" />
+                    <div class="right-Col2">
+                        <div class="left-item-col" style="font-weight: normal">
+                            Đến ngày:
+                        </div>
+                        <div class="right-item-col">
+                            <input class="text" id="txt_receive_date_to" maxlength="100" name="txt_receive_date_to" style="width:70%" type="text" value="<?php echo $v_receive_date_to; ?>" />
+                            <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_receive_date_to')" />
+                        </div>
                     </div>
                 </div>
-                <div class="right-Col2">
-                    <div class="left-item-col" style="font-weight: normal">
-                        Đến ngày:
+            </div>
+            <div class="Row filter-mode filter-2">
+                <div class="left-Col">
+                    <label>
+                        Ngày hẹn trả:
+                    </label>
+                </div>
+                <div class="right-Col">
+                    <div class="left-Col2">
+                        <div class="left-item-col" style="font-weight: normal">
+                            Từ ngày:
+                        </div>
+                        <div class="right-item-col">
+                            <input class="text" id="txt_return_date_from" maxlength="100" name="txt_return_date_from" style="width:70%" type="text" value="<?php echo $v_return_date_from; ?>" />
+                            <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_return_date_from')" />
+                        </div>
                     </div>
-                    <div class="right-item-col">
-                        <input class="text" id="txt_return_date_to" maxlength="100" name="txt_return_date_to" 
-                               style="width:70%" type="text" value="<?php echo $v_return_date_to; ?>" 
+                    <div class="right-Col2">
+                        <div class="left-item-col" style="font-weight: normal">
+                            Đến ngày:
+                        </div>
+                        <div class="right-item-col">
+                            <input class="text" id="txt_return_date_to" maxlength="100" name="txt_return_date_to" 
+                                   style="width:70%" type="text" value="<?php echo $v_return_date_to; ?>" 
 
-                               />
-                        <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_return_date_to')" />
+                                   />
+                            <img class="btndate" style="cursor:pointer" id="btnDate" src="<?php echo SITE_ROOT ?>public/images/calendar.gif" onclick="DoCal('txt_return_date_to')" />
+                        </div>
                     </div>
                 </div>
             </div>
+            <div id="solid-button">
+                <!--button search-->
+                <button type="button" name="trash" class="btn btn-primary" onclick="this.form.submit();" >
+                    <i class="icon-search"></i>
+                    Tìm kiếm
+                </button>
+            </div>
+            <div class="clear" style="height: 5px;"></div>
         </div>
     </div>
 
@@ -238,6 +257,7 @@ $is_tra_cuu            = strtoupper($this->active_role) == _CONST_TRA_CUU_ROLE;
 $is_tra_cuu_lien_thong = strtoupper($this->active_role) == _CONST_TRA_CUU_LIEN_THONG_ROLE;
 $is_tra_cuu_tai_xa     = strtoupper($this->active_role) == _CONST_TRA_CUU_TAI_XA_ROLE;
 ?>
+
 <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.chained.mini.js" type="text/javascript"></script>
 <script>
     $("#sel_record_type").chained("#sel_spec");
@@ -352,13 +372,18 @@ $is_tra_cuu_tai_xa     = strtoupper($this->active_role) == _CONST_TRA_CUU_TAI_XA
         $('#change_search').html(mode_info[new_mode]['label']).attr('title', mode_info[new_mode]['title']);
     }
     $(document).ready(function() {
-        show_search_mode($('#hdn_search_mode').val());
+        //show_search_mode($('#hdn_search_mode').val());
     });
+    function toggle_filter()
+    {
+        $('#filter').toggle();
+    }
     
     function sel_rt_onchange(sel_record)
     {
         $('#txt_record_type_code').val($(sel_record).val());
     }
+    
 </script>
 <?php
 $this->template->display('dsp_footer.php');

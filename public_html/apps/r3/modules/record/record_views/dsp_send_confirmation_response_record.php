@@ -16,8 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
-<?php
+<?php 
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE('ohhh');

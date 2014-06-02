@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -72,7 +71,7 @@ $this->template->display('dsp_header_pop_win.php');
 <div id="liveboard">
     <div class="center">
         <div id="quoc-huy">
-            <img src="<?php echo SITE_ROOT; ?>public/images/12033_quoc_huy.png" height="60" />
+            <img src="<?php echo SITE_ROOT; ?>public/images/12033_quoc_huy.png" />
         </div>
         <?php
         $ou_name               = get_xml_value(simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml'), '//full_name');
@@ -83,14 +82,14 @@ $this->template->display('dsp_header_pop_win.php');
         </h5>
     </div>
     <script type="text/javascript">
-        document.write('<table width="100%" id="th-only" class="adminlist liveboard">');
+        document.write('<table width="100%" id="th-only" class="adminlist table table-bordered table-striped liveboard">');
         document.write(build_col_width());
         document.write(build_header_text());
         document.write('</table>');
     </script>
     <div class="detail_table">
         <script type="text/javascript">
-            document.write('<table width="100%" class="adminlist liveboard">');
+            document.write('<table width="100%" class="adminlist table table-bordered table-striped liveboard">');
             document.write(build_col_width());
             document.write('<tbody id="ho_so_cap_huyen"></tbody>');
             document.write('</table>');

@@ -1,6 +1,6 @@
 <?php
 /* 
-V5.18 3 Sep 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
+V5.15 19 Jan 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -130,7 +130,6 @@ class ADODB_mssqlnative extends ADOConnection {
 	var $uniqueOrderBy = true;
 	var $_bindInputArray = true;
 	var $_dropSeqSQL = "drop table %s";
-	var $connectionInfo = array();
 	
 	function ADODB_mssqlnative() 
 	{		
@@ -379,10 +378,7 @@ class ADODB_mssqlnative extends ADOConnection {
 	function _connect($argHostname, $argUsername, $argPassword, $argDatabasename)
 	{
 		if (!function_exists('sqlsrv_connect')) return null;
-		$connectionInfo = $this->connectionInfo;
-		$connectionInfo["Database"]=$argDatabasename;
-		$connectionInfo["UID"]=$argUsername;
-		$connectionInfo["PWD"]=$argPassword;
+        $connectionInfo = array("Database"=>$argDatabasename,'UID'=>$argUsername,'PWD'=>$argPassword);
         if ($this->debug) error_log("<hr>connecting... hostname: $argHostname params: ".var_export($connectionInfo,true));
         //if ($this->debug) error_log("<hr>_connectionID before: ".serialize($this->_connectionID));
         if(!($this->_connectionID = sqlsrv_connect($argHostname,$connectionInfo))) { 
@@ -403,8 +399,6 @@ class ADODB_mssqlnative extends ADOConnection {
 	
 	function Prepare($sql)
 	{
-		return $sql; // prepare does not work properly with bind parameters as bind parameters are managed by sqlsrv_prepare!
-		
 		$stmt = sqlsrv_prepare( $this->_connectionID, $sql);
 		if (!$stmt)  return $sql;
 		return array($sql,$stmt);
@@ -464,8 +458,7 @@ class ADODB_mssqlnative extends ADOConnection {
 		if (is_array($inputarr)) {
             $rez = sqlsrv_query($this->_connectionID,$sql,$inputarr);
 		} else if (is_array($sql)) {
-			// $inputarr is prepared in sqlsrv_prepare();
-            $rez = sqlsrv_execute($this->_connectionID,$sql[1]);
+            $rez = sqlsrv_query($this->_connectionID,$sql[1],$inputarr);
 		} else {
 			$rez = sqlsrv_query($this->_connectionID,$sql);
 		}

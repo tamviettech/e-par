@@ -1,4 +1,22 @@
 <?php
+/**
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+?>
+<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -151,7 +169,7 @@ class workflow_Model extends Model
             $params = array($dest, $src, $v_record_type_code, '%' . $v_thay_doi_phan_cong_task_code);
             $this->db->Execute($stmt, $params);
         }
-          
+        
         //3. Thay doi XML next
         //Danh sach HS can cap nhat next
         //3.1 Update Next user name
@@ -170,12 +188,15 @@ class workflow_Model extends Model
                     (C_FROM_USER_CODE,
                      C_TO_USER_CODE,
                      C_SWAP_DATE,
-                     C_ROLE)
+                     C_ROLE,
+                     C_RECORD_TYPE_CODE
+                     )
                 Values (?,
                         ?,
                         NOW(),
+                        ?,
                         ?)";
-        $this->db->Execute($stmt,array($src,$dest,$task));
+        $this->db->Execute($stmt,array($src,$dest,$v_role,$v_record_type_code));
         
         $this->popup_exec_done();        
     }
@@ -416,7 +437,17 @@ class workflow_Model extends Model
                 //$this->db->debug=0;
                 $this->db->Execute($stmt, $params);
             }
-
+            
+            //Nếu được phân công tiếp nhận, thì cũng làm bổ sung luôn
+            if ($v_role == _CONST_TIEP_NHAN_ROLE)
+            {
+                $v_couple_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BO_SUNG_ROLE;
+                $stmt               = 'Insert Into t_r3_user_task(C_RECORD_TYPE_CODE, C_TASK_CODE, C_USER_LOGIN_NAME,C_GROUP_CODE, C_NEXT_TASK_CODE,C_STEP_TIME, C_TASK_TIME, C_STEP_FIRST_TASK, C_PREV_STEP_LAST_TASK, FK_PARENT) Values(?,?,?,?,?,?,?,?,?,?)';
+                $params             = array($v_record_type_code, $v_couple_task_code, $v_user_code, $v_group_code, $v_next_task_code, $v_step_time, $v_task_time, $v_first_task, $v_prev_step_last_task, $v_user_task_id);
+                //$this->db->debug=0;
+                $this->db->Execute($stmt, $params);
+            }
+            
             //Nếu được phân công duyệt, thì cũng làm duyệt HS bổ sung
             if ($v_role == _CONST_XET_DUYET_ROLE)
             {

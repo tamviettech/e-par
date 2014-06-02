@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -105,8 +104,7 @@ class mavach_Controller extends Controller
             //Thông tin bản khai
             $VIEW_DATA['arr_single_record_statistic'] = $this->model->qry_single_record_statistics($v_record_no);
         }
-
-        $this->view->render('tra_cuu_ma_vach', $VIEW_DATA);
+        $this->view->render('tra_cuu_ma_vach',$VIEW_DATA);
     }
 
 }

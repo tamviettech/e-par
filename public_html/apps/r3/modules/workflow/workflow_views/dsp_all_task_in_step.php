@@ -16,13 +16,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
-$this->template->title = 'Công việc trong bước';
+$this->template->title = $this->title = 'Công việc trong bước';
 $v_pop_win = isset($_REQUEST['pop_win']) ? '_pop_win' : '';
-$this->template->display('dsp_header' . $v_pop_win . '.php');
+
+require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header' . $v_pop_win . '.php');
 
 $v_xml_flow = session::get('v_current_xml_flow');
 $dom_flow = simplexml_load_string($v_xml_flow);
@@ -110,4 +110,4 @@ $dom_task = $dom_flow->xpath("step[position()=$v_step_id]/task");
         */
     }
 </script>
-<?php $this->template->display('dsp_footer' .$v_pop_win . '.php');
+<?php require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_footer.php');

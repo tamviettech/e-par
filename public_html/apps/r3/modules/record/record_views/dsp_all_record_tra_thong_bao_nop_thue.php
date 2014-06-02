@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -49,10 +48,13 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid transfer" value="Trả thông báo thuế"
-               onclick="receive_tax_receipt_onclick();" />
+        <!--button ban giao-->
+        <button type="button" name="trash" class="btn btn-primary" onclick="receive_tax_receipt_onclick();" accesskey="9">
+            <i class="icon-exchange"></i>
+            Trả thông báo thuế
+        </button>   
     </div>
-    <div class="clear"></div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
 
     <div id="procedure">
         <?php

@@ -16,21 +16,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('SERVER_ROOT') or die();
+$this->template->title = 'Bảng theo dõi tình hình giải quyết thủ tục hành chính';
 $this->template->display('dsp_header_pop_win.php');
 
 $arr_tables = array(
-    'dsp_liveboard'             => 'Bảng theo dõi tình hình giải quyết thủ tục hành chính',
     'dsp_liveboard_huyen'       => 'Bảng theo dõi tình hình giải quyết thủ tục hành chính tiếp nhận tại huyện',
-    'dsp_liveboard_xa'          => 'Bảng theo dõi tình hình giải quyết thủ tục hành chính tiếp nhận tại xã (tổng hợp)',
-    'dsp_tthc'                  => 'Danh mục thủ tục hành chính'
+    'dsp_liveboard'             => 'Bảng theo dõi tình hình giải quyết thủ tục hành chính',
+    'dsp_tthc'                  => 'Danh mục thủ tục hành chính',
+    'dsp_liveboard_xa'          => 'Bảng theo dõi tình hình giải quyết thủ tục hành chính tiếp nhận tại xã (tổng hợp)'
+    
 );
 ?>
-<h3 class="page-title">Danh sách bảng theo dõi trực tuyến</h3>
+<div style="width: 100%;background-color: white;float:left">
+    <div class="widget-head blue">
+        <h3 class="page-title">Danh sách bảng theo dõi trực tuyến</h3>
+    </div>
 <div style="width:100%;margin:0 auto">
-    <table class="adminlist" width="100%">
+    <table class="adminlist table table-bordered table-striped" >
         <colgroup>
             <col width="10%">
             <col width="90%">
@@ -42,8 +46,12 @@ $arr_tables = array(
             </tr>
         </thead>
         <tbody>
-            <?php $index      = 0; ?>
+            <?php $index      = 0; ?> 
+            <tr>
+                <td colspan="2"><b>Bảng tổng hợp của huyện</b></td>
+            </tr>
             <?php foreach ($arr_tables as $action => $label): ?>
+                    <?php if($action == 'dsp_liveboard_xa')  continue;?>
                 <tr>
                     <td class="center"><?php echo ++$index ?></td>
                     <td>
@@ -53,7 +61,25 @@ $arr_tables = array(
                     </td>
                 </tr>
             <?php endforeach; ?>
-            
+                    
+            <tr>
+                <td colspan="2"><b>Tổng hợp các xã</b></td>
+            </tr>
+            <?php foreach ($arr_tables as $action => $label): ?>
+                    <?php if($action != 'dsp_liveboard_xa')  continue;?>
+                    <tr>
+                        <td class="center">1</td>
+                        <td>
+                            <a href="<?php echo $this->get_controller_url() . $action ?>" target="_blank">
+                                <?php echo $label ?>
+                            </a>
+                        </td>
+                    </tr>
+            <?php endforeach; ?>
+            <tr>
+                <td class="center" >2</td>
+                <td><a href="<?php echo $this->get_controller_url().'dsp_all_xa'?>"  target="_blank" >Bảng theo dõi tình hình giải quyêt thủ tục tổng hợp các xã</a></td>
+            </tr>
             <tr>
                 <td colspan="2"><b>Tại các xã</b></td>
             </tr>
@@ -70,6 +96,6 @@ $arr_tables = array(
         </tbody>
     </table>
 </div>
-
+</div>
 <?php
 $this->template->display('dsp_footer_pop_win.php');

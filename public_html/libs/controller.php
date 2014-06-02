@@ -1,5 +1,7 @@
 <?php
 /**
+
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed'); ?>
 <?php
 
@@ -25,12 +26,21 @@ class Controller
     public $view;
     /** @var \Model */
     public $model;
+    /** @var \Layout */
+    
     protected $app_name    = '';
     protected $module_name = '';
 
     function __construct($app, $module)
     {
         @session_start();
+        //Load app const
+        $const_file = SERVER_ROOT . 'apps' . DS . $app . DS . "{$app}_const.php";
+        if (file_exists($const_file))
+        {
+            require_once($const_file);
+        }
+        
         //Load custom functions
         $func = SERVER_ROOT . 'apps' . DS . $app . DS . 'functions.php';
         if (is_file($func))
@@ -44,7 +54,10 @@ class Controller
         $v          = $app . '_View';
         $this->view = (class_exists($v)) ? new $v($app, $module) : new View($app, $module);
 
+        $this->view->local_js = $this->view->template->local_js = SITE_ROOT . 'apps/' . $app . '/modules/' . $module . '/' . $module . '_views/js_' . $module . '.js';
+        $this->view->view_url = SITE_ROOT . 'apps/' . $app . '/modules/' . $module . '/' . $module . '_views/';
         $this->_load_model($app, $module);
+        
     }
 
     private function _load_model($app, $module)

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
 {
@@ -28,7 +27,13 @@ if (!defined('SERVER_ROOT'))
 $this->template->title = 'Quản trị quy trình xử lý hồ sơ';
 $this->template->display('dsp_header.php');
 ?>
-<form name="frmMain" method="post" id="frmMain" action="" ng-controller="ui_ctrl">
+<style>
+    label{display:inline;}
+    h3{margin:0;line-height: normal;}
+    h3 label, h6 label{font-weight: bold;}
+</style>
+<script src="<?php echo SITE_ROOT ?>public/js/angular.min.js"></script>
+<form name="frmMain" method="post" id="frmMain" action="" ng-app ng-controller="ui_ctrl">
     <div class="darkness" ng-show="modal_step.visible || modal_task.visible || modal_proc_info.visible">&nbsp;</div>
     <div 
         class="modal_container" 
@@ -51,11 +56,11 @@ $this->template->display('dsp_header.php');
                     </tr>
                     <tr>
                         <td>Tổng số ngày thực hiện <span class="required">(*)</span></td>
-                        <td><input type="text" ng-model="modal_proc_info.data['totaltime']"/></td>
+                        <td><input type="text" data-type="number"  ng-model="modal_proc_info.data['totaltime']" value="{{modal_proc_info.data['totaltime']}}"/></td>
                     </tr>
                     <tr>
                         <td>Lệ phí <span class="required">(*)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><input type="text" ng-model="modal_proc_info.data['fee']"/></td>
+                        <td><input type="text" data-type="number"  ng-model="modal_proc_info.data['fee']" value="{{modal_proc_info.data['fee']}}"/></td>
                     </tr>
                     <tr>
                         <td>XML định nghĩa kết quả trả</td>
@@ -70,8 +75,8 @@ $this->template->display('dsp_header.php');
                     <tr>
                         <td></td>
                         <td>
-                            <input type="button" class="button save" ng-click="modal_proc_info.save()" value="Ghi lại"/>
-                            <input type="button" class="button close" ng-click="modal_proc_info.visible = false" value="Huỷ bỏ"/>
+                            <input type="button" class="btn save" ng-click="modal_proc_info.save()" value="Ghi lại"/>
+                            <input type="button" class="btn" ng-click="modal_proc_info.visible = false" value="Huỷ bỏ"/>
                         </td>
                     </tr>
                 </table>
@@ -115,11 +120,12 @@ $this->template->display('dsp_header.php');
                         </td>
                     </tr>
                     <tr>
-                        <td>Tổng số ngày quy định <span class="required">(*)</span></td>
+                        <td>Tổng số ngày quy định </td>
                         <td>
                             <input 
-                                type="text" 
+                                type="text" data-type="number" 
                                 ng-model="modal_step.step['@attributes']['time']" 
+                                value="{{modal_step.step['@attributes']['time']}}"
                                 size="40"
                                 />
                         </td>
@@ -127,8 +133,8 @@ $this->template->display('dsp_header.php');
                     <tr>
                         <td></td>
                         <td>
-                            <input type="button" class="button save" ng-click="modal_step.save()" value="Ghi lại"/>
-                            <input type="button" class="button close" ng-click="modal_step.visible = false" value="Huỷ bỏ"/>
+                            <input type="button" class="btn save" ng-click="modal_step.save()" value="Ghi lại"/>
+                            <input type="button" class="btn" ng-click="modal_step.visible = false" value="Huỷ bỏ"/>
                         </td>
                     </tr>
                 </table>
@@ -164,12 +170,13 @@ $this->template->display('dsp_header.php');
                                 </td>
                             </tr>
                             <tr>
-                                <td>Thời gian xử lý <span class="required">(*)</span></td>
+                                <td>Thời gian xử lý</td>
                                 <td>
                                     <input 
-                                        type="text" 
+                                        type="text" data-type="number" 
                                         ng-model="modal_task.modal_edit.task['@attributes']['time']" 
-                                        size="40"
+                                        value="{{modal_task.modal_edit.task['@attributes']['time']}}"
+                                        size="40" 
                                         />
                                 </td>
                             </tr>
@@ -252,8 +259,8 @@ $this->template->display('dsp_header.php');
                             <tr>
                                 <Td></Td>
                                 <td>
-                                    <input type="button" class="button save" ng-click="modal_task.modal_edit.save()" value="Ghi lại"/>
-                                    <input type="button" class="button close" ng-click="modal_task.modal_edit.visible = false" value="Huỷ bỏ"/>
+                                    <input type="button" class="btn save" ng-click="modal_task.modal_edit.save()" value="Ghi lại"/>
+                                    <input type="button" class="btn" ng-click="modal_task.modal_edit.visible = false" value="Huỷ bỏ"/>
                                 </td>  
                             </tr>
                         </table>
@@ -266,9 +273,9 @@ $this->template->display('dsp_header.php');
                 <input type="button" value="Đóng cửa sổ" ng-click="modal_task.visible = false"/>
             </div>
             <div class="modal_body">
-                <input type="button" class="button add" ng-click="modal_task.add()" value="Thêm mới" />
-                <input type="button" class="button save" ng-click="modal_task.save()" value="Ghi lại" />
-                <input type="button" class="button close" ng-click="modal_task.visible = false" value="Huỷ bỏ" />
+                <input type="button" class="btn add" ng-click="modal_task.add()" value="Thêm mới" />
+                <input type="button" class="btn save" ng-click="modal_task.save()" value="Ghi lại" />
+                <input type="button" class="btn" ng-click="modal_task.visible = false" value="Huỷ bỏ" />
                 <h4></h4>
                 <div id="contentWrap">
                     <div id="contentLeft">
@@ -283,9 +290,9 @@ $this->template->display('dsp_header.php');
                                 <li style="width:600px">
                                     <div class="step-header">
                                         <div class="step-name quick_action">
-                                            <h6>
+                                            <h3>
                                                 <label class="{{task.error}}">{{task['@attributes']['name']}}</label>
-                                            </h6>
+                                            </h3>
                                         </div>
                                         <div class="step-config quick_action">
                                             <a href="javascript:void(0)" title="Hiệu chỉnh thông tin công việc"
@@ -358,17 +365,17 @@ $this->template->display('dsp_header.php');
                 $v_default_xml_flow = '<?xml version="1.0" encoding="UTF-8"?>
                 <process author="Tam Viet" code="#CODE#" name="Chưa đặt tên" totaltime="15" version="1" fee="25000">
                 </process>';
-                $v_xml_flow         = str_replace('#CODE#', $v_record_type_code, $v_default_xml_flow);
+                $v_xml_flow = str_replace('#CODE#', $v_record_type_code, $v_default_xml_flow);
             }
             session::set('v_current_xml_flow', $v_xml_flow);
-            $dom  = simplexml_load_string($v_xml_flow);
-            $r    = $dom->xpath("/process");
+            $dom = simplexml_load_string($v_xml_flow);
+            $r = $dom->xpath("/process");
             $proc = $r[0];
             if (empty($proc->attributes()->result))
             {
                 $proc->addAttribute('result', 'record_result.default.xml');
             }
-            $step          = $proc->xpath("//step[not(@no_chain='true')]");
+            $step = $proc->xpath("//step[not(@no_chain='true')]");
             $no_chain_step = $proc->xpath("//step[@no_chain='true']");
 
             foreach ($proc->step as $step)
@@ -376,7 +383,7 @@ $this->template->display('dsp_header.php');
                 $is_no_chain = ($step->attributes()->no_chain == 'true');
                 if ($is_no_chain)
                 {
-                    $dom      = dom_import_simplexml($step);
+                    $dom = dom_import_simplexml($step);
                     $dom->parentNode->removeChild($dom);
                     $no_chain = $proc->addChild('no_chain_step');
                     foreach ($step->attributes() as $k => $v)
@@ -406,7 +413,7 @@ $this->template->display('dsp_header.php');
                             {
                                 $task->addAttribute('next_no_chain', $matches[1]);
                             }
-                            $pos                      = strpos($task->attributes()->code, '[');
+                            $pos = strpos($task->attributes()->code, '[');
                             $task->attributes()->code = trim(substr($task->attributes()->code, 0, $pos));
                         }
                     }
@@ -428,7 +435,7 @@ $this->template->display('dsp_header.php');
             <?php echo $this->hidden('hdn_record_type_name', strval($proc['@attributes']['name'])); ?>
             <?php echo $this->hidden('hdn_total_time', strval($proc['@attributes']['totaltime'])); ?>
             <?php echo $this->hidden('hdn_fee', strval($proc['@attributes']['fee'])); ?>
-            <input type="button" class="button lookup" value="Sửa" ng-click="modal_proc_info.show()"/>
+            <input type="button" class="btn lookup" value="Sửa" ng-click="modal_proc_info.show()"/>
             <h4></h4>
         </div>
         <div id="contentWrap">
@@ -477,7 +484,7 @@ $this->template->display('dsp_header.php');
                         </li>
 
                         <div style="display:none">
-                            {{ no_chain_step[$index] = get_no_chain_step( get_no_chain_task_code($index) ) }}
+                            {{ no_chain_step[$index] = get_no_chain_step(get_no_chain_task_code($index))}}
                         </div>
                         <div ng-switch on="no_chain_step[$index]" >
                             <div ng-switch-when="false"></div>
@@ -526,15 +533,23 @@ $this->template->display('dsp_header.php');
             <div class="clear"></div>
             <h4></h4>
             <div style="float:right" class="alert alert-info">
-                <input type="button" class="button save" ng-click="submit_workflow()" value="Ghi lại" />
-                <input type="button" class="button add" ng-click="add_step()" value="Thêm bước" />
-                <input type="button" class="button close" value="Quay lại" ng-click="goback()"/>
+                <input type="button" class="btn save" ng-click="submit_workflow()" value="Ghi lại" />
+                <input type="button" class="btn add" ng-click="add_step()" value="Thêm bước" />
+                <input type="button" class="btn" value="Quay lại" ng-click="goback()"/>
                 <img width="16" src="<?php echo SITE_ROOT ?>public/images/loading.gif" ng-show="submiting"/>
                 <div id="response"></div>
             </div>
         </div>
     <?php endif; ?>
 </form>
-
+<script>
+    $('input[data-type=number]').keypress(function(event) {
+        var keyCode = event.keyCode;
+        console.log(keyCode);
+        if (!(keyCode >= 48 && keyCode <= 57) && keyCode != 46) {
+            event.preventDefault();
+        }
+    });
+</script>
 <?php
 $this->template->display('dsp_footer.php');

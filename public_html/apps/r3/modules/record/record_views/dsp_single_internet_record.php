@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
 {
@@ -164,8 +163,9 @@ $this->template->display('dsp_header.php');
                 }
                 ?>
             </td>
-
-            <td style="text-align: right">
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: right">
                 <?php dsp_button($is_real_record); ?>
             </td>
         </tr>
@@ -203,26 +203,27 @@ function dsp_button($is_real_record)
 {
     ?>
     <?php if ($is_real_record): ?>
-        <input type="button" name="update" class="button approval"
-               value="Chấp nhận hồ sơ"
-               onclick="btn_accept_internet_record_onclick();" accesskey="3"
-               />
-           <?php endif; ?>
-
-    <input type="button" name="update" class="button save"
-           value="<?php echo __('update'); ?> (Alt+2)"
-           onclick="btn_update_onclick();" accesskey="2"
-           />
-    <input type="button" name="delete" class="button delete"
-           value="Xoá hồ sơ này"
-           onclick="btn_delete_internet_record_onclick();" accesskey="2"
-           />
-
-    <input
-        type="button" name="cancel" class="button close"
-        value="<?php echo __('go back'); ?>"
-        onclick="btn_back_onclick();" accesskey="9"
-        /><?php }
+        <button type="button" name="trash" class="btn btn-success" onclick="btn_accept_internet_record_onclick();" accesskey="3" >
+            Chấp nhận hồ sơ
+        </button> 
+    <?php endif; ?>
+    <!--button update-->
+    <button type="button" name="trash" class="btn btn-primary" onclick="btn_update_onclick();" accesskey="2">
+        <i class="icon-save"></i>
+        <?php echo __('update'); ?> (Alt+2)
+    </button>
+    
+     <!--button xoa-->
+    <button type="button" name="trash" class="btn btn-danger" onclick="btn_delete_internet_record_onclick();">
+        <i class="icon-trash"></i>
+        Xoá hồ sơ này
+    </button>
+     <!--button back-->
+    <button type="button" name="trash" class="btn btn-primary" onclick="btn_back_onclick();">
+        <i class="icon-reply"></i>
+        <?php echo __('go back'); ?>
+    </button>
+<?php }
        ?>
 <script>
                                        $(document).ready(function() {

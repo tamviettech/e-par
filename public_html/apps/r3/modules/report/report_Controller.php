@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 class report_Controller extends Controller
@@ -42,16 +41,66 @@ class report_Controller extends Controller
         //in pdf khá lâu
         set_time_limit(60 * 5);
         parent::__construct('r3', 'report');
+        
+        //Kiem tra dang nhap
+        session::check_login();
+        
+        //tao array role tu r3_const
+        $this->_arr_roles = json_decode(CONST_ALL_R3_ROLES,true);
+        $this->view->template->show_left_side_bar = TRUE;
+        $this->view->active_role = _CONST_BAO_CAO_ROLE;
+        $this->view->template->active_role = _CONST_BAO_CAO_ROLE;
+        //tao controller url record cho menu
+        $this->view->template->controller_url = $this->view->get_controller_url('record','r3');
+        
+        //tao menu 
+          $menu = Array();
 
+        $arr_my_role = $this->model->qry_all_user_role(Session::get('user_code'));
+        foreach ($this->_arr_roles as $key => $val)
+        {
+            if ($this->check_permission($key) && in_array($key, $arr_my_role))
+            {
+                $menu[$key]             = $val;
+                $this->_arr_user_role[] = strtoupper($key);
+            }
+        }
+
+        $arr_not_admin_roles = array(_CONST_XAC_NHAN_HO_SO_NOP_QUA_INTERNET_ROLE
+            , _CONST_KIEM_TRA_TRUOC_HO_SO_ROLE, _CONST_RUT_ROLE);
+        $is_admin            = (bool) Session::get('is_admin');
+        foreach ($arr_not_admin_roles as $role)
+        {
+            if ($this->check_permission($role) && !$is_admin)
+            {
+                $menu[$role]            = $this->_arr_roles[$role];
+                $this->_arr_user_role[] = $role;
+            }
+        }
+
+        $arr_more_roles = array(_CONST_Y_KIEN_LANH_DAO_ROLE, _CONST_TRA_CUU_ROLE
+            , _CONST_TRA_CUU_LIEN_THONG_ROLE, _CONST_TRA_CUU_TAI_XA_ROLE, _CONST_BAO_CAO_ROLE);
+        foreach ($arr_more_roles as $role)
+        {
+            if ($this->check_permission($role))
+            {
+                $menu[$role]            = $this->_arr_roles[$role];
+                $this->_arr_user_role[] = $role;
+            }
+        }
+        $this->view->template->arr_roles = $menu;
+        $this->view->arr_roles           = $menu;
+        
         if (DEBUG_MODE < 10)
             $this->model->db->debug = 0;
 
-        $this->view->template->show_left_side_bar = TRUE;
+        
 
         //Danh muc bao cao
         $this->arr_all_report_type            = $this->model->assoc_list_get_all_by_listtype_code('DANH_MUC_BAO_CAO', CONST_USE_ADODB_CACHE_FOR_REPORT);
         $this->view->template->reportbook_url = $this->view->get_controller_url('reportbook', 'r3');
         
+        //du lieu default
         $this->arr_year = $this->model->get_year();
         $this->arr_all_group = $this->model->qry_all_group();
     }
@@ -63,7 +112,7 @@ class report_Controller extends Controller
 
     public function main()
     {
-        $this->option(0);
+        $this->option(3);
     }
 
     public function type($type = '3')
@@ -89,7 +138,7 @@ class report_Controller extends Controller
             $this->view->render('dsp_report_option', $VIEW_DATA);
         }
     }
-
+       
     /**
      * Quản trị hệ thống kết xuất Báo cáo kết quả tiếp nhận hồ sơ theo ngày/tuần/tháng/năm
      * @param type $type
@@ -490,15 +539,16 @@ class report_Controller extends Controller
                     $v_subtitle .= "tháng $end_month năm $year";
                     break;
             }
-
             require_once SERVER_ROOT . 'libs/tcpdf/zreport.php';
-            
 //            $VIEW_DATA['arr_all_spec'] = $this->model->qry_report999($year, $begin_month, $end_month);
             $VIEW_DATA['arr_all_listtype_code'] = $this->model->list_get_all_by_listtype_code('DANH_MUC_LINH_VUC');
-            $VIEW_DATA['arr_all_spec'] = $this->model->qry_all_report_data_3($year, $begin_month, $end_month,$group_code,$group_level);
-            $VIEW_DATA['now']          = $now;
-            $VIEW_DATA['subtitle']     = $v_subtitle;
-            $VIEW_DATA['report_code']         = 'report_3';
+            $VIEW_DATA['arr_all_spec']          = $this->model->qry_all_report_data_3($year, $begin_month, $end_month,$group_code,$group_level);
+            $VIEW_DATA['now']                   = $now;
+            $VIEW_DATA['subtitle']              = $v_subtitle;
+            $VIEW_DATA['report_code']           = 'report_3';
+            $VIEW_DATA['group_level']           = $group_level;
+            
+            
             $this->view->render('dsp_pdf_report_3', $VIEW_DATA);
         }
         else
@@ -519,7 +569,6 @@ class report_Controller extends Controller
     {
         if (get_request_var('pdf'))
         {
-            require_once SERVER_ROOT . 'libs/tcpdf/zreport.php';
             $begin_date = get_request_var('begin','');
             $end_date   = get_request_var('end','');
             $spec_code  = get_request_var('spec','');
@@ -566,5 +615,44 @@ class report_Controller extends Controller
                 return 'IV';
         }
     }
-
+    
+   
+    /**
+     * BÁO CÁO chi tiết hồ sơ trả kết quả quá hạn
+     */
+    private function _report19()
+    {
+       if (get_request_var('pdf'))
+        {
+            $begin_date = get_request_var('txt_begin_date','');
+            $end_date   = get_request_var('txt_end_date','');
+            $spec_code  = get_request_var('sel_spec','');           
+            $now        = date_create($this->model->getDate());
+            $speco_code = get_request_var('sel_group','');
+            $group_leve = get_request_var('group_leve','');
+            
+            $VIEW_DATA['now']            = $now;
+            $VIEW_DATA['begin']          = $begin_date;
+            $VIEW_DATA['end']            = $end_date;
+            
+            $begin_date = jwDate::ddmmyyyy_to_yyyymmdd($begin_date);
+            $end_date   = jwDate::ddmmyyyy_to_yyyymmdd($end_date);
+            
+            $arr_all_record                     = $this->model->get_record_biz_days_exceed($speco_code,$group_leve);
+            $VIEW_DATA['arr_all_record']        = $this->model->get_step_biz_days_exceed($arr_all_record,$speco_code,$group_leve);
+            $VIEW_DATA['report_code']           = 'report_19';
+            $this->view->render('dsp_pdf_report_19', $VIEW_DATA);
+       }
+        else
+        {
+            $VIEW_DATA['arr_all_village']                       = $this->model->qry_all_village();
+            $VIEW_DATA['report_type']                           = 19;            
+            $VIEW_DATA['arr_all_record_type_with_spec_code']    = $this->model->qry_all_record_type_with_spec_code();
+            $VIEW_DATA['arr_all_spec']                          = $this->model->assoc_list_get_all_by_listtype_code(_CONST_DANH_MUC_LINH_VUC, CONST_USE_ADODB_CACHE_FOR_REPORT);
+            $this->view->template->arr_all_report_type          = $this->arr_all_report_type;
+            $this->view->template->current_report_type          = 19;
+            $this->view->render('dsp_option_19', $VIEW_DATA);
+        }
+       
+    }
 }

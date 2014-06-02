@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE('ohhh');
@@ -60,18 +59,24 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
     echo $this->hidden('hdn_approval_value', $v_promote);
     ?>
 
-    <div class="panel_color_form">Danh sách hồ ký duyệt</div>
-    <div class="Row">
-        <div class="left-Col">
-            <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
-        </div>
-        <div class="right-Col">
-            <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
-        </div>
+    <div class="widget-head blue">
+        <h3>Danh sách hồ sơ ký duyệt</h3>
     </div>
+    <table class="none" width="100%" cellspacing="0" cellpadding="4" border="0">
+        <tbody>
+            <tr>
+                <td style="font-weight: bold">
+                    Loại hồ sơ: 
+                </td>
+                <td>
+                    <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <!-- Record list -->
-    <table cellpadding="4" cellspacing="0" width="100%" class="list">
+    <table width="100%" class="adminlist table table-bordered table-striped">
         <tr>
             <th>STT</th>
             <th>Mã hồ sơ</th>
@@ -90,28 +95,39 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
         <?php endfor;?>
     </table>
     <!-- End: Record list -->
-    <div class="panel_color_form">Ký duyệt hồ sơ</div>
-    <div class="Row">
-        <div class="left-Col">
-            Xem xét ký duyệt:
-        </div>
-        <div class="right-Col">
-            <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>"
-                value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>" checked="checked" onclick="rad_approval_onclick(this.value)"
-            />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>">Ký duyệt</label>
-
-            <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>"
-                value="<?php echo _CONST_RECORD_APPROVAL_REJECT;?>" onclick="rad_approval_onclick(this.value)"
-            />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>">Không ký duyệt</label>
-
-            <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC;?>"
-                value="<?php echo _CONST_RECORD_APPROVAL_REEXEC;?>" onclick="rad_approval_onclick(this.value)"
-            />
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC;?>">Yêu cầu phòng ban trình lại</label>
-        </div>
+    <div class="widget-head bondi-blue">
+        <h3>Ký duyệt hồ sơ</h3>
     </div>
+    <table class="none" width="100%" cellspacing="0" cellpadding="4" border="0">
+        <tbody>
+            <tr>
+                <td style="font-weight: bold" width="15%">
+                    Xem xét ký duyệt: 
+                </td>
+                <td align="left">
+                    <div class="control-group">
+                        <div class="controls">
+                            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>" class="radio">
+                            <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>"
+                            value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>" checked="checked" onclick="rad_approval_onclick(this.value)"
+                            />
+                            Ký duyệt</label>
+                            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>" class="radio">
+                            <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>"
+                                value="<?php echo _CONST_RECORD_APPROVAL_REJECT;?>" onclick="rad_approval_onclick(this.value)"
+                            />
+                            Không ký duyệt</label>
+                            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC;?>" class="radio">
+                            <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC;?>"
+                                value="<?php echo _CONST_RECORD_APPROVAL_REEXEC;?>" onclick="rad_approval_onclick(this.value)"
+                            />
+                            Yêu cầu phòng ban trình lại</label>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <div id="office" class="Row" style="display: none;">
         <div class="left-Col">
             Phòng ban trình lại: <span class="required">*</span>
@@ -121,7 +137,11 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
             //Phong ban nao tham gia thu ly HỒ SƠ nay?
 
             ?>
-            <input type="checkbox" value="1982" onclick="CheckOne()" class="item" name="office" checked><span><?php echo $VIEW_DATA['submit_group_name'];?></span><br>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" value="1982" onclick="CheckOne()" class="item" name="office" checked>
+                <?php echo $VIEW_DATA['submit_group_name'];?></label>
+            </div>
         </div>
     </div>
 
@@ -131,16 +151,22 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
             <span class="required">*</span>
         </div>
         <div class="right-Col">
-            <textarea style="width:100%;height:100px;" rows="2" name="txt_reason" maxlength="200" id="txt_reason" cols="20" class="text ui-widget-content ui-corner-all">hoàn thành</textarea>
+            <textarea style="width:100%;height:100px;" rows="2" name="txt_reason" maxlength="200" id="txt_reason" cols="20" class="span12">hoàn thành</textarea>
         </div>
     </div>
     <div class="clear">&nbsp;</div>
     <!-- Buttons -->
     <div class="button-area">
         <hr/>
-        <input type="button" name="btn_do_approval" class="button save" value="<?php echo __('update');?>" onclick="btn_do_approval_onclick();" />
+        <button type="button" name="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();" accesskey="2">
+            <i class="icon-save"></i>
+            <?php echo __('update'); ?>
+        </button>
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>"/>
+        <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action;?>" >
+            <i class="icon-remove"></i>
+            <?php echo __('close window'); ?>
+        </button> 
     </div>
 </form>
 <script>

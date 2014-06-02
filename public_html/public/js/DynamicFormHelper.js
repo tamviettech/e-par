@@ -214,10 +214,6 @@ function DynamicFormHelper(data, file,f) {
                 mess = mess + this.checkUsername(control_id, name, allow);
                 break;
                 
-            case "loginname": //Ten dang nhap
-                mess = mess + this.checkLoginName(control_id, name, allow);
-                break;
-                
             case "listcode": //Ten dang nhap
                 mess = mess + this.checkListCode(control_id, name, allow);
                 break;
@@ -293,32 +289,6 @@ function DynamicFormHelper(data, file,f) {
      * @returns {String}
      */
     this.checkUsername = function (control_id, name, allow) {
-        var mess = "";
-        var number = document.getElementById(control_id).value;
-        var str = new String(number);
-
-        if (allow == "no") {
-            if (this.isEmpty(str)) {
-                mess = mess + " Bạn chưa nhập " + name + " !";
-            }
-            else {
-                var test_white_space = this.checkWhiteSpace(str);
-                if (test_white_space == "") {
-                    mess = mess + " " + name + " không được toàn là khoảng trắng!";
-                } 
-                else
-                {
-                    var ck_username = /^([a-zA-Z]+)([A-Za-z0-9 ]*)$/;
-                    if (!ck_username.test(str)) {
-                        mess = mess + " " + name + " không hợp lệ";
-                    }
-                }
-            }
-        }
-        return mess;
-    }
-    
-    this.checkLoginName = function (control_id, name, allow) {
         var mess = "";
         var number = document.getElementById(control_id).value;
         var str = new String(number);

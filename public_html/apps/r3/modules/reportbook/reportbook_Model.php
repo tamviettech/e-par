@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 defined('DS') or die();
@@ -28,7 +27,6 @@ require_once SERVER_ROOT . 'libs/adodb5/adodb-active-record.inc.php';
  */
 class reportbook_Model extends Model
 {
-
     private $_listtype_code    = 'DM_SO_THEO_DOI_HO_SO';
     private $_listtype_id      = 0;
     private $_la_can_bo_cap_xa = false;
@@ -54,23 +52,25 @@ class reportbook_Model extends Model
     {
         //Lay value tu truong c_xml_data
         $scope  = "ExtractValue(c_xml_data, '//item[@id=\"txt_scope\"]/value')";
-        $conds  = " WHERE fk_listtype = ?";
+        $conds  = " WHERE fk_listtype = ? AND C_STATUS = 1 ";
         $params = array($this->_listtype_id);
-
+        
         if ($this->_la_can_bo_cap_xa)
         {
+            //cap xa
             $conds .= " AND ($scope = 0 OR $scope = 1) ";
         }
         else
         {
-            //la can bo cap tinh
-            $conds .= " AND ($scope = 2 OR $scope = 3) ";
+            //Huyen va sở
+            $conds .= " AND ($scope = 2 OR $scope = 3 OR $scope = 0 OR $scope = 1) ";
         }
 
         $sql = "SELECT pk_list as id, c_name 
             FROM t_cores_list 
             $conds
             ORDER BY C_ORDER";
+
         return $this->db->GetAll($sql, $params);
     }
 
@@ -90,18 +90,23 @@ class reportbook_Model extends Model
         else
         {
             //la can bo cap tinh
-            $sql .= " AND ($scope = 2 OR $scope = 3) ";
+            $sql .= " AND ($scope = 2 OR $scope = 3 OR $scope = 0 OR $scope = 1)";
         }
         $data               = $this->db->GetRow($sql, array($book_id, $this->_listtype_id));
+        $data['c_xml_data'] = isset($data['c_xml_data']) ? $data['c_xml_data'] : '';
         $data['c_xml_data'] = simplexml_load_string($data['c_xml_data']);
         return $data;
     }
 
     public function qry_all_records($book_id, $begin_date, $end_date, $paging = true)
     {
-        $book_id    = (int) $book_id;
+        $v_scope_id = (int) get_request_var('sel_scope',0,true);//Ma vung tiep nhan ho so
+        $v_scope_id = ($v_scope_id > 0) ? $v_scope_id : (int) Session::get('village_id');
+        $book_id    = (int) $book_id; // ma sach
+
         $begin_date = date_create_from_format('d-m-Y', $begin_date)->format('Y-m-d');
         $end_date   = date_create_from_format('d-m-Y', $end_date)->format('Y-m-d');
+        
         page_calc($v_start, $v_end);
         $limit      = $v_end - $v_start + 1;
         $offset     = $v_start;
@@ -121,9 +126,7 @@ class reportbook_Model extends Model
                 AND R.c_receive_date <= ?
                 AND R.fk_village_id = ?';
 
-
-
-        $params = array($book_id, $begin_date, $end_date, (int) Session::get('village_id'));
+        $params = array($book_id, $begin_date, $end_date, $v_scope_id);
 
         $count_sql    = "SELECT COUNT(*) FROM $tables WHERE $conditions";
         $total_record = $this->db->GetOne($count_sql, $params);
@@ -143,7 +146,6 @@ class reportbook_Model extends Model
         {
             $this->db->Execute("SET @rownum = 0;");
         }
-        //dien ve KY BAO CAO: C
         return $this->db->GetAll($sql, $params);
     }
 
@@ -224,5 +226,60 @@ class reportbook_Model extends Model
         }
         return array();
     }
+    /**
+     * lay danh dach khu vu tiep nhan ho so
+     */
+    function qry_all_scope()
+    {        
+        $village_id = (int) Session::get('village_id');
+        $results = array();
+        if ($this->_la_can_bo_cap_xa)
+        {
+             $sql = "SELECT * 
+                    FROM t_cores_ou 
+                    WHERE C_LEVEL = 3
+                    and C_STATUS is null
+                    and PK_OU = $village_id
+                    ORDER BY C_INTERNAL_ORDER";
+             $results = $this->db->GetAll($sql);
+        }
+        else
+        {
+            //huyen sở
+            $sql = "SELECT * 
+                    FROM t_cores_ou 
+                    WHERE C_STATUS is null
+                    and C_LEVEL =3
+                    ORDER BY C_INTERNAL_ORDER";
+            $results = $this->db->GetArray($sql);
+        }
+        return $results;
+    }
+/**
+     * Lấy danh sách Role của một user
+     * @param string $user_code
+     * @return array
+     */
+    public function qry_all_user_role($user_code)
+    {
+        if (DATABASE_TYPE == 'MSSQL')
+        {
+            $stmt = "Select distinct right(C_TASK_CODE, PATINDEX ( '%[A-Z0-9_][" . _CONST_XML_RTT_DELIM . "]%' , reverse(C_TASK_CODE))) C_ROLE
+                    From t_r3_user_task  Where C_USER_LOGIN_NAME=?";
+        }
+        elseif (DATABASE_TYPE == 'MYSQL')
+        {
+            $stmt = "Select distinct Right(C_TASK_CODE, LOCATE('" . _CONST_XML_RTT_DELIM . "', REVERSE(C_TASK_CODE)) - 1) C_ROLE
+                    From t_r3_user_task Where C_USER_LOGIN_NAME=?";
+        }
+        $params = array($user_code);
 
+        if (DEBUG_MODE < 10)
+        {
+            $this->db->debug = 0;
+        }
+        $ret             = $this->db->getCol($stmt, $params);
+        $this->db->debug = DEBUG_MODE;
+        return $ret;
+    }
 }

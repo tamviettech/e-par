@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -47,12 +46,19 @@ $this->template->display('dsp_header.php');
     <?php echo $this->dsp_div_notice($VIEW_DATA['active_role_text'] );?>
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
-
-    <div id="solid-button">
-        <input type="button" class="solid transfer" value="Nhận biên lai thuế"
-               onclick="btn_receive_tax_receipt_onclick();" />
-    </div>
     <div class="clear"></div>
+    <div id="solid-button">
+        <button type="button" name="trash" class="btn btn-danger" onclick="btn_reject_onclick();">
+            <i class="icon-ban-circle"></i>
+            Từ chối hồ sơ
+        </button>
+        <!--button ban giao-->
+        <button type="button" name="trash" class="btn btn-primary" onclick="btn_receive_tax_receipt_onclick();">
+            <i class="icon-exchange"></i>
+            Nhận biên lai thuế
+        </button>
+    </div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
 
     <div id="procedure">
         <?php
@@ -138,6 +144,30 @@ $this->template->display('dsp_header.php');
 
         f.submit();
 
+    }
+    
+    /**
+     * Comment fc hiển thị dialog reject
+     */
+    function btn_reject_onclick()
+    {
+    	var f = document.frmMain;
+
+        //Danh sach ID Ho so da chon
+        v_selected_record_id_list = get_all_checked_checkbox(f.chk, ',');
+
+        if (v_selected_record_id_list != '')
+        {
+            var url = '<?php echo $this->get_controller_url();?>dsp_reject_tax/' + v_selected_record_id_list
+                + '/?record_type_code=' + $("#record_type_code").val()
+                + '&pop_win=1';
+
+               showPopWin(url, 800, 500, null, true);
+        }
+        else
+        {
+            alert('Chưa có hồ sơ nào được chọn!');
+        }
     }
 </script>
 <?php $this->template->display('dsp_footer.php');

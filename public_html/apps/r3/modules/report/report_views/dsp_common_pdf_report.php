@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -52,10 +51,11 @@ $v_count = count($arr_all_report_data);
 $v_layout = strtoupper(get_xml_value($dom_xml_report, '/report/@layout')) == 'P' ? 'P' : 'L';
 $dom_unit_info = simplexml_load_file('public/xml/xml_unit_info.xml');
 
-if (Session::get('la_can_bo_cap_xa'))
+if (Session::get('la_can_bo_cap_xa') == true)
     $v_unit_name = Session::get('ou_name');
 else
     $v_unit_name = xpath($dom_unit_info, '//full_name', XPATH_STRING);
+
 $v_unit_name = mb_strtoupper(str_ireplace('UBND', 'Uỷ ban nhân dân', $v_unit_name), 'UTF-8');
 $v_unit_short_name = get_xml_value($dom_unit_info, '/unit/name');
 
@@ -347,17 +347,29 @@ else
             top: 0px;
             left: 0px;
         }
+        @media print
+        {
+            .formPrint
+            {
+                display: none;
+            }
+            @page
+            {
+                margin: 10px;
+            }
+        }
     </style>
     <form class="formPrint" action="" method="POST">
         <?php echo $this->hidden('hdn_print_pdf','1');?>
         <input type="submit" value="Kết xuất pdf" />
+        <input type="button" value="In" onclick="javascript:window.print();"/>
         <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin();"/>
     </form>
     <table class="reprot_header">
         <tr>
             <td class="item">
                 <?php
-                 echo mb_strtoupper(get_xml_value($dom_unit_info, '/unit/full_name'), 'UTF-8');
+                 echo $v_unit_name;
                  echo '<br>';
                  echo 'VĂN PHÒNG';
                  echo '<br>';

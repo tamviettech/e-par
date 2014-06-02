@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class mavach_Model extends Model {
@@ -199,17 +198,23 @@ class mavach_Model extends Model {
                         Where R.PK_RECORD=?';
             }
             $arr_single_record = $this->db->getRow($stmt, array($record_id));
-
+            if(sizeof($arr_single_record)==0 && $record_id != NULL)
+            {
+                // Hồ sơ đã bị xóa
+                return $ret['record_deleted'] = '1';
+            }
             //Thong tin tien do
-            $v_record_type = $arr_single_record['C_RECORD_TYPE_CODE'];
-            if ($arr_single_record['C_CLEAR_DATE'] == NULL)
+            $v_record_type = isset($arr_single_record['C_RECORD_TYPE_CODE'])? $arr_single_record['C_RECORD_TYPE_CODE'] : '';
+            
+            if (empty($arr_single_record['C_CLEAR_DATE']))
             {
                 $dom_step = simplexml_load_file($this->_get_xml_config($v_record_type, 'workflow'));
-            }
+            }           
             else
             {
                 $dom_step = simplexml_load_string($arr_single_record['C_XML_WORKFLOW']);
             }
+            
             $r = $dom_step->xpath('//step/@time');
             $step_days_list = '';
             foreach ($r as $time)

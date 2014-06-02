@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <script>
     function dsp_all_user_to_allot(tbl_id, group_code)
     {
@@ -65,8 +64,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         + ' data-user_type="' + v_user_type + '" />';
                 html += '</td>';
                 html += '<td>';
+                html += '<label for="' + v_checkbox_id + '">';
                 html += '<img src="' + SITE_ROOT + 'public/images/icon-16-' + v_user_type + '.png" border="0" align="absmiddle" />';
-                html += '<label for="' + v_checkbox_id + '">' + v_user_name + '</label>';
+                html += v_user_name;
+                html += '</label>';
                 html += '</td>';
                 html += '<td>' + v_job_title + '</td>';
                 html += '</tr>';

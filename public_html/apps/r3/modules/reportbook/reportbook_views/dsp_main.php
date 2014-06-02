@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 defined('DS') or die();
 
@@ -48,7 +47,10 @@ $arr_all_books = $VIEW_DATA['arr_all_books'];
                     <th>Tên sổ</th>
                     <th>Hành động</th>
                 </tr>
-                <?php $index         = 0; ?>
+                <?php 
+                    $index         = 0; 
+                    $arr_all_books = is_array($arr_all_books) ? $arr_all_books : array();
+                ?>
                 <?php foreach ($arr_all_books as $book): ?>
                     <?php
                     $class       = 'row' . ($index % 2);

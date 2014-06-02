@@ -7,41 +7,50 @@ function txt_record_type_code_onkeypress(evt)
     }
 
     if(theKey == 13){
+        show_all_option_of_sel_record_type();
         var v_record_type_code = trim($("#txt_record_type_code").val()).toUpperCase();
-        $("#sel_record_type").val(v_record_type_code);
-        if ($("#sel_record_type").val() != '')
+        if(v_record_type_code != '')
         {
-            $("#frmMain").submit();
-        }
-        else
-        {
-            $("#sel_record_type option").show();
-            if(v_record_type_code != '')
-            {
-                var count = 0;
-                $("#sel_record_type option").each(function(){
-                    if($(this).attr('data-mapping') == v_record_type_code)
-                    {
-                        $("#sel_record_type").val($(this).val());
-                        count ++;
-                    }
-                    else
-                    {
-                        $(this).hide();
-                    }
-                });
-                if(count == 1)
+            var count = 0;
+            $("#sel_record_type option").each(function(){
+                if($(this).val() == v_record_type_code)
                 {
                     $("#frmMain").submit();
                 }
+                else if($(this).attr('data-mapping') == v_record_type_code)
+                {
+                    $("#sel_record_type").val($(this).val());
+                    count ++;
+                }
                 else
                 {
-//                    $("#procedure").html('');
+                    $(this).remove();
                 }
+            });
+            
+            if(count == 1)
+            {
+                $("#frmMain").submit();
             }
         }
     }
     return false;
+}
+//hien thi tat ca option cua #sel_record_type
+function show_all_option_of_sel_record_type()
+{
+    var all_record_type = JSON.parse($('#hdn_all_record_type_filter').val());
+    $("#sel_record_type option").remove();
+    var html_option = '';
+    var mapping = '';
+    var name = '';
+    for(var key in all_record_type)
+    {
+        mapping = all_record_type[key].C_MAPPING_CODE;
+        name = all_record_type[key].C_NAME;
+        html_option = '<option value="'+key+'" data-mapping="'+mapping+'" data-scope="3">'+key+' - '+name+'</option>';
+        $("#sel_record_type").append(html_option);
+    }
 }
 
 function sel_record_type_onchange(e)
@@ -89,7 +98,7 @@ function get_supplement_notice()
 
                 html += '<li><a href="javascript:void(0)" onclick="set_record_type(\'' + v_record_type_code + '\')">'
                         + v_record_type_code + ' - ' + v_record_type_name
-                        + ' c� <span class="count">' + v_count + '</span> h? so </a></li>';
+                        + ' có <span class="count">' + v_count + '</span> hồ sơ </a></li>';
             });
             html += '</ul>';
             $("#notice-container").html(html);
@@ -112,7 +121,7 @@ function get_supplement_notice()
 //
 //            html += '<li><a href="javascript:void(0)" onclick="set_record_type(\'' + v_record_type_code + '\')">'
 //                + v_record_type_code + ' - ' + v_record_type_name
-//                + ' c� <span class="count">' + v_count + '</span> h? so </a></li>';
+//                + ' có <span class="count">' + v_count + '</span> hồ sơ </a></li>';
 //        });
 //        html +='</ul>';
 //        $("#notice-container").html(html);

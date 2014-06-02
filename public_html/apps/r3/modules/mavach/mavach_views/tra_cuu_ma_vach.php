@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
-
 <?php
 if (!defined('SERVER_ROOT'))
 {
@@ -27,7 +26,8 @@ if (!defined('SERVER_ROOT'))
 $arr_single_record    = @$arr_single_record_statistic['arr_single_record'];
 $arr_step_formal_date = @$arr_single_record_statistic['arr_step_formal_date'];
 
-if (isset($arr_single_record['PK_RECORD']))
+
+if (isset($arr_single_record['PK_RECORD']) && is_array($arr_single_record))
 {
     $v_record_id           = $arr_single_record['PK_RECORD'];
     $v_record_no           = $arr_single_record['C_RECORD_NO'];
@@ -92,7 +92,10 @@ if (isset($arr_single_record['PK_RECORD']))
         <script src="<?php echo SITE_ROOT; ?>public/js/overlib_mini.js" type="text/javascript"></script>
         <script src="<?php echo SITE_ROOT; ?>public/js/mylibs.js" type="text/javascript"></script>
         <script src="<?php echo SITE_ROOT; ?>public/js/DynamicFormHelper.js" type="text/javascript"></script>
+        <link href="<?php echo SITE_ROOT; ?>public/css/mavach.css" rel="stylesheet" type="text/css" />
     </head>
+    
+    
     <body onkeydown="document.frmMain.txt_record_no.focus();">
         <form name="frmMain" id="frmMain" action="" method="POST">
             <DIV id="overDiv" style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></DIV>
@@ -102,9 +105,9 @@ if (isset($arr_single_record['PK_RECORD']))
                     <div id="date"><?php echo jwDate::vn_day_of_week() . ', ' . date("d/m/Y"); ?></div>
                 </div>
                 <div class="clear">&nbsp;</div>
-                <div class="container_24" id="wrapper">
-                    <div class="grid_5">
-                        <div class="edit-box" id="left_side_bar">
+                <div  id="wrapper">
+                    <div >
+                        <div class="edit-box" id="box-search">
                             <div style="width: 96%; padding: 4px;">
                                 <div class="menuLeft" id="menuLeft">
                                     Mã hồ sơ: <input type="text" name="txt_record_no" id="txt_record_no" autofocus="autofocus" value="<?php echo $v_record_no ?>"/>
@@ -112,8 +115,8 @@ if (isset($arr_single_record['PK_RECORD']))
                             </div>
                         </div>
                     </div>
-                    <div class="grid_19" id="content_right">
-                        <?php if (isset($arr_single_record_statistic) && sizeof($arr_single_record_statistic) > 0): ?>
+                    <div  id="content_right">
+                        <?php if (isset($arr_single_record_statistic) && sizeof($arr_single_record_statistic) > 0 && is_array($arr_single_record)): ?>
                             <?php
                             echo $this->hidden('controller', $this->get_controller_url());
                             echo $this->hidden('hdn_item_id', $v_record_id);
@@ -127,7 +130,7 @@ if (isset($arr_single_record['PK_RECORD']))
                             echo $this->hidden('XmlData', $v_xml_data);
                             ?>
                             <!-- Thong tin chung trong Ho so -->
-                            <div style="padding-bottom: 5px; float: left;width: 100%">
+                            <div id="box-before-record" style="padding-bottom: 5px; float: left;">
                                 <style type="text/css">table.none td{border:0px}</style>
                                 <table border="0" cellpadding="4" cellspacing="0" width="100%" class="none">
                                     <tr>
@@ -217,7 +220,7 @@ if (isset($arr_single_record['PK_RECORD']))
                                                 <th rowspan="2">Ngày bắt đầu theo QĐ</th>
                                                 <th rowspan="2">Số ngày QĐ</th>
                                                 <th rowspan="2">Ngày kết thúc theo QĐ</th>
-                                                <th colspan="4">Tiến độ thực tế</th>
+                                                <th colspan="4" style="text-align: center">Tiến độ thực tế</th>
                                             </tr>
                                             <tr>
                                                 <th>Công việc</th>
@@ -268,7 +271,7 @@ if (isset($arr_single_record['PK_RECORD']))
 
                                                         //Mã công việc tiếp theo trên thực tế
                                                         $v_next_task_in_fact = $dom_processing->xpath("//next_task[1]/@code");
-                                                        $v_next_task_in_fact = $v_next_task_in_fact[0];
+                                                        $v_next_task_in_fact = isset($v_next_task_in_fact[0]) ? $v_next_task_in_fact[0] : '';
 
                                                         if (trim($v_task_code) == trim($v_next_task_in_fact))
                                                         {
@@ -320,7 +323,14 @@ if (isset($arr_single_record['PK_RECORD']))
                                     }
                                 });
                             </script>
-                        <?php elseif($v_record_no): ?>
+                        
+                               
+                          <?php 
+                            elseif(!is_array($arr_single_record) && isset($arr_single_record)):
+                            ?>
+                            Hồ sơ bạn cần tìm có mã: <b><?php echo $v_record_no ?></b>  đã bị xóa!
+                            <?php
+                                elseif($v_record_no): ?>
                             Không tìm thấy mã hồ sơ <b><?php echo $v_record_no ?></b>
                         <?php endif; ?>
                     </div>
@@ -330,7 +340,6 @@ if (isset($arr_single_record['PK_RECORD']))
                 <div class="clear">&nbsp;</div>
                 <div class="grid_24">
                     <div id="footer">
-                        <hr />
                         R3 - Phần mềm hỗ trợ giải quyết thủ tục hành chính theo cơ chế một cửa </br>
                     </div>
                 </div>
