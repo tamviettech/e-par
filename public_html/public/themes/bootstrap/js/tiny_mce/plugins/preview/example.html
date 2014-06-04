@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script language="javascript" src="../../tiny_mce_popup.js"></script>
+<script type="text/javascript" src="jscripts/embed.js"></script>
+<script type="text/javascript">
+tinyMCEPopup.onInit.add(function(ed) {
+	var dom = tinyMCEPopup.dom;
+
+	// Load editor content_css
+	tinymce.each(ed.settings.content_css.split(','), function(u) {
+		dom.loadCSS(ed.documentBaseURI.toAbsolute(u));
+	});
+
+	// Place contents inside div container
+	dom.setHTML('content', ed.getContent());
+});
+</script>
+<title>Example of a custom preview page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+<body>
+<div class="theme-slector theme-slector-close">
+	<div class="theme-setting">
+		<i class="icon-cogs"></i>
+	</div>
+	<ul class="theme-list clearfix">
+		<li class="theme-color theme-fabrics" title="theme-fabrics"></li>
+		<li class="theme-color theme-blue" title="theme-blue"></li>
+		<li class="theme-color theme-wooden" title="theme-wooden"></li>
+		<li class="theme-color theme-dark-orange" title="theme-dark-orange"></li>
+		<li class="theme-color theme-default" title="theme-default"></li>
+	</ul>
+</div>
+<div class="theme-slector theme-slector-close">
+	<div class="theme-setting">
+		<i class="icon-cogs"></i>
+	</div>
+	<ul class="theme-list clearfix">
+		<li class="theme-color theme-fabrics" title="theme-fabrics"></li>
+		<li class="theme-color theme-blue" title="theme-blue"></li>
+		<li class="theme-color theme-wooden" title="theme-wooden"></li>
+		<li class="theme-color theme-dark-orange" title="theme-dark-orange"></li>
+		<li class="theme-color theme-default" title="theme-default"></li>
+	</ul>
+</div>
+
+
+Editor contents: <br />
+<div id="content">
+<!-- Gets filled with editor contents -->
+</div>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<html>
+<head>
+	<title>Video</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js">
+	</script>
+	<script type="text/javascript" src="../../../../../tinymce-config.js.php"></script>
+	<script type="text/javascript" src="../../../../js/subModal.js"></script>
+	<script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+	<script type="text/javascript" src="../../utils/mctabs.js"></script>
+	<script type="text/javascript" src="../../utils/form_utils.js"></script>
+	<script type="text/javascript" src="../../utils/validate.js"></script>
+	<script type="text/javascript" src="../../utils/editable_selects.js"></script>
+	<script type="text/javascript" src="js/image.js"></script>
+</head>
+<body>
+	<form id="frmMain" action="#" onsubmit="frm_onsubmit();return false;">
+	<input type="text" id="txt_url" size="40"/>&nbsp;
+	<a href="javascript:;" onclick="show_modal()">Media</a>
+	<div class="mceActionPanel">
+			<input type="submit" id="insert" name="insert" value="insert" />
+			<input type="button" id="cancel" name="cancel" value="cancel" onclick="tinyMCEPopup.close();" />
+	</div>
+	<script>
+		var inv = setInterval(function(){$('#popupContainer').remove();inv =window.clearInterval(inv)}, 1);
+		function show_modal(){
+			v_url = SITE_ROOT + "index.php?url=public_service/advmedia/dsp_service/video&pop_win=1";
+			window.parent.showPopWin(v_url, 800, 600, function(returnVal){
+				if(returnVal.length)
+				{
+					var v_path = returnVal[0]["path"];
+					var patt=/^\//g;
+					if (patt.test(v_path))
+					{
+						window.frmMain.txt_url.value = SITE_ROOT + 'uploads/public_service/' + v_path;
+					}
+					else
+					{
+						window.frmMain.txt_url.value = SITE_ROOT + 'uploads/public_service/' + v_path;
+					}
+				}
+			});
+		}
+		
+		function frm_onsubmit(){
+			v_text = '[video]' + window.frmMain.txt_url.value + '[/video]';
+			 tinyMCEPopup.editor.execCommand('mceInsertContent', false, v_text);
+			 tinyMCEPopup.close();
+		}
+	</script>
+</body>
+</html>
