@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<display_all>
+		<list>
+			<!-- 3 item nay la bat buoc -->
+			<item type="primarykey" id="PK_ARTICLE_COMMENT" />
+			<item type="checkbox" id="PK_ARTICLE_COMMENT" size="5%" />
+			<!-- ********************************************************* -->
+			
+			<item type="text" id="C_TITLE" name="title" size="35%" />
+			<item type="text" id="C_GUEST_NAME" name="author" size="30%" />
+                        <item type="text" id="C_INIT_DATE" name="date" size="15%"/>
+                        <item type="status" id="C_STATUS" name="status" size="15%"/>
+		</list>
+	</display_all>
+</root>
+   

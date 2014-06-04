@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<form>
+
+	<line label="Thông tin người nộp hồ sơ:" cols="2">
+		<item type="TextboxName" id="txtName" name="Tên người đăng ký" allownull="no"  validate="text"   label="Họ và Tên:"  defaul_value=""  size="40" css="" Even="ConverUpperCase('txtName',this.value)" view = "true"/>
+		<item type="DropDownList" id="ddlSex" name="Giới tính" allownull="yes"  validate="ddli" label="Giới tính "  defaul_value="0"  src_file="public/xml/xml_gioi_tinh.xml" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtBirthday" name="Ngày sinh" allownull="yes"  validate="text"   label="Ngày sinh:"  defaul_value="" size="30" css="" view = "true"/>
+		<item type="Textbox" id="txtNationality" name="Dân tộc" allownull="yes"  validate="text"   label="Dân tộc:"  defaul_value="Kinh"  size="30" css="" view = "true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtIdentityCard" name="Số CMND" allownull="yes"  validate="number"   label="Số CMND:"  defaul_value="" size="30" css="" view = "true"/>
+		<item type="Textbox" id="txtDateProviderCard" name="Ngày cấp" allownull="yes"  validate="text"   label="Ngày cấp:"  defaul_value="" size="30" css="" />
+	</line>
+	<line label="" cols="">
+		<item type="Textbox" id="txtPlaceProvider" name="Nơi cấp" allownull="yes"  validate="text"   label="Nơi cấp:"  defaul_value=""  size="60" css="" />
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtAddPopulation" name="Nơi đăng ký hộ khẩu thường trú" allownull="yes"  validate="text"   label="Nơi đăng ký hộ khẩu thường trú:"  defaul_value=""  size="60" css="" view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Textbox" id="txtDiaChi" name="Chỗ ở hiện tại" allownull="yes"  validate="text"   label="Chỗ ở hiện tại:"  defaul_value=""  size="60" css="" />
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txtSoDienThoai" name="Điện thoại" allownull="yes"  validate="phone" label="Điện thoại:"  defaul_value=""  size="30" css="" />
+		<item type="Textbox" id="txtFax" name="Fax" allownull="yes"  validate="fax"   label="Fax:"  defaul_value=""  size="30" css="" />
+	</line>
+
+
+	<!--Tài liệu kèm theo-->
+
+	<line label="Tài liệu kèm theo" cols="1">
+		<item type="Checkbox" value="0" id="ckb0" doc="yes"  name="" allownull=""  validate="" title="Đơn đề nghị cấp giấy phép kinh doanh rượu" label=""  view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="1" id="ckb1" doc="yes" name="" allownull=""  validate="" title="Bản sao hợp lệ giấy chứng nhận đăng ký kinh doanh, giấy chứng nhận mã số thuế" label=""  view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="2" id="ckb2" doc="yes" name="" allownull=""  validate="" title="Tài liệu chứng minh quyền sử dụng địa điểm kinh doanh rượu" label=""  view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="3" id="ckb3" doc="yes" name="" allownull=""  validate="" title="Tài liệu về phòng cháy chữa cháy theo quy mô cửa hàng" label=""  view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="4" id="ckb4" doc="yes" name="" allownull=""  validate="" title="Tài liệu liên quan đến vệ sinh an toàn thực phẩm" label=""  view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="5" id="ckb5" doc="yes" name="" allownull=""  validate="" title="Tài liệu liên quan đến bảo vệ môi trường" label=""  view = "true"/>
+	</line>
+	<line label="" cols="1">
+		<item type="Checkbox" value="6" id="ckb6" doc="yes" name="" allownull=""  validate="" title="Số lượng hồ sơ: 01 (bộ)" label=""  view = "true"/>
+	</line>
+	
+
+
+	<line label="" cols="1" >
+		<item type="Checkbox" value="10"  id="ckbTaiLieuKhac" name="" allownull=""  validate="" title="Tài liệu khác" label="" view = "true"/>
+	</line>
+
+	<line label="" cols="1">
+		<item type="TextboxArea" id="txtTaiLieuKhac" name="" allownull="yes"  validate="text"   label=""  defaul_value=""  size="50" css=""  view = "true"/>
+	</line>
+
+
+</form>

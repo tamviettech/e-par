@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <!-- Quan tri -->  
+        <!--Sao lưu hoặc khôi phục dữ liệu-->
+        <line label="Sao lưu khôi phục dữ liệu" cols="1">
+            <item type="Checkbox" value="8" id="QUAN_TRI_BACKUP_RESTORE" name="" allownull="" validate="" title="Quản trị sao lưu khôi phục dữ liệu" label="" view="true"/>
+        </line>
+        <!--End sao lưu hoặc khôi phục-->
+    
+
+</form>

@@ -1,0 +1,67 @@
+/*header*/
+#header_admin
+{
+    width: 100%;
+}
+.BannerMenu a {
+    color: #3F3F3F;
+    text-decoration: none;
+}
+.Banner {
+    background-image: url(../../public/images/banner_backend.gif);
+    background-repeat: no-repeat;
+    background-position: left top;
+    height: 83px;
+}
+.TableBannerMenu {
+    background-image: url(../../public/images/BannerBg.gif);
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+
+    height: 83px;
+    color: #30302E;
+
+}
+#header_admin_bot
+{
+    background-image: url(../../public/images/header_bot.gif);
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    height: 31px;
+}
+
+table.TableBannerMenu td.BannerMenu {
+    background-image: url(../../public/images/topmenu_swath.gif);
+    background-repeat: no-repeat;
+    background-position: right center;
+    height: 48px;
+    padding-right: 10px;
+
+}
+.TableBannerMenu tr td
+{
+    border: 0px;
+}
+.BannerMenuLast {
+    height: 33px;
+    padding-right: 14px;
+}
+.BannerMenuLast a {
+    color: #3F3F3F;
+    text-decoration: none;
+}
+.CounterStatistic {
+    text-align: right;
+    padding-right: 20px;
+    padding-bottom: 10px;
+}
+
+/*footer*/
+#footer
+{
+    background-color: #A6CDEB;
+    height: 42px;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <line label="Ảnh đại diện:" cols="1">
+        <item type="Textbox" id="txt_file_name" name="Ảnh đại diện" allownull="yes" validate="" label="Đường dẫn ảnh:" defaul_value="" size="" css="" view="true" />
+    </line>
+</form>

@@ -1,0 +1,450 @@
+body
+{
+    margin: 0;
+    background-color: white;
+}
+body,table,td{
+    font-size:12px;
+}
+.data tr:hover td{
+    background-color: lightsteelblue;
+}
+img{
+    cursor:pointer;
+}
+#Menu
+{
+    border: 1px solid;
+}
+#msg-box{
+    display: none;position: fixed;right: 0;top: 0;padding:10px;background-color: white;
+    border: 1px solid #C0C0C0;
+    color: blue;
+    font-weight: bold;
+}
+#Icon
+{
+    text-align: left;
+    float: left;
+    width: 310px;
+    margin-left: 5px;
+    border: 1px solid;
+}
+
+
+#Image_Title
+{
+    /*    width: 100px;*/
+    float: left;
+    /*    height: 100px;*/
+    text-decoration: none;
+    border: 1px solid;
+}
+#Title_Short_Content
+{
+    width: 310px;
+    border: 1px solid;
+}
+
+.left 
+{
+    background-color: white;
+
+}
+
+.right1
+{
+    background-color: white;
+
+}
+
+.header
+{
+    text-align: center;
+    background-color: white;
+    border: 1px solid;
+}
+
+.footer
+{
+    background-color: white;
+    border: 1px solid;
+}
+
+.wrapper
+{
+    background: white;
+
+}
+.clear
+{
+    clear: both;
+}
+/** table adminlist **/
+
+table .adminlist
+{
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+    color: black;
+    border: #BDBDBD 1px solid;
+}
+table.adminlist a,
+table.adminlist a:visited {
+    text-decoration: none;
+}
+table.adminlist a:hover {
+    text-decoration: underline;
+}
+table.adminlist TH{
+    font-family: Arial;
+    font-size: 12px;
+    height: 24px;
+
+}
+table.adminlist TD {
+    margin-left:2px;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+    height: 22px;
+    padding-left: 5px;
+}
+table.adminlist TD.checkbox
+{
+    margin: 2px;
+    padding: 0px;
+}
+tr.module_name {
+    background-color: #F5F5F5;
+    height: 25px;
+}
+tr.module_name TD{
+    font-weight:bold;
+}
+
+a:visited{
+    color:blue;
+}
+.updown_button{
+    width:50%;
+    float:left;
+}
+
+input[type="button"],input[type="submit"]{
+
+    height: 25px;
+}
+/*cac button*/
+.ButtonAdd {
+    margin: 4px;
+    font-family: Arial;
+    font-size: 12px;
+    cursor: pointer;
+    background-image: url(../images/AddButton.gif);
+    background-repeat: no-repeat;
+    background-position: 2px 0px;
+    background-color: transparent;
+    border: 0px;
+    padding-left: 21px;
+    height: 21px;
+}
+.ButtonSearch {
+    margin: 4px;
+    font-family: Arial;
+    font-size: 12px;
+    cursor: pointer;
+    background-image: url(../images/SearchAdvance.gif);
+    background-repeat: no-repeat;
+    background-position: 2px 0px;
+    background-color: transparent;
+    border: 0px;
+    padding-left: 30px;
+    height: 21px;
+}
+.ButtonAccept {
+    margin: 4px;
+    font-family: Arial;
+    font-size: 12px;
+    cursor: pointer;
+    background-image: url(../images/AcceptButton.gif);
+    background-repeat: no-repeat;
+    background-position: 2px 0px;
+    background-color: transparent;
+    border: 0px;
+    padding-left: 21px;
+    height: 21px;
+}
+.ButtonBack
+{
+    margin: 4px;
+    font-family: Arial;
+    font-size: 12px;
+    cursor: pointer;
+    background-image: url(../images/MovePage.gif);
+    background-repeat: no-repeat;
+    background-position: 2px 0px;
+    background-color: transparent;
+    border: 0px;
+    padding-left: 21px;
+    height: 21px;
+}
+.ButtonDelete
+{
+    margin: 4px;
+    font-family: Arial;
+    font-size: 12px;
+    cursor: pointer;
+    background-image: url(../images/DeleteButton.gif);
+    background-repeat: no-repeat;
+    background-position: 2px 0px;
+    background-color: transparent;
+    border: 0px;
+    padding-left: 21px;
+    height: 21px;
+}
+/*level cho category thut dau dong*/
+.child_lvl_1{
+    margin-left:40px;
+}
+.child_lvl_2{
+    margin-left:80px;
+}
+.child_lvl_3{
+    padding-left:120px;
+}
+.child_lvl_4{
+    margin-left:160px;
+}
+.right_header{
+    display:block;
+    height:15px;
+    width:100%;
+    border:1px solid #989898;
+    background-color: #F0F0F0;
+    color:blue;
+    font-size:12px;
+    cursor:pointer;
+    padding:5px;
+    margin-top: 5px;
+}
+.right_header:hover{
+    background-color:#F8F8F8;
+
+}
+.item_container{
+    border:1px solid #989898;
+    padding:5px;
+    width:100%;
+    margin-bottom:10px;
+    margin-top: -1px;
+    display:none;
+}
+
+div#div_shadow{
+    background-color: black;
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    opacity:0;
+    display:none;
+}
+div#div_popup_wrapper{
+    width:100%;
+    top:0;
+    left:0;
+    height:100%;
+    display:none;
+    position:fixed;
+    z-index: 100;
+}
+
+
+
+/*làm cho admin menu*/
+.TableLeftMenu {
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+    color: #3F3F3F;
+    border-top: #B9B3B3 5px solid;
+    border: red 1px solid;
+}
+table.TableLeftMenu td.LeftMenuActive {
+    color: white;
+    width: 180px;
+    padding-left: 32px;
+    font-weight: bold;
+    background-color: #F1F1F1;
+    background: transparent url(../images/MenuActive1.gif) no-repeat;
+    height: 27px;
+    font-family: Verdana;
+    font-size: 11px;
+    border-bottom: solid 1px #EBEBEB;
+}
+table.TableLeftMenu td.LeftMenu {
+    color: black;
+    width: 180px;
+    font-weight: bold;
+    font-family: Verdana;
+    font-size: 11px;
+    padding-left: 32px;
+    background: transparent url(../images/Menu1.gif) no-repeat;
+    height: 27px;
+    border-bottom: solid 1px #EBEBEB;
+}
+table.TableLeftMenu td.LeftMenuActive a {
+    color: white;
+}
+table.TableLeftMenu td.LeftMenu a {
+    color: black;
+}
+table.TableLeftMenu td.LeftMenuActive a:hover {
+    color: red;
+}
+table.TableLeftMenu td.LeftMenu a:hover {
+    color: red;
+}
+table.TableLeftMenu tr td div a 
+{
+    text-decoration: none;
+}
+/*admin content default*/
+.Header_default 
+{
+    background-image: url(../images/LoginInfoTitle.gif);
+    background-repeat: no-repeat;
+    background-position: left top;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    padding-left: 34px;
+    height: 25px;
+}
+.LeftContent {
+    background-color: #EBEBEB;
+    width: 184px;
+    border: 0px;
+    padding-top: 5px;
+}
+.TableLoginInfo
+{
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+    color: #000000;
+    width: 184px;
+    background-color: #ebebeb;
+    border: 0px;
+}
+.LoginInfoLeftContent 
+{
+    background-color: #CCCACB;
+    width: 32px;
+}
+.LoginInfoRightContent 
+{
+    background-color: #E4E0E1;
+    width: 152px;
+    padding-bottom: 15px;
+}
+.LoginInfo 
+{
+    padding-top: 10px;
+    padding-left: 2px;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+    color: black;
+    width: 184px;
+    border: 0px;
+}
+.RightContent {
+    padding-top: 10px;
+    width: 97%;
+    height: 100%;
+    background-color: white;
+    padding-bottom: 10px;
+    padding-right: 5px;
+    padding-left: 10px;
+}
+.TableLeftMenuOverview 
+{
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+    width: 100%;
+}
+TableLeftMenuOverview {
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: normal;
+}
+.LeftMenuOverview {
+    color: #005BA1;
+    font-weight: bold;
+    font-family: Arial;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-align: center;
+}
+.Content 
+{
+    position: relative;
+    padding-bottom: 10px;
+    color: #005BA1;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: Arial;
+    background-image: url(../images/BgItemIcon.gif);
+    background-repeat: no-repeat;
+    background-position: left top;
+    width: 119px;
+    height: 121px;
+    padding-top: 5px;
+}
+.LeftMenuOverview a {
+    color: #005BA1;
+    text-decoration: none;
+}
+.Content a:hover 
+{
+    color: red;
+}
+.TableContent tr td
+{
+    border: 0px;
+}
+
+/*từng thành phần admin*/
+/*event*/
+#table_Main tr td 
+{
+    border: 0;
+}
+/*adversiting*/
+#navigator ul{
+    padding-left: 30px;
+}
+#div_add_new_position
+{
+    background-color: #f0f0f0;
+    padding:10px;
+    min-height: 100px;
+    display: none;
+}
+#div_add_new_position table tr td
+{
+    border:0;
+}
+.table_none_border tr td
+{
+    border: 0;
+}

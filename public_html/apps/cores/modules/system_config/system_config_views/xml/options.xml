@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <line label="Thông tin về Email" cols="1">
+        <item type="Textbox" id="email_address" allownull="yes" validate="text" label="Địa chỉ hòm thư"  size="50" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Textbox" id="email_server" allownull="yes" validate="text" label="Địa chỉ máy chủ SMTP"  size="50" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Textbox" id="email_server_port" allownull="yes" validate="text" label="Cổng"  size="50" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" id="email_server_ssl" allownull="yes" validate="text" title="Sử dụng SSL"  size="50" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Textbox" id="email_account" allownull="yes" validate="text" label="Tên đăng nhập"  size="50" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Password" id="email_password" allownull="yes" validate="text" label="Mật khẩu"  size="50" view="true"/>
+    </line>
+</form>

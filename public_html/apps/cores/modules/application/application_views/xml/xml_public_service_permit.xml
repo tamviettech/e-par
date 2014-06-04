@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <!-- Quan tri -->  
+        <!--Thăm dò ý kiên-->
+        <line label="Thăm dò ý kiến" cols="1">
+            <item type="Checkbox" value="9" id="XEM_DANH_SACH_CUOC_THAM_DO_Y_KIEN" name="" allownull="" validate="" title="Xem danh sách câu hỏi thăm dò ý kiến" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="THEM_MOI_CUOC_THAM_DO_Y_KIEN" name="" allownull="" validate="" title="Thêm mới dò ý kiến" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XOA_CUOC_THAM_DO_Y_KIEN" name="" allownull="" validate="" title="Xóa thăm dò ý kiến" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="SUA_CUOC_THAM_DO_Y_KIEN" name="" allownull="" validate="" title="Sửa thăm dò ý kiến" label="" view="true"/>
+        </line>
+        <!--End thăm dò ý kiến-->
+        
+        <!--Quản lý chuyên mục-->
+        <line label="Quản lý chuyên mục" cols="1">
+            <item type="Checkbox" value="9" id="XEM_DANH_SACH_CHUYEN_MUC" name="" allownull="" validate="" title="Xem danh sách chuyên mục" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="SUA_CHUYEN_MUC" name="" allownull="" validate="" title="Sửa chuyên mục" label="" view="true"/>
+        </line>
+         <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XOA_CHUYEN_MUC" name="" allownull="" validate="" title="Sửa chuyên mục" label="" view="true"/>
+        </line>
+        
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="THEM_MOI_CHUYEN_MUC_NOI_BAT" name="" allownull="" validate="" title="Thêm mới chuyên mục nổi bật" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XOA_CHUYEN_MUC_NOI_BAT" name="" allownull="" validate="" title="Xóa chuyên mục nổi bật" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="SUA_CHUYEN_MUC_NOI_BAT" name="" allownull="" validate="" title="Sửa chuyên mục nổi bật" label="" view="true"/>
+        </line>
+         <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XEM_DANH_SACH_CHUYEN_MUC_NOI_BAT" name="" allownull="" validate="" title="Xem danh sách chuyên mục nổi bật" label="" view="true"/>
+        </line>
+        <!--End quản lý chuyên mục-->
+        <!--Quản lý tin bài-->
+        <line label="Quản lý tin bài" cols="1">
+            <item type="Checkbox" value="9" id="XEM_DANH_SACH_TIN_BAI" name="" allownull="" validate="" title="Xem danh sách tin bài" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="SUA_TIN_BAI" name="" allownull="" validate="" title="Sửa tin bài" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="THEM_MOI_TIN_BAI" name="" allownull="" validate="" title="Thêm mới tin bài" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XOA_TIN_BAI" name="" allownull="" validate="" title="Xóa tin bài" label="" view="true"/>
+        </line>
+        <!--End quản lý tin bài-->
+        <!--Quản lý media-->
+        <line label="Quản lý media" cols="1">
+            <item type="Checkbox" value="9" id="XEM_DANH_SACH_MEDIA" name="" allownull="" validate="" title="Xem danh sách media" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="SUA_MEDIA" name="" allownull="" validate="" title="Sửa media" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="THEM_MOI_MEDIA" name="" allownull="" validate="" title="Thêm mới media" label="" view="true"/>
+        </line>
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XOA_MEDIA" name="" allownull="" validate="" title="Xóa media" label="" view="true"/>
+        </line>
+        <!--End quản lý media-->
+        <!-- Tin bai noi bat (sticky)-->
+        <line label="Quản lý tin nổi bật" cols="1">
+            <item type="Checkbox" value="9" id="XEM_DANH_SACH_NOI_BAT" name="" allownull="" validate="" title="Xem danh sách tin nổi bật" label="" view="true"/>
+        </line>    
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="THEM_MOI_NOI_BAT" name="" allownull="" validate="" title="Thêm mới tin nổi bật" label="" view="true"/>
+        </line>   
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XOA_NOI_BAT" name="" allownull="" validate="" title="Xóa tin nổi bật" label="" view="true"/>
+        </line>   
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="SUA_NOI_BAT" name="" allownull="" validate="" title="Sửa tin nổi bật" label="" view="true"/>
+        </line>   
+        <!--End tin bai noi bat (sticky)-->
+        
+        
+        <!--Quan ly link lien ket web-->
+          <line label="Quản lý liên kết web" cols="1">
+            <item type="Checkbox" value="9" id="XEM_DANH_SACH_WEBLINK" name="" allownull="" validate="" title="Xem danh sách weblink" label="" view="true"/>
+        </line>    
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="THEM_MOI_WEBLINK" name="" allownull="" validate="" title="Thêm mới liên kết weblink" label="" view="true"/>
+        </line>   
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="SUA_WEBLINK" name="" allownull="" validate="" title="Sửa tin nổi bật" label="" view="true"/>
+        </line>   
+        <line label="" cols="1">
+            <item type="Checkbox" value="9" id="XOA_WEBLINK" name="" allownull="" validate="" title="Xóa tin nổi bật" label="" view="true"/>
+        </line>   
+        <!--End quan ly link lien ket web-->
+
+</form>

@@ -1,0 +1,191 @@
+
+.container-fluid
+{
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+/*-------------------------------footer-----------------------------------*/
+#footer
+{
+    border-top: solid 1px #E1E1E1;
+}
+ #box-web-link
+ {
+    background: white;
+    position: relative;
+ }
+ #web-link-forward:hover,#web-link-backward:hover 
+ {
+     opacity: 1;
+ }
+ #web-link-forward,#web-link-backward 
+ {
+    position: absolute;
+    top: 55px;
+    opacity: 0.3;
+    padding: 5px;
+}
+#web-link-forward
+{
+    right: 0;
+}
+#web-link-backward 
+{
+    left: 0;
+}
+ #web-link
+ {
+     overflow: hidden;
+     margin: 0 auto;
+ }
+ #web-link ul
+ {
+     margin: 0 auto;
+     padding: 0;
+ }
+ #web-link ul li img
+ {
+     width: 250px;
+     border: 0;
+     height: 100px;
+ }
+ #web-link ul li a
+ {
+     width: 250px; 
+    border: solid 1px; 
+    height: 100px; 
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    text-decoration: none;
+        
+ }
+.scroll-text {
+  border: 1px solid red;
+  width: 400px;
+  height: 4.5em;
+  overflow: hidden;
+}
+.scroll-text ul {
+  width: 800px;
+  height: 100px;
+  overflow: hidden;
+  margin: 0;
+}
+.scroll-text ul li {
+  height: 1.5em;
+}
+.scroll-img {
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+  font-size: 0;
+}
+.scroll-img ul {
+  width: 100%;
+  height: 600px;
+  margin: 0;
+}
+.scroll-img ul li {
+  display: inline-block;
+  padding: 10px 0 10px 10px;
+  list-style-type:none;
+  float: left;   
+}
+.copyright
+{
+    background: #333;
+    margin-top: 1px;
+    color: white
+}
+#main-layout{
+    
+    background: white;
+}
+ /*-------------------------End fix footer------------------------------------*/
+ 
+ /*fix menu to*/
+
+#banner
+{
+    height: 100px;
+}
+#banner >img
+{
+    height: 100px;
+    width: 100% ;
+}
+#menu-top 
+{
+font-weight: 800;
+}
+.top-nav .nav>li 
+{
+    line-height: 20px !important;
+}
+.home-link a ,.home-link
+{
+    height: 40px !important;
+    line-height: 40px ; 
+}
+.top-nav .navbar-inner{
+    min-height: 40px !important;
+}
+.navbar .nav > li > a {
+    float: none;
+    padding: 12px 15px 8px;
+}
+#menu-top a
+{
+    text-transform: uppercase;
+}
+#menu-top .navbar-inner
+{
+    background: #CC3333;   
+}
+#menu-top .navbar-inverse .brand, .navbar-inverse .nav > li > a
+{
+    color: white;
+}
+#menu-top .navbar-inverse .nav > li > a:focus, .navbar-inverse .nav > li > a:hover
+{
+    background: white;
+    color: black
+}
+#menu-top .home-link a
+{
+    color: white;
+    margin-left: 50px;
+}
+.navbar-inner
+{
+    padding-left: 10px;
+}
+#menu-top .home-link a 
+{
+    margin-left: 0px;
+}
+.navbar-inverse .nav .active > a {
+    color: #000;
+    background-color: #ffffff;
+    font-weight: bold;
+}
+.navbar-inverse .nav .active > a:hover
+{
+    color: #ffffff;
+    background-color: #000;
+}
+
+@media (max-width: 979px)
+{
+    .navbar-inverse .nav-collapse .nav > li > a, .navbar-inverse .nav-collapse .dropdown-menu a 
+    {
+        color: white !important;
+    }
+    .navbar-inverse .nav-collapse .nav > li > a:hover, .navbar-inverse .nav-collapse .dropdown-menu a:hover {
+        background-color: black;
+    }
+}
+
+/*End header*/

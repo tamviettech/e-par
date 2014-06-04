@@ -1,0 +1,112 @@
+body{
+    background-color: #dfefef;
+    line-height: 21px;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px ;
+}
+select {
+    font-size: 12px;
+}
+fieldset{
+    background-color: #D4D0C8;
+    border: 1px solid #807D79;
+    padding: 3px;
+}
+
+
+/** List record in table **/
+table * th {
+
+    /*
+    background-color: #D4D0C8;
+    border-top: #FFF 1px solid;
+    border-right: #404040 1px solid;
+    border-bottom: #404040 1px solid;
+    border-left: #FFF 1px solid;
+    background-image: url(../images/th-bg.jpg);
+    background-position: bottom right;
+    background-repeat: repeat-x;
+    */
+    background: buttonface none repeat scroll 0 0;
+    border-color: #F2F0EE #75736E #75736E #F2F0EE;
+    border-style: solid;
+    border-width: 1px;
+    font-weight: normal;
+    text-align: center;
+}
+table * tr.row0 {
+	background-color: #F4F4F4;
+}
+table * tr.row1 {
+	background-color: #E2E5EE;
+}
+table * td {
+	border: #808080 1px solid;
+}
+
+/** Button **/
+input[type="button"]
+{
+    border-top : solid 1px #FFF;
+	border-right : solid 1px #404040;
+	border-bottom : solid 1px #404040;
+	border-left : solid 1px #FFF;
+    background-color: #D4D0C8;
+}
+.edit-box {
+    border-top: #404040 1px solid;
+    background-color: #FFF;
+}
+
+/**text align */
+.center{
+    text-align: center;
+}
+.right{
+    text-align: right;
+}
+
+#by_ou,#by_user
+{
+    background-color: #D4D0C8;
+}
+#tabs_allot ul
+{
+    background-color: #D4D0C8;
+}
+#div_co_ou
+{
+    border-top: #404040 1px solid;
+	border-right: #D4D0C8 1px solid;
+	border-bottom: #D4D0C8 1px solid;
+    border-left: #404040 1px solid;
+    background-color: #FFF;
+}
+.tooltip {
+    display:none;
+    background:transparent url(..images/tooltip.black_arrow.png);
+    font-size:12px;
+    height:70px;
+    width:160px;
+    padding:25px;
+    color:#eee;
+ }
+ #quick_action img {
+    border:0;
+    cursor:pointer;
+    margin:0 1px;
+ }
+
+.top-nav-box
+{
+    background-image: url(../images/top_menu_bg.jpg);
+    background-repeat: no-repeat;
+    min-height: 25px;
+    background-size: 100% 25px;
+    padding-left: 5px;
+}
+#wrapper
+{
+    background: url(../images/wrapper_bg.jpg) repeat-y;
+    overflow: hidden;
+}
