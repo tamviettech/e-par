@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
+
 <?php
 
 if (!defined('SERVER_ROOT'))
@@ -210,7 +211,7 @@ class nop_ho_so_qua_mang_internet_Model extends Model
             }
         }
 
-        $response->message = 'Cảm ơn bạn đã nộp hồ sơ!';
+        $response->message = 'Cảm ơn bạn đã nộp hồ sơ! Nhấn <a href="' . SITE_ROOT . 'nop_ho_so">vào đây</a> để quay về trang chính';
         $response->success = true;
         return $response;
     }
@@ -300,21 +301,5 @@ class nop_ho_so_qua_mang_internet_Model extends Model
         }
         return $ret;
     }
-    public function qry_all_web_link()
-    {
-        $sql = "SELECT
-                    C_NAME,
-                    C_URL,
-                    C_FILE_NAME
-                  FROM t_ps_weblink
-                  WHERE C_STATUS = 1
-                  ORDER BY C_ORDER";
 
-        $results =  $this->db->GetAll($sql);
-        if($this->db->ErrorNo() == 0)
-        {
-            return $results;
-        }
-        return array();
-    }
 }

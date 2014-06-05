@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
+
 <?php
 defined('SERVER_ROOT') or die();
 $rows_per_col = 5;
@@ -30,11 +31,11 @@ $v_spec_code  = get_post_var('rad_linh_vuc', 0);
 <form id="frmMain" method="post">
     <table class="no-border">
         <colgroup>
-            <col width="25%">
-            <col width="75%">
+            <col width="30%">
+            <col width="70%">
         </colgroup>
         <tbody>
-            <tr>
+            <tr class="list-search">
                 <td><b>Lĩnh vực:</b></td>
                 <td>
                     <?php if ($arr_all_spec): ?>
@@ -68,10 +69,10 @@ $v_spec_code  = get_post_var('rad_linh_vuc', 0);
                     <?php endif; ?>
                 </td>
             </tr>
-            <tr>
+            <tr class="text-search">
                 <td>
                     <b>
-                        <label for="txt_tu_khoa">Tìm theo Mã hoặc Tên thủ tục:</label>
+                        <label for="txt_tu_khoa">Tìm theo Mã hoặc Tên thủ tục: &nbsp;&nbsp;</label>
                     </b>
                 </td>
                 <td>
@@ -84,11 +85,10 @@ $v_spec_code  = get_post_var('rad_linh_vuc', 0);
             </tr>
         </tbody>
     </table>
-
     <table class="adminlist" style="width: 100%">
         <colgroup>
-            <col width="10%">
-            <col width="90%">
+            <col width="7%">
+            <col width="93%">
         </colgroup>
         <thead>
             <tr>
