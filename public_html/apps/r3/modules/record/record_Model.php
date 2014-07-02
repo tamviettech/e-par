@@ -61,6 +61,63 @@ class record_Model extends Model
 
         return $this->db->getOne($stmt, $params);
     }
+    
+    /**
+     * Lay danh sach ID cua cac thu tuc NSD duoc phep thao tac
+     * @param string $user_login_name Ten dang nhap cua NSD
+     * @return string Danh sach ID cua thu tuc (Loai ho so), moi ID cach nhau boi dau phay
+     */
+    private function _qry_all_record_type_id_list_by_user($v_user_code)
+    {
+        //Danh sach ID loai thu tuc ma NSD da được phân công, hoac duoc phan quyen
+        //Neu co quyen theo doi, giam sat toan bo HS
+        $v_record_type_id_list = '0';
+        if (check_permission('THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO', $this->app_name))
+        {
+            $v_record_type_id_list = '';
+        }
+        //Neu NSD co quyen theo doi, giam sat toan bo ho so cua PHONG (Tat ca GROUP ma NSD do thuoc ve)
+        elseif (check_permission('THEO_DOI_GIAM_SAT_HO_SO_CUA_PHONG', $this->app_name))
+        {
+            $sql = "Select 
+                        RT.PK_RECORD_TYPE
+                    From t_r3_record_type RT
+                        Inner join
+                          (Select Distinct C_RECORD_TYPE_CODE
+                           From t_r3_user_task UT
+                           Inner join
+                             (Select G.C_CODE As C_GROUP_CODE
+                              From t_cores_group G
+                              Left join t_cores_user_group UG On G.PK_GROUP = UG.FK_GROUP
+                              Where UG.FK_USER =
+                                  (Select PK_USER
+                                   From t_cores_user
+                                   Where C_LOGIN_NAME = '{$v_user_code}')
+                             ) a 
+                            On UT.C_GROUP_CODE = a.C_GROUP_CODE
+                        ) b 
+                        On RT.C_CODE = b.C_RECORD_TYPE_CODE
+                    Where RT.C_STATUS > 0";
+            $arr_record_type_id_list = $this->db->getCol($sql);
+            $arr_record_type_id_list[] = '0';
+            $v_record_type_id_list   = implode(',', $arr_record_type_id_list);
+        }
+        else
+        {
+            $sql = "Select Distinct PK_RECORD_TYPE
+                    From t_r3_record_type RT
+                        Right join (Select Distinct C_RECORD_TYPE_CODE
+                                    From t_r3_user_task
+                                    Where C_USER_LOGIN_NAME = '$v_user_code') a
+                        On RT.C_CODE = a.C_RECORD_TYPE_CODE
+                    Where RT.PK_RECORD_TYPE Is Not Null And RT.C_STATUS > 0";
+            $arr_record_type_id_list = $this->db->getCol($sql);
+            $arr_record_type_id_list[] = '0';
+            $v_record_type_id_list   = implode(',', $arr_record_type_id_list);
+        }
+        return $v_record_type_id_list;
+        
+    }
 
     function qry_all_record_accept_by($v_user_code, $v_record_type_code)
     {
@@ -1482,6 +1539,7 @@ class record_Model extends Model
         //left join t_r3_mapping
         $v_join_mapping = "  LEFT JOIN (SELECT C_RECORD_TYPE_CODE,C_CODE FROM t_r3_mapping WHERE FK_USER = $v_user_id) M
                                 ON RT.C_CODE = M.C_RECORD_TYPE_CODE";
+        
         if (check_permission('THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO', $this->app_name))
         {
             $v_from_qry = "From t_r3_record_type RT Right Join (Select distinct UT.C_RECORD_TYPE_CODE
@@ -1489,6 +1547,26 @@ class record_Model extends Model
                                             On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
                                             $v_join_mapping
                     Where RT.C_STATUS > 0";
+        }
+        elseif (check_permission('THEO_DOI_GIAM_SAT_HO_SO_CUA_PHONG', $this->app_name))
+        {
+            $v_from_qry = " From t_r3_record_type RT
+                                Inner join
+                                  (Select Distinct C_RECORD_TYPE_CODE
+                                   From t_r3_user_task UT
+                                   Inner join
+                                     (Select G.C_CODE As C_GROUP_CODE
+                                      From t_cores_group G
+                                      Left join t_cores_user_group UG On G.PK_GROUP = UG.FK_GROUP
+                                      Where UG.FK_USER =
+                                          (Select PK_USER
+                                           From t_cores_user
+                                           Where C_LOGIN_NAME = '$v_user_code')
+                                     ) a 
+                                    On UT.C_GROUP_CODE = a.C_GROUP_CODE
+                                ) b 
+                                On RT.C_CODE = b.C_RECORD_TYPE_CODE
+                            $v_join_mapping  Where RT.C_STATUS > 0";
         }
         else
         {
@@ -1513,15 +1591,6 @@ class record_Model extends Model
                                             $v_join_mapping
                             Where RT.C_STATUS > 0";
             }
-
-            /*
-              $v_from_qry = "From t_r3_record_type RT Right Join (Select distinct UT.C_RECORD_TYPE_CODE
-              From t_r3_user_task UT
-              Where UT.C_USER_LOGIN_NAME='$v_user_code') as RTU
-              On RT.C_CODE=RTU.C_RECORD_TYPE_CODE
-              Where RT.C_STATUS > 0
-              Order By RT.C_CODE";
-             */
         }
         $other_clause = '';
         if (strtoupper(Session::get('active_role')) == _CONST_TRA_CUU_LIEN_THONG_ROLE)
@@ -1553,9 +1622,8 @@ class record_Model extends Model
                         , M.C_CODE as C_MAPPING_CODE 
                     $v_from_qry
                     $other_clause
-                    ORDER BY RT.c_code";
+                    ORDER BY RT.C_CODE";
         }
-
         return $this->db->getAssoc($stmt);
     }
 
@@ -5352,59 +5420,46 @@ class record_Model extends Model
         //Xem theo trang
         page_calc($v_start, $v_end);
         $v_spec_code = get_post_var('sel_spec','');
+                
+        $v_receive_date_from = jwDate::ddmmyyyy_to_yyyymmdd(get_post_var('txt_receive_date_from',''));
+        $v_receive_date_to = jwDate::ddmmyyyy_to_yyyymmdd(get_post_var('txt_receive_date_to',''));
         
-        $v_receive_date_from = isset($_POST['txt_receive_date_from']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_receive_date_from']), 0) : '';
-        $v_receive_date_to   = isset($_POST['txt_receive_date_to']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_receive_date_to'])) : '';
+        $v_return_date_from = jwDate::ddmmyyyy_to_yyyymmdd(get_post_var('txt_return_date_from',''));
+        $v_return_date_to = jwDate::ddmmyyyy_to_yyyymmdd(get_post_var('txt_return_date_to',''));
 
-        $v_return_date_from = isset($_POST['txt_return_date_from']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_return_date_from'])) : '';
-        $v_return_date_to   = isset($_POST['txt_return_date_to']) ? jwDate::ddmmyyyy_to_yyyymmdd(replace_bad_char($_POST['txt_return_date_to'])) : '';
+        $v_record_no = get_post_var('txt_record_no',''); 
+        $v_free_text = get_post_var('txt_free_text',''); 
 
-        $v_record_no = isset($_POST['txt_record_no']) ? replace_bad_char($_POST['txt_record_no']) : '';
-        $v_free_text = isset($_POST['txt_free_text']) ? replace_bad_char($_POST['txt_free_text']) : '';
-
-        $v_year = get_post_var('sel_year', 2013);
-        $v_receive_month_from = $v_receive_month_to = "";
+        $v_year = get_post_var('sel_year', '');
+        
+        //1: Tim kiem co ban
+        //2: tim kiem nang cao
         if (get_post_var('hdn_search_mode') == 1)
         {
-            $v_month     = get_post_var('sel_month');
+            $v_month     = get_post_var('sel_month',0);
             $start_month = 1;
             $end_month   = 12;
-            if ($v_month)
+            if ($v_month >= 1 && $v_month <= 12)
             {
-                $start_month = $end_month   = $v_month;
+                $start_month = $end_month = $v_month;
             }
             //tìm kiếm cơ bản
-//            $v_return_date_from  = '';
-//            $v_return_date_to    = '';
-//            $v_receive_date_from = "$v_year-$start_month-1";
-//            $v_receive_date_to   = "$v_year-$end_month-31";
+            $v_return_date_from  = '';
+            $v_return_date_to    = '';
             
-            $v_receive_month_from = "$v_year-$start_month-1";
-            $v_receive_month_to   = "$v_year-$end_month-31";
-            
+            if ($v_year != '')
+            {
+                $v_receive_date_from = "{$v_year}-{$start_month}-01 00:00:00";
+                $v_receive_date_to   = "{$v_year}-{$end_month}-" . jwDate::daysInMonth($end_month, $v_year ) . ' 00:00:00';
+            }
+            else
+            {
+                $v_receive_date_from = $v_receive_date_to = '';
+            }
         }
 
         //Danh sach ID loai thu tuc ma NSD da được phân công
-        //Neu co quyen theo doi, giam sat toan bo HS
-        if (check_permission('THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO', $this->app_name))
-        {
-            $v_record_type_id_list   = '';
-            $arr_record_type_id_list = array();
-        }
-        else
-        {
-            $sql = "Select Distinct PK_RECORD_TYPE
-                    From t_r3_record_type RT
-                        Right join ( Select Distinct C_RECORD_TYPE_CODE
-                                     From t_r3_user_task
-                                     Where C_USER_LOGIN_NAME = '$v_user_code'
-                                   ) a
-                        On RT.C_CODE = a.C_RECORD_TYPE_CODE
-                    Where RT.PK_RECORD_TYPE Is Not Null";
-
-            $arr_record_type_id_list = $this->db->getCol($sql);
-            $v_record_type_id_list   = implode(',', $arr_record_type_id_list);
-        }
+        $v_record_type_id_list = $this->_qry_all_record_type_id_list_by_user($v_user_code);
 
         if ($this->is_mssql())
         {
@@ -5444,78 +5499,54 @@ class record_Model extends Model
 
             //Cac dieu kien loc
             $v_and_condition = '';
-
-            //tim theo record type code
-            if ($p_record_type_code != '' && $p_record_type_code != NULL)
+            
+            //Neu loc theo Loai hs cu the
+            if ($p_record_type_code != '')
             {
                 $v_record_type_id = $this->db->GetOne("SELECT PK_RECORD_TYPE FROM t_r3_record_type WHERE C_CODE='$p_record_type_code'");
-
                 $v_and_condition .= " And FK_RECORD_TYPE=$v_record_type_id";
             }
-            //Loc theo thang
-            if($v_receive_month_from != ''&& $v_receive_month_from != NULL)
+            else //Khong loc theo loai ho so cu the
             {
-                $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_month_from') >= 0";
+                //Khong loc theo loai hs, nhung loc theo linh vuc
+                if($v_spec_code != '')
+                {
+                    //Lay danh sach Loai HS thuoc linh vuc
+                    $arr_all_record_type_by_spec = $this->db->getCol('Select PK_RECORD_TYPE From t_r3_record_type Where C_SPEC_CODE=?', array($v_spec_code));
+                    $v_record_type_id_list = implode(',', $arr_all_record_type_by_spec);
+                    if ($v_record_type_id_list != '') // Tat ca thu tuc duoc phan cong
+                    {
+                        $v_and_condition .= " And FK_RECORD_TYPE In ($v_record_type_id_list)";
+                    }
+                }
+                else //Tat ca linh vuc, tat ca loai hs duoc phan cong
+                {
+                    if ($v_record_type_id_list != '') // Tat ca thu tuc duoc phan cong
+                    {
+                        $v_and_condition .= " And FK_RECORD_TYPE In ($v_record_type_id_list)";
+                    }
+                }
             }
-            if($v_receive_month_to != '' && $v_receive_month_to != NULL)
-            {
-                $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_month_to') <= 0";
-            }
-            //loc theo ma ho so
-            if ($v_record_no != '' && $v_record_no != NULL)
-            {
-                $v_and_condition .= " And C_RECORD_NO like '%$v_record_no'";
-            }
+            
             //loc theo ngay tiep nhan ho so
             if ($v_receive_date_from != '' && $v_receive_date_from != NULL)
             {
-                $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_date_from') >= 0";
+                $v_and_condition .= " And (C_RECEIVE_DATE >= '$v_receive_date_from')";
             }
             if ($v_receive_date_to != '' && $v_receive_date_to != NULL)
             {
-                $v_and_condition .= " And Datediff(C_RECEIVE_DATE,'$v_receive_date_to') <= 0";
+                $v_and_condition .= " And (C_RECEIVE_DATE <= '$v_receive_date_to')";
             }
             
             //loc theo ngay tra ket qua
             if ($v_return_date_from != '' && $v_return_date_from != NULL)
             {
-                $v_and_condition .= " And Datediff(C_RETURN_DATE,'$v_return_date_from') >=0";
+                $v_and_condition .= " And (C_RETURN_DATE >= '$v_return_date_from')";
             }
-            if ($v_return_date_to != '' && $v_return_date_to != NULL)
+            if ($v_return_date_from != '' && $v_return_date_from != NULL)
             {
-                $v_and_condition .= " And Datediff(C_RETURN_DATE,'$v_return_date_to') <=0";
+                $v_and_condition .= " And (C_RETURN_DATE <= '$v_return_date_from')";
             }
-            
-            //loc theo record type
-            if ($v_record_type_id_list != '')
-            {
-                $v_and_condition .= " And FK_RECORD_TYPE In ($v_record_type_id_list)";
-            }
-            //loc theo ma linh vuc
-            $v_spec_condition = '';
-            if($v_spec_code != '')
-            {
-                $v_spec_condition = " And C_SPEC_CODE = '$v_spec_code'";
-            }
-            
-            //them dieu kien de chi tra cuu ho so cap xa
-//            $v_and_condition .= " And FK_VILLAGE_ID = 0";
-            
-            /*
-              if (sizeof($arr_record_type_id_list) > 0)
-              {
-              $v_and_condition .= ' And (';
-              for ($i=0, $n=sizeof($arr_record_type_id_list); $i<$n; $i++)
-              {
-              if ($i>0)
-              {
-              $v_and_condition .= ' OR ';
-              }
-              $v_and_condition .= ' FK_RECORD_TYPE = ' . $arr_record_type_id_list[$i];
-              }
-              $v_and_condition .= ')';
-              }
-             */
 
             if ($v_free_text != '')
             {
@@ -5598,7 +5629,7 @@ class record_Model extends Model
                         ) RID LEFT JOIN t_r3_user_task UT 
                         ON (RID.C_NEXT_TASK_CODE = UT.C_TASK_CODE AND RID.C_NEXT_USER_CODE = UT.C_USER_LOGIN_NAME)
                         LEFT JOIN t_r3_record_type RT On UT.C_RECORD_TYPE_CODE = RT.C_CODE
-                        WHERE (1>0) $v_spec_condition
+                        
                     ) a LEFT JOIN t_r3_record R ON a.PK_RECORD=R.PK_RECORD
                     ";
             return $this->db->getAll($sql);
@@ -5615,23 +5646,7 @@ class record_Model extends Model
         }
 
         //Danh sach ID loai thu tuc ma NSD da được phân công
-        //Neu co quyen theo doi, giam sat toan bo HS
-        if (check_permission('THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO', $this->app_name))
-        {
-            $v_record_type_id_list = '';
-        }
-        else
-        {
-            $sql = "Select Distinct PK_RECORD_TYPE
-                    From t_r3_record_type RT
-                        Right join (Select Distinct C_RECORD_TYPE_CODE
-                                    From t_r3_user_task
-                                    Where C_USER_LOGIN_NAME = '$v_user_code') a
-                        On RT.C_CODE = a.C_RECORD_TYPE_CODE
-                    Where RT.PK_RECORD_TYPE Is Not Null";
-            $arr_record_type_id_list = $this->db->getCol($sql);
-            $v_record_type_id_list   = implode(',', $arr_record_type_id_list);
-        }
+        $v_record_type_id_list = $this->_qry_all_record_type_id_list_by_user($v_user_code);
 
         $v_and_condition = '';
         if (Session::get('la_can_bo_cap_xa'))
