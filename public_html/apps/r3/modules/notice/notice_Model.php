@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ?>
+
 <?php
 
 defined('DS') or die;
@@ -47,6 +48,12 @@ class notice_Model extends Model
         $v_village_id = Session::get('village_id');
         $params       = array();
 
+        if ($v_real_role == _CONST_TIEP_NHAN_ROLE)
+        {
+            $v_real_role = _CONST_BAN_GIAO_ROLE;
+            $role = _CONST_BAN_GIAO_ROLE;
+        }
+                
         switch ($v_real_role)
         {
             case _CONST_TIEP_NHAN_ROLE:
@@ -122,6 +129,8 @@ class notice_Model extends Model
                                   )";
                 $params = array($role, $v_user_code, $role);
         } //switch
+        
+        
         $stmt = "Select RT.C_CODE as record_type_code
                             , RT.C_NAME as record_type_name
                             , a.COUNT_RECORD as count_record
@@ -190,7 +199,7 @@ class notice_Model extends Model
                     On R.FK_RECORD_TYPE = RT.PK_RECORD_TYPE
                 Where R.FK_VILLAGE_ID = $v_village_id
                     And (R.C_NEXT_USER_CODE = '$v_user_code' Or R.C_NEXT_USER_CODE Like '%,$v_user_code,%') 
-                    And (R.C_LAST_TASK_CODE = 'CHUYEN_LAI_BUOC_TRUOC' Or R.C_LAST_TASK_CODE = 'KHONG_NHAN_HO_SO')
+                    And (R.C_LAST_TASK_CODE Like '%::CHUYEN_LAI_BUOC_TRUOC' Or R.C_LAST_TASK_CODE Like '%::KHONG_NHAN_HO_SO')
                     And C_NEXT_TASK_CODE Like '%" . _CONST_XML_RTT_DELIM . $v_real_role . "'";
         return $this->db->GetAll($stmt);
     }
