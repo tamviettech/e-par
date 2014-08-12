@@ -27,12 +27,18 @@ class r3_View extends View {
 	
 	private function get_root_record_type_code($record_type_code)
 	{
-        
-        //return substr($record_type_code, 0, 2) . '00';
-        
-	    $ret =  preg_replace('/([0-9]+[A-Z0-9-_]*)/', '00', $record_type_code);
-	    //$ret = str_replace('0000', '00', $ret);
+        $ret =  preg_replace('/([0-9]+[A-Z0-9-_]*)/', '00', $record_type_code);
 	    return $ret;
+	}
+    
+    /** 
+     * lay 2 ky tu dau lam tien to file cau hinh cua linh vuc dua theo ma thu tuc, 
+     * @param type $record_type_code
+     * @return string
+     */
+	private function get_root_record_type_code_with_2chars($record_type_code)
+	{
+	    return substr($record_type_code, 0, 2) . '00';
 	}
     
     public function get_book_config($book_code)
@@ -51,7 +57,7 @@ class r3_View extends View {
 		
 		if (strtolower($config_type) == 'lookup')
 		{
-		    //Uu tien file chinh xac cua thu tuc
+		    //Uu tien 1st: file chinh xac cua thu tuc
 		    $file_path =  SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . $record_type_code . DS . $record_type_code . '_' . $config_type . '.xml';
 		    if (is_file($file_path))
 		    {
@@ -59,59 +65,68 @@ class r3_View extends View {
 		    }
 		    else
 		    {
-		        //Uu tien tiep theo cho linh vuc
-		        //$record_type_code  = preg_replace('/([0-9]+[A-Z]*)/', '00', $record_type_code);
-		        $record_type_code  = $this->get_root_record_type_code($record_type_code);
-		        $file_path         = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $record_type_code . '_' . $config_type . '.xml';
-		        
-		        if (is_file($file_path))
-		        {
-		            return $file_path;
-		        }
-		        else
-		        {
-		            //Neu khong, lay mac dinh chung
-		            return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . 'record_lookup.xml';
-		        }
+		        //Uu tien 2nd: tiep theo cho linh vuc + cap (TNH_00, TPH_00, v.v...)
+		        $v_spec_code_with_level  = $this->get_root_record_type_code($record_type_code);
+		        $file_path               = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $v_spec_code_with_level . '_' . $config_type . '.xml';
+                if (file_exists($file_path))
+                {
+                    return $file_path;
+                }
+                else
+                {
+                    //Uu tien 3rd: file cau hinh theo linh vuc (TN_00, TP_00,..)
+                    $v_spec_code  = $this->get_root_record_type_code_with_2chars($record_type_code);
+                    $file_path    = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $v_spec_code . '_' . $config_type . '.xml';
+                    if (file_exists($file_path))
+                    {
+                        return $file_path;
+                    }
+                    else
+                    {
+                        //Cuoi cung, lay mac dinh chung
+                        return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . 'record_lookup.xml';
+                    }
+                }
 		    }
 		}
 
         if (strtolower($config_type) == 'result')
-        {
-                return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
-                . 'common' . DS . 'xml_record_result.xml';
-        }
-        //extend congfig
-        if(strtolower($config_type) == 'ext_config')
-        {
-            $v_file_dir = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
-                . strtoupper($record_type_code) . DS . $record_type_code .'_ext_config.xml';
-            return $v_file_dir;
-        }
-        
-        if ($config_type == 'list' && $record_type_code == '')
-        {
-            return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . 'common_list.xml';;
-        }
+		{
+			return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
+			. 'common' . DS . 'xml_record_result.xml';
+		}
 
-        $file_path =  SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
-        . $record_type_code . DS . $record_type_code . '_' . $config_type . '.xml';
+		if ($config_type == 'list' && $record_type_code == '')
+		{
+		    return SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . 'common_list.xml';;
+		}
 
+        //Uu tien so 1st: File cau hinh chinh xac cua thu tuc (TN01_config.xml)
+		$file_path =  SERVER_ROOT . 'apps/' . $this->app_name .'/xml-config/' . $record_type_code . '/' . $record_type_code . '_' . $config_type . '.xml';
         if (!is_file($file_path) && ($get_default_config))
         {
-            //$record_type_code = preg_replace('/([0-9]+[A-Z]*)/', '00', $record_type_code);
+            //Uu tien so 2: Cau hinh cho linh vuc + cap (TNH, TPH...)
             $record_type_code  = $this->get_root_record_type_code($record_type_code);
-            $file_path = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $record_type_code . '_' . $config_type . '.xml';
-
+            $file_path         = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $record_type_code . '_' . $config_type . '.xml';
             if (is_file($file_path))
             {
                 return $file_path;
             }
-            return NULL;
+            else
+            {
+                //Uu tien so 3rd: Cau hinh cho linh vuc
+                $record_type_code  = $this->get_root_record_type_code_with_2chars($record_type_code);
+                $file_path         = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $record_type_code . '_' . $config_type . '.xml';
+                if (is_file($file_path))
+                {
+                    return $file_path;
+                }
+                return NULL;
+            }
         }
         else
 		{
-                    return $file_path;
+            return $file_path;
 		}
 	}
 
@@ -130,14 +145,21 @@ class r3_View extends View {
 
 	public function get_xsl_ho_teplate($record_type_code)
 	{
+		//Uu tien 1st: File cau hinh cho thu tuc
 		$file_path = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
 		. $record_type_code . DS . $record_type_code . '_ho_template.xsl';
 
 		if (!is_file($file_path))
 		{
-			//$record_type_code = preg_replace('/([0-9]+[A-Z]*)/', '00', $record_type_code);
-			$record_type_code  = $this->get_root_record_type_code($record_type_code);
+            //Uu tien so 2: Cau hinh cho linh vuc + cap (TNH, TPH...)
+            $record_type_code  = $this->get_root_record_type_code($record_type_code);
 			$file_path = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $record_type_code . '_ho_template.xsl';
+            if (!is_file($file_path))
+            {
+                //Uu tien so 3rd: Cau hinh cho linh vuc
+                $record_type_code  = $this->get_root_record_type_code_with_2chars($record_type_code);
+                $file_path         = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . $record_type_code . '_' . $config_type . '.xml';
+            }
 		}
 
 		return $file_path;
