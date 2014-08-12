@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed'); ?>
 <?php
 //header
@@ -37,7 +19,7 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
         {
             $v_record_type_id      = $arr_single_record_type['PK_RECORD_TYPE'];
             $v_xml_data            = $arr_single_record_type['C_XML_DATA'];
-            $v_code                = $arr_single_record_type['C_CODE'];
+            $v_code                = trim($arr_single_record_type['C_CODE']);
             $v_name                = $arr_single_record_type['C_NAME'];
             $v_status              = $arr_single_record_type['C_STATUS'];
             $v_scope               = $arr_single_record_type['C_SCOPE'];
@@ -107,7 +89,7 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
         		    <div class="control-group">
             	        <label class="control-label">Mã loại hồ sơ <span class="required">(*)</span></label>
             	        <div class="controls">
-            	            <input type="text" name="txt_code" value="<?php echo $v_code; ?>" id="txt_code"
+            	            <input type="text" name="txt_code" value="<?php echo trim($v_code); ?>" id="txt_code"
                                 class="inputbox" maxlength="50" size="10"
                                 onKeyDown="handleEnter(this, event);" onkeyup="ConverUpperCase('txt_code', this.value)"
                                 data-allownull="no" data-validate="text"
@@ -157,7 +139,6 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
                                         />
                                         <?php echo $book['C_NAME'] ?>
                                 </label>
-                                <br/>
                             <?php endforeach; ?>
             			</div>
             		</div>
@@ -168,8 +149,7 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
                             <label class="radio">
                                 <input type="radio" name="rad_scope" value="0" id="rad_scope_0" <?php echo ($v_scope == 0) ? ' checked' : ''; ?>/> Cấp xã/phường
                             </label>
-                            <?php
-                            /*
+                            
                             <label class="radio">
                                 <input type="radio" name="rad_scope" value="1" id="rad_scope_1" <?php echo ($v_scope == 1) ? ' checked' : ''; ?> />Liên thông Xã -> Huyện
                             </label>
@@ -177,7 +157,6 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
                             <label class="radio">
                                 <input type="radio" name="rad_scope" value="2" id="rad_scope_2" <?php echo ($v_scope == 2) ? ' checked' : ''; ?> />Liên thông Huyện -> Xã
                             </label>
-                            */?>
 
                             <label class="radio">
                                 <input type="radio" name="rad_scope" value="3" id="rad_scope_3" <?php echo ($v_scope == 3) ? ' checked' : ''; ?> />Cấp Huyện
@@ -201,19 +180,18 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
                             </label>
             			</div>
             		</div>
-                    
-        		    <div class="control-group">
-            	        <label class="control-label"><?php echo __('order'); ?> <span class="required">(*)</span></label>
-            	        <div class="controls">
-                            <input type="text" name="txt_order" value="<?php echo $v_order; ?>" id="txt_order"
-                                class="input-small" maxlength="50" size="10"
-                                onKeyDown="handleEnter(this, event);"
-                                data-allownull="no" data-validate="number"
-                                data-name="<?php echo __('order'); ?>"
-                                data-xml="no" data-doc="no"
-                            />
-            			</div>
-            		</div>
+                        <div class="control-group">
+                            <label class="control-label"><?php echo __('order'); ?> <span class="required">(*)</span></label>
+                            <div class="controls">
+                                <input type="text" name="txt_order" value="<?php echo $v_order; ?>" id="txt_order"
+                                       class="input-small" maxlength="50" size="10"
+                                       onKeyDown="handleEnter(this, event);"
+                                       data-allownull="no" data-validate="number"
+                                       data-name="<?php echo __('order'); ?>"
+                                       data-xml="no" data-doc="no"
+                                       />
+                            </div>
+                        </div>
                     
         		    <div class="control-group">
             	        <label class="control-label"><?php echo __('status'); ?></label>
@@ -243,6 +221,13 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
                         <button type="button" name="cancel" class="btn" onclick="btn_back_onclick()"><i class="icon-reply"></i><?php echo __('go back'); ?></button>
                         <button type="button" name="btn_view_workflow" class="btn btn-info" onclick="window.open('<?php echo $this->get_controller_url('workflow'); ?>' + QS + 'sel_record_type=<?php echo $v_code; ?>');"><i class="icon-search"></i>Xem quy trình xử lý hồ sơ</button>
                         <button type="button" name="btn_view_form" class="btn btn-info" onclick="btn_dsp_plaintext_form_struct_onclick()"><i class="icon-search"></i>Xem biểu mẫu đơn</button>
+                        <?php 
+                            if(intval($v_record_type_id) >0)
+                            {
+                                echo '<button type="button" name="btn_view_workflow" class="btn btn-info" onclick="window.open(\''.SITE_ROOT .'guidance/guidance/dsp_single_guidance/'. $v_record_type_id .'\');"><i class="icon-search"></i>Xem thông tin hướng dẫn tại cổng thông tin</button>';
+                            }   
+                        ?>
+                        
                     </div>
                 </div><!-- / .widget-container -->
             </div><!-- /.content-widgets light-gray-->
@@ -378,15 +363,16 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
                                                     $v_file_path = $val['path'];
                                                     $v_file_type = $val['type'];
                                                     $v_key = $key;
+                                                    $v_div_id_file = explode('_', $v_key,2);
                                              ?>
-                                            <div id="FILE_<?php echo $v_key; ?>" >
+                                            <div id="FILE_<?php echo $v_div_id_file[0]; ?>" >
                                                 <div  class="attachment-thumbnail">
                                                         <img  src="<?php echo SITE_THEME_ROOT; ?>images/document.png" alt="Thumbnail">
                                                 </div>
                                                 <div class="attachment-action">
                                                     <input type="hidden" name="hdn_file_name[]" value="mau-tthc-tnmt.pdf" />
                                                     <div class="filename"><?php echo $v_file_name; ?></div>
-                                                    <div class="edit-attachment-asset"><a href="javascript:void(0);" file-id="<?php echo $v_key; ?>"  onclick="onlick_delete_file(this)"><i class="icon-trash"></i> Xoá file</a></div>
+                                                    <div class="edit-attachment-asset"><a href="javascript:void(0);" div_parent_id="<?php echo $v_div_id_file[0]; ?>" file-id="<?php echo $v_key; ?>"  onclick="onlick_delete_file(this)"><i class="icon-trash"></i> Xoá file</a></div>
                                                 </div>  
                                             </div>
                                                 <?php endforeach; ?>
@@ -405,6 +391,12 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
                         <button type="button" name="cancel" class="btn" onclick="btn_back_onclick()"><i class="icon-reply"></i><?php echo __('go back'); ?></button>
                         <button type="button" name="btn_view_workflow" class="btn btn-info" onclick="window.open('<?php echo $this->get_controller_url('workflow'); ?>' + QS + 'sel_record_type=<?php echo $v_code; ?>');"><i class="icon-search"></i>Xem quy trình xử lý hồ sơ</button>
                         <button type="button" name="btn_view_form" class="btn btn-info" onclick="btn_dsp_plaintext_form_struct_onclick()"><i class="icon-search"></i>Xem biểu mẫu đơn</button>
+                        <?php 
+                            if(intval($v_record_type_id) >0)
+                            {
+                                echo '<button type="button" name="btn_view_workflow" class="btn btn-info" onclick="window.open(\''.SITE_ROOT .'guidance/guidance/dsp_single_guidance/'. $v_record_type_id .'\');"><i class="icon-search"></i>Xem thông tin hướng dẫn tại cổng thông tin</button>';
+                            }   
+                        ?>
                     </div>
                 </div>
             </div>
@@ -418,17 +410,18 @@ require_once(SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'dsp_header.php'
     {
         if(confirm('Bạn có chắc chắn xóa file này?'))
         {
-            var file_id =  $(anchor).attr('file-id');
+            var file_id         =  $(anchor).attr('file-id');
+            var div_parent_id   = $(anchor).attr('div_parent_id'); 
             var v_list_id = $('#hdn_delete_file_list_id').val() || '';
             if(v_list_id.trim().length > 0)
             {
-                 v_list_id += ',' + file_id;
+                 v_list_id += '|' + file_id;
             }
             else
             {
                 v_list_id = file_id;
             }
-            $('#FILE_' + file_id).remove();
+            $('#FILE_' + div_parent_id).remove();
             $('#hdn_delete_file_list_id').val(v_list_id);
         }
     }

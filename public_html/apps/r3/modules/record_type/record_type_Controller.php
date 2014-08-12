@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -94,10 +76,11 @@ class record_type_Controller extends Controller
         }
 
         
-        $VIEW_DATA['arr_all_template_file']  = $this->model->get_all_template_file($v_record_type_id);
-        $VIEW_DATA['arr_all_spec']           = $this->model->assoc_list_get_all_by_listtype_code('DANH_MUC_LINH_VUC');
-        $VIEW_DATA['arr_single_record_type'] = $this->model->qry_single_record_type($v_record_type_id);
-        $VIEW_DATA['arr_all_report_books']   = $this->model->qry_all_report_books($v_record_type_id);
+        $VIEW_DATA['arr_all_template_file']       = $this->model->get_all_template_file($v_record_type_id);
+        $VIEW_DATA['arr_all_spec']                = $this->model->assoc_list_get_all_by_listtype_code('DANH_MUC_LINH_VUC');
+        $VIEW_DATA['arr_all_must_do_exec']        = $this->model->assoc_list_get_all_by_listtype_code('DM_CONG_VIEC_THU_LY_BAT_BUOC');
+        $VIEW_DATA['arr_single_record_type']      = $this->model->qry_single_record_type($v_record_type_id);
+        $VIEW_DATA['arr_all_report_books']        = $this->model->qry_all_report_books($v_record_type_id);
 
         $arr_filter              = $this->_save_filter();
         $VIEW_DATA['arr_filter'] = $arr_filter;
@@ -297,6 +280,8 @@ class record_type_Controller extends Controller
 
     public function create_record_type_by_xml_config()
     {
+        //return;
+        //$this->model->db->debug = 1;
         $v_config_dir = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config';
         $arr_dir = scandir($v_config_dir);
         $v_order = $this->model->get_max('t_r3_record_type', 'C_ORDER') + 1;
@@ -323,7 +308,13 @@ class record_type_Controller extends Controller
 
             $v_record_type_code = $record_type_dir;
             $v_record_type_name = get_xml_value($dom_workflow, "/process/@name");
-            $v_spec_code        = preg_replace('/([0-9]+[A-Z0-9-_]*)/', '', $v_record_type_code);
+            $v_spec_code        = substr($v_record_type_code, 0, 2) ;// preg_replace('/([0-9]+[A-Z0-9-_]*)/', '', $v_record_type_code);
+            //Pham vi thu tuc
+            $v_scope = 3 ;//mac dinh thu tuc cap huyen
+            if (preg_match('(^[A-Z]{2}X)', $v_record_type_code))
+            {
+                $v_scope = 0;
+            }
 
             echo '<br/>' . $v_xml_workflow_file_name;
             echo '<br/>v_record_type_code: ' . $v_record_type_code;
@@ -331,13 +322,12 @@ class record_type_Controller extends Controller
             echo '<br/>v_spec_code: ' . $v_spec_code;
             echo '<hr/>';
 
-            $stmt   = 'Insert Into t_r3_record_type (C_CODE, C_NAME, C_XML_DATA,C_STATUS,C_SCOPE,C_ORDER, C_SEND_OVER_INTERNET,C_SPEC_CODE) Values (?,?,?,?,?,?,?,?)';
-            $params = array($v_record_type_code, $v_record_type_name, '', 1, 0, $v_order, 0, $v_spec_code);
+            $stmt   = 'Insert Into t_r3_record_type (C_CODE, C_NAME, C_XML_DATA,C_STATUS,C_SCOPE,C_ORDER, C_SEND_OVER_INTERNET,C_SPEC_CODE) ';
+            $stmt .= ' Select ?,?,?,?,?,?,?,? From Dual ';
+            $stmt .= ' Where (Select Count(*) From t_r3_record_type Where C_CODE=?) < 1';
+            $params = array($v_record_type_code, $v_record_type_name, '', 1, $v_scope, $v_order, '0', $v_spec_code, $v_record_type_code);
 
             $this->model->db->Execute($stmt, $params);
         }
-    }
-
-        
-//end func
+    }//end func
 }

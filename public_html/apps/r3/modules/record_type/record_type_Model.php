@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -240,12 +222,17 @@ class record_type_Model extends Model
             
             //Lay xml hien tai
             $xml_data_current = $this->db->GetOne("select C_XML_DATA from t_r3_record_type where PK_RECORD_TYPE = ? ",array($v_record_type_id));
-            
-            $dom                   = simplexml_load_string($xml_data_current);
-            
+
             //Lay danh sach file name dang luu tru
+            if(trim($xml_data_current) == '')
+            {
+                // add dom media vao xml_data khi them moi
+                $xml_data_current = '<data><media></media></data>';
+            }
+            $dom                   = simplexml_load_string($xml_data_current);
             $v_xpath_file          = '//data/media/file';
             $arr_results      = $dom->xpath($v_xpath_file);
+            
             $doc = new SimpleXMLElement($v_xml_data);
             $media = $doc->addChild('media');
             foreach ($arr_results as $item)
@@ -295,7 +282,7 @@ class record_type_Model extends Model
             $this->db->Execute($stmt, $params);
         }
 
-        $this->ReOrder('t_r3_record_type', 'PK_RECORD_TYPE', 'C_ORDER', $v_record_type_id, $v_order);
+        //$this->ReOrder('t_r3_record_type', 'PK_RECORD_TYPE', 'C_ORDER', $v_record_type_id, $v_order);
         $this->update_report_book_report_type($v_record_type_id, $arr_report_books);
         
         //Them file dinh kem
@@ -307,6 +294,21 @@ class record_type_Model extends Model
         if(trim($v_list_file_key) != '')
         {
             $this->delete_file_tempate_type($v_record_type_id,$v_list_file_key);
+        }
+        
+        //LienND update: 2014-06-14: Danh sach cong viec thu ly bat buoc
+        $arr_exec_must_do_code = get_post_var('chk_must_do');
+        //Xoa het cau hinh cu
+        $stmt = 'Delete From t_r3_record_type_exec_must_do Where FK_RECORD_TYPE=?';
+        $params = array($v_record_type_id);
+        $this->db->Execute($stmt, $params);
+        
+        //Insert lai cau hinh moi
+        foreach ($arr_exec_must_do_code as $v_must_do_code)
+        {
+            $stmt = 'Insert Into t_r3_record_type_exec_must_do(FK_RECORD_TYPE, C_EXEC_MUST_DO_CODE) Values(?,?)';
+            $params = array($v_record_type_id, $v_must_do_code);
+            $this->db->Execute($stmt, $params);
         }
         
         //Luu dieu kien loc
