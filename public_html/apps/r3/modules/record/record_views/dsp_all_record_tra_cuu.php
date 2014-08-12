@@ -141,9 +141,10 @@ $sel_spec_selected = get_post_var('sel_spec','');
                 </div>
                 <div class="right-Col">
                     <select name="sel_year" id="sel_year" onchange="this.form.submit()">
+                       <option value="">--Tất cả--</option>
                         <?php
                         $year          = 2012;
-                        $selected_year = get_post_var('sel_year', date('Y'));
+                        $selected_year = get_post_var('sel_year', '');
                         ?>
                         <?php while ($year <= date('Y')): ?>
                             <?php $selected = $selected_year == $year ? 'selected' : '' ?>
