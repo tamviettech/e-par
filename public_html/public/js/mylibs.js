@@ -660,7 +660,7 @@ function w(string)
 
 function getTime()
 {
-	var v = (new Date());
+    var v = (new Date());
     var h, m, s,t;
 
     h = v.getHours();
@@ -668,5 +668,11 @@ function getTime()
     s = v.getSeconds();
     t=h*10000+m*100+s;
 	
-	return t;
+    return t;
+}
+
+function login_name_validate(str_login_name)
+{
+    patt = /^([a-z]+)([a-z0-9.@]{4,30})$/;
+    return patt.test(str_login_name);
 }
