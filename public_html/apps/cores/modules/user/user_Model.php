@@ -1,22 +1,11 @@
 <?php
+
 /**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
+ * @copyright	Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @author		Ngo Duc Lien <liennd@gmail.com>
+ * @author		Luong Thanh Binh <ltbinh@gmail.com>
+ */
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
@@ -127,7 +116,7 @@ class user_Model extends Model
     {
         $v_parent_ou_id = get_post_var('hdn_parent_ou_id', 0);
         $v_ou_id        = get_post_var('hdn_item_id', 0);
-        $v_name         = get_post_var('txt_name');
+        $v_name         = trim(get_post_var('txt_name'));
         $v_order        = get_post_var('txt_order');
         $v_xml_data     = get_post_var('XmlData', '<data/>', 0);
         $v_level        = get_post_var('rad_level', 1);
@@ -232,18 +221,18 @@ class user_Model extends Model
     {
         $v_user_id    = get_post_var('hdn_item_id', 0);
         $v_ou_id      = get_post_var('hdn_parent_ou_id', 0);
-        $v_name       = get_post_var('txt_name', '');
+        $v_name       = trim(get_post_var('txt_name', ''));
         $v_password   = get_post_var('txt_password', '');
         $v_order      = get_post_var('txt_order', '0');
         $v_status     = isset($_POST['chk_status']) ? 1 : 0;
         $v_xml_data   = get_post_var('XmlData', '<data/>', 0);
         $v_job_title  = get_post_var('txt_job_title', '');
-        $v_login_name = get_post_var('txt_login_name', '');
+        $v_login_name = trim(get_post_var('txt_login_name', ''));
         $v_login_name = str_replace(',', '', $v_login_name);
 
         $v_group_id_list = get_post_var('hdn_group_id_list', '');
         
-        $v_user_idc_id = get_post_var('txt_idc_id', '');
+        $v_user_idc_id = get_post_var('txt_idc_id', '0');
         
         if(strlen($v_password)<5 && strlen($v_password) != 0)
         {
@@ -257,7 +246,7 @@ class user_Model extends Model
 
         if ($v_duplicate_login_name)
         {
-            $this->exec_fail($this->goback_url, 'Tên đăng nhập đã tồn tại!');
+            $this->popup_exec_fail('Tên đăng nhập đã tồn tại!');
             return;
         }
 
@@ -293,7 +282,7 @@ class user_Model extends Model
         else  //Insert
         {
             $stmt   = 'Insert Into t_cores_user(C_LOGIN_NAME, C_NAME, C_PASSWORD
-                    , C_ORDER, C_STATUS, FK_OU, C_XML_DATA, C_JOB_TITLE) values (?,?,md5(?),?,?,?, ?, ?)';
+                    , C_ORDER, C_STATUS, FK_OU, C_XML_DATA, C_JOB_TITLE,C_IDC_ID) values (?,?,md5(?),?,?,?, ?, ?, ?)';
             $params = array(
                 $v_login_name
                 , $v_name
@@ -303,6 +292,7 @@ class user_Model extends Model
                 , $v_ou_id
                 , $v_xml_data
                 , $v_job_title
+                , $v_user_idc_id
             );
             $this->db->Execute($stmt, $params);
 
@@ -403,8 +393,8 @@ class user_Model extends Model
     {
         $v_group_id     = get_post_var('hdn_item_id');
         $v_ou_id        = get_post_var('hdn_parent_ou_id');
-        $v_code         = get_post_var('txt_code');
-        $v_name         = get_post_var('txt_name');
+        $v_code         = trim(get_post_var('txt_code'));
+        $v_name         = trim(get_post_var('txt_name'));
         $v_user_id_list = get_post_var('hdn_user_id_list');
 
         //Kiem tra trung ma, trung ten
@@ -568,35 +558,6 @@ class user_Model extends Model
                     Order By C_INTERNAL_ORDER";
             $arr_all_ou = $this->db->getAll($stmt);
             return $arr_all_ou;
-            /*
-              for ($i=0; $i<sizeof($arr_all_ou); $i++)
-              {
-              $stmt = 'Select
-              PK_USER
-              , C_LOGIN_NAME
-              , C_NAME
-              , C_JOB_TITLE
-              From t_cores_user
-              Where FK_OU=?
-              And C_STATUS > 0
-              Order By C_ORDER';
-              $params = array($arr_all_ou[$i]['PK_OU']);
-              $arr_all_user_by_ou = $this->db->getAll($stmt, $params);
-              $v_xml_user = '';
-              for($j=0;$j<sizeof($arr_all_user_by_ou);$j++)
-              {
-              $v_xml_user .= '<row';
-              $v_xml_user .= ' PK_USER="' . $arr_all_user_by_ou[$j]['PK_USER'] . '"';
-              $v_xml_user .= ' C_LOGIN_NAME="' . $arr_all_user_by_ou[$j]['C_LOGIN_NAME'] . '"';
-              $v_xml_user .= ' C_NAME="' . $arr_all_user_by_ou[$j]['C_NAME'] . '"';
-              $v_xml_user .= ' C_JOB_TITLE="' . $arr_all_user_by_ou[$j]['C_JOB_TITLE'] . '"';
-              $v_xml_user .= '/>';
-              }
-
-              $arr_all_ou[$i]['C_XML_USER'] = $v_xml_user;
-              } //end for $i
-              return $arr_all_ou;
-             */
         } //end if DATABASE_TYPE
 
         return array();
@@ -631,6 +592,7 @@ class user_Model extends Model
 
     public function qry_all_user_to_grand($v_filter)
     {
+        $v_filter = replace_bad_char($v_filter);
         $stmt = 'Select PK_USER, C_NAME, C_STATUS From t_cores_user ';
         if ($v_filter != '')
         {
@@ -642,6 +604,7 @@ class user_Model extends Model
 
     public function qry_all_group_to_grand($v_filter)
     {
+        $v_filter = replace_bad_char($v_filter);
         $stmt = 'Select PK_GROUP, C_NAME From t_cores_group ';
         if ($v_filter != '')
         {
@@ -767,5 +730,4 @@ class user_Model extends Model
                  Order By C_INTERNAL_ORDER';
         return $this->db->getAll($stmt);
     }
-
 }

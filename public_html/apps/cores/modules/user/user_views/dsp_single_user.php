@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
@@ -34,7 +16,7 @@ if (isset($arr_single_user['PK_USER']))
     $v_status      = $arr_single_user['C_STATUS'];
     $v_xml_data    = $arr_single_user['C_XML_DATA'];
     $v_job_title   = $arr_single_user['C_JOB_TITLE'];
-//    $v_idc_id      = $arr_single_user['C_IDC_ID'];
+    $v_idc_id      = $arr_single_user['C_IDC_ID'];
 }
 else
 {
@@ -48,7 +30,6 @@ else
     $v_job_title    = '';
     $v_idc_id    = '';
 }
-$v_ou_patch = '';
 ?>
 <div class="container-fluid">
     <form name="frmMain" method="post" id="frmMain" action="#" class="form-horizontal"><?php
@@ -95,7 +76,7 @@ $v_ou_patch = '';
                             </td>
                             <td>
                                 <?php if ($v_user_id < 1): ?>
-                                    <input type="text" name="txt_login_name" id="txt_login_name"value=""
+                                    <input type="text" name="txt_login_name" id="txt_login_name" value=""
                                         class="input" maxlength="50" style="width:50%"
                                         onKeyDown="return handleEnter(this, event);"
                                         data-allownull="no" data-validate="text"
@@ -174,15 +155,10 @@ $v_ou_patch = '';
                         <tr>
                             <td>Thuộc đơn vị</td>
                             <td>
-                                <?php 
-                                foreach ($arr_parent_ou_path as $id => $name)
-                                {
-                                    $v_ou_patch .= '/' . $name;
-                                }
-                                ?>
-                                <span><?php echo $v_ou_patch;?></span>
+                                <?php foreach ($arr_parent_ou_path as $id => $name): ?>
+                                <span>/<?php echo $name;?></span>
+                                <?php endforeach; ?>
                                 <?php echo $this->hidden('hdn_parent_ou_id', $id);?>
-                                
                                 <br/>
                                 <div class="input-append">
                                     <input type="text" id="txt_ou_patch" name="txt_ou_patch" value="<?php echo $v_ou_patch;?>"  disabled class="uneditable-input span7"/>
@@ -228,6 +204,24 @@ $v_ou_patch = '';
                                 </label>
                             </td>
                         </tr>
+                        <?php 
+                        if ( ! defined('CONST_IDC_INTERGRATED'))
+                        {
+                            define('CONST_IDC_INTERGRATED', 0);
+                        }
+                        if (CONST_IDC_INTERGRATED > 0): ?>
+                            <tr>
+                                <td>IDC ID </span></td>
+                                <td>
+                                     <input type="text" name="txt_idc_id" value="<?php echo $v_idc_id; ?>" id="txt_idc_id"
+                                            class="input" size="6" maxlength="6"
+                                            data-allownull="yes" data-validate="number"
+                                            data-name="IDC ID"
+                                            data-xml="no" data-doc="no"
+                                    />
+                                </td>
+                            </tr>
+                        <?php endif; ?> 
                     </table>
                 </div>
                 <div class="tab-pane" id="user_group">
@@ -334,12 +328,35 @@ $v_ou_patch = '';
 
     function btn_update_user_onclick()
     {
-        if((document.frmMain.txt_password.value).length <5 && (document.frmMain.txt_password.value).length != 0)
+        //var 
+        if((document.frmMain.txt_password.value).length < 5 && (document.frmMain.txt_password.value).length != 0)
         {
-            alert('Dộ dài mật khẩu phải ít nhất 5 ký tự!');
-            (document.frmMain.txt_password).focus();
+            alert('Độ dài mật khẩu phải ít nhất 5 ký tự!');
+            document.frmMain.txt_password.focus();
             return false;
         }   
+        
+        //kiem tra xac nhan mat khau
+        if( document.frmMain.txt_password.value != document.frmMain.txt_confirm_password.value)
+        {
+            alert('Xác nhận mật khẩu không đúng!');
+            document.frmMain.txt_password.focus();
+            return false;
+        }
+        
+        //ten dang nhap khong chua ky tu dac biet
+        if (document.frmMain.hdn_item_id.value == '0')
+        {
+            //var v_login_name = $("#txt_login_name").val();
+            //var patt = '/^([a-z]+)([a-z0-9.@]{4,30})$/g';
+            if (!(login_name_validate($("#txt_login_name").val())))
+            {
+                alert('Tên đăng nhập không hợp lệ!');
+                document.frmMain.txt_login_name.focus();
+                return false;
+            }
+        }
+            
         //Lay danh sach nhom
         var arr_group_id = new Array();
         var q = "input[name='chk_group']";

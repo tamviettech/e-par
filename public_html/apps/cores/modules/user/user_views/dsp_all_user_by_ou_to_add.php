@@ -1,20 +1,10 @@
 <?php
 /**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * @copyright	Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @author		Ngo Duc Lien <liennd@gmail.com>
+ * @author		Luong Thanh Binh <ltbinh@gmail.com>
+ */
 ?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
@@ -82,8 +72,10 @@ $this->template->display('dsp_header' . $v_pop_win . '.php');
                             />
                         </td>
                         <td style="padding-left: 20px;">
-                            <img src="<?php echo SITE_ROOT;?>public/images/icon-16-user.png" border="0" align="absmiddle" />
-                            <label for="user_<?php echo $user->attributes()->PK_USER;?>"><?php echo $user->attributes()->C_NAME;?></label>
+                            <label for="user_<?php echo $user->attributes()->PK_USER;?>">
+                                <img src="<?php echo SITE_ROOT;?>public/images/icon-16-user.png" border="0" align="absmiddle" />
+                                <?php echo $user->attributes()->C_NAME;?>
+                            </label>
                         </td>
                         <td>
                             <?php echo $user->attributes()->C_JOB_TITLE;?>
