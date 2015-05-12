@@ -1,30 +1,11 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) {exit('No direct script access allowed');}
     if (! isset($this->show_left_side_bar))
     {
         $this->show_left_side_bar = FALSE;
     }
 ?>
-
 <!DOCTYPE HTML>
-<html ng-app>
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="Cache-Control" content="no-cache"/>
@@ -40,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <link rel="stylesheet" href="<?php echo SITE_ROOT; ?>public/themes/bootstrap/css/font-awesome-ie7.min.css">
         <![endif]-->
         <link href="<?php echo SITE_ROOT; ?>public/themes/bootstrap/css/styles.css" rel="stylesheet">
+        <!--<link href="<?php echo SITE_ROOT; ?>apps/r3/style.css" rel="stylesheet">-->
         <link id="themes" href="#" rel="stylesheet">
         <!--[if IE 7]>
             <link rel="stylesheet" type="text/css" href="<?php echo SITE_ROOT; ?>public/themes/bootstrap/css/ie/ie7.css" />
@@ -58,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo SITE_ROOT; ?>public/themes/bootstrap/ico/apple-touch-icon-72-precomposed.png">
         <link rel="apple-touch-icon-precomposed" href="<?php echo SITE_ROOT; ?>public/themes/bootstrap/ico/apple-touch-icon-57-precomposed.png">
         <!--============j avascript===========-->
-        <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery-1.8.2.js"></script>
+        <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.js"></script>
         <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery-ui-1.8.16.custom.min.js"></script>
         <!--<script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery-ui.min.js" type="text/javascript"></script>-->
         <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/bootstrap.js"></script>
@@ -72,6 +54,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="<?php echo SITE_ROOT; ?>public/js/jquery/jquery-ui.css" rel="stylesheet" type="text/css"/>
         <!--  Datepicker -->
         <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.ui.datepicker-vi.js" type="text/javascript"></script>
+        <!--Slimscroll-->
+        <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.slimscroll.min.js" type="text/javascript"></script>
         <!-- Right-click context menu -->
         <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.contextMenu.js" type="text/javascript"></script>
         <!-- Upload -->
@@ -84,6 +68,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <?php $QS = check_htacces_file() ? '?' : '&';?>
             var QS = '<?php echo $QS;?>';
         </script>
+            <!--chosen-->
+        <link rel="stylesheet" type="text/css" href="<?php echo SITE_ROOT ?>public/chosen/chosen.min.css"/>
+        <script src="<?php echo SITE_ROOT ?>public/chosen/chosen.jquery.min.js"></script>
         <!--  Modal dialog -->
         <script src="<?php echo SITE_ROOT; ?>public/js/submodal.js" type="text/javascript"></script>
         <link href="<?php echo SITE_ROOT; ?>public/css/subModal.css" rel="stylesheet" type="text/css"/>
@@ -97,7 +84,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script src="<?php echo $this->local_js; ?>" type="text/javascript"></script>
         <?php endif; ?>
         <link rel="stylesheet" href="<?php echo $this->stylesheet_url;?>" type="text/css" media="screen" />
+        <link rel="stylesheet" href="<?php echo SITE_ROOT; ?>apps/r3/style_pop_win.css">
+        
+         <?php
+                // Fix css chrome version 39.0.2171.95
+                $chrome = $_SERVER['HTTP_USER_AGENT'];
+                preg_match( "#Chrome/(.+?)\s#", $chrome,  $browser);
+
+                if(strpos( $browser[0], 'Chrome') !== false && $browser[1]  == '39.0.2171.95')
+                {
+                    echo '  <link rel="stylesheet" href="'.SITE_ROOT.'apps/'.$this->app_name.'/fix_css_chrome.css">';
+                }
+
+
+        ?>
+        
     </head>
     <body>
+       
+        <script>
+            $(document).ready(function(){
+                if($('#box-slimscroll').length > 0)
+                {
+                    var height_limscroll = $('#box-slimscroll').height() ||0;
+                    var max_height_limscroll = $('#box-slimscroll').css('max-height') || 0;
+                    console.log(height_limscroll);
+                    if(trim(max_height_limscroll) != '' && max_height_limscroll != 0 && height_limscroll > max_height_limscroll)
+                    {
+                         $('#box-slimscroll').slimscroll({
+                            height:max_height_limscroll
+                        });
+                    }
+                    else
+                    {
+                        $('#box-slimscroll').slimscroll({
+                            height:height_limscroll+'px'
+                        });
+                    }
+                   
+                }
+            })
+        </script>
         <div class="layout">
         

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <display_all>
+        <title></title>
+        <filter>            
+        </filter>
+        <list>
+            <!-- 3 item nay la bat buoc -->
+            <item type="primarykey" id="PK_DOC" />
+            <!--<item type="checkbox" id="PK_DOC" size="3%"/>-->  
+
+            <!-- ********************************************************* -->
+            
+			
+            <item type="text" id="xml/doc_ngay_den" name="Ngày đến" size="10%"/>
+			<item type="text" id="xml/doc_so_den" name="Số đến" size="7%"/>
+			<item type="text" id="xml/doc_nguoi_gui" name="Người gửi" size="13%"/>
+			<item type="text" id="xml/doc_ngay_van_ban" name="Ngày tháng của đơn thư" size="10%"/>
+            <item type="text" id="xml/doc_trich_yeu" name="Trích yếu" size="22%"/>
+			<item type="text" id="xml/doc_noi_nhan" name="Đơn vị/người nhận" size="10%"/>
+            <item type="text" id="DOC_TINH_TRANG_XU_LY" name="Tình trạng xử lý" size="28%"/>
+            <!--<item type="action" id="PK_DOC" name="#" size="12%" action="delete, submit, allot, sub_allot, exec"/>-->
+			<!-- delete: Xoá; submit: Trình lãnh đạo; allot: Phân công thụ lý -->
+        </list>
+    </display_all>
+    <display_single>
+	        
+    </display_single>
+</root>

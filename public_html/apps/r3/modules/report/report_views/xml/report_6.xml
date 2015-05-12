@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td rowspan="2">STT</td>
+            <td rowspan="2">Mã hồ sơ</td>
+            <td rowspan="2">Người nộp</td>
+            <td rowspan="2">Địa chỉ</td>
+            <td rowspan="2">Số điện thoại</td>
+            <td rowspan="2">Công việc</td>
+            <td colspan="3">Thụ lý hồ sơ(đv: ngày)</td>
+        </tr>
+		<tr>
+			<td>Vượt tiến độ</td>
+			<td>Đúng tiến độ</td>
+			<td>Chậm tiến độ</td>
+		</tr>
+    </head>
     <list>
         <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
-        <item type="text" id="RN" name="TT" size="50" align="right"/>
-        <item type="text" id="C_SPEC_NAME" name="Lĩnh vực" size="600"/>
-        <item type="text" id="C_COUNT" name="Số tiếp nhận" size="100" align="right" number_format="true"/>
+        <item type="text" id="RN" name="TT" size="5%" align="center" excel_width="21"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="15%" excel_width="83"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người nộp" size="15%" align="center" excel_width="18"/>
+        <item type="text" id="xml/txtDiaChi" name="Địa chỉ" size="15%" align="center" excel_width="18"/>
+        <item type="text" id="C_RETURN_PHONE_NUMBER" name="Số điện thoại" size="10%" align="center" excel_width="18"/>
+        <item type="text" id="MATHS" formula="step_name" param="C_TASK_CODE,C_RECORD_TYPE_CODE" name="Công việc" size="16%" align="left"  excel_width="18"/>
+        
+        <item type="text" id="C_VUOT_TIEN_DO" name="Vượt tiến độ" size="8%" align="center" excel_width="16"/>
+        <item type="text" id="C_DUNG_TIEN_DO" name="Đúng tiến độ" size="8%" align="center" excel_width="16"/>
+        <item type="text" id="C_CHAM_TIEN_DO" name="Chậm tiến độ" size="8%" align="center" excel_width="16"/>
     </list>
-    <total>
-        <item colspan="2" name="Tổng cộng" align="right"/>
-        <item colspan="1" id="C_COUNT" align="right"/>
-    </total>
-    <sub_total>
-    </sub_total>
 </report>

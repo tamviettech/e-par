@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
     $arr_other_role = array(strtolower(_CONST_TRA_CUU_ROLE),strtolower(_CONST_BAO_CAO_ROLE));
 ?>
 <!--include js record-->
@@ -76,24 +58,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <?php if (check_permission($key, 'r3')): ?>
                         <?php $v_class       = (strtolower($this->active_role) == strtolower($key) && ( !isset($_GET['url']) OR $_GET['url'] != "r3/record/liveboard") ) ? ' class="active_role active"' : ''; ?>
                         <li <?php echo $v_class; ?> data-role="<?php echo $key; ?>" data-menu="1" style="width: 100%;;">
-                            <a href="<?php echo $this->controller_url . 'ho_so/' . strtolower($key); ?>">
-                                <i class="icon-list-alt"></i>
-                                <?php echo $val; ?>
-                                <?php
-                                $arr_not_count = array(
-                                    _CONST_TRA_CUU_ROLE
-                                    , _CONST_TRA_CUU_LIEN_THONG_ROLE
-                                    , _CONST_BAO_CAO_ROLE
-                                    , _CONST_Y_KIEN_LANH_DAO_ROLE
-                                    , _CONST_TRA_CUU_LIEN_THONG_ROLE
-                                    , _CONST_TRA_CUU_TAI_XA_ROLE
-                                    
-                                    );
-                                ?>
-                                
-                                <?php if (!in_array(strtoupper($key), $arr_not_count)): ?>
-                                    <i style="font-style: normal" class="count">(0)</i>
-                                <?php endif; ?>
+                            
+                            <a  href="<?php echo $this->controller_url . 'ho_so/' . strtolower($key); ?>">
+                              <i class="icon-tasks icon-<?php echo $key;?>" style="display: block;float: left;"></i>
+                              <span style="text-decoration: none;font-size: 14px;color: #444;"> 
+                                  <?php echo $val; ?>
+                                    <?php
+                                    $arr_not_count = array(
+                                        _CONST_TRA_CUU_ROLE
+                                        , _CONST_TRA_CUU_LIEN_THONG_ROLE
+                                        , _CONST_Y_KIEN_LANH_DAO_ROLE
+                                        , _CONST_TRA_CUU_LIEN_THONG_ROLE
+                                        , _CONST_TRA_CUU_TAI_XA_ROLE
+
+                                        );
+                                    ?>
+
+                                    <?php if (!in_array(strtoupper($key), $arr_not_count)): ?>
+                                        <i style="font-style: normal" class="count">(0)</i>
+                                    <?php endif; ?>
+                            </span>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -101,15 +85,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <?php $v_class    = (isset($_GET['url']) && $_GET['url'] == "r3/record/liveboard") ? ' class="active_role active"' : ''; ?>
                         <!--Theo dõi trực tuyến-->
                         <li <?php echo $v_class; ?> style="width: 100%;;" >
-                             <a href="<?php echo $this->controller_url.'liveboard';?>"><i class="icon-list-alt"></i> Theo dõi trực tuyến</a>
-                        </li>
-                        <!--Tài liệu lưu trữ-->
-                         <?php $v_class    = (isset($_GET['url']) && $_GET['url'] == "r3/media") ? ' class="active_role active"' : ''; ?>
-                        <li <?php echo $v_class; ?> style="width: 100%;;" >
-                             <a href="<?php echo SITE_ROOT . build_url('r3/media');?>">
-                                 <i class="icon-list-alt"></i> 
-                                 Tài liệu lưu trữ
-                             </a>
+                             <a href="<?php echo $this->controller_url.'liveboard';?>"><i class="icon-bar-chart"></i> Theo dõi trực tuyến</a>
                         </li>
                 <script>
                     function get_role_notice() {
@@ -127,19 +103,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                     function count_processing_record_per_role()
                     {
-                        q = 'li[data-menu="1"]';
+                        var v_url = '';
+                        var v_delay_message = '';
+                        var count = '';
+                        var role = '';
+                        var rq = '';
+                        var q = 'li[data-menu="1"]';
                         jQuery(q).each(function(index) {
                             var v_role = $(this).attr('data-role');
                             if (v_role.toUpperCase() != '<?php echo _CONST_TRA_CUU_ROLE; ?>' && v_role.toUpperCase() != '<?php echo _CONST_BAO_CAO_ROLE; ?>' && v_role.toUpperCase() != '<?php echo _CONST_Y_KIEN_LANH_DAO_ROLE; ?>')
                             {
-                                var v_url = '<?php echo $this->controller_url; ?>' + 'count_processing_record_by_role/' + v_role + '/' + QS + 't=' + getTime();
+                                v_url = '<?php echo $this->controller_url; ?>' + 'count_processing_record_by_role/' + v_role + '/' + QS + 't=' + getTime();
                                 jQuery.ajax({
                                     cache: false,
                                     url: v_url,
                                     dataType: 'json',
                                     success: function(data) {
-                                        count = data.count;
-                                        role = data.role;
+                                        count = (data.count)?data.count:'0';
+                                        role = (data.role)?data.role:'0';
                                         rq = 'li[data-role="' + role + '"] i[class="count"]';
                                         count = '('+ count +')';
                                         jQuery(rq).html(count);
@@ -147,10 +128,53 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 });
                             }
                         });
+                        
+                        v_url = '<?php echo $this->controller_url;?>count_warning_by_user';
+                        jQuery.ajax({
+                            cache: false,
+                            url: v_url,
+                            dataType: 'json',
+                            success: function(json_data) {
+                                if(json_data['count_overdue'] > 0 || json_data['count_expired'] > 0)
+                                {
+                                    v_delay_message = 'Chậm tiến độ: ' + json_data['count_overdue'] + ' hồ sơ; Quá hạn: ' + json_data['count_expired'] + ' hồ sơ;';
+                                    $('.alert > .alert-content').html(v_delay_message);
+                                    $('.alert').show();
+                                }
+                            }
+                        });
                     }
                 </script>
             <?php endif; ?>
-               
+            <?php if(isset($this->arr_all_report_type)):
+                    $v_icon = 'icon-copy';
+            ?>
+                <?php foreach ($this->arr_all_report_type as $v_code => $v_name): 
+                    $url = SITE_ROOT . 'r3/report/option/' . $v_code;
+                    $active = (strval($v_code) == strval($this->current_report_type))?'active':'';
+                    ?>
+                    <li class="<?php echo $active?>">
+                        <a href="<?php echo $url?>" >
+                            <i class="<?php echo $v_icon;?>" style="display: block;float: left;"></i>
+                              <span style="text-decoration: none;font-size: 14px;color: #444;"> 
+                                  <?php echo $v_name; ?>
+                              </span>
+                        </a>
+                    </li>
+                <?php endforeach;?>
+                <?php if(check_permission('QUAN_TRI_SO_THEO_DOI_HO_SO', 'r3')):
+                            $active = (isset($this->menu_reportbook) && strval($this->menu_reportbook == 'reportbook'))?'active':'';
+                ?>
+                    <li class="<?php echo $active?>">
+                        <a href="<?php echo SITE_ROOT?>r3/reportbook">
+                            <i class="<?php echo $v_icon;?>" style="display: block;float: left;"></i>
+                            <span style="text-decoration: none;font-size: 14px;color: #444;">
+                                Sổ theo dõi hồ sơ
+                            </span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            <?php endif;?>
         </ul>
     </div> <!-- /#role -->
 </div>

@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -42,21 +24,32 @@ $this->template->display('dsp_header.php');
     echo $this->hidden('hdn_role',$this->active_role);
 
     echo $this->hidden('record_type_code', $v_record_type_code);
+    
+    //Thu tuc cp bat buoc cap nhat ket qua thu ly khong?
+    if (count($arr_all_record_type) > 0)
+    {
+        $v_next_task_code = isset($arr_all_record[0]['C_NEXT_TASK_CODE'])?$arr_all_record[0]['C_NEXT_TASK_CODE']:'';
+        $v_require_form = $this->get_require_form($v_record_type_code, $v_next_task_code);
+        
+        $v_minimum_time = $this->get_minimum_time_to_exec($v_record_type_code, $v_next_task_code);
+    }
+    
     ?>
     <?php echo $this->dsp_div_notice($VIEW_DATA['active_role_text'] );?>
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
-
+    
     <div id="solid-button">
-        <!--button tra ket qua-->
-        <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();" >
-            Hoàn thành thụ lý
-        </button>
-        
-
-               <!-- 
-        <input type="button" name="btn_rollback" class="solid exchange" value="Trả hồ sơ về bước trước" onclick="btn_rollback_onclick();" />
-         -->
+        <?php if (strlen($v_require_form) > 0): ?>
+            <p class="text-warning">
+                Thủ tục bắt buộc nhập kết quả thụ lý. Cần cập nhật kết quả thụ lý đối với từng hồ sơ.
+            </p>
+        <?php elseif(strlen($v_minimum_time) > 0): ?>
+        <?php else:?>
+            <button type="button" name="trash" class="btn" onclick="btn_dsp_exec_onclick();" >
+                Hoàn thành thụ lý
+            </button>
+        <?php endif; ?>
     </div>
     <div class="clear" style="height: 10px">&nbsp;</div>
 
@@ -68,15 +61,13 @@ $this->template->display('dsp_header.php');
     <?php echo $this->paging2($arr_all_record);?>
 
     <!-- Buttons -->
-    <div class="button-area">
-        <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();">
-            Hoàn thành thụ lý
-        </button>
-        
-        <!-- 
-        <input type="button" name="btn_rollback" class="button exchange" value="Trả hồ sơ về bước trước" onclick="btn_rollback_onclick();" />
-         -->
-    </div>
+    <?php if (strlen($v_require_form) == 0 && strlen($v_minimum_time) == 0): ?>
+        <div class="button-area">
+            <button type="button" name="trash" class="btn" onclick="btn_dsp_exec_onclick();">
+                Hoàn thành thụ lý
+            </button>
+        </div>
+    <?php endif; ?>
 
     <!-- Context menu -->
     <ul id="ownerMenu" class="contextMenu">
@@ -141,12 +132,18 @@ $this->template->display('dsp_header.php');
                 v_is_owner = $('.adminlist tr[data-item_id="' + v_item_id + '"]').attr('data-owner');
                 if (v_is_owner == "1")
                 {
-                    html += '<a href="javascript:void(0)" onclick="dsp_exec_single_record(\'' + v_item_id + '\')" class="quick_action" >';
-                    html += '<img src="' + SITE_ROOT + 'public/images/btn_commit.png" title="Hoàn thành thụ lý" /></a>';
+                    html += '<a href="javascript:void(0)" onclick="dsp_exec_single_record(\'' + v_item_id + '\')" class="quick_action" title="Hoàn thành thụ lý">';
+                    html += '<i class="icon-ok-sign"></i></a>';
                 }
+                <?php if (strlen($v_require_form) > 0): ?>
+                    //cap nhat ket qua thu ly:
+                    html += '<a href="javascript:void(0)" onclick="dsp_update_exec_result(\'' + v_item_id + '\')" class="quick_action"  title="Cập nhật kết quả thụ lý" >';
+                    html += '<i class="icon-file-text-alt"></i></a>';
+                <?php endif; ?>
+                
                 //Thong tin tien do
-                html += '&nbsp;<a href="javascript:void(0)" onclick="dsp_record_statistics(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+                html += '&nbsp;<a href="javascript:void(0)" onclick="dsp_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+                html += '<i class="icon-bar-chart"/></a>';
 
                 $(this).html(html);
             });
@@ -175,6 +172,15 @@ $this->template->display('dsp_header.php');
             + '/?record_type_code=' + $("#record_type_code").val()
             + '&pop_win=1';
         exec_pop_win(url);
+    }
+    
+    function dsp_update_exec_result(record_id)
+    {
+         var url = '<?php echo $this->get_controller_url();?>dsp_update_exec_result/' + record_id
+                    + QS + 'record_type_code=' + $("#record_type_code").val()
+                    + '&record_id=' + record_id
+                    + '&pop_win=1';
+        exec_pop_win(url, 800, 500, null, true);  
     }
 
     function btn_dsp_exec_onclick()

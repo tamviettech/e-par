@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) {exit('No direct script access allowed');}?>
 
 <?php if (! isset($this->show_left_side_bar)): ?>
@@ -98,12 +80,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <DIV id=overDiv style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></DIV>
             <div style="width: 100%;background-color: white;">
                 <div style="background: #da3610;width: 220px;float:left;height: 50px;">
-                    <center>
-                        <img src="<?php echo SITE_ROOT.'public/logoQuocHuy.png'?>" style="width: 45px;height: 45px;"/>
-                    </center>
+                    <div style="float: left;padding-left: 10px;padding-top: 2px;">
+                                <img src="<?php echo SITE_ROOT . 'public/logoQuocHuy.png' ?>" style="width: 45px;height: 45px;"/>
+                        </div>
+                        <center style="color: white;font-weight: bold;padding-top: 5px;font-size: 13px;font-family: Tohama">
+                            <?php
+                            $dom_unit = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
+                            if (Session::get('la_can_bo_cap_xa'))
+                                $unit_fullname = Session::get('ou_name');
+                            else
+                                $unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
+                            echo $unit_fullname;
+                            ?>
+                        </center>
                 </div>
                 <div class="main-wrapper" style="padding: 0;">
-                    <?php include (SERVER_ROOT . 'dsp_top_primary_nav.php');?>
+                    <?php #include (SERVER_ROOT . 'dsp_top_primary_nav.php');?>
+                    <div class="navbar navbar-inverse top-nav">
+                        <div class="navbar-inner">
+                            <div class="container">
+                                <span class="home-link">
+                                    <a href="<?php echo SITE_ROOT;?>" class="icon-home"></a>
+                                </span>
+                                <div class="nav-collapse">
+                                    <?php View::build_app_menu( dirname(__FILE__) . '/cores_menu.xml.php', $this->app_name);?>
+                                </div>
+                                <div class="btn-toolbar pull-right notification-nav">
+                                    <?php View::build_user_profile_menu( dirname(__FILE__) . '/cores_menu.xml.php', $this->app_name);?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <?php if ($this->show_left_side_bar == TRUE): ?>

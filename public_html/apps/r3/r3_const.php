@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 $arr_all_r3_roles = array(
         //BP Mot-Cua
         _CONST_TIEP_NHAN_ROLE                         => 'Tiếp nhận'
@@ -64,7 +46,6 @@ $arr_all_r3_roles = array(
         , _CONST_TRA_CUU_ROLE            => 'Tra cứu'
         , _CONST_TRA_CUU_LIEN_THONG_ROLE => 'Tra cứu hồ sơ liên thông'
         , _CONST_TRA_CUU_TAI_XA_ROLE     => 'Tra cứu hồ sơ tại xã'
-        , _CONST_BAO_CAO_ROLE            => 'Báo cáo'
         , 'REJECT'                       => 'Từ chối HS'
         , 'KHONG_NHAN_HO_SO'             => 'Không nhận hồ sơ'
     );
@@ -98,7 +79,7 @@ $arr_village_name = array(
 define('CONST_FILETER_CADRE_EVALUATON_VILLAGE',  json_encode($arr_village_name));
 
 //CONST tên đơn vị đăng ký lên support (dùng cho support TamViet)
-define('CONST_MY_OU_NAME','LANG_GIANG');
+define('CONST_MY_OU_NAME','CAM_XUYEN');
 
 //img upload
 define('CONST_SITE_IMG_ROOT', FULL_SITE_ROOT . 'uploads/public_service/');
@@ -106,3 +87,30 @@ define('CONST_SERVER_IMG_ROOT', SERVER_ROOT . 'uploads/public_service/');
 
 define('CONST_SITE_THEME_ROOT', FULL_SITE_ROOT . 'apps/public_service/');
 define('CONST_SITE_SERVER_ROOT', SERVER_ROOT . 'apps\public_service'.DS);
+
+/**
+ * const su dung cho ma ho so (Ma ngan cua don vi)
+ */
+define('CONST_SHORT_CORD_OF_UNIT', 'CX');
+
+#sms
+define('CONST_TRIGGER_SEND_SMS', true);//bat hien thi chu nang send sms: open: true
+// footer tin nhắn tin gửi công dân
+define('CONST_HEAD_SEND_SMS','HS cua ong/ba: ');
+define('CONST_FOOTER_SEND_SMS',' da co ket qua. Xin moi den nhan ket qua.');
+
+#end sms
+
+//const webservice
+$ws_location = 'http://localhost/mot-cua-ha-tinh/index.php?url=r3/webservices';
+define('CONST_WS_LOCATION',$ws_location);
+define('CONST_WS_URI','urn://tyler/req');
+
+#end sms
+
+#mavach
+// Thiet lap trang thai scroll auto cua module tra cuu ma vach
+define('CONST_MAVACH_SCROLL',TRUE);
+// Thoi gian delay chay
+define('CONST_MAVACH_LIMIT_TIME_SCROLL',80);
+#End ma vach>>>>>>> .r235

@@ -1,0 +1,7 @@
+/*fix css chrome version 39.0.2171.95*/
+
+#myTab1 .active,#myTab1 .active:focus,#myTab1 .active:hover,#myTab1 .active:visited
+,#popupTitleBar #popupTitle
+{
+   white-space: nowrap;
+}

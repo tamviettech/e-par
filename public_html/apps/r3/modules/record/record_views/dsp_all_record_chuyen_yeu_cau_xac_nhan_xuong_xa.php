@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -49,16 +31,16 @@ $this->template->display('dsp_header.php');
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     <div id="solid-button">
-        <button type="button"  class="btn btn btn-warning solid transfer"
-               name="btn_display_send_confirmation_request" onclick="btn_display_send_confirmation_request_onclick();" >
-           
-            Chuyển yêu cầu xác nhận xuống xã</button>
+        <button type="button"  class="btn solid transfer"
+            name="btn_display_send_confirmation_request" onclick="btn_display_send_confirmation_request_onclick();" >
+            Chuyển yêu cầu xác nhận xuống xã
+        </button>
          
-        <button onclick="print_record_ho_for_bu();" type="button" name="addnew" class="btn btn btn-info solid print" ><i class="icon-print"></i>In giấy bàn giao</button>
-        
+        <!--
+        <button onclick="print_record_ho_for_bu();" type="button" name="addnew" class="btn solid print" ><i class="icon-print"></i>In giấy bàn giao</button>
+        -->
     </div>
-    <div class="clear"></div>
-
+    <div class="clear" style="height: 10px">&nbsp;</div>
     <div id="procedure">
         <?php
         if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list')))
@@ -82,13 +64,13 @@ $this->template->display('dsp_header.php');
                 v_is_owner = $('.adminlist tr[data-item_id="' + v_item_id + '"]').attr('data-owner');
                 if (v_is_owner == "1")
                 {
-                    html = '<a href="javascript:void(0)" onclick="btn_display_send_confirmation_request_onclick(\'' + v_item_id + '\');" class="quick_action" >';
-                    html += '<img src="' + SITE_ROOT + 'public/images/allot-16x16.png" title="Chuyển yêu cầu xác nhận xuống xã" /></a>';
+                    html = '<a href="javascript:void(0)" onclick="btn_display_send_confirmation_request_onclick(\'' + v_item_id + '\');" class="quick_action" title="Chuyển yêu cầu xác nhận xuống xã" >';
+                    html += '<i class="icon-mail-forward"></i></a>';
                 }
 
                 //Thong tin tien do
-                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\');" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\');" class="quick_action" title="Xem tiến độ">';
+                html += '<i class="icon-bar-chart"></i></a>';
 
                 $(this).html(html);
             });

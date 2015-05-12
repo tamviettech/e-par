@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -25,7 +7,7 @@ class record_Controller extends Controller
 {
 
     //Roles
-    protected $_arr_roles ;
+    protected $_arr_roles;
     protected $_active_role;
     protected $_arr_user_role   = array();
     protected $_record_type;
@@ -41,7 +23,9 @@ class record_Controller extends Controller
         , 7  => 'Đã trả KQ'
         , 8  => 'Chậm tiến độ'
         , 9  => 'Quá hạn trả'
-//        , 11 => 'Khôi phục HS'
+//      , 11 => 'Khôi phục HS'
+        , 12 => 'Đã ký'
+        , 13 => 'Sắp đến hạn'
     );
 
     /**
@@ -54,29 +38,26 @@ class record_Controller extends Controller
     {
         //Kiem tra session
         session::init();
-        
+
         //Kiem tra dang nhap
         session::check_login();
-        
-        
         parent::__construct('r3', 'record');
-        
         //tao array role tu r3_const
-        $this->_arr_roles = json_decode(CONST_ALL_R3_ROLES,true);
-        
-        $this->view->show_left_side_bar = $this->view->template->show_left_side_bar = TRUE;
+        $this->_arr_roles = json_decode(CONST_ALL_R3_ROLES, true);
+
+        $this->view->show_left_side_bar           = $this->view->template->show_left_side_bar = TRUE;
         //$this->view->template->arr_roles = $this->model->qry_all_user_role(Session::get('user_code'));// $this->_arr_roles;
         $this->view->template->controller_url     = $this->view->get_controller_url();
         $this->view->template->activity_filter    = $this->_activity_filter;
         $this->view->role_text                    = $this->_arr_roles;
-        
-        
+
+
         deny_bad_http_referer();
-        
+
         $menu = Array();
 
         $arr_my_role = $this->model->qry_all_user_role(Session::get('user_code'));
-        
+
         foreach ($this->_arr_roles as $key => $val)
         {
             if ($this->check_permission($key) && in_array($key, $arr_my_role))
@@ -99,7 +80,7 @@ class record_Controller extends Controller
         }
 
         $arr_more_roles = array(_CONST_Y_KIEN_LANH_DAO_ROLE, _CONST_TRA_CUU_ROLE
-            , _CONST_TRA_CUU_LIEN_THONG_ROLE, _CONST_TRA_CUU_TAI_XA_ROLE, _CONST_BAO_CAO_ROLE);
+            , _CONST_TRA_CUU_LIEN_THONG_ROLE, _CONST_TRA_CUU_TAI_XA_ROLE);
         foreach ($arr_more_roles as $role)
         {
             if ($this->check_permission($role))
@@ -134,7 +115,8 @@ class record_Controller extends Controller
         $VIEW_DATA['active_role']      = strtoupper($role);
         $VIEW_DATA['active_role_text'] = $this->_arr_roles[strtoupper($role)];
 
-        $v_dsp_file           = 'dsp_all_record_' . strtolower($role);
+        $v_dsp_file = 'dsp_all_record_' . strtolower($role);
+
         $VIEW_DATA['MY_TASK'] = $v_record_type_code . _CONST_XML_RTT_DELIM . strtoupper($role);
         if (sizeof($arr_all_record) > 0)
         {
@@ -222,8 +204,8 @@ class record_Controller extends Controller
      */
     private function _require_office_hour()
     {
-        return TRUE; 
-        
+        return TRUE;
+
         if (DEBUG_MODE)
         {
             return;
@@ -234,11 +216,11 @@ class record_Controller extends Controller
             die();
         }
     }
-    
-    
+
     /*
      * Tu choi deny cac hanh dong co user_token khong hop le
      */
+
     private function _deny_bad_user_token()
     {
         if (!check_user_token())
@@ -333,11 +315,20 @@ class record_Controller extends Controller
      */
     public function dsp_print_ho_for_bu($record_id_list)
     {
+        $v_lien_thong       = get_request_var('lien_thong', 0);
         $v_record_type_code = get_request_var('record_type_code');
-        $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
-        $v_type             = get_request_var('type', 1);
+        if ($v_lien_thong == 1)
+        {
+            $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_CHUYEN_LEN_HUYEN_ROLE;
+        }
+        else
+        {
+            $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
+        }
 
-        $arr_all_record                    = $this->model->qry_all_ho_record($record_id_list);
+        $v_type = get_request_var('type', 1);
+
+        $arr_all_record                    = $this->model->qry_all_ho_record($record_id_list, $v_lien_thong);
         $VIEW_DATA['arr_all_record']       = $arr_all_record;
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
 
@@ -549,6 +540,16 @@ class record_Controller extends Controller
         //Tai lieu
         $VIEW_DATA['arr_all_doc'] = $this->model->qry_all_record_doc($record_id);
 
+
+        //Thong tin phi
+        $VIEW_DATA['arr_single_record_fee'] = $this->model->qry_single_record_fee($record_id);
+
+        //In  chi tiet tien do xy ly
+        if (isset($_GET['print_record_satistic']) && intval($_GET['print_record_satistic']) == 1)
+        {
+            $this->view->render('dsp_print_record_statistic', $VIEW_DATA);
+            exit();
+        }
         $this->view->render('dsp_single_record_statistics', $VIEW_DATA);
     }
 
@@ -571,7 +572,7 @@ class record_Controller extends Controller
     public function do_add_doc()
     {
         $this->_deny_bad_user_token();
-        
+
         $arr_all_doc = $this->model->do_add_doc();
 
         $html = '';
@@ -613,7 +614,7 @@ class record_Controller extends Controller
     public function do_delete_doc()
     {
         $this->_deny_bad_user_token();
-        
+
         $this->model->do_delete_doc();
     }
 
@@ -628,7 +629,7 @@ class record_Controller extends Controller
      * Dem so luong HS can xu ly theo Role
      * @param type $role
      */
-    public function count_processing_record_by_role($role)
+    public function count_processing_record_by_role($role = '')
     {
         echo json_encode($this->model->count_processing_record_by_role(strtoupper($role)));
     }
@@ -677,18 +678,39 @@ class record_Controller extends Controller
 
     public function dsp_exec($record_id_list)
     {
-        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
+        $v_record_type_code = get_request_var('record_type_code', '');
 
         //$task_code ??????????
         $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_THU_LY_ROLE;
 
         $VIEW_DATA['record_id_list']       = $record_id_list;
-        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
+        $arr_all_record                    = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
+        $VIEW_DATA['arr_all_record']       = $arr_all_record;
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+
+        //LienND update: 2014-06-17: Neu thu ly 1 hs, Da co ket qua thu ly chua?
+        $v_updated_exec_result = 1;
+        if (is_id_number($record_id_list))
+        {
+            $v_next_task_code = $arr_all_record[0]['C_NEXT_TASK_CODE'];
+            $v_require_form   = $this->view->get_require_form($v_record_type_code, $v_next_task_code);
+
+            //Co yeu cau cap nhat ket qua thu ly khong?
+            if (strlen($v_require_form) > 0)
+            {
+                //Da co ket qua thu ly trong DB chua?
+                $v_updated_exec_result = $this->model->qry_count_record_metadata($record_id_list, $v_require_form);
+            }
+        }
+        $VIEW_DATA['v_updated_exec_result'] = $v_updated_exec_result;
 
         $this->view->render('dsp_exec_record', $VIEW_DATA);
     }
-    
+
+    /**
+     * hoan thanh thu ly cap xa
+     * @param type $record_id_list
+     */
     public function dsp_exec_by_village($record_id_list)
     {
         $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
@@ -700,19 +722,36 @@ class record_Controller extends Controller
         $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
 
+        $VIEW_DATA['arr_all_next_user'] = $this->model->qry_next_user_in_ou($v_task_code);
+
         $this->view->render('dsp_exec_record_by_village', $VIEW_DATA);
     }
 
     public function dsp_inter_exec($record_id_list)
     {
-        $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
-
+        $v_record_type_code = get_post_var('record_type_code', ''); //isset($_REQUEST['']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
         //$task_code ??????????
-        $v_task_code = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_THU_LY_HO_SO_LIEN_THONG_ROLE;
+        $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_THU_LY_HO_SO_LIEN_THONG_ROLE;
 
         $VIEW_DATA['record_id_list']       = $record_id_list;
-        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
+        $VIEW_DATA['arr_all_record']       = $arr_all_record                    = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+
+        //LienND update: 2014-06-17: Neu thu ly 1 hs, Da co ket qua thu ly chua?
+        $v_updated_exec_result = 1;
+        if (is_id_number($record_id_list))
+        {
+            $v_next_task_code = $arr_all_record[0]['C_NEXT_TASK_CODE'];
+            $v_require_form   = $this->view->get_require_form($v_record_type_code, $v_next_task_code);
+
+            //Co yeu cau cap nhat ket qua thu ly khong?
+            if (strlen($v_require_form) > 0)
+            {
+                //Da co ket qua thu ly trong DB chua?
+                $v_updated_exec_result = $this->model->qry_count_record_metadata($record_id_list, $v_require_form);
+            }
+        }
+        $VIEW_DATA['v_updated_exec_result'] = $v_updated_exec_result;
 
         $this->view->render('dsp_exec_record', $VIEW_DATA);
     }
@@ -727,7 +766,20 @@ class record_Controller extends Controller
         $VIEW_DATA['record_id_list']       = $record_id_list;
         $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_task($record_id_list, $v_task_code);
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
+        $v_updated_exec_result             = 1;
+        if (is_id_number($record_id_list))
+        {
+            $v_next_task_code = $arr_all_record[0]['C_NEXT_TASK_CODE'];
+            $v_require_form   = $this->view->get_require_form($v_record_type_code, $v_next_task_code);
 
+            //Co yeu cau cap nhat ket qua thu ly khong?
+            if (strlen($v_require_form) > 0)
+            {
+                //Da co ket qua thu ly trong DB chua?
+                $v_updated_exec_result = $this->model->qry_count_record_metadata($record_id_list, $v_require_form);
+            }
+        }
+        $VIEW_DATA['v_updated_exec_result'] = $v_updated_exec_result;
         $this->view->render('dsp_exec_record', $VIEW_DATA);
     }
 
@@ -759,6 +811,7 @@ class record_Controller extends Controller
     {
         $this->model->do_exec_record();
     }
+
     /**
      * hoan thanh thu ly o thu ly xa
      */
@@ -969,6 +1022,7 @@ class record_Controller extends Controller
 
         $VIEW_DATA['arr_single_record']   = $this->model->qry_single_record($record_id, NULL, NULL);
         $VIEW_DATA['arr_all_record_type'] = $this->model->qry_all_record_type_option();
+        $VIEW_DATA['arr_all_record_file'] = $this->model->qry_all_record_file($record_id);
 
         $this->view->render('dsp_single_record_supplement', $VIEW_DATA);
     }
@@ -1022,17 +1076,26 @@ class record_Controller extends Controller
 
     public function do_add_comment()
     {
+//        $this->_deny_bad_user_token();
+//
+//        $this->_require_office_hour();
+//        $arr_all_comment = $this->model->do_add_comment();
+//        echo json_encode($arr_all_comment);
+
         $this->_deny_bad_user_token();
-        
+
         $this->_require_office_hour();
         $arr_all_comment = $this->model->do_add_comment();
-        echo json_encode($arr_all_comment);
+
+        $v_record_id  = isset($_POST['hdn_item_id']) ? replace_bad_char($_POST['hdn_item_id']) : '0';
+        $v_goback_url = $this->view->get_controller_url() . "statistics/$v_record_id&hdn_item_id=$v_record_id&pop_win=1&tab=comment";
+        $this->model->exec_done($v_goback_url);
     }
 
     public function do_delete_comment()
     {
         $this->_deny_bad_user_token();
-        
+
         $this->_require_office_hour();
         $this->model->do_delete_comment();
     }
@@ -1071,7 +1134,7 @@ class record_Controller extends Controller
 //        $VIEW_DATA['arr_all_user']         = $this->model->db->GetAssoc("Select C_LOGIN_NAME, C_NAME
 //            From t_cores_user u Inner Join t_r3_user_task ut On u.C_LOGIN_NAME=ut.C_USER_LOGIN_NAME
 //            Where ut.C_TASK_CODE=?", array(strtoupper($v_record_type_code) . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE));
-        
+
         $this->view->render('dsp_supplement_request_record', $VIEW_DATA);
     }
 
@@ -1303,12 +1366,12 @@ class record_Controller extends Controller
 
         $this->view->render($v_dsp_file, $VIEW_DATA);
     }
-    
+
     private function thu_ly_cap_xa()
     {
         $this->_regular_role(__FUNCTION__);
     }
-    
+
     private function thu_phi()
     {
         $this->_regular_role(__FUNCTION__);
@@ -1553,7 +1616,7 @@ class record_Controller extends Controller
     {
         $this->view->template->show_left_side_bar = TRUE;
         $this->view->template->activity_filter    = $this->_activity_filter;
-        
+
         $VIEW_DATA['arr_all_record_type'] = $this->model->qry_all_record_type_option();
         //Nếu không chọn loại HS, lấy loại HS đầu tiên trong danh sách
         $v_record_type_code               = $this->_record_type;
@@ -1568,7 +1631,7 @@ class record_Controller extends Controller
         {
             $activity_filter = 0;
         }
-        
+
         $arr_all_record                = $this->model->qry_all_record_for_lookup($v_record_type_code, $activity_filter);
         $VIEW_DATA['record_type_code'] = $v_record_type_code;
         $VIEW_DATA['active_role']      = strtoupper(__FUNCTION__);
@@ -1576,7 +1639,7 @@ class record_Controller extends Controller
         $VIEW_DATA['arr_all_record']   = $arr_all_record;
         $VIEW_DATA['arr_all_spec']     = $this->model->assoc_list_get_all_by_listtype_code(_CONST_DANH_MUC_LINH_VUC, CONST_USE_ADODB_CACHE_FOR_REPORT);
         //tao menu tra cuu
-        $VIEW_DATA['activity_filter']   = $this->_activity_filter;
+        $VIEW_DATA['activity_filter']  = $this->_activity_filter;
 
         $this->view->render('dsp_all_record_tra_cuu', $VIEW_DATA);
     }
@@ -1762,7 +1825,7 @@ class record_Controller extends Controller
     public function do_accept_internet_record()
     {
         $this->_deny_bad_user_token();
-        
+
         $this->_require_office_hour();
         $this->model->goback_url = $this->view->get_role_url(strtolower(_CONST_XAC_NHAN_HO_SO_NOP_QUA_INTERNET_ROLE));
         $this->model->do_accept_internet_record();
@@ -1954,11 +2017,37 @@ class record_Controller extends Controller
         $this->_require_office_hour();
         $this->model->do_stop_cross_over_record();
     }
-    
+
+    /**
+     * Hiển thị giao diện nhập lý do không nhận hồ sơ
+     * @param int $v_record_id Mã hồ sơ
+     */
+    public function dsp_handover_reject($v_record_id)
+    {
+        $this->_require_office_hour();
+        $VIEW_DATA['v_record_id']        = $v_record_id;
+        $VIEW_DATA['v_record_type_code'] = get_request_var('record_type_code');
+        $VIEW_DATA['v_record_type_name'] = get_request_var('record_type_name');
+        $VIEW_DATA['v_reason']           = get_request_var('msg_reson');
+
+        $this->view->render('dsp_handover_reject', $VIEW_DATA);
+    }
+
+    /**
+     * Thực hiện không nhận hồ sơ
+     */
+    public function do_handover_reject()
+    {
+        $this->_require_office_hour();
+        $this->model->do_handover_reject();
+    }
+
+    #End Ban giao ho so lien thông bị từ chối về bước trước
     /**
      * in mau don (tien do)
      * @param type $v_record_id (mã hồ sơ)
      */
+
     public function dsp_print_record_form($v_record_id)
     {
         $this->_require_office_hour();
@@ -1966,9 +2055,9 @@ class record_Controller extends Controller
 
         $VIEW_DATA['arr_single_record'] = $this->model->qry_single_record($v_record_id);
 
-        $this->view->render('dsp_print_assistance_form', $VIEW_DATA);
+        $this->view->render('dsp_print_record_form', $VIEW_DATA);
     }
-    
+
     /**
      * in mau ho tro thu ly (tien do)
      * @param type $v_record_id (mã hồ sơ)
@@ -1984,7 +2073,7 @@ class record_Controller extends Controller
 //        $VIEW_DATA['url_assistance_for_to_doc'] = $this->view->get_controller_url() . "dsp_print_assistance_form/$v_record_id&tpl_file_dir=$tpl_file_dir&print_to_doc=1";
         $this->view->render('dsp_print_assistance_form', $VIEW_DATA);
     }
-    
+
     public function dsp_print_record_reject_for_citizen($v_record_id)
     {
         $this->_require_office_hour();
@@ -1996,53 +2085,54 @@ class record_Controller extends Controller
 
     public function update_HOABINH_pausedate()
     {
-    	//Lay danh sach ID dang bo sung
-    	$sql = "Select FK_RECORD, C_ANNOUNCE_DATE
+        //Lay danh sach ID dang bo sung
+        $sql               = "Select FK_RECORD, C_ANNOUNCE_DATE
 				from t_r3_record_supplement S
 				  Left Join t_r3_record R
 				    On S.FK_RECORD = R.PK_RECORD
 				Where S.C_DONE <> 1
 				    And S.C_ANNOUNCE_DATE IS Not NULL";
-    	$arr_pasing_record = $this->model->db->GetAssoc($sql);
-    	
-    	foreach ($arr_pasing_record as $v_record_id => $v_announce_date)
-    	{
-    		$sql = "Update t_r3_record Set C_PAUSE_DATE='$v_announce_date' Where PK_RECORD=$v_record_id";
-    		$this->model->db->Execute($sql);
-    	}
-    	
-    	echo 'File: ' . __FILE__ . '<br>Line: ' . __LINE__;var_dump::display($arr_pasing_record); 
+        $arr_pasing_record = $this->model->db->GetAssoc($sql);
+
+        foreach ($arr_pasing_record as $v_record_id => $v_announce_date)
+        {
+            $sql = "Update t_r3_record Set C_PAUSE_DATE='$v_announce_date' Where PK_RECORD=$v_record_id";
+            $this->model->db->Execute($sql);
+        }
+
+        echo 'File: ' . __FILE__ . '<br>Line: ' . __LINE__;
+        var_dump::display($arr_pasing_record);
     }
-    
+
     /**
      * dsp chon phong ban tiep nhan ho so de in
      */
     public function dsp_select_bu_to_print()
     {
         $VIEW_DATA['arr_all_bu'] = $this->model->qry_all_bu(_CONST_BAN_GIAO_ROLE);
-        
-        $this->view->render('dsp_select_bu_to_print',$VIEW_DATA);
+
+        $this->view->render('dsp_select_bu_to_print', $VIEW_DATA);
     }
-    
+
     /**
      * In bien ban ban giao tat ca ho so cho phong ban tieo nhan
      * @param unknown_type $record_id_list
      */
     public function dsp_print_all_record_for_bu()
     {
-        $record_id_list = get_post_var('sel_bu','');
-        $VIEW_DATA['bu_name'] = get_post_var('hdn_bu_name','');
-        
-        $v_task_code        =  _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
-        
-        $arr_all_record                    = $this->model->qry_all_ho_record($record_id_list);
-        $VIEW_DATA['arr_all_record']       = $arr_all_record;
-        
+        $record_id_list       = get_post_var('sel_bu', '');
+        $VIEW_DATA['bu_name'] = get_post_var('hdn_bu_name', '');
+
+        $v_task_code = _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
+
+        $arr_all_record              = $this->model->qry_all_ho_record($record_id_list);
+        $VIEW_DATA['arr_all_record'] = $arr_all_record;
+
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
 
         $this->view->render('dsp_print_all_record_for_bu', $VIEW_DATA);
-     
     }
+
     /**
      * Fc từ chối hồ sơ bổ xung
      * @param string $item_id_list
@@ -2054,11 +2144,12 @@ class record_Controller extends Controller
         $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_BO_SUNG_ROLE;
 
         $VIEW_DATA['record_id_list']       = $record_id_list;
-        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_allot($record_id_list,_CONST_BO_SUNG_ROLE);
+        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_allot($record_id_list, _CONST_BO_SUNG_ROLE);
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
 
         $this->view->render('dsp_reject_supplement', $VIEW_DATA);
     }
+
     /**
      * Fc từ chối hồ sơ bổ xung
      * @param string $item_id_list
@@ -2070,12 +2161,12 @@ class record_Controller extends Controller
         $v_task_code        = $v_record_type_code . _CONST_XML_RTT_DELIM . _CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE;
 
         $VIEW_DATA['record_id_list']       = $record_id_list;
-        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_allot($record_id_list,_CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE);
+        $VIEW_DATA['arr_all_record']       = $this->model->qry_all_record_for_allot($record_id_list, _CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE);
         $VIEW_DATA['arr_single_task_info'] = $this->model->qry_single_task_info($v_task_code);
 
         $this->view->render('dsp_reject_supplement', $VIEW_DATA);
     }
-    
+
     /**
      * 
      */
@@ -2083,9 +2174,10 @@ class record_Controller extends Controller
     {
         $this->_require_office_hour();
         $this->view->template->activity_filter = array();
-        $this->view->template->active_role = Session::get('active_role');
+        $this->view->template->active_role     = Session::get('active_role');
         $this->view->render('dsp_all_liveboard');
     }
+
     /**
      * ho so cong dan rut
      */
@@ -2094,27 +2186,184 @@ class record_Controller extends Controller
         $this->model->goback_url = $this->view->get_controller_url() . 'ho_so/' . strtolower(_CONST_RUT_ROLE);
         $this->model->drawn_record();
     }
+
     /**
      * Hien thi box nhap thong ly do rut ho so
      */
     public function dsp_reject_drawn_record($record_id_list)
     {
-        $VIEW_DATA = $results = array();
-        $VIEW_DATA =array();
+        $VIEW_DATA          = $results            = array();
+        $VIEW_DATA          = array();
         $this->_require_office_hour();
         $v_record_type_code = isset($_REQUEST['record_type_code']) ? replace_bad_char($_REQUEST['record_type_code']) : '';
         $this->check_permission(_CONST_RUT_ROLE) or die('Bạn không có quyền rút hồ sơ');
-        
-        $VIEW_DATA['record_id_list']        = $record_id_list;
-        $results                            = $this->model->get_list_drawn_record($record_id_list,$v_record_type_code);
-        $VIEW_DATA['arr_all_record']        = $results['arr_all_record'];         
-        $VIEW_DATA['arr_single_type_record']= $results['arr_single_type_record'];
-        
-        $this->view->render('dsp_reject_drawn_record',$VIEW_DATA);
+
+        $VIEW_DATA['record_id_list']         = $record_id_list;
+        $results                             = $this->model->get_list_drawn_record($record_id_list, $v_record_type_code);
+        $VIEW_DATA['arr_all_record']         = $results['arr_all_record'];
+        $VIEW_DATA['arr_single_type_record'] = $results['arr_single_type_record'];
+
+        $this->view->render('dsp_reject_drawn_record', $VIEW_DATA);
     }
-    
-    
-    
+
+    /**
+     * 
+     * Hien thi man hinh cap nhat ket qua thu ly ho so
+     */
+    public function dsp_update_exec_result($record_id)
+    {
+        $this->_require_office_hour();
+
+        $VIEW_DATA['v_record_id']        = replace_bad_char($record_id);
+        $VIEW_DATA['v_record_type_code'] = $v_record_type_code              = get_request_var('record_type_code');
+        $VIEW_DATA['arr_single_record']  = $arr_single_record               = $this->model->qry_single_record($record_id);
+
+        $v_next_task_code = $arr_single_record['C_NEXT_TASK_CODE'];
+        $v_require_form   = $this->view->get_require_form($v_record_type_code, $v_next_task_code);
+
+        $xml_require_form_data = '<root/>';
+        if (strlen($v_require_form) > 0)
+        {
+            //Da co ket qua thu ly trong DB chua?
+            $xml_require_form_data = $this->model->get_record_metadata($record_id, $v_require_form);
+        }
+
+        $VIEW_DATA['xml_require_form_data'] = $xml_require_form_data;
+        $VIEW_DATA['v_require_form']        = $v_require_form;
+        $VIEW_DATA['arr_all_record_file']   = $this->model->qry_all_record_file($record_id);
+        $this->view->render('dsp_update_exec_result', $VIEW_DATA);
+    }
+
+    /**
+     * Thuc hien cap nhat ket qua thu ly ho so
+     * @param type $record_id
+     */
+    public function do_update_exec_result($record_id)
+    {
+        $this->model->do_update_exec_result();
+    }
+
+    public function count_warning_by_user()
+    {
+        echo json_encode($this->model->count_warning_by_user());
+    }
+
+    function svc_get_citizen_info($id)
+    {
+        require_once SERVER_ROOT . 'libs/models/citizen_Model.php';
+        $model    = new citizen_Model();
+        $arr_data = $model->qry_single_citizen_data($id);
+        echo json_encode($arr_data);
+    }
+
+    /*
+     * gui thong bao cong dan 
+     */
+
+    public function dsp_send_sms()
+    {
+        if (!defined('CONST_TRIGGER_SEND_SMS') OR CONST_TRIGGER_SEND_SMS != true)
+        {
+            exit('Chức năng này chưa được kích hoạt. Vui lòng liên hệ với nhà quản trị');
+        }
+        $v_list_item_id = get_request_var('list_item_id', '');
+        $v_list_item_id = replace_bad_char($v_list_item_id);
+        $VIEW_DATA      = array();
+
+        if (trim($v_list_item_id) == '')
+        {
+            echo 'Chưa chọn hồ sơ không thể gửi SMS';
+        }
+        else
+        {
+            // Lấy danh sác thông thin mã hồ sơ, họ tên công dân, và số điện thoại
+            $VIEW_DATA['arr_all_record'] = $this->model->qry_all_record_send_sms($v_list_item_id);
+        }
+        $this->view->render('dsp_send_sms', $VIEW_DATA);
+    }
+
+    public function do_send_sms()
+    {
+        if (!defined('CONST_TRIGGER_SEND_SMS') OR CONST_TRIGGER_SEND_SMS != true)
+        {
+            exit('Chức năng này chưa được kích hoạt. Vui lòng liên hệ với nhà quản trị');
+        }
+
+        $arr_phone = get_request_var('txt_phone', array(), false);
+        $arr_code  = get_request_var('txt_record_code', array(), false);
+        $arr_name  = get_request_var('txt_record_name', array(), false);
+        if (sizeof($arr_phone) != sizeof($arr_name) OR sizeof($arr_name) != sizeof($arr_code) OR sizeof($arr_code) == 0)
+        {
+            $errors['arr_error'] = array('status' => '0', 'msg' => 'Số điện thoại, họ tên công dân hoặc mã hồ sơ vẫn còn trống. Xảy ra lỗi không thể gửi!');
+            echo json_encode($errors);
+            return FALSE;
+        }
+        include_once SERVER_ROOT . 'libs' . DS . 'nusoap' . DS . 'nusoap.php';
+        $client = new SoapClient('http://210.245.83.5/gsmm/send.php?wsdl');
+
+        $arr_error_send = array();
+        for ($i = 0; $i < count($arr_phone); $i ++)
+        {
+            $v_citizen_name = mb_strtoupper(unicode_to_nosign($arr_name[$i]), 'UTF-8');
+            $v_message      = CONST_HEAD_SEND_SMS . $v_citizen_name . CONST_FOOTER_SEND_SMS;
+            $count_msg      = strlen($v_message);
+            $v_limit        = ceil($count_msg / 160);
+            if ($v_limit > 0)
+            {
+                $ofset = 0;
+                for ($j = 0; $j < $v_limit; $j++)
+                {
+                    $msg_current_send = substr($v_message, $ofset, 159);
+                    $msg_current_send = trim($msg_current_send);
+                    $ofset += 159;
+                    if ($msg_current_send != '')
+                    {
+                        $result = $client->SendSMS($arr_phone[$i], $msg_current_send);
+                    }
+                    if ($result != '00')
+                    {
+                        $arr_error_send[] = 'Hồ sơ có mã:  ' . $arr_code[$i] . '  - Họ tên công dân nộp: ' . $arr_name[$i] . '  - SĐT:' . $arr_phone[$i];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (trim($v_message) != '')
+                {
+                    $result = $client->SendSMS($arr_phone[$i], trim($v_message));
+                    if ($result != '00')
+                    {
+                        $arr_error_send[] = 'Hồ sơ có mã:  ' . $arr_code[$i] . '  - Họ tên công dân nộp: ' . $arr_name[$i] . '  - SĐT:' . $arr_phone[$i];
+                    }
+                }
+            }
+        }
+        if (sizeof($arr_error_send) > 0)
+        {
+            $record_no_send = implode('<br/><br/>', $arr_error_send);
+            $v_msg_error    = 'Đã xảy ra lỗi trong quá trình gửi thông báo sms. Do sự cố hệ thống hoặc số điện thoại không đúng. Vui lòng kiểm tra lại! 
+                <br/>Danh sách hồ sơ không thể gửi được tin:<br/>
+                <br/>' . $record_no_send . '<br/><br/> ';
+            echo $v_msg_error;
+            echo ' <div id="solid-button" style="text-align: center;"><br/> 
+                <button type="button" style="display: inline-block;
+                    padding: 7px 18px;
+                    margin-bottom: 0;
+                    font-size: 12px;
+                    line-height: 20px;
+                    color: #444444;
+                    text-align: center;
+                    vertical-align: middle;
+                    cursor: pointer;
+                    background-color: #d0cfd6;
+                    border: 0px;" name="trash" class="btn" onclick="try{window.parent.hidePopWin();}catch(e){window.close();};" >
+                    ' . __('close window') . '
+                </button> </div>';
+            return false;
+        }
+
+        $this->model->popup_exec_done();
+    }
 
 }
-

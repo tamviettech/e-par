@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) { exit('No direct script access allowed');}
 
 $v_record_type_code = $arr_single_record['C_RECORD_TYPE_CODE'];
@@ -50,7 +32,7 @@ $html = '<html>
         <link rel="stylesheet" href="' . SITE_ROOT . 'public/css/printer.css" type="text/css" media="all" />
         <script src="' . SITE_ROOT . 'public/js/jquery/jquery.min.js" type="text/javascript"></script>
         '. $v_style_string .'
-    </head><body contenteditable>';
+    </head><body>';
 $html .= '<div class="print-button">
                 <input type="button" value="In trang" class="print" onclick="window.print(); return false;" />
                 <input type="button" value="Đóng cửa sổ" class="close" onclick="window.parent.hidePopWin();return false;" />

@@ -1,24 +1,12 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 ?>
 <form name="frmMain" method="post" id="frmMain" action="#">
+    <div class="search-box">
+        <div class="input-append input-icon">
+            <input placeholder="Tìm kiếm..." type="text" style="width: 90%;" onkeypress="search_user_onclick(this,event)">
+            <i class=" icon-search"></i>
+        </div>
+    </div>
     <table width="100%" class="adminlist" cellspacing="0" border="1">
         <colgroup>
              <col width="5%" />
@@ -31,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <th>Chức vụ</th>
         </tr>
     </table>
-    <div style="height:200px;overflow: scroll">
+    <div style="height:210px;overflow: scroll">
         <table width="100%" class="adminlist table table-bordered table-striped" cellspacing="0" border="1">
             <colgroup>
                 <col width="5%" />
@@ -44,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 $v_ou_id       = $arr_all_user_to_add[$i]['PK_OU'];
                 $v_ou_name     = $arr_all_user_to_add[$i]['C_NAME'];
                 $v_ou_user     = $arr_all_user_to_add[$i]['C_XML_USER'];
-
+                
                 $dom_user = simplexml_load_string('<root>' . $v_ou_user . '</root>');
 
                 $users = $dom_user->xpath("//row");
@@ -76,7 +64,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </td>
                         <td style="padding-left: 20px;">
                             <img src="<?php echo SITE_ROOT;?>public/images/icon-16-user.png" border="0" align="absmiddle" />
-                            <label for="user_<?php echo $user->attributes()->PK_USER;?>"><?php echo $user->attributes()->C_NAME;?></label>
+                            <label for="user_<?php echo $user->attributes()->PK_USER;?>">
+                                <?php echo $user->attributes()->C_NAME;?>
+                            </label>
                         </td>
                         <td>
                             <?php echo $user->attributes()->C_JOB_TITLE;?>
@@ -96,13 +86,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <?php echo __('update');?>
         </button>    
         <?php $v_back_action = 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action;?>">
+        <button type="button" name="cancel" class="btn" onclick="<?php echo $v_back_action;?>">
             <i class="icon-remove"></i>
             Đóng cửa sổ
         </button>
     </div>
 </form>
 <script>
+    function search_user_onclick(search,evt)
+    {
+        if (IE()){
+            var theKey=window.event.keyCode
+        } else {
+            var theKey=evt.which;
+        }
+        
+        if(theKey == 13){
+            evt.preventDefault();
+            $('table .user_name').show();
+            var str = $(search).val();
+            $('table .user_name').each(function(){
+                var user_name = $(this).find('td:eq(1) label').html();
+               if (user_name.indexOf(str) == -1) {
+                   $(this).hide();
+                }
+            });
+        }
+    }
+    
     function chk_ou_onchange(chk_ou)
     {
         v_ou_id = $(chk_ou).attr('data-ou_id');

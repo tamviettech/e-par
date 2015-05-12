@@ -121,6 +121,7 @@ class record_type_Model extends Model
                       ,C_SEND_OVER_INTERNET
                       ,C_SPEC_CODE
                       ,C_ALLOW_VERIFY_RECORD
+                      ,C_IS_ENDLESS
                  From t_r3_record_type RT Where PK_RECORD_TYPE=?';
         $params = array($p_record_type_id);
         return $this->db->GetRow($stmt, $params);
@@ -183,6 +184,8 @@ class record_type_Model extends Model
         $v_allow_verify       = isset($_POST['chk_allow_verify_record']) ? '1' : '0';
         $v_xml_data           = isset($_POST['XmlData']) ? $_POST['XmlData'] : '<data/>';
         
+        $v_is_endless         = isset($_POST['chk_is_endless']) ? '1' : '0';
+        
         //Kiem tra trung ma
         $sql = "Select Count(*)
                 From t_r3_record_type
@@ -210,8 +213,8 @@ class record_type_Model extends Model
             $media = $doc->addChild('media');
             $v_xml_data = $doc->asXML();
             
-            $stmt   = 'Insert Into t_r3_record_type (C_CODE, C_NAME, C_XML_DATA,C_STATUS,C_SCOPE,C_ORDER, C_SEND_OVER_INTERNET,C_SPEC_CODE,C_ALLOW_VERIFY_RECORD) Values (?,?,?,?,?,?,?,?,?)';
-            $params = array($v_code, $v_name, $v_xml_data, $v_status, $v_scope, $v_order, $v_send_over_internet, $v_spec_code, $v_allow_verify);
+            $stmt   = 'Insert Into t_r3_record_type (C_CODE, C_NAME, C_XML_DATA,C_STATUS,C_SCOPE,C_ORDER, C_SEND_OVER_INTERNET,C_SPEC_CODE,C_ALLOW_VERIFY_RECORD, C_IS_ENDLESS) Values (?,?,?,?,?,?,?,?,?,?)';
+            $params = array($v_code, $v_name, $v_xml_data, $v_status, $v_scope, $v_order, $v_send_over_internet, $v_spec_code, $v_allow_verify, $v_is_endless);
             $this->db->Execute($stmt, $params);
 
             $v_record_type_id = $this->get_last_inserted_id('t_r3_record_type', 'PK_RECORD_TYPE');
@@ -265,6 +268,7 @@ class record_type_Model extends Model
                         ,C_SEND_OVER_INTERNET=?
                         ,C_SPEC_CODE=?
                         ,C_ALLOW_VERIFY_RECORD=?
+                        ,C_IS_ENDLESS=?
                     Where PK_RECORD_TYPE=?';
             $params = array(
                 $v_code,
@@ -276,6 +280,7 @@ class record_type_Model extends Model
                 $v_send_over_internet,
                 $v_spec_code,
                 $v_allow_verify,
+                $v_is_endless,
                 $v_record_type_id
             );
 

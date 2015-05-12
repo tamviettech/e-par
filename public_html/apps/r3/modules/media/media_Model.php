@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 require_once __DIR__ . '/../record/record_Model.php';
 
@@ -36,7 +18,7 @@ class media_Model extends record_Model
     /**
      * upload file len server
      */
-    public function do_upload($folder_id,$share_user_id = '')
+    public function do_upload($folder_id,$share_user_id = '',$v_public = '')
     {
         $v_file_name = get_post_var('txt_name','');
         $file_upload = isset($_FILES['file_upload'])?$_FILES['file_upload']:'';
@@ -82,17 +64,38 @@ class media_Model extends record_Model
             $this->popup_exec_fail('Xảy ra sự cố khi upload file!!!');
         }
         
-        //cập nhật CSDL
-        $stmt = "Insert Into t_r3_media
-                            (C_NAME,
-                             C_EXT,
-                             C_TYPE,
-                             FK_USER,
-                             C_FILE_NAME,
-                             FK_PARENT,
-                             C_UPLOAD_DATE)
-                values (?,?,?,?,?,?,?)";
-        $this->db->Execute($stmt,array($v_file_name,$ext_file,0,$v_user_id,$v_cur_file_name,$folder_id,$v_upload_date));
+        if(trim($v_public))
+        {
+            //cập nhật CSDL
+            $stmt = "Insert Into t_r3_media
+                                (C_NAME,
+                                 C_EXT,
+                                 C_TYPE,
+                                 FK_USER,
+                                 C_FILE_NAME,
+                                 FK_PARENT,
+                                 C_UPLOAD_DATE,
+                                 C_PUBLIC)
+                    values (?,?,?,?,?,?,?,?)";
+            $this->db->Execute($stmt,array($v_file_name,$ext_file,0,$v_user_id,$v_cur_file_name,$folder_id,$v_upload_date,1));
+        }
+        else
+        {
+            //cập nhật CSDL
+            $stmt = "Insert Into t_r3_media
+                                (C_NAME,
+                                 C_EXT,
+                                 C_TYPE,
+                                 FK_USER,
+                                 C_FILE_NAME,
+                                 FK_PARENT,
+                                 C_UPLOAD_DATE)
+                    values (?,?,?,?,?,?,?)";
+            $this->db->Execute($stmt,array($v_file_name,$ext_file,0,$v_user_id,$v_cur_file_name,$folder_id,$v_upload_date));
+        }
+        
+         
+        
         //gan folder id = '' neu la null
         $folder_id = ($folder_id == NULL)?'':$folder_id;
         $arr_retval = array('hdn_folder_id'=>$folder_id);
@@ -107,9 +110,10 @@ class media_Model extends record_Model
      * @param type $dirname: ten thu muc
      * @return string
      */
-    public function create_folder($parent_id,$dirname)
+    public function create_folder($parent_id,$dirname,$v_media_public = '')
     {
         //kiem tra bien
+        $v_media_public = replace_bad_char($v_media_public);
         $parent_id = ($parent_id != '' && $parent_id != NULL && is_numeric($parent_id))?$parent_id:NULL;
         $dirname   = ($dirname == '' OR $dirname == NULL)?'':$dirname;
         
@@ -121,8 +125,26 @@ class media_Model extends record_Model
         {
             return 'false';
         }
-        
-        $stmt = "Insert into t_r3_media
+        if(trim($v_media_public) == 1)
+        {
+            $stmt = "Insert into t_r3_media
+                            (C_NAME,
+                             C_TYPE,
+                             FK_USER,
+                             FK_PARENT,
+                             C_UPLOAD_DATE,
+                             C_PUBLIC)
+                Values (?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?)";
+            $this->db->Execute($stmt,array($dirname,1,$v_user_id,$parent_id,$v_upload_date,1));
+        }
+        else
+        {
+            $stmt = "Insert into t_r3_media
                             (C_NAME,
                              C_TYPE,
                              FK_USER,
@@ -133,7 +155,10 @@ class media_Model extends record_Model
                         ?,
                         ?,
                         ?)";
-        $this->db->Execute($stmt,array($dirname,1,$v_user_id,$parent_id,$v_upload_date));
+            $this->db->Execute($stmt,array($dirname,1,$v_user_id,$parent_id,$v_upload_date));
+        }
+        
+        
         
         if($this->db->Affected_Rows() > 0)
         {
@@ -153,21 +178,43 @@ class media_Model extends record_Model
      */
     public function qry_all_folder($parent_id = '')
     {
-        $v_user_id = session::get('user_id');
-        $stmt = "Select
-                    PK_MEDIA,
-                    C_NAME,
-                    FK_PARENT
-                  From t_r3_media
-                  Where C_TYPE = 1 And FK_USER = ?
-                  ORDER BY C_UPLOAD_DATE ";
-        return $this->db->getAll($stmt,array($v_user_id));
+            $v_user_id = session::get('user_id');
+            $stmt = "Select
+                        PK_MEDIA,
+                        C_NAME,
+                        FK_PARENT,
+                        C_PUBLIC
+                      From t_r3_media
+                      Where C_TYPE = 1 And FK_USER = ?
+                      ORDER BY C_UPLOAD_DATE ";
+            return $this->db->getAll($stmt,array($v_user_id));
+        
     }
+    /**
+     * lay tat ca thu muc public
+     * @param type $parent_id: dk thu muc cha
+     * @return type array
+     */
+    public function qry_all_folder_public()
+    {
+            $stmt = "Select
+                        PK_MEDIA,
+                        C_NAME,
+                        FK_PARENT,
+                        C_PUBLIC
+                      From t_r3_media
+                      Where C_TYPE = 1 and  C_PUBLIC = 1
+                      ORDER BY C_UPLOAD_DATE ";
+            return $this->db->getAll($stmt);
+        
+    }
+    
+    
     /**
      * lay tat ca media cua folder duoc chon
      * @return type
      */
-    public function qry_media_of_folder($folder_id = '',$is_share = '',$user_share = '')
+    public function qry_media_of_folder($folder_id = '',$is_share = '',$user_share = '',$v_public = '')
     {
         //kiem tra dieu kien
         if($folder_id != '' && is_numeric($folder_id) == FALSE)
@@ -187,22 +234,55 @@ class media_Model extends record_Model
         {
             $condition = " And FK_PARENT = $folder_id And FK_USER = $v_user_id";
         }
-        $sql = "Select 
-                    M.PK_MEDIA,
-                    M.C_NAME,
-                    M.C_EXT,
-                    M.C_TYPE,
-                    M.FK_USER,
-                    M.C_FILE_NAME,
-                    M.FK_PARENT,
-                    (Select Count(FK_MEDIA) From t_r3_media_shared Where FK_MEDIA = M.PK_MEDIA) As C_SHARED,
-                    DATE_FORMAT(M.C_UPLOAD_DATE,'%d-%m-%Y') as C_UPLOAD_DATE,
-                    DATE_FORMAT(M.C_UPLOAD_DATE,'%Y') as C_YEAR,
-                    DATE_FORMAT(M.C_UPLOAD_DATE,'%m') as C_MONTH,
-                    DATE_FORMAT(M.C_UPLOAD_DATE,'%d') as C_DAY
+        if(trim($v_public) == 1)
+        {
+            if($folder_id == '')
+            {
+                $condition = " And FK_PARENT Is Null ";
+            }
+            else
+            {
+                $condition = " And FK_PARENT = $folder_id ";
+            }
+            $sql = "Select 
+                        M.PK_MEDIA,
+                        M.C_NAME,
+                        M.C_EXT,
+                        M.C_TYPE,
+                        M.FK_USER,
+                        M.C_FILE_NAME,
+                        M.FK_PARENT,
+                        M.C_PUBLIC,
+                        (Select Count(FK_MEDIA) From t_r3_media_shared Where FK_MEDIA = M.PK_MEDIA) As C_SHARED,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%d-%m-%Y') as C_UPLOAD_DATE,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%Y') as C_YEAR,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%m') as C_MONTH,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%d') as C_DAY
+                    From t_r3_media M 
+                    Where 1>0  And C_PUBLIC = '1' $condition
+                    ORDER BY M.C_TYPE DESC,M.C_UPLOAD_DATE";
+        }
+        else
+        {
+             $sql = "Select 
+                        M.PK_MEDIA,
+                        M.C_NAME,
+                        M.C_EXT,
+                        M.C_TYPE,
+                        M.FK_USER,
+                        M.C_FILE_NAME,
+                        M.FK_PARENT,
+                        M.C_PUBLIC,
+                        (Select Count(FK_MEDIA) From t_r3_media_shared Where FK_MEDIA = M.PK_MEDIA) As C_SHARED,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%d-%m-%Y') as C_UPLOAD_DATE,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%Y') as C_YEAR,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%m') as C_MONTH,
+                        DATE_FORMAT(M.C_UPLOAD_DATE,'%d') as C_DAY
                     From t_r3_media M
                     Where 1>0 $condition
                     ORDER BY M.C_TYPE DESC,M.C_UPLOAD_DATE";
+        }
+       
         
         $DATA_MODEL['arr_media_of_folder'] = $this->db->getAll($sql);
         //lay thu muc cha
@@ -212,10 +292,17 @@ class media_Model extends record_Model
         }
         else
         {
-            $sql = "Select FK_PARENT From t_r3_media Where PK_MEDIA = $folder_id And FK_USER = $v_user_id";
+            if($v_public ==1)
+            {
+                 $sql = "Select FK_PARENT From t_r3_media Where PK_MEDIA = $folder_id $condition ";
+            }
+            else 
+            {
+                 $sql = "Select FK_PARENT From t_r3_media Where PK_MEDIA = $folder_id And FK_USER = $v_user_id ";
+            }
+           
             $DATA_MODEL['parent_folder_id'] = $this->db->getOne($sql);
         }
-        
         return $DATA_MODEL;
     }
     /**
@@ -223,7 +310,7 @@ class media_Model extends record_Model
     * @param type $list_id
     * @return type string check
     */
-    public function do_delete_media($list_id,$user_id='')
+    public function do_delete_media($list_id,$user_id='',$v_media_public ='')
     {
         if($list_id == '' OR $list_id == NULL)
         {
@@ -234,7 +321,11 @@ class media_Model extends record_Model
         $message = '';
         $deleted_id = '';
         $v_user_id = ($user_id == '')?session::get('user_id'):$user_id;
-        
+        $v_condition = '';
+        if(trim($v_media_public) == '')
+        {
+            $v_condition = " And FK_USER = $v_user_id ";
+        }
         $sql = "Select 
                 PK_MEDIA,
                 C_NAME,
@@ -247,7 +338,7 @@ class media_Model extends record_Model
                 DATE_FORMAT(C_UPLOAD_DATE,'%Y') as C_YEAR,
                 DATE_FORMAT(C_UPLOAD_DATE,'%m') as C_MONTH,
                 DATE_FORMAT(C_UPLOAD_DATE,'%d') as C_DAY
-            From t_r3_media Where PK_MEDIA in ($list_id) And FK_USER = $v_user_id";
+            From t_r3_media Where PK_MEDIA in ($list_id) $v_condition ";
         $arr_all = $this->db->getAll($sql);
         
         //thuc hien xoa
@@ -269,8 +360,8 @@ class media_Model extends record_Model
                 $stmt = "Delete From t_r3_media_shared Where FK_MEDIA = ?";
                 $this->db->Execute($stmt,array($v_media_id));
                 //xoa media
-                $stmt = "Delete From t_r3_media Where PK_MEDIA = ? And FK_USER = ?";
-                $this->db->Execute($stmt,array($v_media_id,$v_user_id));
+                $stmt = "Delete From t_r3_media Where PK_MEDIA = ? $v_condition";
+                $this->db->Execute($stmt,array($v_media_id));
                 //xoa file that
                 if($this->db->Affected_Rows()>0)
                 {
@@ -287,7 +378,7 @@ class media_Model extends record_Model
             else 
             {
                 //kiem tra xem co media con ko
-                $sql = "Select count(*) From t_r3_media Where FK_PARENT = $v_media_id And FK_USER = $v_user_id";
+                $sql = "Select count(*) From t_r3_media Where FK_PARENT = $v_media_id $v_condition";
                 $v_check = $this->db->GetOne($sql);
                 
                 //neu ko co media con => xoa
@@ -297,8 +388,8 @@ class media_Model extends record_Model
                     $stmt = "Delete From t_r3_media_shared Where FK_MEDIA = ?";
                     $this->db->Execute($stmt,array($v_media_id));
                     //xoa media
-                    $stmt = "Delete From t_r3_media Where PK_MEDIA = ? And FK_USER = ?";
-                    $this->db->Execute($stmt,array($v_media_id,$v_user_id));
+                    $stmt = "Delete From t_r3_media Where PK_MEDIA = ?  $v_condition";
+                    $this->db->Execute($stmt,array($v_media_id));
                     
                     if($deleted_id == '')
                     {
@@ -324,7 +415,7 @@ class media_Model extends record_Model
      * @param type $v_newname
      * @return string
      */
-    public function do_rename_media($v_id,$v_newname)
+    public function do_rename_media($v_id,$v_newname,$v_public ='')
     {
         $message = '';
         $v_user_id = session::get('user_id');
@@ -334,11 +425,23 @@ class media_Model extends record_Model
             $message = 'Bạn phai nhập tên muốn sửa đổi !!!';
             return message;
         }
-        
-        $stmt = "Update t_r3_media
+        if($v_public ==1)
+        {
+            $stmt = "Update t_r3_media
+                Set C_NAME = ?
+                Where PK_MEDIA = ?
+                    and C_PUBLIC =1 ";
+        }
+        else
+        {
+            $stmt = "Update t_r3_media
                 Set C_NAME = ?
                 Where PK_MEDIA = ?
                     And FK_USER = ?";
+        }
+        
+            
+            
         $this->db->Execute($stmt,array($v_newname,$v_id,$v_user_id));
         
         if($this->db->Affected_Rows() > 0)

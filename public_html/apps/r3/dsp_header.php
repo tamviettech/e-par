@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) {exit('No direct script access allowed');}?>
 
 <?php if (! isset($this->show_left_side_bar)): ?>
@@ -83,6 +65,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <?php $QS = check_htacces_file() ? '?' : '&';?>
             var QS = '<?php echo $QS;?>';
         </script>
+            <!--chosen-->
+        <link rel="stylesheet" type="text/css" href="<?php echo SITE_ROOT ?>public/chosen/chosen.min.css"/>
+        <script src="<?php echo SITE_ROOT ?>public/chosen/chosen.jquery.min.js"></script>
+        
         <!--  Modal dialog -->
         <script src="<?php echo SITE_ROOT; ?>public/js/submodal.js" type="text/javascript"></script>
         <link href="<?php echo SITE_ROOT; ?>public/css/subModal.css" rel="stylesheet" type="text/css"/>
@@ -99,6 +85,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script src="<?php echo SITE_ROOT; ?>public/js/socketio/socket.io.js" type="text/javascript"></script>
         <script src="<?php echo SITE_ROOT; ?>public/js/socketio/m.s.io-c.compiled.js" type="text/javascript"></script>
         
+    
          <!--connect to chat-->
         <?php
             $v_user_id   = session::get('user_id');
@@ -109,157 +96,278 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <input type="hidden" name="hdn_global_user_name" id="hdn_global_user_name" value="<?php echo $v_user_name?>"/>
         <input type="hidden" name="hdn_global_user_ou" id="hdn_global_user_ou" value="<?php echo $v_user_ou?>"/>
        
+        <script src="<?php echo SITE_ROOT; ?>public/js/advchat/adapter.js" type="text/javascript"></script>
+        <?php if(CHAT_MODULE != 0):?>
+        <script src="<?php echo SITE_ROOT; ?>public/js/advchat/advChatCnf.js" type="text/javascript"></script>
+        <script>
+            $(document).ready(function(){
+                //neu ko phai la man hinh advChat
+                if(typeof(processDom) == 'undefined')
+                {
+                    //ajax count unread mesage
+                    var url = '<?php echo SITE_ROOT . build_url('r3/advchat/count_unread')?>';
+                    var data = {user_id: advChatCnf.user_id,user_ou: advChatCnf.user_ou};
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: data,
+                        success: function(res)
+                        {
+                            if(parseInt(res) == 0)
+                            {
+                                return false;
+                            }
+                            var html_mes = '<span class="notify-tip" style="line-height: 15px;">'+res+'</span>';
+                            var selector = $('li[data-module="advchat"] .notify-tip');
+                            $('li[data-module="advchat"]').prepend(html_mes);
+                        }
+                    });
+
+                    //dang ky advchat online
+                    socket.emit('chat_reg', {id: advChatCnf.user_id, name: advChatCnf.user_name});
+                    
+                    //cho tin nhan gui ve
+                    socket.on('recieve_message', function(data) {
+                        update_message();
+                    });
+                    //support
+                    //dang ky online len tam viet
+                    supportSocket.emit('support_reg', {id: advChatCnf.user_id, name: advChatCnf.user_name, ou: advChatCnf.user_ou});
+                    //nhan tin nhan tu support
+                    supportSocket.on('recieve_message', function(data) {
+                        if(typeof(data) != 'undefined')
+                        {
+                            var url = '<?php echo SITE_ROOT . build_url('r3/advchat/do_insert_mes')?>';
+                            $.ajax({
+                                    type: 'POST',
+                                    url: url,
+                                    data: {
+                                            mes: data.mes,
+                                            status:1,
+                                            recieve_user: advChatCnf.user_id,
+                                            recieve_user_ou: advChatCnf.user_ou,
+                                            send_user:data.user,
+                                            send_user_ou:data.user_ou,
+                                            user_name:data.user_name
+                                           },
+                                    success: function(result)
+                                    {
+                                        if(parseInt(result) == 0)
+                                        {
+                                            update_message();
+                                        }
+                                    }
+                            });
+                        }                        
+                    });
+                }
+            });
+            function update_message()
+            {
+                var html_mes = '<span class="notify-tip" style="line-height: 15px;">1</span>';
+                var selector = $('li[data-module="advchat" .notify-tip');
+                if($(selector).html() == '' || $(selector).html() == null)
+                {
+                    $('li[data-module="advchat').prepend(html_mes);
+                }
+                else
+                {
+                    var no_mes = $(selector).html();
+                    no_mes = parseInt(no_mes) + 1;
+                    $(selector).html(no_mes);
+                }
+            }
+        </script>
+        <?php endif;?>
+        <?php
+                // Fix css chrome version 39.0.2171.95
+                $chrome = $_SERVER['HTTP_USER_AGENT'];
+                preg_match( "#Chrome/(.+?)\s#", $chrome,  $browser);
+
+                if(strpos( $browser[0], 'Chrome') !== false && $browser[1]  == '39.0.2171.95')
+                {
+                    echo '  <link rel="stylesheet" href="'.SITE_ROOT.'apps/'.$this->app_name.'/fix_css_chrome.css">';
+                }
+
+
+        ?>
     </head>
     <body>
         <div class="layout">
-            <DIV id=overDiv style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></DIV>
+            <DIV id=overDiv style="Z-INDEX: 200; VISIBILITY: hidden; POSITION: absolute"></DIV>
             <div style="width: 100%;">
                 <div style="background: #da3610;width: 220px;float:left;height: 50px;">
-                    <center>
-                        <img src="<?php echo SITE_ROOT.'public/logoQuocHuy.png'?>" style="width: 45px;height: 45px;"/>
+                    <div style="float: left;padding-left: 10px;padding-top: 2px;">
+                                <img src="<?php echo SITE_ROOT . 'public/logoQuocHuy.png' ?>" style="width: 45px;height: 45px;"/>
+                    </div>
+                    <center style="color: white;font-weight: bold;padding-top: 5px;font-size: 13px;font-family: Tohama">
+                        <?php
+                        $dom_unit = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
+                        if (Session::get('la_can_bo_cap_xa'))
+                            $unit_fullname = Session::get('ou_name');
+                        else
+                            $unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
+                        echo $unit_fullname;
+                        ?>
                     </center>
                 </div>
                 <div class="main-wrapper" style="padding: 0;">
-                    <?php include (SERVER_ROOT . 'dsp_top_primary_nav.php');?>
+                    <?php #include (SERVER_ROOT . 'dsp_top_primary_nav.php');?>
+                    <div class="navbar navbar-inverse top-nav">
+                        <div class="navbar-inner">
+                            <div class="container">
+                                <span class="home-link">
+                                    <a href="<?php echo SITE_ROOT;?>" class="icon-home"></a>
+                                </span>
+                                <div class="nav-collapse">
+                                    <style>
+                                        .navbar .nav > li > a
+                                        {
+                                            padding: 10px 10px 10px;
+                                        }
+                                    </style>
+                                    <?php View::build_app_menu( dirname(__FILE__) . '/r3_menu.xml.php', $this->app_name);?>
+                                </div>
+                                <div class="btn-toolbar pull-right notification-nav">
+                                    <?php View::build_user_profile_menu( dirname(__FILE__) . '/r3_menu.xml.php', $this->app_name);?>
+                                </div>
+                                <script>
+                                    $(document).ready(function(){
+                                        count_notify_module();
+                                        setInterval(count_notify_module, <?php echo _CONST_GET_NEW_RECORD_NOTICE_INTERVAL; ?>);
+                                    });
+                                    function count_notify_module()
+                                    {
+                                        //app record
+                                        var v_url = '<?php echo SITE_ROOT; ?>' + 'r3/record/count_processing_record_by_role/';
+                                        jQuery.ajax({
+                                            cache: false,
+                                            url: v_url,
+                                            dataType: 'json',
+                                            success: function(data) {
+                                                var count = data.count;
+                                                var html = '<span class="notify-tip activity-num" style="line-height: 15px;">'+count+'</span>';
+                                                $('li[data-module="record"]').find('span').remove(); 
+                                                $('li[data-module="record"]').prepend(html);
+                                            }
+                                        });
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="clear"></div>
             <?php if ($this->show_left_side_bar == TRUE): ?>
                 <div class="leftbar leftbar-close clearfix">
+                    <div style="background: #da3610;width: 220px;float:left;height: 50px;z-index:200;left:0px;top:0px;position:fixed;">
+                        <div style="float: left;padding-left: 10px;padding-top: 2px;">
+                                <img src="<?php echo SITE_ROOT . 'public/logoQuocHuy.png' ?>" style="width: 45px;height: 45px;"/>
+                        </div>
+                        <center style="color: white;font-weight: bold;padding-top: 5px;font-size: 13px;font-family: Tohama">
+                            <?php
+                            $dom_unit = simplexml_load_file(SERVER_ROOT . 'public/xml/xml_unit_info.xml');
+                            if (Session::get('la_can_bo_cap_xa'))
+                                $unit_fullname = Session::get('ou_name');
+                            else
+                                $unit_fullname = mb_strtoupper(xpath($dom_unit, '//full_name', XPATH_STRING), 'UTF-8');
+                            echo $unit_fullname;
+                            ?>
+                        </center>
+                    </div>
                     <div class="left-nav clearfix">
                         <?php include(dirname(__FILE__) . DS . 'dsp_left_primary_nav.php')?>
                     </div>
                 </div><!-- .leftbar leftbar-close -->
-                 <div class="main-wrapper">
+                <div class="main-wrapper">
             <?php else: ?>
                 <div class="main-wrapper" style="margin-left: 0px !important;">
             <?php endif;?>
-                    
-                    <?php
-                        //array role k hien thi tại menu
-                        $arr_show_menu = array(strtolower(_CONST_TRA_CUU_ROLE),
-                                                strtolower(_CONST_TRA_CUU_TAI_XA_ROLE),
-                                                strtolower(_CONST_TRA_CUU_LIEN_THONG_ROLE),
-                                                strtolower(_CONST_BAO_CAO_ROLE));
-                        if(in_array(strtolower($this->active_role), $arr_show_menu)):
+                    <?php 
+                    //array role k hien thi tại menu
+                    $arr_show_menu = array(strtolower(_CONST_TRA_CUU_ROLE),
+                                            strtolower(_CONST_TRA_CUU_TAI_XA_ROLE),
+                                            strtolower(_CONST_TRA_CUU_LIEN_THONG_ROLE));
+                    if(in_array(strtolower($this->active_role), $arr_show_menu) && !empty($this->activity_filter)):
                     ?>
                     <!--menu--> 
                     <div class="row-fluid">
                         <div class="span12">
                             <div class="switch-board gray">
                                 <ul class="clearfix switch-item">
-                                    <?php if (isset($this->activity_filter)): ?>
+                                
                                     <?php 
                                     $arr_style = array(
-                                                        0 =>array('icon'=>'icon-user','color'=>'brown'),
-                                                        1 =>array('icon'=>'icon-cogs','color'=>'blue'),
-                                                        2 =>array('icon'=>'icon-lightbulb','color'=>'green'),
-                                                        10=>array('icon'=>'icon-bar-chart','color'=>'green'),
-                                                        3 =>array('icon'=>'icon-shopping-cart','color'=>'brown'),
-                                                        4 =>array('icon'=>'icon-time','color'=>'blue'),
-                                                        5 =>array('icon'=>'icon-file-alt','color'=>'blue'),
-                                                        6 =>array('icon'=>'icon-copy','color'=>'green'),
-                                                        7 =>array('icon'=>'icon-file-alt','color'=>'brown'),
-                                                        8 =>array('icon'=>'icon-shopping-cart','color'=>'brown'),
-                                                        9 =>array('icon'=>'icon-bar-chart','color'=>'magenta'),
-                                                        11 =>array('icon'=>'icon-lightbulb','color'=>'orange'),
-                                                    ); 
-                                ?>
-                                <?php foreach($this->activity_filter as $key => $val):
+                                        0 => array('icon'=>'icon-asterisk','color'=>'blue'),
+                                        1 => array('icon'=>'icon-star-empty','color'=>'blue'),
+                                        2 => array('icon'=>'icon-edit','color'=>'blue'),
+                                        10=> array('icon'=>'icon-pause','color'=>'blue'),
+                                        3 => array('icon'=>'icon-ban-circle','color'=>'blue'),
+                                        4 => array('icon'=>'icon-tasks','color'=>'blue'),
+                                        5 => array('icon'=>'icon-pushpin','color'=>'blue'),
+                                        6 => array('icon'=>'icon-time','color'=>'blue'),
+                                        7 => array('icon'=>'icon-certificate','color'=>'blue'),
+                                        8 => array('icon'=>'icon-time','color'=>'brown'),
+                                        9 => array('icon'=>'icon-warning-sign','color'=>'magenta'),
+                                        11 => array('icon'=>'icon-check','color'=>'blue '),
+                                        12 => array('icon'=>'icon-check','color'=>'blue'),
+                                        13 => array('icon'=>'icon-warning-sign','color'=>'blue'),
+                                    ); 
+                                    ?>
+                                    <?php foreach($this->activity_filter as $key => $val):
                                         $url          = $this->controller_url . 'ho_so/' . $this->active_role . '/' . $QS . 'tt=' . $key;
                                         $v_icon = $arr_style[$key]['icon'];
                                         $v_color = $arr_style[$key]['color'];
-                                ?>
-                                <li>
-                                    <span class="count notify-tip activity-num" data-activity="<?php echo $key; ?>">0</span>
-                                    <a href="<?php echo $url?>" class="<?php echo $v_color?>">
-                                        <i class="<?php echo $v_icon;?>"></i>
-                                        <span><?php echo $val ?></span>
-                                    </a>
-                                    <?php
-                                        if(isset($_GET['tt']) && $_GET['tt'] == $key)
-                                        {
-                                            $html = '<div class="active-menu">';
-                                            $html .= '&nbsp;</div>';
-                                            echo $html;
-                                        }   
-                                    ?>
-                                </li>
-                                <?php endforeach;?>
-                                <script>
-                                        $(document).ready(function() {
-                                            var v_url = '<?php echo $this->controller_url; ?>count_record_by_activity';
-                                            var village_id = <?php echo (int) Session::get('village_id') ?>;
-                                            if (!village_id)
-                                            {
-                                                village_id = <?php echo (int) get_request_var('village') ?>;
-                                            }
-                                            if (!village_id)
-                                            {
-                                                if ($('#sel_village').length)
-                                                    village_id = -1;
-                                            }
-
-                                            v_url += '&village=' + village_id;
-                                            $.ajax({
-                                                cache: false,
-                                                url: v_url,
-                                                dataType: 'json',
-                                                success: function(json_data) {
-                                                    $('.activity-num').each(function(index) {
-                                                        v_activity = $(this).attr('data-activity');
-                                                        $(this).html(json_data[v_activity]);
-                                                    });
-                                                }
-                                            });
-                                        });
-                                </script>
-                             
-                                    <?php elseif(isset($this->arr_all_report_type)):?>
-                                        <?php foreach ($this->arr_all_report_type as $v_code => $v_name): 
-                                                $url = SITE_ROOT . 'r3/report/option/' . $v_code;
-                                                $v_icon = 'icon-copy';
-                                                $v_color = 'blue';
                                         ?>
-                                            <li>
-                                                <a href="<?php echo $url?>" class="<?php echo $v_color?>">
-                                                    <i class="<?php echo $v_icon;?>"></i>
-                                                    <span><?php echo $v_name; ?></span>
-                                                </a>
-                                                <?php
-                                                    if(strval($v_code) == strval($this->current_report_type))
-                                                    {
-                                                        $html = '<div class="active-menu">';
-                                                        $html .= '&nbsp;</div>';
-                                                        echo $html;
-                                                    }   
-                                                ?>
-                                            </li>
-                                        <?php endforeach;?>
-                                            <?php if(check_permission('QUAN_TRI_SO_THEO_DOI_HO_SO', 'r3')):?>
-                                             <li>
-                                                <a href="<?php echo SITE_ROOT?>r3/reportbook"  class="<?php echo 'blue'?>">
-                                                    <i class="icon-copy"></i>
-                                                    <span>Sổ theo dõi hồ sơ</span>
-                                                </a>
-                                                <?php
-                                                    if(isset($this->menu_reportbook) && strval($this->menu_reportbook == 'reportbook'))
-                                                    {
-                                                        $html = '<div class="active-menu">';
-                                                        $html .= '&nbsp;</div>';
-                                                        echo $html;
-                                                    }   
-                                                ?>
-                                            </li>
-                                            <?php endif; ?>
-                                    <?php endif;?>
+                                        <li>
+                                            <span class="count notify-tip activity-num" data-activity="<?php echo $key; ?>">0</span>
+                                            <a href="<?php echo $url?>" class="<?php echo $v_color?>">
+                                                <i class="<?php echo $v_icon;?>"></i>
+                                                <span><?php echo $val ?></span>
+                                            </a>
+                                            <?php
+                                                if(get_request_var('tt') == $key)
+                                                {
+                                                    $html = '<div class="active-menu">';
+                                                    $html .= '&nbsp;</div>';
+                                                    echo $html;
+                                                }   
+                                            ?>
+                                        </li>
+                                    <?php endforeach;?>
+                                    <script>
+                                            $(document).ready(function() {
+                                                var v_url = '<?php echo $this->controller_url; ?>count_record_by_activity';
+                                                var village_id = <?php echo (int) Session::get('village_id') ?>;
+                                                if (!village_id)
+                                                {
+                                                    village_id = <?php echo (int) get_request_var('village') ?>;
+                                                }
+                                                if (!village_id)
+                                                {
+                                                    if ($('#sel_village').length)
+                                                        village_id = -1;
+                                                }
+
+                                                v_url += '&village=' + village_id;
+                                                $.ajax({
+                                                    cache: false,
+                                                    url: v_url,
+                                                    dataType: 'json',
+                                                    success: function(json_data) {
+                                                        $('.activity-num').each(function(index) {
+                                                            v_activity = $(this).attr('data-activity');
+                                                            $(this).html(json_data[v_activity]);
+                                                        });
+                                                    }
+                                                });
+                                            });
+                                    </script>
+                                    
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <?php endif;?>
-                    <!--end-->
-            
-            
-
-                    
+                    <?php endif;
+       

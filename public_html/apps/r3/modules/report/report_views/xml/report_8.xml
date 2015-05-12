@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td size="5%">STT</td>
+            <td size="20%">Mã hồ sơ</td>
+            <td size="20%">Người nộp</td>
+			<td size="20%">Địa chỉ</td>
+			<td size="16%">Số điện thoại</td>
+			<td size="16%">Chậm tiến độ(đv: ngày)</td>
+        </tr>
+    </head>
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="5%" align="center" excel_width="21"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="20%" excel_width="83"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người nộp" size="20%" align="center" excel_width="18"/>
+		<item type="text" id="xml/txtDiaChi" name="Địa chỉ" size="20%" align="center" excel_width="18"/>
+		<item type="text" id="C_RETURN_PHONE_NUMBER" name="Số điện thoại" size="16%" align="center" excel_width="18"/>
+		<item type="text" id="C_CHAM_TIEN_DO" name="Chậm tiến độ" size="16%" align="center" excel_width="18"/>
+    </list>
+</report>

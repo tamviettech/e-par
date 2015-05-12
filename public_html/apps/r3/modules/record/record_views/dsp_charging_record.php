@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 $arr_single_record = $VIEW_DATA['arr_single_record'];
@@ -62,13 +44,15 @@ $dom_flow       = simplexml_load_file($v_xml_workflow);
 $v_default_fee  = xpath($dom_flow, "//process/@fee", XPATH_STRING);
 
 //LienND update 2014-02-15: Kiem tra "Da thu du" chua?
-$dom_xml_data = simplexml_load_string($v_xml_data);
+$dom_xml_data           = simplexml_load_string($v_xml_data);
 $v_advance_cost_is_full = get_xml_value($dom_xml_data, '//item[@id="chk_txtCost_full"]/value');
 //Neu da thu du, khong lay fee trong workflow
 if (strtolower($v_advance_cost_is_full) == 'true')
 {
     $v_default_fee = $v_advance_cost;
 }
+//lay user_login_name
+$v_cur_user_login_name = $_SESSION['user_login_name '];
 ?>
 <form name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_charging_record">
     <?php
@@ -90,165 +74,172 @@ if (strtolower($v_advance_cost_is_full) == 'true')
     <div class="widget-head blue">
         <h3>Thu phí</h3>
     </div>
-    <table style="width: 100%;" class="none-border-table">
-        <tr>
-            <td style="font-weight: bold" width="15%">Loại hồ sơ:</td>
-            <td><?php echo $v_record_type_code; ?> - <?php echo $v_record_type_name; ?></td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold" width="15%">Tên người đăng ký</td>
-            <td><?php echo $v_citizen_name; ?></td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold" width="15%">Mã hồ sơ</td>
-            <td><?php echo $v_record_no; ?></td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold" width="15%">Lệ phí</td>
-            <td>
-                <input type="text" name="txt_fee" id="txt_fee"
-                       size="8" maxlength="10" class="text valid"
-                       value="<?php echo number_format($v_default_fee); ?>"
-                       onchange="txt_fee_onkeyup()"
-                       /> (đ)
-                <span id="lbl_text_fee"></span>
-            </td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold" width="15%">Phí thụ lý</td>
-            <td>
-                <input type="text" name="txt_cost" id="txt_cost" 
-                       size="8" maxlength="10" class="text valid"
-                       value="<?php echo $v_cost; ?>" readonly
-                       onchange="txt_cost_onkeyup()"
-                       /> (đ)
-                <span id="lbl_text_cost"></span>
-            </td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold" width="15%">Đã tạm thu</td>
-            <td>
-                <input type="text" name="txt_avanced_cost" id="txt_avanced_cost" readonly
-                       size="8" maxlength="10" class="text valid"
-                       value="<?php echo number_format($v_advance_cost); ?>" readonly="1"/> (đ)
-                <span id="lbl_text_advanced_cost"></span>
-            </td>
-    
-        </tr>
-        <tr>
-            <td style="font-weight: bold" width="15%" id="additional_fee_label" ></td>
-            <td >
-                <input type="text" name="additional_fee" id="additional_fee" style="color:purple"
-                       size="8" maxlength="10" class="text valid"
-                       readonly="1"/> (đ)
-                <span id="lbl_text_additional_fee"></span>
-    
-            </td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold" width="15%">Diễn giải</td>
-            <td>
-                <textarea style="width:100%;height:100px;" rows="1"
-                          name="txt_fee_description" id="txt_fee_description" cols="20" maxlength="400"
-                          class="text valid"><?php echo $v_cost_desc; ?></textarea>
-            </td>
-        </tr>
-        <tr>
-            
-            <?php if (count($arr_all_next_user) > 0): ?>
-                    <td style="font-weight: bold" width="15%">Cán bộ <?php echo $this->role_text[get_role($arr_all_next_user[0]['C_TASK_CODE'])]; ?></td>
+    <div class="well">
+        <div class="modal_record_type_name"><?php echo $v_record_type_code; ?> - <?php echo $v_record_type_name; ?></div>
+        <table style="width: 100%;" class="none-border-table">
+            <tbody>
+                <tr>
+                    <td style="font-weight: bold;">Tên người đăng ký</td>
+                    <td><?php echo $v_citizen_name; ?></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold" >Mã hồ sơ</td>
+                    <td><?php echo $v_record_no; ?></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold" >Lệ phí</td>
                     <td>
-                        <div class="control-group">
-                            <div class="controls">
-                            <?php for ($i = 0; $i < count($arr_all_next_user); $i++): ?>
-                                <?php if ($arr_all_next_user[$i]['FK_OU'] == Session::get('ou_id') OR (!Session::get('la_can_bo_cap_xa'))): ?>
-                                        <label for="rad_next_user_<?php echo $i; ?>">
-                                            
-                                            <input type="radio" value="<?php echo $arr_all_next_user[$i]['C_USER_LOGIN_NAME']; ?>"
-                                           id="rad_next_user_<?php echo $i; ?>" name="rad_next_user"
-                                           <?php echo ($i == 0 OR $arr_all_next_user[$i]['FK_OU'] == Session::get('ou_id')) ? ' checked' : ''; ?> />
-                                           <?php echo $arr_all_next_user[$i]['C_NAME']; ?> <i>(<?php echo $arr_all_next_user[$i]['C_JOB_TITLE']; ?>)</i>
-                                        </label>
-                                <?php endif; ?>
-                            <?php endfor; ?>
-                            </div>
-                        </div>
+                        <input type="text" name="txt_fee" id="txt_fee"
+                               size="8" maxlength="10" class="text valid"
+                               value="<?php echo number_format($v_default_fee); ?>"
+                               onchange="txt_fee_onkeyup()"
+                               /> (đ)
+                        <span id="lbl_text_fee"></span>
                     </td>
-                <?php endif; ?>
-            
-            </tr>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold">Phí thụ lý</td>
+                    <td>
+                        <input type="text" name="txt_cost" id="txt_cost" 
+                               size="8" maxlength="10" class="text valid"
+                               value="<?php echo $v_cost; ?>" readonly
+                               onchange="txt_cost_onkeyup()"
+                               /> (đ)
+                        <span id="lbl_text_cost"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold" >Đã tạm thu</td>
+                    <td>
+                        <input type="text" name="txt_avanced_cost" id="txt_avanced_cost" readonly
+                               size="8" maxlength="10" class="text valid"
+                               value="<?php echo number_format($v_advance_cost); ?>" readonly="1"/> (đ)
+                        <span id="lbl_text_advanced_cost"></span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td style="font-weight: bold"  id="additional_fee_label" ></td>
+                    <td >
+                        <input type="text" name="additional_fee" id="additional_fee" style="color:green;font-weight:bold;"
+                               size="8" maxlength="10" class="text valid"
+                               readonly="1"/> (đ)
+                        <span id="lbl_text_additional_fee"></span>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold" >Diễn giải</td>
+                    <td>
+                        <textarea style="width:650px;height:50px;" rows="1"
+                                  name="txt_fee_description" id="txt_fee_description" cols="20" maxlength="400"
+                                  class="text valid"><?php echo $v_cost_desc; ?></textarea>
+                    </td>
+                </tr>
+                <tr>
+
+                    <?php if (count($arr_all_next_user) > 0): ?>
+                        <td style="font-weight: bold" >Cán bộ <?php echo $this->role_text[get_role($arr_all_next_user[0]['C_TASK_CODE'])]; ?></td>
+                        <td>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <?php for ($i = 0; $i < count($arr_all_next_user); $i++): ?>
+                                        <?php
+                                        if ($arr_all_next_user[$i]['FK_OU'] == Session::get('ou_id') OR ( !Session::get('la_can_bo_cap_xa'))):
+                                            $v_user_login_name = $arr_all_next_user[$i]['C_USER_LOGIN_NAME'];
+                                            ?>
+                                            <label for="rad_next_user_<?php echo $i; ?>">
+                                                <input type="radio" value="<?php echo $v_user_login_name ?>"
+                                                       id="rad_next_user_<?php echo $i; ?>" name="rad_next_user"
+                                                       <?php echo ($i == 0 OR $v_user_login_name == $v_cur_user_login_name) ? ' checked' : ''; ?> />
+                                                <?php echo $arr_all_next_user[$i]['C_NAME']; ?> <i>(<?php echo $arr_all_next_user[$i]['C_JOB_TITLE']; ?>)</i>
+                                            </label>
+                                        <?php endif; ?>
+                                    <?php endfor; ?>
+                                </div>
+                            </div>
+                        </td>
+                    <?php endif; ?>
+
+                </tr>
+            </tbody>
         </table>
         <!-- Buttons -->
         <div class="button-area">
-            <hr/>
             <button type="button" name="btn_do_exec" class="btn btn-primary" onclick="btn_do_charging_onclick();" accesskey="2">
                 <i class="icon-save"></i>
                 <?php echo __('Thu phí'); ?>
             </button>
             <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-            <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action;?>" >
+            <button type="button" name="cancel" class="btn" onclick="<?php echo $v_back_action; ?>" >
                 <i class="icon-remove"></i>
                 <?php echo __('close window'); ?>
             </button> 
         </div>
+    </div>
 </form>
 <script>
-                       function btn_do_charging_onclick()
-                       {
+                function btn_do_charging_onclick()
+                {
 //                          var f = document.frmMain;
 //                          if(f.txt_fee <0)
 //                            {
 //                                alert('Giá phí không được nhập giá trị âm');
 //                                return false;
 //                            }
-                           document.frmMain.submit();
-                       }
+                    document.frmMain.submit();
+                }
 
-                       function txt_fee_onkeyup() {
-                           if (!$('#txt_fee').val()) {
-                               $('#txt_fee').val(0);
-                           }
-                           dsp_additional_fee();
-                           ReadNumberToString('txt_fee', 'lbl_text_fee');
-                           ReadNumberToString('additional_fee', 'lbl_text_additional_fee');
-                       }
-                       function txt_cost_onkeyup() {
-                           if (!$('#txt_cost').val()) {
-                               $('#txt_cost').val(0);
-                           }
-                           dsp_additional_fee();
-                           ReadNumberToString('txt_cost', 'lbl_text_cost');
-                           ReadNumberToString('additional_fee', 'lbl_text_additional_fee');
-                       }
-                       function dsp_additional_fee() {
-                           if (!$('#txt_cost').val()) {
-                               $('#txt_cost').val(0);
-                           }
-                           if (!$('#txt_fee').val()) {
-                               $('#txt_fee').val(0);
-                           }
-                           interval = parseInt($('#txt_fee').val().replace(',', '')) +
-                                   parseInt($('#txt_cost').val().replace(',', '')) -
-                                   parseInt($('#txt_avanced_cost').val().replace(',', ''));
-                           if (interval >= 0) {
-                               $('#additional_fee_label').html('Công dân phải nộp thêm');
-                               $('#additional_fee').val(interval);
-                           }
-                           else {
-                               $('#additional_fee_label').html('Lệ phí phải trả lại công dân');
-                               $('#additional_fee').val(-interval);
-                           }
-                       }
-                       $(document).ready(function() {
-                           txt_fee_onkeyup();
-                           txt_cost_onkeyup();
-                           ReadNumberToString('txt_avanced_cost', 'lbl_text_advanced_cost');
-                           $('input[type=text]').each(function() {
-                               if ($(this).attr('readonly')) {
-                                   $(this).css('background', 'whitesmoke');
-                               }
-                           });
-                       });
+                function txt_fee_onkeyup() {
+                    if (!$('#txt_fee').val()) {
+                        $('#txt_fee').val(0);
+                    }
+                    dsp_additional_fee();
+                    ReadNumberToString('txt_fee', 'lbl_text_fee');
+                    ReadNumberToString('additional_fee', 'lbl_text_additional_fee');
+                }
+                function txt_cost_onkeyup() {
+                    if (!$('#txt_cost').val()) {
+                        $('#txt_cost').val(0);
+                    }
+                    dsp_additional_fee();
+                    ReadNumberToString('txt_cost', 'lbl_text_cost');
+                    ReadNumberToString('additional_fee', 'lbl_text_additional_fee');
+                }
+
+                function dsp_additional_fee() {
+                    if (!$('#txt_cost').val()) {
+                        $('#txt_cost').val(0);
+                    }
+                    if (!$('#txt_fee').val()) {
+                        $('#txt_fee').val(0);
+                    }
+                    var fee = parseInt($('#txt_fee').val().replace(/,/g, ''));
+                    var cost = parseInt($('#txt_cost').val().replace(/,/g, ''));
+                    var avanced = parseInt($('#txt_avanced_cost').val().replace(/,/g, ''));
+
+                    var interval = (fee + cost) - avanced;
+
+                    if (interval >= 0) {
+                        $('#additional_fee_label').html('Công dân phải nộp thêm');
+                        $('#additional_fee').val(interval);
+                    }
+                    else {
+                        $('#additional_fee_label').html('Lệ phí phải trả lại công dân');
+                        $('#additional_fee').val(-interval);
+                    }
+                }
+
+                $(document).ready(function () {
+                    txt_fee_onkeyup();
+                    txt_cost_onkeyup();
+                    ReadNumberToString('txt_avanced_cost', 'lbl_text_advanced_cost');
+                    $('input[type=text]').each(function () {
+                        if ($(this).attr('readonly')) {
+                            $(this).css('background', 'whitesmoke');
+                        }
+                    });
+                });
 </script>
 <?php
 $this->template->display('dsp_footer' . $v_pop_win . '.php');

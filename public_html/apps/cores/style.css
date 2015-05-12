@@ -723,6 +723,9 @@ table.liveboard TR:hover{
     line-height: 20px;
     height: 32px;
 }
-
+#tbl_user_in_group td,#tbl_user_in_group th
+{
+    border:1px solid #dddddd
+}
 
 

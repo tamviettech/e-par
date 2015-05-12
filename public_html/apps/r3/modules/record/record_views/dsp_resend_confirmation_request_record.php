@@ -1,22 +1,12 @@
 <?php
+
 /**
+ * @copyright	Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @author		Ngo Duc Lien <liennd@gmail.com>
+ * @author		Luong Thanh Binh <ltbinh@gmail.com>
+ */
 
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE('ohhh');
@@ -59,7 +49,13 @@ $v_reason = '';
     echo $this->hidden('hdn_approval_value', $v_promote);
     ?>
 
-    <div class="panel_color_form">Yêu cầu xác nhận lại</div>
+    <div class="group" style="padding-bottom: 5px; float: left;width: 100%">
+        <div class="widget-head blue">
+            <h3>
+                Yêu cầu xác nhận lại
+            </h3>
+        </div>
+    </div>
     <div class="Row">
         <div class="left-Col">
             <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
@@ -68,8 +64,9 @@ $v_reason = '';
             <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
         </div>
     </div>
+    
     <!-- Record list -->
-    <table cellpadding="4" cellspacing="0" width="100%" class="list">
+    <table width="100%" class="adminlist table table-bordered table-striped">
         <tr>
             <th>STT</th>
             <th>Mã hồ sơ</th>
@@ -92,7 +89,9 @@ $v_reason = '';
         <div class="left-Col">
             <label>Gửi cho: </label>
         </div>
-        <div class="right-Col"><ul id="signer"><?php
+        <div class="right-Col">
+            <style> #signer li {list-style: none}</style>
+            <ul id="signer"><?php
             //Ho so thuoc xa, phuong nao????
             $dom_xml_data = simplexml_load_string($arr_all_record[0]['C_XML_DATA']);
 
@@ -104,11 +103,12 @@ $v_reason = '';
                 $check = $dom_xml_group_code->xpath("//row[@C_CODE='$v_xa_phuong']/@C_NAME[last()]");
                 ?>
                 <li>
-                    <input type="radio" value="<?php echo $arr_all_exec_user[$i]['C_USER_LOGIN_NAME'];?>"
-                        data-receiver_name="<?php echo $arr_all_exec_user[$i]['C_NAME'];?>"
-                       id="rad_receiver_<?php echo $i;?>" name="rad_receiver"
-                       <?php echo (sizeof($check) > 0) ? ' checked' : '';?> />
                     <label for="rad_receiver_<?php echo $i;?>">
+                        <input type="radio" value="<?php echo $arr_all_exec_user[$i]['C_USER_LOGIN_NAME'];?>"
+                            data-receiver_name="<?php echo $arr_all_exec_user[$i]['C_NAME'];?>"
+                           id="rad_receiver_<?php echo $i;?>" name="rad_receiver"
+                           <?php echo (sizeof($check) > 0) ? ' checked' : '';?> 
+                        />
                         <?php echo $arr_all_exec_user[$i]['C_NAME'];?> <i>(<?php echo $arr_all_exec_user[$i]['C_JOB_TITLE'];?>)</i>
                     </label>
                 </li>
@@ -118,7 +118,7 @@ $v_reason = '';
     </div>
     <div id="request_content" class="Row">
         <div class="left-Col">
-            Lý do:<span class="required">*</span>
+            Lý do <span class="required">(*)</span>:
         </div>
         <div class="right-Col">
             <textarea rows="6" cols="80" name="txt_request_message_content" id="txt_request_message_content"></textarea>

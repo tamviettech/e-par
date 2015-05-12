@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -50,51 +32,64 @@ $v_citizen_name_filter = isset($_POST['txt_citizen_name_filter']) ? replace_bad_
 	?>
 	<?php //echo $this->dsp_div_notice($VIEW_DATA['active_role_text'] );?>
 	<!-- filter -->
-	<div id="div_filter">
-		<table style="width: 100%" class="none-border-table">
-			<tr>
-				<td width="15%"><label>Mã loại hồ sơ (Alt+1)</label>
-				</td>
-				<td>
-                    <input type="text" name="txt_record_type_code"
-                            id="txt_record_type_code"
-                            value="<?php echo $v_record_type_code; ?>"
-                            class="inputbox upper_text" size="10" maxlength="10"
-                            onkeypress="txt_record_type_code_onkeypress(event);"
-                            autofocus="autofocus" accesskey="1" 
-                    />&nbsp;
+        <div class="content-widgets ">
+                <div class="widget-head blue">
+                    <h3>Tìm kiếm</h3>
+                </div>
+            <div class="widget-container" style="min-height: 90px;border: 1px solid #3498DB;">
+                <div id="div_filter">
+                    <table style="width: 100%" class="none-border-table">
+                            <tr>
+                                    <td width="15%"><label>Mã loại hồ sơ (Alt+1)</label>
+                                    </td>
+                                    <td>
+                        <input type="text" name="txt_record_type_code"
+                                id="txt_record_type_code"
+                                value="<?php echo $v_record_type_code; ?>"
+                                class="inputbox upper_text" size="10" maxlength="10"
+                                onkeypress="txt_record_type_code_onkeypress(event);"
+                                autofocus="autofocus" accesskey="1" 
+                        />&nbsp;
 
-                                <select
-					name="sel_record_type" id="sel_record_type"
-					style="width: 75%; color: #000000;"
-					onchange="sel_record_type_onchange(this)">
-						<option value="">-- Chọn loại hồ sơ --</option>
-                                                <?php foreach($arr_all_record_type as $v): ?>
-                                                    <?php $selected = $v_record_type_code == $v['C_CODE'] ? 'selected' : '' ?>
-                                                    <option value="<?php echo $v['C_CODE'] ?>" <?php echo $selected ?>>
-                                                        <?php echo $v['C_NAME'] ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-				</select>
-				</td>
-			</tr>
-			<tr>
-			    <td><label>Mã hồ sơ:</label></td>
-			    <td>
-			        <input type="text" name="txt_record_no_filter" style="width: 50%" value="<?php echo $v_record_no_filter;?>" />
-			    </td>
-			</tr>
-			<tr>
-			    <td>
-			        <label>Người đăng ký:</label>
-			    </td>
-			    <td>
-			        <input  type="text" name="txt_citizen_name_filter" style="width: 50%" value="<?php echo $v_citizen_name_filter;?>" />
-			        <input type="button" name="btn_search" value="Lọc" class="btn solid search" onclick="this.form.submit()" />
-			    </td>
-			</tr>
-		</table>
-	</div>
+                                    <select
+                                            name="sel_record_type" id="sel_record_type"
+                                            style="width: 75%; color: #000000;"
+                                            onchange="sel_record_type_onchange(this)">
+                                                    <option value="">-- Chọn loại hồ sơ --</option>
+                                                    <?php foreach($arr_all_record_type as $v): ?>
+                                                        <?php $selected = $v_record_type_code == $v['C_CODE'] ? 'selected' : '' ?>
+                                                        <option value="<?php echo $v['C_CODE'] ?>" <?php echo $selected ?>>
+                                                            <?php echo $v['C_NAME'] ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                    </select>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td><label>Mã hồ sơ:</label></td>
+                                <td>
+                                    <input type="text" name="txt_record_no_filter" style="width: 50%" value="<?php echo $v_record_no_filter;?>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Người đăng ký:</label>
+                                </td>
+                                <td >
+                                    <input  type="text" name="txt_citizen_name_filter" style="width: 50%" value="<?php echo $v_citizen_name_filter;?>" />
+                                </td>
+                            </tr>
+                    </table>
+                </div>
+                <div id="solid-button">
+                    <button  type="button" name="trash" class="btn btn-primary" onclick="this.form.submit();">
+                        <i class="icon-search"></i>
+                        Lọc
+                    </button>
+                </div>
+            </div>
+        </div>
+	
 
 
 	<div class="clear">&nbsp;</div>
@@ -141,12 +136,12 @@ $v_citizen_name_filter = isset($_POST['txt_citizen_name_filter']) ? replace_bad_
             html = '';
 
             //Print
-            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\', \'comment\')" class="quick_action">';
-            html += '<img src="' + SITE_ROOT + 'public/images/icon-32-comment-add.png" title="Ý kiến chỉ đạo" /></a>';
+            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\', \'comment\')" class="quick_action" title="Ý kiến chỉ đạo">';
+            html += '<i class="icon-comment"></i></a>';
 
             //Thong tin tien do
-            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action">';
-            html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ" >';
+            html += '<i class="icon-bar-chart"></i></a>';
 
             $(this).html(html);
         });

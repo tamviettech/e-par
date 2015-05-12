@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	
+
 	<xsl:output method="html" encoding="UTF-8"/>
 
 	<xsl:param name="p_site_root" select="0"/>
@@ -9,111 +9,109 @@
 	<xsl:param name="p_form_struct_file_name">E:/Zend/www/Mot-Cua/lang-giang/Code/apps/r3/xml-config/TN05/TN05_form_struct.xml</xsl:param>
 
 	<xsl:variable name="dom_xml_form_struct" select="document($p_form_struct_file_name)"/>
-	<xsl:variable name="dom_xml_data" select="/" />
+	<xsl:variable name="dom_xml_data" select="/"/>
 
 	<xsl:template match="/">
-		
+
 		<table border="0" width="100%" class="main_table" cellpadding="1" cellspacing="0">
 			<xsl:for-each select="$dom_xml_form_struct/form/line">
-					<tr>
+				<tr>
 					<xsl:attribute name="class">
-						<xsl:if test="position() mod 2 = 0">
-							xslgridrow
-						</xsl:if>
+						<xsl:if test="position() mod 2 = 0">xslgridrow</xsl:if>
 					</xsl:attribute>
-						<td style="width:100%">
-							<xsl:if test="@label!=''">
-								<table class="panel_table" border="0" style="width:100%" cellpadding="0" cellspacing="0">
-									<tr class="panel_color">
-										<td colspan="4" height="25px">
-											<span class="@css">
-												<xsl:value-of select="@label"/>
-											</span>
-										</td>
-									</tr>
-								</table>
-							</xsl:if>
-							<table border="0" style="width:100%" cellpadding="0" cellspacing="0">
-								<tr>
-									<xsl:if test="@cols='1'">
-										<xsl:for-each select="item">
-											<td width="20%" class="text_color">
-												<xsl:if test="@allownull='no'">
-													<xsl:value-of select="@label"/>
-													<span class="text_color_red">(*)</span>
-												</xsl:if>
-												<xsl:if test="@allownull='yes'">
-													<xsl:value-of select="@label"/>
-												</xsl:if>
-											</td>
-											<td width="80%">
-												<xsl:call-template name="find_control">
-													<xsl:with-param name="ControlType">
-														<xsl:value-of select="@type"/>
-													</xsl:with-param>
-												</xsl:call-template>
-											</td>
-										</xsl:for-each>
-									</xsl:if>
-									<xsl:if test="@cols='2'">
-										<xsl:for-each select="item">
-											<td width="20%" class="text_color">
-												<xsl:if test="@allownull='no'">
-													<xsl:value-of select="@label"/>
-													<span class="text_color_red">(*)</span>
-												</xsl:if>
-												<xsl:if test="@allownull='yes'">
-													<xsl:value-of select="@label"/>
-												</xsl:if>
-											</td>
-											<td width="30%">
-												<xsl:call-template name="find_control">
-													<xsl:with-param name="ControlType">
-														<xsl:value-of select="@type"/>
-													</xsl:with-param>
-												</xsl:call-template>
-											</td>
-										</xsl:for-each>
-									</xsl:if>
-
-									<xsl:if test="@cols='0'">
-										<td width="20%" class="panel_color"></td>
-										<td width="80%" class="panel_color" colspan="3" align="left">
-											<xsl:for-each select="item">
-												<xsl:call-template name="find_control">
-													<xsl:with-param name="ControlType">
-														<xsl:value-of select="@type"/>
-													</xsl:with-param>
-												</xsl:call-template>
-											</xsl:for-each>
-										</td>
-									</xsl:if>
-									<xsl:if test="@cols='3'">
-										<td width="20%" class="text_color">
-											<span class="text_color">
-												<xsl:value-of select="@label"/>
-											</span>
-										</td>
-										<td width="80%" class="text_color" colspan="3" align="left">
-											<xsl:for-each select="item">
-												<xsl:call-template name="find_control">
-													<xsl:with-param name="ControlType">
-														<xsl:value-of select="@type"/>
-													</xsl:with-param>
-												</xsl:call-template>
-											</xsl:for-each>
-										</td>
-									</xsl:if>
+					<td style="width:100%">
+						<xsl:if test="@label!=''">
+							<table class="panel_table" border="0" style="width:100%" cellpadding="0" cellspacing="0">
+								<tr class="panel_color">
+									<td colspan="4" height="25px">
+										<span class="@css">
+											<xsl:value-of select="@label"/>
+										</span>
+									</td>
 								</tr>
 							</table>
-						</td>
-					</tr>
+						</xsl:if>
+						<table border="0" style="width:100%" cellpadding="0" cellspacing="0">
+							<tr>
+								<xsl:if test="@cols='1'">
+									<xsl:for-each select="item">
+										<td width="20%" class="text_color">
+											<xsl:if test="@allownull='no'">
+												<xsl:value-of select="@label"/>
+												<span class="text_color_red">(*)</span>
+											</xsl:if>
+											<xsl:if test="@allownull='yes'">
+												<xsl:value-of select="@label"/>
+											</xsl:if>
+										</td>
+										<td width="80%">
+											<xsl:call-template name="find_control">
+												<xsl:with-param name="ControlType">
+													<xsl:value-of select="@type"/>
+												</xsl:with-param>
+											</xsl:call-template>
+										</td>
+									</xsl:for-each>
+								</xsl:if>
+								<xsl:if test="@cols='2'">
+									<xsl:for-each select="item">
+										<td width="20%" class="text_color">
+											<xsl:if test="@allownull='no'">
+												<xsl:value-of select="@label"/>
+												<span class="text_color_red">(*)</span>
+											</xsl:if>
+											<xsl:if test="@allownull='yes'">
+												<xsl:value-of select="@label"/>
+											</xsl:if>
+										</td>
+										<td width="30%">
+											<xsl:call-template name="find_control">
+												<xsl:with-param name="ControlType">
+													<xsl:value-of select="@type"/>
+												</xsl:with-param>
+											</xsl:call-template>
+										</td>
+									</xsl:for-each>
+								</xsl:if>
+
+								<xsl:if test="@cols='0'">
+									<td width="20%" class="panel_color"></td>
+									<td width="80%" class="panel_color" colspan="3" align="left">
+										<xsl:for-each select="item">
+											<xsl:call-template name="find_control">
+												<xsl:with-param name="ControlType">
+													<xsl:value-of select="@type"/>
+												</xsl:with-param>
+											</xsl:call-template>
+										</xsl:for-each>
+									</td>
+								</xsl:if>
+								<xsl:if test="@cols='3'">
+									<td width="20%" class="text_color">
+										<span class="text_color">
+											<xsl:value-of select="@label"/>
+										</span>
+									</td>
+									<td width="80%" class="text_color" colspan="3" align="left">
+										<xsl:for-each select="item">
+											<xsl:call-template name="find_control">
+												<xsl:with-param name="ControlType">
+													<xsl:value-of select="@type"/>
+												</xsl:with-param>
+											</xsl:call-template>
+										</xsl:for-each>
+									</td>
+								</xsl:if>
+							</tr>
+						</table>
+					</td>
+				</tr>
 			</xsl:for-each>
 		</table>
 	</xsl:template>
-	
+
 	<!--*********************************************************************************************************-->
-	
+
 	<xsl:template name="find_control">
 		<xsl:param name="ControlType"/>
 		<xsl:choose>
@@ -157,12 +155,14 @@
 	<!--***********************************************************************************************
   Call this template when object is normal text box-->
 	<xsl:template name="CreateTextboxArea">
-		<xsl:variable name="v_item_id" select="@id" />
+		<xsl:variable name="v_item_id" select="@id"/>
 		<xsl:if test="@id='txtTaiLieuKhac'">
 			<textarea id="{@id}" cols="{@size}" class="text valid" style="display:none;" rows="10" value="{@defaul_value}" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}">&#x20;
 				<xsl:if test="$p_form_struct_file_name != '0'">
-					<xsl:if test="$dom_xml_data//item[@id='ckbTaiLieuKhac']/value = 'true'">				
-						<xsl:attribute name="style"><xsl:text disable-output-escaping="yes">display:block</xsl:text></xsl:attribute>
+					<xsl:if test="$dom_xml_data//item[@id='ckbTaiLieuKhac']/value = 'true'">
+						<xsl:attribute name="style">
+							<xsl:text disable-output-escaping="yes">display:block</xsl:text>
+						</xsl:attribute>
 						<xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/>
 					</xsl:if>
 				</xsl:if>
@@ -179,30 +179,35 @@
 	<!--***********************************************************************************************
   Call this template when object is normal text box has even-->
 	<xsl:template name="CreateTextboxMoney">
-		<xsl:variable name="v_item_id" select="@id" />
+		<xsl:variable name="v_item_id" select="@id"/>
 		<input type="textbox" id="{@id}" class="text  valid" size="{@size}" value="{@defaul_value}" onfocusout="ReadNumberToString('{@id}','lbl_mess_{@id}');" onkeyup="{@Even}" maxlength="15" onKeyDown="return handleEnter(this, event);"
-		       data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}"
-			   onfocus="this.value=removeCommas(this.value)" >
+		       data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}" onfocus="this.value=removeCommas(this.value)">
 
 			<xsl:if test="$p_form_struct_file_name != '0'">
-				<xsl:attribute name="value"><xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/></xsl:attribute>
+				<xsl:attribute name="value">
+					<xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/>
+				</xsl:attribute>
 			</xsl:if>
-		</input>	   			   
+		</input>
 		<br/>
 		<span id="lbl_mess_{@id}" class="{@css}"></span>
 	</xsl:template>
 	<!--***********************************************************************************************
   Call this template when object is normal text box has even-->
 	<xsl:template name="CreateTextboxName">
-		<xsl:variable name="v_item_id" select="@id" />
+		<xsl:variable name="v_item_id" select="@id"/>
 		<input type="textbox" id="{@id}" class=" text  valid" size="{@size}" value="{@defaul_value}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes"
-		       data-doc="{@doc}">			   
-			   <xsl:if test="@defaul_value != ''">
-			   		<xsl:attribute name="value"><xsl:value-of select="@defaul_value"/></xsl:attribute>
-			   </xsl:if>
-			   <xsl:if test="$p_form_struct_file_name != '0'">
-			   		<xsl:attribute name="value"><xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/></xsl:attribute>
-			   </xsl:if>
+		       data-doc="{@doc}">
+			<xsl:if test="@defaul_value != ''">
+				<xsl:attribute name="value">
+					<xsl:value-of select="@defaul_value"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$p_form_struct_file_name != '0'">
+				<xsl:attribute name="value">
+					<xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/>
+				</xsl:attribute>
+			</xsl:if>
 		</input>
 		<br/>
 		<span id="lbl_mess_{@id}" class="{@css}"></span>
@@ -210,22 +215,26 @@
 	<!--***********************************************************************************************
   Call this template when object is normal text box-->
 	<xsl:template name="CreateTextbox">
-		<xsl:variable name="v_item_id" select="@id" />
-		<input type="textbox" id="{@id}" class=" text valid" size="{@size}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes"
-		       data-doc="{@doc}">
-			   <xsl:if test="@defaul_value != ''">
-			   		<xsl:attribute name="value"><xsl:value-of select="@defaul_value"/></xsl:attribute>
-			   </xsl:if>			   
-			   <xsl:if test="$p_form_struct_file_name != '0'">
-			   		<xsl:attribute name="value"><xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/></xsl:attribute>
-			   </xsl:if>
+		<xsl:variable name="v_item_id" select="@id"/>
+		<input type="textbox" id="{@id}" class=" text valid" size="{@size}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}">
+			<xsl:if test="@defaul_value != ''">
+				<xsl:attribute name="value">
+					<xsl:value-of select="@defaul_value"/>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$p_form_struct_file_name != '0'">
+				<xsl:attribute name="value">
+					<xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/>
+				</xsl:attribute>
+			</xsl:if>
 		</input>
 		<!--<i><xsl:value-of select="$v_item_id"/></i>-->
-		
+
 		<xsl:if test="@legend != ''">
-			<label><xsl:value-of select="@legend" disable-output-escaping="yes" /></label>
+			<label>
+				<xsl:value-of select="@legend" disable-output-escaping="yes"/>
+			</label>
 		</xsl:if>
-		
 	</xsl:template>
 	<!--***********************************************************************************************
   Call this template when object is normal text box-->
@@ -238,14 +247,15 @@
 				</option>
 			</xsl:for-each>
 		</select>-->
-		<xsl:variable name="v_item_id" select="@id" />
-		<xsl:variable name="v_item_value" select="$dom_xml_data//item[@id=$v_item_id]/value" />
+		<xsl:variable name="v_item_id" select="@id"/>
+		<xsl:variable name="v_item_value" select="$dom_xml_data//item[@id=$v_item_id]/value"/>
 
-		<input type="textbox" id="{@id}" class=" text valid" size="{@size}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes"
-		       data-doc="{@doc}">			   
-			   <xsl:if test="$p_form_struct_file_name != '0'">
-			   		<xsl:attribute name="value"><xsl:value-of select="document(concat($p_server_root,@src_file))//item[@value=$v_item_value]/@name" disable-output-escaping="yes"/></xsl:attribute>
-			   </xsl:if>
+		<input type="textbox" id="{@id}" class=" text valid" size="{@size}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}">
+			<xsl:if test="$p_form_struct_file_name != '0'">
+				<xsl:attribute name="value">
+					<xsl:value-of select="document(concat($p_server_root,@src_file))//item[@value=$v_item_value]/@name" disable-output-escaping="yes"/>
+				</xsl:attribute>
+			</xsl:if>
 		</input>
 	</xsl:template>
 	<!--***********************************************************************************************
@@ -260,7 +270,7 @@
 	<!--***********************************************************************************************
   Call this template when object is normal text box-->
 	<xsl:template name="CreateTextboxDate">
-		<xsl:variable name="v_item_id" select="@id" />
+		<xsl:variable name="v_item_id" select="@id"/>
 		<xsl:if test="$p_form_struct_file_name = '0'">
 			<xsl:if test="@defaul_value!=''">
 				<xsl:if test="@defaul_value != 'current-date()'">
@@ -281,16 +291,17 @@
 			<img class="btndate" style="cursor:pointer" id="btnDate" src="{$p_site_root}public/images/calendar.gif" onclick="DoCal('{@id}')"/>
 		</xsl:if>
 		<xsl:if test="$p_form_struct_file_name != '0'">
-			<input type="textbox" id="{@id}" class=" text valid" size="{@size}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes"
-		       data-doc="{@doc}">
-				<xsl:attribute name="value"><xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/></xsl:attribute>
+			<input type="textbox" id="{@id}" class=" text valid" size="{@size}" onkeyup="{@Even}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes" data-doc="{@doc}">
+				<xsl:attribute name="value">
+					<xsl:value-of select="$dom_xml_data//item[@id=$v_item_id]/value" disable-output-escaping="yes"/>
+				</xsl:attribute>
 			</input>
 		</xsl:if>
 	</xsl:template>
 	<!--***********************************************************************************************
   Call this template when object is normal text box-->
 	<xsl:template name="CreateTextArea">
-		<xsl:variable name="v_item_id" select="@id" />
+		<xsl:variable name="v_item_id" select="@id"/>
 		<textarea id="{@id}" cols="{@col}" class=" text  valid" rows="{@row}" value="{@defaul_value}" onKeyDown="return handleEnter(this, event);" data-allownull="{@allownull}" data-validate="{@validate}" data-name="{@name}" data-xml="yes"
 		          data-doc="{@doc}">
 			<xsl:if test="$p_form_struct_file_name != '0'">
@@ -326,8 +337,8 @@
 	<!--***********************************************************************************************
   Call this template when object is check box-->
 	<xsl:template name="CreateCheckbox">
-		<xsl:variable name="v_item_id" select="@id" />
-		<xsl:variable name="v_item_value" select="$dom_xml_data//item[@id=$v_item_id]/value" />
+		<xsl:variable name="v_item_id" select="@id"/>
+		<xsl:variable name="v_item_value" select="$dom_xml_data//item[@id=$v_item_id]/value"/>
 		<table border="0">
 			<tr>
 				<td align="top" style="width:1%">
@@ -344,9 +355,9 @@
 						<input type="checkbox" id="{@id}" data-name="{@title}" data-xml="yes" data-doc="{@doc}">
 							<xsl:if test="$p_form_struct_file_name != '0'">
 								<xsl:if test="$v_item_value = 'true'">
-						   			<xsl:attribute name="checked">checked</xsl:attribute>
+									<xsl:attribute name="checked">checked</xsl:attribute>
 								</xsl:if>
-						   </xsl:if>
+							</xsl:if>
 						</input>
 					</xsl:if>
 				</td>
@@ -363,14 +374,13 @@
 			</tr>
 		</table>
 	</xsl:template>
-</xsl:stylesheet>
-<!-- Stylus Studio meta-information - (c) 2004-2009. Progress Software Corporation. All rights reserved.
+</xsl:stylesheet><!-- Stylus Studio meta-information - (c) 2004-2009. Progress Software Corporation. All rights reserved.
 
 <metaInformation>
 	<scenarios>
-		<scenario default="yes" name="Scenario1" userelativepaths="yes" externalpreview="no" url="file:///c:/Users/Ngo Duc Lien/Desktop/temp/Untitled4.xml" htmlbaseurl="" outputurl="" processortype="saxon8" useresolver="yes" profilemode="0" profiledepth=""
-		          profilelength="" urlprofilexml="" commandline="" additionalpath="" additionalclasspath="" postprocessortype="none" postprocesscommandline="" postprocessadditionalpath="" postprocessgeneratedext="" validateoutput="no" validator="internal"
-		          customvalidator="">
+		<scenario default="yes" name="Scenario1" userelativepaths="yes" externalpreview="no" url="file:///c:/Users/Ngo%20Duc%20Lien/Desktop/temp/Untitled4.xml" htmlbaseurl="" outputurl="" processortype="saxon8" useresolver="yes" profilemode="0"
+		          profiledepth="" profilelength="" urlprofilexml="" commandline="" additionalpath="" additionalclasspath="" postprocessortype="none" postprocesscommandline="" postprocessadditionalpath="" postprocessgeneratedext="" validateoutput="no"
+		          validator="internal" customvalidator="">
 			<advancedProp name="sInitialMode" value=""/>
 			<advancedProp name="bXsltOneIsOkay" value="true"/>
 			<advancedProp name="bSchemaAware" value="true"/>
@@ -389,7 +399,7 @@
 	</scenarios>
 	<MapperMetaTag>
 		<MapperInfo srcSchemaPathIsRelative="yes" srcSchemaInterpretAsXML="no" destSchemaPath="" destSchemaRoot="" destSchemaPathIsRelative="yes" destSchemaInterpretAsXML="no">
-			<SourceSchema srcSchemaPath="file:///c:/Users/Ngo Duc Lien/Desktop/temp/Untitled4.xml" srcSchemaRoot="data" AssociatedInstance="" loaderFunction="document" loaderFunctionUsesURI="no"/>
+			<SourceSchema srcSchemaPath="file:///c:/Users/Ngo%20Duc%20Lien/Desktop/temp/Untitled4.xml" srcSchemaRoot="data" AssociatedInstance="" loaderFunction="document" loaderFunctionUsesURI="no"/>
 		</MapperInfo>
 		<MapperBlockPosition>
 			<template match="/"></template>

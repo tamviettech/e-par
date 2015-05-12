@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
 {
     exit('No direct script access allowed');
@@ -87,10 +69,10 @@ $xml_user_task       = $VIEW_DATA['xml_user_task'];
                     <h3 class=" widget-header">Quy trình: <?php echo $proc->attributes()->code; ?> - <?php echo $proc->attributes()->name; ?></h3>
                     <h4 class=" widget-header">Tổng số ngày thực hiện: <?php echo $proc->attributes()->totaltime; ?></h4>
 
-                    <button type="button" name="btn_edit_workflow" onclick="btn_edit_workflow_onclick(this)" class="btn btn-danger"><i class="icon-edit"></i> Sửa quy trình XML</button>
-                    <button type="button" name="btn_edit_workflow_ui" onclick="btn_edit_workflow_ui_onclick(this)" class="btn btn-danger"><i class="icon-bar-chart"></i> Sửa quy trình qua giao diện</button>
-                    <button type="button" name="btn_copy_assign" onclick="btn_copy_assign_onclick" class="btn btn-danger"><i class="icon-copy"></i> Sao chép phân công</button>
-                    
+                    <button type="button" name="btn_edit_workflow" onclick="btn_edit_workflow_onclick(this)" class="btn"><i class="icon-edit"></i> Sửa quy trình XML</button>
+                    <button type="button" name="btn_edit_workflow_ui" onclick="btn_edit_workflow_ui_onclick(this)" class="btn"><i class="icon-bar-chart"></i> Sửa quy trình qua giao diện</button>
+                    <button type="button" name="btn_copy_assign" onclick="btn_copy_assign_onclick()" class="btn"><i class="icon-copy"></i> Sao chép phân công</button>
+                    <button type="button" name="btn_push_assign" onclick="btn_push_assign_onclick()" class="btn"><i class="icon-copy"></i> Đẩy phân công sang nhiều thủ tục khác</button>
                     
                     <br/><br/>
                     <div class="step">
@@ -242,6 +224,7 @@ $xml_user_task       = $VIEW_DATA['xml_user_task'];
                                                                                         class="btn btn-primary" 
                                                                                         data-task="<?php echo $v_task_code ?>"
                                                                                         data-user="<?php echo $v_user_code ?>"
+                                                                                        data-group_code="<?php echo $v_exec_group ?>"
                                                                                         onclick="switch_user(this)" >
                                                                                         <i class="icon-refresh "></i><i class="icon-user"></i>Đổi cán bộ
                                                                                 </button>
@@ -296,7 +279,8 @@ $xml_user_task       = $VIEW_DATA['xml_user_task'];
         function switch_user(source) {
             v_url = $('#controller').val() + 'dsp_switch_user'
                     + QS + 'user=' + $(source).attr('data-user')
-                    + '&task=' + $(source).attr('data-task');
+                    + '&task=' + $(source).attr('data-task')
+                    + '&group_code=' + $(source).attr('data-group_code');
             window.showPopWin(v_url, 600, 400, function(msg) {
                 if (msg)
                     alert(msg);

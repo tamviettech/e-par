@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -31,7 +13,7 @@ $this->template->display('dsp_header.php');
 ?>
 <div class="container-fluid">
     <div id="overDiv" style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></div>
-    <form name="frmMain" id="frmMain" action="" method="POST" class="form-horizontal">
+    <form name="frmMain" id="frmMain" action="" method="POST" class="">
         <?php
             echo $this->hidden('controller',$this->get_controller_url());
             echo $this->hidden('hdn_item_id','0');
@@ -57,12 +39,12 @@ $this->template->display('dsp_header.php');
                 <?php echo __('add new');?>
             </button>
             <!--button xoa-->
-            <button type="button" name="trash" class="btn btn-danger" onclick="btn_delete_onclick();">
+            <button type="button" name="trash" class="btn" onclick="btn_delete_onclick();">
                 <i class="icon-trash"></i>
                 <?php echo __('delete');?>
             </button>
             <!--button in-->
-            <button type="button" name="trash" class="btn btn-info" onclick="btn_print_guide_for_citizen_onclick();">
+            <button type="button" name="trash" class="btn" onclick="btn_print_guide_for_citizen_onclick();">
                 <i class="icon-print"></i>
                 <?php echo __('guide print');?>
             </button>
@@ -125,12 +107,12 @@ $this->template->display('dsp_header.php');
                 html = '';
 
                 //Print
-                html += '<a href="javascript:void(0)" onclick="print_record_ho_for_citizen(\'' + v_item_id + '\')" class="quick_action">';
-                html += '<img src="' + SITE_ROOT + 'public/images/print_24x24.png" title="In phiếu biên nhận cho công dân"  /></a>';
+                html += '<a href="javascript:void(0)" onclick="print_record_ho_for_citizen(\'' + v_item_id + '\')" class="quick_action" title="In phiếu biên nhận cho công dân">';
+                html += '<i class="icon-print"></i></a>';
 
                 //Delete
-                html += '<a href="javascript:void(0)" onclick="quick_delete_item(\'' + v_item_id + '\')" class="quick_action">';
-                html += '<img src="' + SITE_ROOT + 'public/images/icon_delete.png" title="Xoá bỏ" class="quick-action"></a>';
+                html += '<a href="javascript:void(0)" onclick="quick_delete_item(\'' + v_item_id + '\')" class="quick_action" title="Xoá bỏ">';
+                html += '<i class="icon-trash"></i></a>';
 
                 $(this).html(html);
             });
@@ -147,7 +129,7 @@ $this->template->display('dsp_header.php');
     function btn_print_guide_for_citizen_onclick()
     {
         v_record_type_code = $("#sel_record_type").val();
-        v_record_type_name = $("#sel_record_type>option:selected").text();
+        v_record_type_name = $("#sel_record_type>option:selected").attr('title');
         
         if (v_record_type_code != '')
         {

@@ -72,7 +72,7 @@ if (typeof ol_cellpad == 'undefined')
     var ol_cellpad = 4;
 
 if (typeof ol_offsetx == 'undefined')
-    var ol_offsetx = 1;
+    var ol_offsetx = 15;
 
 if (typeof ol_offsety == 'undefined')
     var ol_offsety = 10;

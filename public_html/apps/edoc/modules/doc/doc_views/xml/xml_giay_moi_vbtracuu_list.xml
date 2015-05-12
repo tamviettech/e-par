@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- -	Giấy mời: Nơi gửi,Ngày đến, Trích yếu, Tình trạng xủ lý. -->
+<root>
+    <display_all>
+        <title>Danh sách loại danh mục</title>
+        <filter>
+            <line cols="1">
+                <item type="DropDownList" id="ddlListtype" name="Loại danh mục" allownull="no" validate="ddli" label="Loại danh mục " defaul_value="0"/>
+            </line>
+            <line cols="1">
+                <item type="Textbox" id="txt_filter" name="Lọc theo tên danh mục" label="Lọc theo tên loại danh mục" size="30"  />
+            </line>
+        </filter>
+        <list>
+            <!-- 3 item nay la bat buoc -->
+            <item type="primarykey" id="PK_DOC" />
+            <item type="checkbox" id="PK_DOC" size="3%"/>  
+
+            <!-- ********************************************************* -->
+            <item type="text" id="DOC_NOI_GUI" name="Nơi gửi" size="15%"/>
+            <item type="text" id="DOC_NGAY_DEN" name="Ngày đến" size="10%"/>
+            <item type="text" id="DOC_TRICH_YEU" name="Trích yếu" size="30%"/>
+            <item type="text" id="DOC_TINH_TRANG_XU_LY" name="Tình trạng xử lý" size="37%"/>
+            <!--<item type="action" id="PK_DOC" name="#" size="12%" action="delete, submit"/>-->
+        </list>
+    </display_all>
+    <display_single>
+        <line label="Thông tin cá nhân" cols="2">
+            <item type="TextboxName" id="txtName" name="Tên người đăng ký" allownull="no" validate="text" label="Tên tôi là:" defaul_value="" size="30" css="" Even="ConverUpperCase('txtName',this.value)" view="true"/>
+            <item type="DropDownList" id="ddlSex" name="Giới tính" allownull="no" validate="ddli" label="Giới tính " defaul_value="0" src_file="../Public/xml_gioi_tinh.xml" view="true"/>
+        </line>
+		<xmldata>
+		</xmldata>
+    </display_single>
+</root>

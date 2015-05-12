@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteBase /e-par-2.0/
+RewriteBase /mot-cua-yen-bai/
 
 <FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh|cmd|exe|bat)$">
     Order Allow,Deny
@@ -13,7 +13,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-l
 
 RewriteRule ^nop_ho_so(.*)$ index.php?url=r3/nop_ho_so_qua_mang_internet$1 [L]
-RewriteRule ^mavach(.*)$ index.php?url=r3/mavach [L]
+RewriteRule ^mavach(.*)$ index.php?url=r3/mavach$1 [L,QSA]
 
 ##
 RewriteCond %{REQUEST_FILENAME} !-f

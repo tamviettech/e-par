@@ -1,3 +1,8 @@
+var data_record_type = '';
+$(document).ready(function (){
+    data_record_type = $('#sel_record_type').clone();
+})
+
 function txt_record_type_code_onkeypress(evt)
 {
     if (IE()){
@@ -7,7 +12,7 @@ function txt_record_type_code_onkeypress(evt)
     }
 
     if(theKey == 13){
-        show_all_option_of_sel_record_type();
+        $('#sel_record_type').html(data_record_type.html());
         var v_record_type_code = trim($("#txt_record_type_code").val()).toUpperCase();
         if(v_record_type_code != '')
         {
@@ -36,22 +41,7 @@ function txt_record_type_code_onkeypress(evt)
     }
     return false;
 }
-//hien thi tat ca option cua #sel_record_type
-function show_all_option_of_sel_record_type()
-{
-    var all_record_type = JSON.parse($('#hdn_all_record_type_filter').val());
-    $("#sel_record_type option").remove();
-    var html_option = '';
-    var mapping = '';
-    var name = '';
-    for(var key in all_record_type)
-    {
-        mapping = all_record_type[key].C_MAPPING_CODE;
-        name = all_record_type[key].C_NAME;
-        html_option = '<option value="'+key+'" data-mapping="'+mapping+'" data-scope="3">'+key+' - '+name+'</option>';
-        $("#sel_record_type").append(html_option);
-    }
-}
+
 
 function sel_record_type_onchange(e)
 {
@@ -73,6 +63,17 @@ function get_notice(v_url)
             url: v_url,
             success: function(data) {
                 $("#notice-container").html(data);
+
+
+
+
+
+
+
+
+
+
+
             }
         });
 }
@@ -89,6 +90,11 @@ function get_supplement_notice()
             $("#notice-container").html('<ul></ul>');
             html = '<ul>';
             var v_count_total = 0;
+
+
+
+
+
             $.each(data, function(key, val) {
                 v_record_type_code = val.record_type_code;
                 v_record_type_name = val.record_type_name;
@@ -96,12 +102,29 @@ function get_supplement_notice()
 
                 v_count_total += parseInt(v_count);
 
+
+
+
                 html += '<li><a href="javascript:void(0)" onclick="set_record_type(\'' + v_record_type_code + '\')">'
+
+
+
                         + v_record_type_code + ' - ' + v_record_type_name
                         + ' có <span class="count">' + v_count + '</span> hồ sơ </a></li>';
             });
+
+
+
+
+
+
+
+
             html += '</ul>';
             $("#notice-container").html(html);
+
+
+
 
             q = "#supplement_count_" + status;
             parent.$(q).html('(' + v_count_total + ')');
@@ -144,6 +167,12 @@ function set_record_type(code)
         $("#frmMain").submit();
     }
 }
+
+
+
+
+
+
 
 function dsp_single_record_statistics(record_id, tab)
 {

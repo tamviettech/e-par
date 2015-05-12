@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<line label="Chú thích công việc" cols="1">
+		<item type="Textbox" id="txtChuThichCongViec" name="Chú thích" allownull="no" validate="text" label="Chú thích:" defaul_value="" size="90" css="" view="true"/>
+	</line>
+</form>

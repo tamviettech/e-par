@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td size="5%">STT</td>
+            <td size="25%">Tên TTHC</td>
+            <td size="10%">Số hồ sơ phải thu phí, lệ phí</td>
+            <td size="18%">Phí</td>
+            <td size="18%">Lệ phí</td>
+			<td size="18%">Tổng</td>
+        </tr>
+    </head>
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="5%" align="center" excel_width="21"/>
+        <item type="text" id="C_RECORD_TYPE_NAME" name="Lĩnh vực" size="25%" excel_width="83"/>
+		
+        <item type="text" id="C_TOTAL_RECORD" name="Số hồ sơ" size="10%" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_TOTAL_FEE" name="Phí" size="18%" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_TOTAL_COST" name="Lệ phí" size="18%" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_SUM" name="Tổng" size="18%" align="center" number_format="true" excel_width="18"/>
+    </list>
+	<total>
+        <item colspan="2" name="Tổng cộng" align="center"/>
+		
+        <item colspan="1" id="C_TOTAL_RECORD" number_format="true" align="center"/>
+        <item colspan="1" id="C_TOTAL_FEE" number_format="true" align="center"/>
+        <item colspan="1" id="C_TOTAL_COST" number_format="true" align="center"/>
+        <item colspan="1" id="C_SUM" number_format="true" align="center"/>
+    </total>
+</report>

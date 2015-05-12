@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -50,7 +32,7 @@ $this->template->display('dsp_header.php');
     <div id="solid-button">
         
         <!--button xet duyet-->
-       <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();">
+       <button type="button" name="trash" class="btn" onclick="btn_dsp_exec_onclick();">
            <i class="icon-ok-sign"></i>
            Hoàn thành thụ lý
        </button>
@@ -67,7 +49,7 @@ $this->template->display('dsp_header.php');
 
     <!-- Buttons -->
     <div class="button-area">
-        <button type="button" name="trash" class="btn btn-success" onclick="btn_dsp_exec_onclick();">
+        <button type="button" name="trash" class="btn" onclick="btn_dsp_exec_onclick();">
            <i class="icon-ok-sign"></i>
            Hoàn thành thụ lý
        </button>
@@ -136,12 +118,12 @@ $this->template->display('dsp_header.php');
             v_is_owner = $('.adminlist tr[data-item_id="' + v_item_id + '"]').attr('data-owner');
             if (v_is_owner == "1")
             {
-                html += '<a href="javascript:void(0)" onclick="btn_dsp_exec_onclick(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/btn_commit.png" title="Hoàn thành thụ lý" /></a>';
+                html += '<a href="javascript:void(0)" onclick="btn_dsp_exec_onclick(\'' + v_item_id + '\')" class="quick_action" title="Hoàn thành thụ lý">';
+                html += '<i class="icon-ok-sign"></i></a>';
             }
             //Thong tin tien do
-            html += '&nbsp;<a href="javascript:void(0)" onclick="dsp_record_statistics(\'' + v_item_id + '\')" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+            html += '&nbsp;<a href="javascript:void(0)" onclick="dsp_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+            html += '<i class="icon-bar-chart"></i></a>';
 
             $(this).html(html);
         });

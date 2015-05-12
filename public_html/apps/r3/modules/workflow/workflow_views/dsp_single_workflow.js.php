@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <script>
     function dsp_all_user_to_allot(tbl_id, group_code)
     {
@@ -83,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 //Also, ajax to update
                 $.post('<?php echo $this->get_controller_url(); ?>assign_user_on_task',
-                        {record_tye_code: '<?php echo $v_record_type_code; ?>'
+                        {record_type_code: '<?php echo $v_record_type_code; ?>'
                                     , user_code: v_user_code
                                     , task_code: v_task_code
                                     , group_code: $('#hdn_group_code').val()
@@ -140,7 +122,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 $.ajax({
                     url: '<?php echo $this->get_controller_url(); ?>remove_user_on_task',
                     type: "POST",
-                    data: {record_tye_code: '<?php echo $v_record_type_code; ?>'
+                    data: {record_type_code: '<?php echo $v_record_type_code; ?>'
                                 , user_code: v_user_code
                                 , task_code: tbl_id.replace('tbl_user_on_task_', '')
                                 , next_task: v_next_task
@@ -200,6 +182,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     function btn_copy_assign_onclick() {
         record_type_code = '<?php echo $v_record_type_code ?>';
         url = '<?php echo $this->get_controller_url() ?>' + 'dsp_copy_assign/' + record_type_code;
+        showPopWin(url, 800, 600, function() {
+            $('#frmMain').submit();
+        });
+    }
+    
+    function btn_push_assign_onclick()
+    {
+        record_type_code = '<?php echo $v_record_type_code ?>';
+        url = '<?php echo $this->get_controller_url() ?>' + 'dsp_push_assign/' + record_type_code;
         showPopWin(url, 800, 600, function() {
             $('#frmMain').submit();
         });

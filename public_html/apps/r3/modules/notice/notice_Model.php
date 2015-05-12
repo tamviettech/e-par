@@ -47,26 +47,46 @@ class notice_Model extends Model
         $v_real_role  = strtoupper($role);
         $v_village_id = Session::get('village_id');
         $params       = array();
-
+        //lay thong tin
+        $sql = "select C_LEVEL from t_cores_ou where PK_OU = $v_village_id";
+        $village_level = $this->db->GetOne($sql);
+        
         if ($v_real_role == _CONST_TIEP_NHAN_ROLE)
         {
-            $v_real_role = _CONST_BAN_GIAO_ROLE;
+//            $v_real_role = _CONST_BAN_GIAO_ROLE;
             $role = _CONST_BAN_GIAO_ROLE;
-        }
-                
+        }       
         switch ($v_real_role)
         {
             case _CONST_TIEP_NHAN_ROLE:
-                $role                 = '%' . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
                 //$v_task_code_handover = "ExtractValue(C_XML_PROCESSING, '//step[Contains(@code, \"" . _CONST_BAN_GIAO_ROLE . "\")][1]/@code')";
+                if($village_level == 3)//ho so cap xa
+                {
+                    //Dem so ho so tiep nhan = So ho so vua tiep nhan + So ho so bi tra ve
+                    $task_tiep_nhan = '%' . _CONST_XML_RTT_DELIM . _CONST_TIEP_NHAN_ROLE;
+                    $task_chuyen_lai_buoc_truoc = '%' . _CONST_XML_RTT_DELIM . _CONST_CHUYEN_LAI_BUOC_TRUOC_ROLE;
+                    $task_ban_giao = '%' . _CONST_XML_RTT_DELIM . _CONST_BAN_GIAO_ROLE;
+                    $task_thu_ly_xa = '%' . _CONST_XML_RTT_DELIM . _CONST_THU_LY_CAP_XA_ROLE;
 
-                $cond   = "(C_LAST_TASK_CODE like ?)
-                         And FK_VILLAGE_ID=?
-                         And (C_NEXT_USER_CODE=? Or C_NEXT_USER_CODE Like ?)";
-                $params = array($role, $v_village_id, $v_user_code, "%,$v_user_code,%");
+                    $cond = "(C_NEXT_USER_CODE = '$v_user_code' Or C_NEXT_CO_USER_CODE Like '%,$v_user_code,%')
+                            And ((C_LAST_TASK_CODE like '$task_tiep_nhan' Or C_LAST_TASK_CODE like '$task_chuyen_lai_buoc_truoc')
+                         -- Khong hien thi danh sach ho so lien thong xa huyen
+                         -- OR (C_NEXT_TASK_CODE like '$task_ban_giao' )
+                             )
+                            And FK_VILLAGE_ID = $v_village_id";
+                }
+                else//ho so cap huyen/so
+                {
+                    $role   = '%' . _CONST_XML_RTT_DELIM . strtoupper(_CONST_BAN_GIAO_ROLE);
+                    $cond   = " (
+                                        (R.C_NEXT_TASK_CODE like ? And (R.C_NEXT_USER_CODE=? Or C_NEXT_USER_CODE Like '%,$v_user_code,%' Or R.C_NEXT_USER_CODE Is Null Or C_NEXT_CO_USER_CODE like '%,$v_user_code,%'))
+                                        OR (C_NEXT_NO_CHAIN_TASK_CODE Like ? And C_NEXT_NO_CHAIN_USER_CODE Like '%,$v_user_code,%') 
+                                      )";
+                    $params = array($role, $v_user_code, $role);
+                }
                 
                 break;
-
+            
             case _CONST_PHAN_CONG_LAI_ROLE:
                 $role   = '%' . _CONST_XML_RTT_DELIM . strtoupper(_CONST_PHAN_CONG_ROLE);
                 $cond   = "R.C_LAST_TASK_CODE like ? And R.C_LAST_USER_CODE=?";
@@ -130,7 +150,6 @@ class notice_Model extends Model
                 $params = array($role, $v_user_code, $role);
         } //switch
         
-        
         $stmt = "Select RT.C_CODE as record_type_code
                             , RT.C_NAME as record_type_name
                             , a.COUNT_RECORD as count_record
@@ -141,7 +160,8 @@ class notice_Model extends Model
                             Group By FK_RECORD_TYPE ) a
                         On RT.PK_RECORD_TYPE=a.FK_RECORD_TYPE
                     Order By RT.C_CODE";
-        return $this->db->GetAll($stmt, $params);
+        $results =  $this->db->GetAll($stmt, $params);
+        return $results;
     }
 
     /**

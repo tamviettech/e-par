@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
@@ -78,51 +60,49 @@ $v_reason  = '';
             <?php endfor; ?>
         </table>
         <!-- End: Record list -->
-        <div class="panel_color_form">Lý do:</div>
-        <div id="divNote" class="Row">
-            <div class="left-Col">
+        <br>
+        <div class="well">
+            <div class="Row">
+                <div class="left-Col">Lý do <span class="required">(*)</span>:</div>
+                <div class="right-Col">
+                      <textarea style="width:100%;height:100px;" rows="2"
+                              name="txt_reason" id="txt_reason"  maxlength="400"
+                              ><?php echo $v_reason; ?></textarea>
+                </div>
             </div>
-            <div class="right-Col">
-                <textarea style="width:100%;height:100px;" rows="2"
-                          name="txt_reason" id="txt_reason" cols="20" maxlength="400"
-                          class="span12"><?php echo $v_reason; ?></textarea>
+            <div class="clear">&nbsp;</div>
+            <!-- Buttons -->
+            <div class="button-area">
+                <button type="button" name="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();" accesskey="2">
+                    <i class="icon-save"></i>
+                    <?php echo __('update'); ?>
+                </button>
+                <?php $v_back_action = ('pop_win' === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
+                <button type="button" name="cancel" class="btn" onclick="<?php echo $v_back_action; ?>" >
+                    <i class="icon-remove"></i>
+                    <?php echo __('close window'); ?>
+                </button> 
             </div>
-        </div>
-
-
-        <div class="clear">&nbsp;</div>
-        <!-- Buttons -->
-        <div class="button-area">
-            <hr/>
-            <button type="button" name="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();" accesskey="2">
-                <i class="icon-save"></i>
-                <?php echo __('update'); ?>
-            </button>
-            <?php $v_back_action = ('pop_win' === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-            <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
-                <i class="icon-remove"></i>
-                <?php echo __('close window'); ?>
-            </button> 
         </div>
     </div>
 </form>
 <script>
 
-            function btn_do_approval_onclick()
-            {
-                var f = document.frmMain;
-                var v_approval_value = $("#hdn_approval_value").val();
-                var v_reason = trim($("#txt_reason").val());
+                    function btn_do_approval_onclick()
+                    {
+                        var f = document.frmMain;
+                        var v_approval_value = $("#hdn_approval_value").val();
+                        var v_reason = trim($("#txt_reason").val());
 
-                if (v_reason == '')
-                {
-                    alert('Lý do không được bỏ trống!');
-                    f.txt_reason.focus();
-                    return false;
-                }
+                        if (v_reason == '')
+                        {
+                            alert('Lý do không được bỏ trống!');
+                            f.txt_reason.focus();
+                            return false;
+                        }
 
-                f.submit();
-            }
+                        f.submit();
+                    }
 </script>
 <?php
 $this->template->display('dsp_footer_pop_win.php');

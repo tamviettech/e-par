@@ -1,0 +1,21 @@
+﻿<root>
+	<item code="donator_name" source='database' column='C_DONATOR_NAME'>
+		<!--<thong_tin_toa_do>-->
+	</item>
+	
+	<item code="donator_address" source='database' column='C_ADDRESS'>
+		<!--<thong_tin_toa_do>-->
+	</item>
+	
+	<item code="amount_number" source='database' column="C_AMOUNT">
+		<!--<thong_tin_toa_do>-->
+	</item>
+	
+	<item code="amount_text" source='function' function = 'number2text' args_column = 'C_AMOUNT,C_ADDRESS'>
+		<!--<thong_tin_toa_do>-->
+	</item>
+	
+	<item code="date" source='date'>
+		<!--<thong_tin_toa_do>-->
+	</item>
+</root>

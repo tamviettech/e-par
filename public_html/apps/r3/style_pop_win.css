@@ -1,0 +1,73 @@
+.layout,body,.widget-container
+{
+    background: white;
+}
+.page-header
+{
+    font-size: 1.5em;
+    font-weight: bold;
+    font-family: Arial
+}
+.button-area
+{
+    padding:10px 0;
+}
+.div-slimscroll #frmMain,.div-slimscroll .content-widgets
+{
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+}
+.div-slimscroll .primary-head,.div-slimscroll .primary-head .page-header
+{
+    margin: 0;
+    padding-bottom: 0;
+}
+.div-slimscroll .primary-head .page-header
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.thead
+{
+    /*background: #919B9C;*/
+}
+/*dsp-exe-record.php*/
+.dsp-exe-record
+{
+    max-height: 115px;
+}
+/*dsp_allot_record.php*/
+.dsp-allot-record
+{
+    max-height: 100px;
+}
+/*dsp_allot_record*/
+.dsp_supplement_request
+{
+    max-height: 250px;
+}
+
+.dsp_approval_record
+{
+    max-height: 250px;
+}
+
+.dsp_exec_record_by_village
+{   
+    max-height: 115px;
+}
+.dsp_sign_record
+{
+    max-height: 250px
+}
+.btn{
+    padding: 3px 6px;
+}
+.modal_record_type_name{
+    font-weight: bold;
+    font-size:1.3em;
+    padding: 10px 0px;
+    color: grey;
+}

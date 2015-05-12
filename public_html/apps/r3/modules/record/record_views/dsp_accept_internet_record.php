@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
@@ -38,12 +20,15 @@ $v_xml_data = $arr_single_record['C_XML_DATA'];
 //Convert date
 $v_receive_date = jwDate::yyyymmdd_to_ddmmyyyy($v_receive_date, TRUE);
 
+//token
+$v_user_token = session::get('user_token');
+
 //Tinh toan ngay tra ket qua
 $v_total_time          = $arr_single_record['C_TOTAL_TIME'];
 $v_return_date         = $arr_single_record['C_RETURN_DATE'];
 $v_return_date_by_text = $this->return_date_by_text($v_return_date);
 ?>
-<form style="padding: 10px;"name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_accept_internet_record">
+<form style="padding: 10px;" name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_accept_internet_record">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
 
@@ -59,14 +44,14 @@ $v_return_date_by_text = $this->return_date_by_text($v_return_date);
     echo $this->hidden('hdn_total_time', $v_total_time);
     echo $this->hidden('hdn_xml_workflow_file_name', $v_xml_workflow_file_name);
     
-    echo $this->hidden('user_token', session::get('user_token'));
-    
+    echo $this->hidden('user_token', $v_user_token);
+
     echo $this->hidden('pop_win', $v_pop_win);
     ?>
     <div class="page-title">Phản hồi công dân</div>
-    <input type="radio" name="rad_accept" value="email" id="rad_accept_email" checked="checked"/><label for="rad_accept_email">Gửi Email</label>
-    <input type="radio" name="rad_accept" value="phone" id="rad_accept_phone" /><label for="rad_accept_phone">Gọi điện thoại</label>
-    <br/>
+    <label class="checkbox inline"><input type="radio" name="rad_accept" value="email" id="rad_accept_email" checked="checked"/>Gửi Email</label>
+    <label class="checkbox inline"><input type="radio" name="rad_accept" value="phone" id="rad_accept_phone" />Gọi điện thoại</label>
+    <div class="clear" style="height: 10px;"></div>
     <textarea style="width:100%;height:350px" name="txt_email_content"><?php
         printf(_CONST_INTERNET_RECORD_ACCEPT_EMAIL
                 , $v_citizen_name
@@ -79,13 +64,13 @@ $v_return_date_by_text = $this->return_date_by_text($v_return_date);
     <!-- Buttons -->
     <div class="button-area">
         <!--button update-->
-        <button type="button" name="trash" class="btn btn-primary" onclick="btn_do_approval_internet_record_onclick();">
+        <button type="button" name="trash" class="btn btn-primary" onclick="btn_do_approval_internet_record_onclick();" accesskey="2">
             <i class="icon-save"></i>
-            <?php echo __('update'); ?>
+            <?php echo __('update'); ?> (Alt+2)"
         </button>
-        <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
         <!--Button close window-->
-        <button type="button" name="trash" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
+        <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
+        <button type="button" name="trash" class="btn" onclick="<?php echo $v_back_action; ?>" >
             <i class="icon-remove"></i>
             <?php echo __('close window'); ?>
         </button> 

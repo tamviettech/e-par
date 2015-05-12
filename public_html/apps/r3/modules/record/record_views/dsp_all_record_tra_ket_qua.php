@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -51,7 +33,7 @@ $this->template->display('dsp_header.php');
 
     <div id="solid-button">
         <!--button tra ket qua-->
-        <button type="button" name="trash" class="btn btn-success" onclick="btn_return_onclick();" >
+        <button type="button" name="trash" class="btn" onclick="btn_return_onclick();" >
             Trả kết quả
         </button>    
     </div>
@@ -111,17 +93,17 @@ $this->template->display('dsp_header.php');
                v_is_rejected = $(this).attr('data-reject');
                if (v_is_rejected == "1")
                {
-            	   html += '<a href="javascript:void(0)" onclick="print_record_reject_for_citizen(\'' + v_item_id + '\')" class="quick_action">';
-                   html += '<img src="' + SITE_ROOT + 'public/images/print-reject.png" title="In phiếu từ chối"  /></a>';
+            	   html += '<a href="javascript:void(0)" onclick="print_record_reject_for_citizen(\'' + v_item_id + '\')" class="quick_action" title="In phiếu từ chối" >';
+                   html += '<i class="icon-print"></i></a>';
                }
 
                 //Tra ket qua
-                html += '<a href="javascript:void(0)" onclick="btn_return_onclick(\'' + v_item_id + '\')" class="quick_action">';
-                html += '<img src="' + SITE_ROOT + 'public/images/btn_certificate_16x16.png" title="Trả kết quả"  /></a>';
+                html += '<a href="javascript:void(0)" onclick="btn_return_onclick(\'' + v_item_id + '\')" class="quick_action" title="Trả kết quả">';
+                html += '<i class="icon-ok-sign"></i></a>';
 
                 //Thong tin tien do
-                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action">';
-                html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ"  /></a>';
+                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ" >';
+                html += '<i class="icon-bar-chart"></i></a>';
 
                 $(this).html(html);
             });

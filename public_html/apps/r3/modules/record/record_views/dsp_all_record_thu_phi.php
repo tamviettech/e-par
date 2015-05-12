@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -24,7 +6,7 @@ $v_record_type_code     = $VIEW_DATA['record_type_code'];
 $arr_all_record         = $VIEW_DATA['arr_all_record'];
 
 //header
-$this->template->title = 'Thu phi';
+$this->template->title = 'Thu phí';
 $this->template->display('dsp_header.php');
 
 ?>
@@ -48,30 +30,6 @@ $this->template->display('dsp_header.php');
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
     
-    <?php /*
-    <div id="div_filter">
-        (1)&nbsp;<label>Mã loại hồ sơ</label>
-        <input type="text" name="txt_record_type_code" id="txt_record_type_code"
-               value="<?php echo $v_record_type_code; ?>"
-               class="inputbox upper_text" size="10" maxlength="10"
-               onkeypress="txt_record_type_code_onkeypress(event);"
-               autofocus="autofocus"
-               accesskey="1"
-               />&nbsp;
-        <select name="sel_record_type" id="sel_record_type" style="width:75%; color:#000000;"
-                onchange="sel_record_type_onchange(this)">
-            <option value="">-- Chọn loại hồ sơ --</option>
-            <?php foreach ($arr_all_record_type as $code=>$info):?>
-			    <?php $str_selected = ($code == strval($v_record_type_code)) ? ' selected':'';?>
-                <option value="<?php echo $code;?>"<?php echo $str_selected?> data-scope="<?php echo $info['C_SCOPE'];?>"><?php echo $info['C_NAME'];?></option>
-                <?php if (($code == $v_record_type_code) && ($info['C_SCOPE'] == 1)) {$v_la_ho_so_lien_thong = TRUE;}?>
-			<?php endforeach;?>
-            <?php //echo $this->generate_select_option($arr_all_record_type, $v_record_type_code); ?>
-        </select>
-        <input type="text" name="noname" style="visibility: hidden"/>
-    </div>
-    */
-    ?>
     <div class="clear"></div>
 
     <div id="procedure">
@@ -127,12 +85,12 @@ $this->template->display('dsp_header.php');
                 html = '';
 
                 //Thu phi
-                html = '<a href="javascript:void(0)" onclick="dsp_charging_record(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/money-16x16.png" title="Thu phí" /></a>';
+                html = '<a href="javascript:void(0)" onclick="dsp_charging_record(\'' + v_item_id + '\')" class="quick_action" title="Thu phí">';
+                html += '<i class="icon-money"></i></a>';
 
                 //Thong tin tien do
-                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến đọ" /></a>';
+                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+                html += '<i class="icon-bar-chart"></i></a>';
 
                 $(this).html(html);
             });
@@ -145,7 +103,7 @@ $this->template->display('dsp_header.php');
         var url = '<?php echo $this->get_controller_url();?>dsp_charging/' + record_id
                 + '/&record_type_code=' + $("#record_type_code").val()
                 + '&pop_win=1';
-            showPopWin(url, 800, 400, null, true);
+            showPopWin(url, 800, 550, null, true);
     }
 
 </script>

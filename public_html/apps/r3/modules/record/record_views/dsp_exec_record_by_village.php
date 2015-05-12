@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE();
@@ -52,9 +34,8 @@ $dom_flow                  = simplexml_load_file($v_xml_workflow);
 //$r = $dom_flow->xpath("//process/@fee");
 $v_default_fee             = 0;
 $v_default_fee_description = 'Phí giải quyết hồ sơ';
-
 ?>
-<form name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_exec_record_by_village">
+<form name="frmMain" method="post" class="div-slimscroll" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_exec_record_by_village">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
 
@@ -73,7 +54,7 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
     echo $this->hidden('hdn_exec_value', _CONST_RECORD_APPROVAL_ACCEPT);
     ?>
     <div class="primary-head">
-        <h3 class="page-header">
+        <h3 class="page-header" style="margin-top: 0;padding-top: 0">
             <?php echo $v_step_name; ?>
         </h3>
     </div>
@@ -93,6 +74,13 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
 
     <!-- Record list -->
     <table class="adminlist table table-bordered table-striped">
+        <colgroup>
+                <col width="5%">
+                <col width="*">
+                <col width="20%">
+                <col width="20%">
+                <col width="20%">
+        </colgroup>
         <tr>
             <th>STT</th>
             <th>Mã hồ sơ</th>
@@ -100,25 +88,35 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
             <th>Ngày nhận</th>
             <th>Hẹn trả công dân</th>
         </tr>
-        <?php for ($i = 0; $i < count($arr_all_record); $i++): ?>
-            <tr>
-                <td class="right"><?php echo ($i + 1); ?></td>
-                <td><?php echo $arr_all_record[$i]['C_RECORD_NO']; ?></td>
-                <td><?php echo $arr_all_record[$i]['C_CITIZEN_NAME']; ?></td>
-                <td><?php echo jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE); ?></td>
-                <td><?php echo r3_View::return_date_by_text($arr_all_record[$i]['C_RETURN_DATE']); ?></td>
-            </tr>
-        <?php endfor; ?>
     </table>
+    <div id="box-slimscroll" class="dsp_exec_record_by_village">
+        <table class="adminlist table table-bordered table-striped thead">
+            <colgroup>
+                    <col width="5%">
+                    <col width="*">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="20%">
+            </colgroup>
+            <?php for ($i = 0; $i < count($arr_all_record); $i++): ?>
+                <tr>
+                    <td class="right"><?php echo ($i + 1); ?></td>
+                    <td><?php echo $arr_all_record[$i]['C_RECORD_NO']; ?></td>
+                    <td><?php echo $arr_all_record[$i]['C_CITIZEN_NAME']; ?></td>
+                    <td><?php echo jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE); ?></td>
+                    <td><?php echo r3_View::return_date_by_text($arr_all_record[$i]['C_RETURN_DATE']); ?></td>
+                </tr>
+            <?php endfor; ?>
+        </table>
+    </div>
     <div class="clear" style="height: 10px">&nbsp;</div>
     <!-- End: Record list -->
     
     <div class="widget-head blue">
         <h3>Thụ lý hồ sơ</h3>
     </div>
-    <div class="clear" style="height: 10px">&nbsp;</div>
-    
-    <div class="Row">
+    <div class="clear" style="height: 5px">&nbsp;</div>
+    <div class="Row" style="margin-bottom: 0">
         <div class="left-Col">
             Kết quả:
         </div>
@@ -131,14 +129,6 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
                    />
                     Đề nghị phê duyệt hồ sơ
                 </label>
-
-<!--                <label class="checkbox inline">
-                    <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
-                       value="<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
-                       onclick="rad_exec_onclick(this.value)"
-                       />
-                    Đề nghị bổ sung hồ sơ
-                </label>-->
 
                 <label class="checkbox inline">
                     <input type="radio" name="rad_exec" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
@@ -153,7 +143,7 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
     <div id="divFee" class="Row">
         <div class="Row">
             <div class="left-Col">
-                Phí:<span class="required">*</span>
+                Phí <span class="required">(*)</span>: 
             </div>
             <div class="right-Col">
                 <input type="text" name="txt_fee" id="txt_fee"
@@ -166,18 +156,38 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
         </div>
         <div class="Row">
             <div class="left-Col">
-                <span id="spanLyDo">Diễn giải:</span> <span class="required">*</span>
+                <span id="spanLyDo">Diễn giải <span class="required">(*)</span>:
             </div>
             <div class="right-Col">
-                <textarea style="width:100%;height:100px;" rows="2"
+                <textarea style="width:100%;height:78px;" rows="2"
                           name="txt_fee_description" id="txt_fee_description" cols="20" maxlength="400"
                           class="text ui-widget-content ui-corner-all"><?php echo $v_default_fee_description; ?></textarea>
             </div>
         </div>
+        <?php if(!empty($arr_all_next_user)):?>
+        <div class="Row">
+            <div class="left-Col">
+                Phê duyệt hồ sơ: 
+            </div>
+            <div class="right-Col">
+                <?php $i=0;?>
+                <?php foreach($arr_all_next_user as $arr_user):
+                        $user_login_name = $arr_user['C_LOGIN_NAME'];
+                        $user_name       = $arr_user['C_NAME'];
+                ?>
+                <label>
+                    <input type="radio" name="rad_next_user" value="<?php echo $user_login_name?>" <?php echo ($i==0)?'checked':'';?>>
+                    <?php echo $user_name?>
+                </label>
+                <?php $i++;?>
+                <?php endforeach;?>
+            </div>
+        </div>
+        <?php endif;?>
     </div>
     <div id="divNote" class="Row" style="display: none;">
         <div class="left-Col">
-            <span id="spanLyDo">Lý do:</span> <span class="required">*</span>
+            <span id="spanLyDo">Lý do <span class="required">(*)</span>:
         </div>
         <div class="right-Col">
             <textarea style="width:100%;height:100px;" rows="2"
@@ -185,21 +195,18 @@ $v_default_fee_description = 'Phí giải quyết hồ sơ';
                       class="text ui-widget-content ui-corner-all"></textarea>
         </div>
     </div>
-
-    <div class="clear">&nbsp;</div>
     <!-- Buttons -->
+     <hr/>
     <div class="button-area">
-        <hr/>
         <!--button xet duyet-->
-        <button type="button" name="trash" class="btn btn-success" onclick="btn_do_exec_onclick();">
+        <button type="button" name="trash" class="btn" onclick="btn_do_exec_onclick();">
             <i class="icon-ok-sign"></i>
             Cập nhật
         </button>
-        
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
         
         <!--Button close window-->
-        <button type="button" name="trash" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
+        <button type="button" name="trash" class="btn" onclick="<?php echo $v_back_action; ?>" >
             <i class="icon-remove"></i>
             <?php echo __('close window'); ?>
         </button> 

@@ -1,20 +1,5 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+    $dom_unit_info = simplexml_load_file('public/xml/xml_unit_info.xml');
 ?>
 <!DOCTYPE html>
 <html lang="vi" class="win chrome webkit">
@@ -102,7 +87,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             mouseScroll = "1";
 
-            siteTitle = 'Yên Bái';
+            siteTitle = 'Lạng Giang';
             siteTitleHome = '<?php echo isset($this->title)? $this->title : ''; ?>';
             showSpeed = 400;
             hideSpeed = 300;
@@ -142,7 +127,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
         </style>    
         <noscript>
-        <style>#tileContainer{display:block}</style>
+        &lt;style&gt;#tileContainer{display:block}&lt;/style&gt;
         </noscript>
         <?php endif; ?>
          <!--[if IE]>
@@ -194,7 +179,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div class="quochuy">
                     <img src="<?php echo SITE_ROOT . 'apps/guidance/' ?>images/quochuy.png" height="100px" width="100px" />    
                 </div>
-                <h1 class="title">ỦY BAN NHÂN DÂN TP YÊN BÁI</h1>
+                <h1 class="title"> <?php echo get_xml_value($dom_unit_info, '/unit/full_name'); ?></h1>
                 <div class="list-head">
                     <h3 class="title-type">
                         <?php echo isset($this->v_name_linh_vuc) ? '<span>Lĩnh vực: </span>' .$this->v_name_linh_vuc : ''; ?></h3>

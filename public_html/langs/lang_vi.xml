@@ -13,7 +13,6 @@
     <text name="active status" value="Hoạt động"/>
     <text name="inactive status" value="Không hoạt động"/>
     <text name="filter" value="Lọc"/>
-    <text name="save" value="Ghi lại"/>
     <text name="save and add new" value="Ghi và thêm mới"/>
     <text name="add new" value="Thêm mới"/>
     <text name="go back" value="Quay lại"/>
@@ -239,9 +238,4 @@
     <text name="url" value="Địa chỉ liên kết"/>
     <text name="name" value="Tên"/>
 
-    <!-- form struct -->
-    <text name="add object" value="Thêm Item"/>
-    <text name="remove object" value="Xoá Item"/>
-    <text name="add new line" value="Thêm dòng mới"/>
-    
 </lang>

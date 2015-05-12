@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
@@ -56,13 +38,13 @@ $this->template->display('dsp_header.php');
         </button>
         
         <!--in giay ban giao-->
-        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_tax();">
+        <button type="button" name="trash" class="btn" onclick="print_record_ho_for_tax();">
             <i class="icon-print"></i>
             In Giấy bàn giao
         </button>
         
         <!--chuyen ve buoc truoc thue-->
-        <button type="button" name="trash" class="btn btn-danger" onclick="btn_rollback_onclick();">
+        <button type="button" name="trash" class="btn" onclick="btn_rollback_onclick();">
             <i class="icon-step-backward"></i>
             Yêu cầu bổ sung hồ sơ
         </button>
@@ -86,13 +68,13 @@ $this->template->display('dsp_header.php');
         </button>
         
         <!--in giay ban giao-->
-        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_tax();">
+        <button type="button" name="trash" class="btn" onclick="print_record_ho_for_tax();">
             <i class="icon-print"></i>
             In Giấy bàn giao
         </button>
         
         <!--chuyen ve buoc truoc thue-->
-        <button type="button" name="trash" class="btn btn-danger" onclick="btn_rollback_onclick();">
+        <button type="button" name="trash" class="btn" onclick="btn_rollback_onclick();">
             <i class="icon-step-backward"></i>
             Yêu cầu bổ sung hồ sơ
         </button>
@@ -146,17 +128,17 @@ $this->template->display('dsp_header.php');
             html = '';
 
             //Thong tin tien do
-            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\');" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\');" class="quick_action" title="Xem tiến độ">';
+            html += '<i class="icon-bar-chart"></i></a>';
 
-            html += '<a href="javascript:void(0)" onclick="btn_send_to_tax_onclick(\'' + v_item_id + '\');" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'apps/r3/images/btn_transfer_16x16.png" title="Chuyển hồ sơ sang chi cục thuế" /></a>';
+            html += '<a href="javascript:void(0)" onclick="btn_send_to_tax_onclick(\'' + v_item_id + '\');" class="quick_action" title="Chuyển hồ sơ sang chi cục thuế" >';
+            html += '<i class="icon-mail-forward"></i></a>';
 
-            html += '<a href="javascript:void(0)" onclick="print_record_ho_for_tax(\'' + v_item_id + '\');" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'apps/r3/images/print_16x16.png" title="In Giấy bàn giao" /></a>';
+            html += '<a href="javascript:void(0)" onclick="print_record_ho_for_tax(\'' + v_item_id + '\');" class="quick_action" title="In Giấy bàn giao">';
+            html += '<i class="icon-print"></i></a>';
 
-            html += '<a href="javascript:void(0)" onclick="print_announce_tax(\'' + v_item_id + '\');" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'apps/r3/images/print_16x16.png" title="In Giấy hẹn nhận thông báo nộp thuế" /></a>';
+            html += '<a href="javascript:void(0)" onclick="print_announce_tax(\'' + v_item_id + '\');" class="quick_action" title="In Giấy hẹn nhận thông báo nộp thuế">';
+            html += '<i class="icon-print"></i></a>';
             $(this).html(html);
         });
 

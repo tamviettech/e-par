@@ -59,7 +59,7 @@ $v_page                 = $arr_filter['sel_goto_page'];
             
             <div class="form-actions">
                 <button type="button" name="addnew" class="btn btn-primary" onclick="btn_addnew_onclick();"><i class="icon-plus"></i><?php echo __('add new');?></button>
-    			<button type="button" name="trash" class="btn btn-danger" onclick="btn_delete_onclick();"><i class="icon-trash"></i><?php echo __('delete');?></button>
+    			<button type="button" name="trash" class="btn" onclick="btn_delete_onclick();"><i class="icon-trash"></i><?php echo __('delete');?></button>
     		</div>
         </div>
     </form>

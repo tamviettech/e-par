@@ -1,26 +1,9 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed'); ?>
 <?php
 
 class Model
 {
+
     /** @var \ADOConnection */
     public $db;
     public $goback_url;
@@ -38,7 +21,6 @@ class Model
 
             case 'MYSQL':
                 $this->db = ADONewConnection(CONST_MYSQL_DSN) or die('Cannot connect to MySQL Database Server!');
-                mysql_set_charset('utf8');
                 break;
 
             case 'MSSQL':
@@ -54,7 +36,8 @@ class Model
         //$this->db->cacheDir = './cache/';
         $this->db->cacheSecs = 3600 * 24 * 7 * 4; //4 tuan
         $this->db->SetFetchMode(ADODB_FETCH_BOTH);
-        $this->db->debug     = DEBUG_MODE;
+        $this->db->debug     = (DEBUG_MODE || $_REQUEST['debug']);
+        $this->db->SetCharSet('utf8');
         //$this->db->debug = 0;
     }
 
@@ -111,19 +94,27 @@ class Model
     //Quay ve man hinh truoc sau khi thuc hien thao tac voi CSDL
     public static function exec_done($url, $filter_array = array())
     {
-        $html = '<html><head></head><body>';
-        $html .= '<form name="frmMain" action="' . $url . '" method="POST">';
-
-        foreach ($filter_array as $key => $val)
+        if (empty($filter_array))
         {
-            $html .= View::hidden($key, $val);
+            //nếu không có $filter_array cách này tốt hơn
+            header('location: ' . $url);
         }
+        else
+        {
+            $html = '<html><head></head><body>';
+            $html .= '<form name="frmMain" action="' . $url . '" method="POST">';
 
-        $html .= '</form>';
-        $html .= '<script type="text/javascript">document.frmMain.submit();</script>';
-        $html .= '</body></html>';
+            foreach ($filter_array as $key => $val)
+            {
+                $html .= View::hidden($key, $val);
+            }
 
-        echo $html;
+            $html .= '</form>';
+            $html .= '<script type="text/javascript">document.frmMain.submit();</script>';
+            $html .= '</body></html>';
+
+            echo $html;
+        }
         exit;
     }
 
@@ -141,7 +132,6 @@ class Model
             if ($url)
             {
                 echo "window.parent.document.frmMain.action='$url';";
-                
             }
             echo 'window.parent.document.frmMain.submit();';
         }
@@ -150,7 +140,7 @@ class Model
         exit;
     }
 
-    public function popup_exec_fail($message = 'Cáº­p nháº­t dá»¯ liá»‡u tháº¥t báº¡i!')
+    public function popup_exec_fail($message = 'Cập nhật thất bại!')
     {
         echo '<script type="text/javascript">';
         echo 'alert("' . replace_bad_char($message) . '");';
@@ -354,7 +344,7 @@ class Model
         $str_sql = "Select $file_content_column as FILE_CONTENT from $table_name";
         $str_sql .= (strlen($where) > 0) ? "\n Where $where" : '';
 
-        if (($over_write === true) or (!file_exists($full_path_to_file)))
+        if (($over_write === true) or ( !file_exists($full_path_to_file)))
         {
             $this->db->setFetchMode(ADODB_FETCH_NUM);
             $file_content = $this->db->getOne($str_sql);
@@ -861,7 +851,7 @@ class Model
     }
 
 //=====public_service=========//
-        /**
+    /**
      * Dem so tin bai theo tung trang thai
      * @return array
      */
@@ -873,36 +863,35 @@ class Model
                      ";
         return $this->db->getrow($sql);
     }
-    
-    
-    public function build_internal_order($table_name, $pk_column_name, $parent_column_name, $order_column_name,  $internal_order_column_name,$pk_value=-1,$other_clause='')
+
+    public function build_internal_order($table_name, $pk_column_name, $parent_column_name, $order_column_name, $internal_order_column_name, $pk_value = -1, $other_clause = '')
     {
         $this->db->SetFetchMode(ADODB_FETCH_BOTH);
 
         //Stack
         $arr_stack = array();
 
-        $id = $pk_value;
+        $id  = $pk_value;
         //Kiem tra ID co ton tai khong
         $sql = "Select Count(*) From $table_name Where $pk_column_name=$id";
         if ($this->db->getOne($sql) < 1)
         {
             $sql = "Select $pk_column_name From $table_name Where ($parent_column_name Is Null Or $parent_column_name < 1) $other_clause";
-            $id = $this->db->getOne($sql);
+            $id  = $this->db->getOne($sql);
         }
 
-        /*/Cập nhật Internal Order của node
-        $v_order = $this->db->getOne("Select $order_column_name From $table_name Where $pk_column_name=$id");
-        $v_order = str_repeat('0', 3 - strlen($v_order)) . $v_order;
+        /* /Cập nhật Internal Order của node
+          $v_order = $this->db->getOne("Select $order_column_name From $table_name Where $pk_column_name=$id");
+          $v_order = str_repeat('0', 3 - strlen($v_order)) . $v_order;
 
-        $v_parent_internal_order = $this->db->getOne("Select $internal_order_column_name From $table_name Where $pk_column_name=(Select $parent_column_name From $table_name Where $pk_column_name=$id)");
-                $v_new_internal_order = $v_parent_internal_order . $v_order;
-$sql = "Update $table_name Set $internal_order_column_name='$v_new_internal_order' Where $pk_column_name=$id";
-$this->db->Execute($sql);
-*/
+          $v_parent_internal_order = $this->db->getOne("Select $internal_order_column_name From $table_name Where $pk_column_name=(Select $parent_column_name From $table_name Where $pk_column_name=$id)");
+          $v_new_internal_order = $v_parent_internal_order . $v_order;
+          $sql = "Update $table_name Set $internal_order_column_name='$v_new_internal_order' Where $pk_column_name=$id";
+          $this->db->Execute($sql);
+         */
         // Cập nhật Internal Order tất cả các node ngang hàng
         $v_parent_id = $this->db->getOne("Select $parent_column_name From $table_name Where $pk_column_name=$id $other_clause");
-        if($v_parent_id == '' || $v_parent_id == Null)
+        if ($v_parent_id == '' || $v_parent_id == Null)
         {
             $v_condition_parent = "$parent_column_name IS NULL";
         }
@@ -924,27 +913,27 @@ $this->db->Execute($sql);
         $this->db->Execute($sql);
 
         //Cập nhật Internal Order của tất cả các node con
-        $sql = "Select
+        $sql       = "Select
                 $pk_column_name
                 ,$internal_order_column_name
                 ,$order_column_name
                 From $table_name Where $v_condition_parent $other_clause
                 Order by $order_column_name";
         $arr_stack = $this->db->getAll($sql);
-        $i=1;
+        $i         = 1;
         while (sizeof($arr_stack) > 0 && $i < 10000)
         {
             //Pop stack
             $arr_single_row = array_pop($arr_stack);
 
-            $v_ou_id             = $arr_single_row[$pk_column_name];
-            $v_internal_order    = $arr_single_row[$internal_order_column_name];
-            $v_order             = $arr_single_row[$order_column_name];
+            $v_ou_id          = $arr_single_row[$pk_column_name];
+            $v_internal_order = $arr_single_row[$internal_order_column_name];
+            $v_order          = $arr_single_row[$order_column_name];
 
             //Update all children internal order
             if (DATABASE_TYPE == 'MSSQL')
             {
-            $sql = "Update $table_name
+                $sql = "Update $table_name
             Set $internal_order_column_name = '$v_internal_order' + Case
                                             When $order_column_name < 10 Then '00' + Convert(varchar(1),$order_column_name)
                                             When $order_column_name >= 10 And $order_column_name < 100 Then '0' + Convert(varchar(2),$order_column_name)
@@ -967,7 +956,7 @@ $this->db->Execute($sql);
             $this->db->Execute($sql);
 
             //Push stack
-            $stmt = "Select
+            $stmt           = "Select
                 $pk_column_name
                 ,$internal_order_column_name
                 ,$order_column_name
@@ -978,22 +967,23 @@ $this->db->Execute($sql);
             {
                 array_push($arr_stack, $ou);
             }
-                $i++;
+            $i++;
         }//end while
     }
+
     /**
      * funcction order      : Xap sep thu tu order
      * @param string $table             : Table name
      * @param string $pk_col            : Column name "column primary key"
      * @param string $order_col         : Column order name
      * @param string $orther_clause     : Condition order 
- */
+     */
     public function build_order($table, $pk_col, $order_col, $orther_clause = '')
     {
 
         $order = "$order_col";
 
-        if(DATABASE_TYPE == 'MSSQL')
+        if (DATABASE_TYPE == 'MSSQL')
         {
             $sql = "  Update $table
                   Set $order_col = B.rn
@@ -1007,22 +997,21 @@ $this->db->Execute($sql);
                     ";
             $this->db->Execute($sql);
         }
-        else if(DATABASE_TYPE == 'MYSQL')
+        else if (DATABASE_TYPE == 'MYSQL')
         {
-            $sql = "SELECT $pk_col FROM $table WHERE (1>0) $orther_clause Order By $order";
+            $sql            = "SELECT $pk_col FROM $table WHERE (1>0) $orther_clause Order By $order";
             $arr_all_record = $this->db->getCol($sql);
-            for($i=0;$i<count($arr_all_record);$i++)
+            for ($i = 0; $i < count($arr_all_record); $i++)
             {
                 $v_id    = $arr_all_record[$i];
                 $v_value = $i + 1;
-                $sql = "UPDATE $table SET $order_col = $v_value
+                $sql     = "UPDATE $table SET $order_col = $v_value
                         WHERE (1>0) AND $pk_col = $v_id $orther_clause";
                 $this->db->Execute($sql);
             }
         }
-
     }
-    
+
     function prepare_tinyMCE($val)
     {
         $val = strval($val);
@@ -1079,7 +1068,7 @@ $this->db->Execute($sql);
             , 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop'
             , 'onsubmit', 'onunload'
         );
-        $ra = array_merge($ra1, $ra2);
+        $ra  = array_merge($ra1, $ra2);
 
         $found = true; // keep replacing as long as the previous round replaced something
         while ($found == true)
@@ -1109,9 +1098,10 @@ $this->db->Execute($sql);
                 }
             }
         }
-    $val = str_replace('\'', '&#39', $val);
-    return $val;
+        $val = str_replace('\'', '&#39', $val);
+        return $val;
     }
+
     /**
      * lay default module
      * @param type string
@@ -1119,7 +1109,8 @@ $this->db->Execute($sql);
      */
     public function get_default_module($app)
     {
-        $stmt = "SELECT C_DEFAULT_MODULE FROM t_cores_application WHERE C_CODE = ?";
-        return strtolower($this->db->getOne($stmt,array($app)));
+        $stmt = 'SELECT C_DEFAULT_MODULE FROM t_cores_application WHERE C_CODE = ?';
+        return strtolower($this->db->getOne($stmt, array($app)));
     }
+
 }

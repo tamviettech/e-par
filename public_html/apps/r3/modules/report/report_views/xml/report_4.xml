@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td rowspan="2">STT</td>
+            <td rowspan="2">Tên TTHC</td>
+            <td colspan="2">Số Lượng</td>
+        </tr>
+        <tr>
+            <td>Đã trả</td>
+            <td>Từ chối</td>
+        </tr>
+    </head>
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="50" align="center" excel_width="21"/>
+        <item type="text" id="C_NAME" name="Loại hồ sơ" size="600" excel_width="83"/>
+        <item type="text" id="C_COUNT_RETURN" name="Tên TTHC" size="100" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_REJECT" name="Tên TTHC" size="100" align="center" number_format="true" excel_width="18"/>
+    </list>
+</report>

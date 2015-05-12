@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<line label="" cols="1"> 
+		<item type="Checkbox" value="2" id="XOA_TIN_BAI_DO_NGUOI_KHAC_DANG" name="" allownull="" validate="" title="Xoá tin bài do người khác đăng" label="" view="true"/>
+    </line>
+</form>

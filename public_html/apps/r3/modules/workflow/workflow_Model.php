@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -338,7 +320,7 @@ class workflow_Model extends Model
     public function assign_user_on_task()
     {
         $v_root_ou             = Session::get('root_ou_id');
-        $v_record_type_code    = isset($_POST['record_tye_code']) ? $this->replace_bad_char($_POST['record_tye_code']) : '';
+        $v_record_type_code    = isset($_POST['record_type_code']) ? $this->replace_bad_char($_POST['record_type_code']) : '';
         $v_user_code           = isset($_POST['user_code']) ? $this->replace_bad_char($_POST['user_code']) : '';
         $v_task_code           = isset($_POST['task_code']) ? $this->replace_bad_char($_POST['task_code']) : '';
         $v_group_code          = isset($_POST['group_code']) ? $this->replace_bad_char($_POST['group_code']) : '';
@@ -363,7 +345,6 @@ class workflow_Model extends Model
         //1. Lay danh sach task phu
         preg_match_all('/\[([A-Z0-9::_]+)\]/', $v_next_task_code, $arr_all_no_chain_task);
         $arr_all_no_chain_task = $arr_all_no_chain_task[0];
-
 
         //2. Lay task chinh
         $v_next_task_code = trim(preg_replace('/\[([A-Z0-9::_]+)\]/', '', $v_next_task_code));
@@ -491,7 +472,7 @@ class workflow_Model extends Model
 
     public function remove_user_on_task()
     {
-        $v_record_type_code = isset($_POST['record_tye_code']) ? $this->replace_bad_char($_POST['record_tye_code']) : '';
+        $v_record_type_code = isset($_POST['record_type_code']) ? $this->replace_bad_char($_POST['record_type_code']) : '';
         $v_user_code        = isset($_POST['user_code']) ? $this->replace_bad_char($_POST['user_code']) : '';
         $v_task_code        = isset($_POST['task_code']) ? $this->replace_bad_char($_POST['task_code']) : '';
         $v_next_task_code   = isset($_POST['next_task']) ? $this->replace_bad_char($_POST['next_task']) : '';
@@ -603,14 +584,18 @@ class workflow_Model extends Model
             From t_r3_record_type 
             Where PK_RECORD_TYPE=? Or C_CODE=?", array($id, $code));
     }
-
+    
     function qry_all_record_type($where = '1=1', $limit = 0, $offset = 0)
     {
         $count     = $this->db->GetOne("Select Count(*) From t_r3_record_type Where $where");
         $sql_limit = $limit ? "Limit $limit Offset $offset" : '';
-        return $this->db->GetAll("Select *, $count As TOTAL_RECORD, @rownum:=@rownum + 1 AS RN 
+        $sql = "Select "
+                . " *"
+                . ", $count As TOTAL_RECORD "
+                . ", @rownum:=@rownum + 1 AS RN 
             From t_r3_record_type 
-            Where $where $sql_limit");
+            Where $where $sql_limit";
+        return $this->db->GetAll($sql);
     }
 
     /**
@@ -619,75 +604,102 @@ class workflow_Model extends Model
      * @param int $src
      * @return string Thông báo lỗi hoặc null nếu thành công
      */
-    function copy_assign($dest, $src)
+    function copy_assign($dest_id, $src_id)
     {
-        $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
-        $arr_single_dest = $this->qry_single_record_type($dest);
-        $arr_single_src  = $this->qry_single_record_type($src);
-        $v_no_match      = "Sao chép thất bại! TASK của quy trình nguồn phải là tập con của quy trình đích";
-
-        if (!$arr_single_dest)
-            return "Không tìm thấy thủ tục có mã: $dest";
-        if (!$arr_single_src)
-            return "Không tìm thấy thủ tục có mã: $src";
-        if (!$dom_workflow_src  = $this->get_dom_workflow($arr_single_src['C_CODE']))
-            return "C_XML_WORKFLOW của {$arr_single_src['C_CODE']} Bị hỏng hoặc không có";
-        if (!$dom_workflow_dest = $this->get_dom_workflow($arr_single_dest['C_CODE']))
-            return "C_XML_WORKFLOW của {$arr_single_dest['C_CODE']} Bị hỏng hoặc không có";
-
-        $v_workflow_code_src  = $arr_single_src['C_CODE'];
-        $v_workflow_code_dest = $arr_single_dest['C_CODE'];
-
-        //xoá hết phân công cũ
-        $this->db->Execute("Delete From t_r3_user_task Where C_RECORD_TYPE_CODE=?", array($v_workflow_code_dest));
-
-        $select_fields  = 'PK_USER_TASK, C_RECORD_TYPE_CODE, C_TASK_CODE
-                , C_USER_LOGIN_NAME, C_GROUP_CODE, C_NEXT_TASK_CODE, C_STEP_TIME
-                , C_TASK_TIME, C_STEP_FIRST_TASK, C_PREV_STEP_LAST_TASK, C_NO_CHAIN
-                , C_NEXT_NO_CHAIN_TASK_CODE, FK_PARENT';
-        $insert_fields  = 'C_RECORD_TYPE_CODE, C_TASK_CODE
-                , C_USER_LOGIN_NAME, C_GROUP_CODE, C_NEXT_TASK_CODE, C_STEP_TIME
-                , C_TASK_TIME, C_STEP_FIRST_TASK, C_PREV_STEP_LAST_TASK, C_NO_CHAIN
-                , C_NEXT_NO_CHAIN_TASK_CODE, FK_PARENT';
-        $values         = '?' . str_repeat(',?', 11);
-        $arr_all_assign = $this->db->GetAll("Select $select_fields    
-            From t_r3_user_task 
-            Where C_RECORD_TYPE_CODE=? And FK_PARENT Is Null", array($v_workflow_code_src));
-        if (!$arr_all_assign)
+        $ret = NULL;
+        $dest_id = replace_bad_char($dest_id);
+        $src_id = replace_bad_char($src_id);
+        
+        $v_dest_record_type_code = $this->db->GetOne('Select C_CODE From t_r3_record_type Where PK_RECORD_TYPE=?', array($dest_id));
+        $v_src_record_type_code = $this->db->GetOne('Select C_CODE From t_r3_record_type Where PK_RECORD_TYPE=?', array($src_id));
+            
+        //1. Tao day du bang phan cong cho thu tuc dest
+        $v_default_user_code = 'admin';
+        $this->_create_empty_assign($v_dest_record_type_code, $v_default_user_code);
+                
+        //2. Duyet bang phan cong cua quy trinh dich, tim user tuong ung trong quy trinh nguon
+        $stmt = 'SELECT 
+                    C_TASK_CODE
+                    , C_USER_LOGIN_NAME 
+                    , C_GROUP_CODE
+                FROM t_r3_user_task 
+                WHERE C_RECORD_TYPE_CODE = ?';
+        $params = array($v_dest_record_type_code);
+        $arr_all_dest_task_code = $this->db->GetAll($stmt, $params);
+        
+        for ($i=0, $n=count($arr_all_dest_task_code); $i<$n; $i++)
         {
-            return "Thủ tục nguồn chưa được phân công!";
-        }
-        //Duyệt và copy
-        foreach ($arr_all_assign as $assign)
-        {
-            $id = $assign['PK_USER_TASK'];
-            unset($assign['PK_USER_TASK']);
-            //Sửa lại taskcode cho đúng thủ tục mới
-
-            foreach ($assign as $k => $v)
+            $v_dest_group_code = $arr_all_dest_task_code[$i]['C_GROUP_CODE'];
+            $v_dest_task_code = $arr_all_dest_task_code[$i]['C_TASK_CODE'];
+            $v_dest_role = get_role($v_dest_task_code);            
+            
+            //Insert thong tin TASK DICH vao bang tam
+            $sql = "CREATE TEMPORARY TABLE tmp_user_task ENGINE=MEMORY "
+                        . " SELECT * FROM t_r3_user_task "
+                        . " WHERE C_RECORD_TYPE_CODE = '{$v_dest_record_type_code}' "
+                        . "     And C_TASK_CODE LIKE '%{$v_dest_task_code}'"
+                        . "     And C_GROUP_CODE = '{$v_dest_group_code}'"
+                        . "     And C_USER_LOGIN_NAME = '{$v_default_user_code}'";
+            $this->db->Execute($sql);
+                
+            //Lay danh sach user da duoc phan cong vao role o quy trinh nguon
+            $sql = "Select C_USER_LOGIN_NAME "
+                    . " From t_r3_user_task "
+                    . " Where C_RECORD_TYPE_CODE = '$v_src_record_type_code' "
+                    . "     And C_TASK_CODE Like '%{$v_dest_role}'"
+                    . "     And C_GROUP_CODE='{$v_dest_group_code}'";
+            $arr_all_src_user = $this->db->getAll($sql);
+            
+            for ($j=0; $j < count($arr_all_src_user); $j++)
             {
-                if (!$assign[$k])
-                    continue;
-                $assign[$k] = str_replace($v_workflow_code_src, $v_workflow_code_dest, $v);
-            }
-            $this->db->Execute("Insert Into t_r3_user_task($insert_fields) Values($values)", $assign);
-            $v_user_task_id = $this->db->Insert_ID('t_r3_user_task');
-            //copy cả task liên quan
-            $arr_related    = $this->db->GetAll("Select $select_fields From t_r3_user_task Where FK_PARENT={$id}");
-            foreach ($arr_related as $related)
-            {
-                $related['FK_PARENT'] = $v_user_task_id;
-                unset($related['PK_USER_TASK']);
-                foreach ($related as $k => $v)
-                {
-                    if (!$assign[$k])
-                        continue;
-                    $related[$k] = str_replace($v_workflow_code_src, $v_workflow_code_dest, $v);
-                }
-                $this->db->Execute("Insert Into t_r3_user_task($insert_fields) Values($values)", $related);
-            }
+                $v_src_user_code = $arr_all_src_user[$j]['C_USER_LOGIN_NAME'];
+                $sql = "UPDATE tmp_user_task SET "
+                        . " PK_USER_TASK=(SELECT MAX(PK_USER_TASK) + 1 FROM t_r3_user_task)"
+                        . ", C_USER_LOGIN_NAME = '$v_src_user_code'";
+                $this->db->Execute($sql);
+                
+                $sql = "INSERT INTO `t_r3_user_task` (
+                            `PK_USER_TASK`,
+                            `C_RECORD_TYPE_CODE`,
+                            `C_TASK_CODE`,
+                            `C_USER_LOGIN_NAME`,
+                            `C_GROUP_CODE`,
+                            `C_NEXT_TASK_CODE`,
+                            `C_STEP_TIME`,
+                            `C_TASK_TIME`,
+                            `C_STEP_FIRST_TASK`,
+                            `C_PREV_STEP_LAST_TASK`,
+                            `C_NO_CHAIN`,
+                            `C_NEXT_NO_CHAIN_TASK_CODE`,
+                            `FK_PARENT`)
+                        Select 
+                            PK_USER_TASK ,
+                            C_RECORD_TYPE_CODE ,
+                            C_TASK_CODE ,
+                            C_USER_LOGIN_NAME ,
+                            C_GROUP_CODE ,
+                            C_NEXT_TASK_CODE ,
+                            C_STEP_TIME ,
+                            C_TASK_TIME ,
+                            C_STEP_FIRST_TASK ,
+                            C_PREV_STEP_LAST_TASK ,
+                            C_NO_CHAIN ,
+                            C_NEXT_NO_CHAIN_TASK_CODE ,
+                            FK_PARENT 
+                        From tmp_user_task";
+                $this->db->Execute($sql);
+            }//end for j
+            $sql = "DROP TABLE tmp_user_task";
+            $this->db->Execute($sql);
         }
-        return null;
+        
+        //Xoa thong tin phan cong mac dinh
+        $sql = "Delete From t_r3_user_task "
+                    . " Where C_RECORD_TYPE_CODE = '{$v_dest_record_type_code}' "
+                    . "     And C_USER_LOGIN_NAME = '{$v_default_user_code}'";
+        $this->db->Execute($sql);
+        
+        return $ret;
     }
 
     /**
@@ -701,6 +713,100 @@ class workflow_Model extends Model
         $file_path        = SERVER_ROOT . "apps/r3/xml-config/{$record_type_code}/{$record_type_code}_workflow.xml";
         $xml_workflow     = file_exists($file_path) ? file_get_contents($file_path) : '<data/>';
         return simplexml_load_string($xml_workflow);
+    }
+    
+    
+    /**
+     * Phan cong day du Can Bo vao 1 quy trinh, voi NSD duoc phan cong la RONG (hoac 'admin')
+     */
+    public function _create_empty_assign($v_record_type_code, $v_default_user_code = 'admin')
+    {
+        $dom_workflow = $this->get_dom_workflow($v_record_type_code);
+        
+        //Xoa het phan cong cu neu co
+        $stmt = 'Delete From t_r3_user_task Where C_RECORD_TYPE_CODE=?';
+        $params = array ($v_record_type_code);
+        $this->db->Execute($stmt, $params);
+        
+        //Duyet tung step
+        $steps =  $dom_workflow->xpath('//step');
+        $v_user_code = $v_default_user_code;
+        foreach ($steps as $step)
+        {
+            $v_exec_group = $step->attributes()->group;
+            $v_step_name  = $step->attributes()->name;
+            $v_step_time  = $step->attributes()->time;
+            $tasks        = $step->task;
+            $v_rows       = count($tasks);
+            $v_step_type  = $step->attributes()->no_chain ? 'no_chain_step' : 'step';
+            
+            foreach ($tasks as $task)
+            {
+                $v_task_code = (string) $task->attributes()->code;
+                $v_task_name = $task->attributes()->name;
+                $v_task_time = $task->attributes()->time;
+                $v_next_task = $task->attributes()->next;
+                $v_biz_done  = $task->attributes()->biz_done;
+                $v_no_chain = get_xml_value($dom_workflow, "//task[@code='$v_task_code']/../@no_chain");
+
+                //Task dau tien cua Step
+                $v_first_task_of_step = $dom_workflow->xpath("//step[task[@code='$v_task_code']]/task[1]/@code");
+                $v_first_task_of_step = $v_first_task_of_step[0];
+
+                //Task cuoi cung cua step truoc
+                $v_prev_step_last_task = $dom_workflow->xpath("//step[task[@code='$v_task_code']]/preceding-sibling::step[1]/task[last()]/@code");
+                if (sizeof($v_prev_step_last_task) > 0)
+                {
+                    $v_prev_step_last_task = $v_prev_step_last_task[0];
+                }
+                else
+                {
+                    $v_prev_step_last_task = $dom_workflow->xpath("//{$v_step_type}[task[@code='$v_task_code']]/task[position()=1]/@code");
+                    $v_prev_step_last_task = $v_prev_step_last_task[0];
+                }
+
+                $r_prev_task      = $dom_workflow->xpath("//task[@next='$v_task_code']/@code");
+                $v_prev_task_code = isset($r_prev_task[0]) ? $r_prev_task[0] : '';
+                $v_prev_task_code_html = str_replace(_CONST_XML_RTT_DELIM, _CONST_HTML_RTT_DELIM, $v_prev_task_code);
+
+                $v_single_user = isset($task->attributes()->single_user) ? $task->attributes()->single_user : 'false';
+
+                $v_task_code_html = str_replace(_CONST_XML_RTT_DELIM, _CONST_HTML_RTT_DELIM, $v_task_code);
+                $v_next_task_html = str_replace(_CONST_XML_RTT_DELIM, _CONST_HTML_RTT_DELIM, $v_next_task);
+                if (strpos($v_task_code_html, '[') !== FALSE)
+                {
+                    $v_task_code_html = substr($v_task_code_html, 0, strpos($v_task_code_html, '['));
+                }
+                
+                //Prepaire POST
+                $_POST['record_type_code']    = $v_record_type_code;
+                $_POST['user_code']           = $v_user_code;
+                $_POST['task_code']           = $v_task_code_html;
+                $_POST['group_code']          = $v_exec_group;
+                $_POST['next_task_code']      = $v_next_task_html;
+                $_POST['prev_task_code']      = $v_prev_task_code_html;
+                $_POST['step_time']           = $v_step_type;
+                $_POST['task_time']           = $v_task_time;
+                $_POST['first_task']          = $v_first_task_of_step;
+                $_POST['prev_step_last_task'] = $v_prev_step_last_task;
+                
+                $this->assign_user_on_task();
+            }//foreach $task
+        } //foreach step
+    }//end func
+    
+    public function do_push_assign()
+    {
+        $v_src_record_type_id       = get_post_var('hdn_src_record_type_id');
+        $v_dest_record_type_id_list = get_post_var('hdn_dest_record_type_id_list');
+        
+        $arr_dest_record_type_id = explode(',', $v_dest_record_type_id_list);
+        foreach ($arr_dest_record_type_id as $v_dest_record_type_id)
+        {
+            $this->copy_assign($v_dest_record_type_id, $v_src_record_type_id);
+        }
+        
+        $this->popup_exec_done();
     }
 
 }

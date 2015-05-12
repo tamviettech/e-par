@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -59,7 +41,7 @@ $this->template->display('dsp_header_pop_win.php');
             Bàn giao bổ sung
         </button>            
         <!--button in-->
-        <button type="button" name="trash" class="btn btn-info" onclick="print_record_ho_for_bu();">
+        <button type="button" name="trash" class="btn" onclick="print_record_ho_for_bu();">
             <i class="icon-print"></i>
             In biên bàn bàn giao bổ sung
         </button>
@@ -136,24 +118,12 @@ $this->template->display('dsp_header_pop_win.php');
             html = '';
 
             //In phieu biên nhận hồ sơ bổ sung cho cong dan
-            html += '<a href="javascript:void(0)" onclick="print_record_ho_for_citizen(\'' + v_item_id + '\')" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/print_24x24.png" title="In phiếu biên nhận hồ sơ bổ sung" /></a>';
-
-            /*
-            //Ban giao
-            html = '<a href="javascript:void(0)" onclick="btn_handover_onclick(\'' + v_item_id + '\')" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/announce_16x16.png" title="Bàn giao cho phòng chuyên môn" /></a>';
-            */
-
-            /*
-            //In phieu biên nhận hồ sơ bổ sung
-            html += '<a href="javascript:void(0)" onclick="dsp_print_ho_supplement_record(\'' + v_item_id + '\')" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/print_24x24.png" title="In biên bản bàn giao hồ sơ bổ sung cho phòng chuyên môn" /></a>';
-            */
+            html += '<a href="javascript:void(0)" onclick="print_record_ho_for_citizen(\'' + v_item_id + '\')" class="quick_action" title="In phiếu biên nhận hồ sơ bổ sung">';
+            html += '<i class="icon-print"></i></a>';
 
             //Thong tin tien do
-            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+            html += '<i class="icon-bar-chart"></i></a>';
 
             $(this).html(html);
         });

@@ -2,14 +2,14 @@
 <report layout="L"><!--P: Doc, L: Ngang-->
     <list>
         <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
-        <item type="text" id="RN" name="TT" size="45" align="right"/>
-        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="120"/>
-        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="150"/>
-        <item type="text" id="C_RECEIVE_DATE" name="Ngày giờ [br] tiếp nhận" size="70"/>
-        <item type="text" id="C_RETURN_DATE" name="Ngày giờ  [br] hẹn trả" size="110"/>
-        <item type="text" id="C_REJECTED_DATE_DDMMYYYY" name="Ngày giờ  [br] từ chối" size="70"/>
-        <item type="text" id="EMPTY_NOW" name="Ngày bàn giao về MC" size="70"/>
-        <item type="text" id="C_CLEAR_DATE" name="Ngày trả thực tế" size="70"/>
+        <item type="text" id="RN" name="TT" size="45" align="center" excel_width="11"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="120" excel_width="27"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="150" excel_width="27"/>
+        <item type="text" id="C_RECEIVE_DATE" name="Ngày giờ [br] tiếp nhận" size="70" excel_width="17"/>
+        <item type="text" id="C_RETURN_DATE" name="Ngày giờ  [br] hẹn trả" size="110" align="center" excel_width="17"/>
+        <item type="text" id="C_REJECTED_DATE_DDMMYYYY" name="Ngày giờ  [br] từ chối" size="70" align="center" excel_width="17"/>
+        <item type="text" id="EMPTY_NOW" name="Ngày bàn giao về MC" size="70" align="center" excel_width="17"/>
+        <item type="text" id="C_CLEAR_DATE" name="Ngày trả thực tế" size="70" align="center" excel_width="17"/>
     </list>
     <total>
     </total>

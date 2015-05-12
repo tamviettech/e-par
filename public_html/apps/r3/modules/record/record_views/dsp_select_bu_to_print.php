@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
@@ -53,12 +35,12 @@ $this->template->display('dsp_header_pop_win.php');
     
     <div class="button-area">
          <!--button xet duyet-->
-        <button type="button" name="trash" class="btn btn-info" onclick="btn_submit();">
+        <button type="button" name="trash" class="btn" onclick="btn_submit();">
             <i class="icon-print"></i>
             In phiếu bàn giao
         </button>
          <!--button dong cua so-->
-        <button type="button" name="trash" class="btn btn-danger" onclick="jacascript:window.parent.hidePopWin();">
+        <button type="button" name="trash" class="btn" onclick="jacascript:window.parent.hidePopWin();">
             <i class="icon-remove"></i>
             Đóng cửa sổ
         </button>

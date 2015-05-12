@@ -25,10 +25,10 @@ else
     <!-- Button -->
 	<div class="button-area">
 		<button type="button" class="btn btn-primary" type="button" name="update" value="<?php echo __('update'); ?> (Alt+2)"	onclick="btn_update_plaintext_formstruct_onclick();" accesskey="2"><i class="icon-save"></i>Cập nhật</button>
-		<button type="button" class="btn btn-danger" type="button" name="gui-update" value="Sửa mẫu đơn qua giao diện"	onclick="btn_update_gui_formstruct_onclick();" accesskey="2"><i class="icon-edit"></i>Sửa mẫu đơn qua giao diện</button>
+		<button type="button" class="btn" type="button" name="gui-update" value="Sửa mẫu đơn qua giao diện"	onclick="btn_update_gui_formstruct_onclick();" accesskey="2"><i class="icon-edit"></i>Sửa mẫu đơn qua giao diện</button>
             
 		<?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <button style="float: right;margin-bottom: 5px; margin-right: 10px;" type="button" name="trash" class="btn btn-danger" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>">
+        <button style="float: right;margin-bottom: 5px; margin-right: 10px;" type="button" name="trash" class="btn" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action;?>">
         <i class="icon-remove"></i>Đóng cửa sổ</button>
         </div>
 </form>

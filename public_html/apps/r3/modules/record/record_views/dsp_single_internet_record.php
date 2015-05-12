@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
 {
     exit('No direct script access allowed');
@@ -99,7 +81,7 @@ $this->template->display('dsp_header.php');
             </td>
         </tr>
         <tr>
-            <td>Mã hồ sơ: <span class="required">(*)</span>
+            <td>Mã hồ sơ <span class="required">(*)</span>:
             </td>
             <td><input readonly="readonly" name="txt_record_no"
                        id="txt_record_no" maxlength="50" style="width: 200px" type="text"
@@ -203,7 +185,7 @@ function dsp_button($is_real_record)
 {
     ?>
     <?php if ($is_real_record): ?>
-        <button type="button" name="trash" class="btn btn-success" onclick="btn_accept_internet_record_onclick();" accesskey="3" >
+        <button type="button" name="trash" class="btn" onclick="btn_accept_internet_record_onclick();" accesskey="3" >
             Chấp nhận hồ sơ
         </button> 
     <?php endif; ?>
@@ -214,7 +196,7 @@ function dsp_button($is_real_record)
     </button>
     
      <!--button xoa-->
-    <button type="button" name="trash" class="btn btn-danger" onclick="btn_delete_internet_record_onclick();">
+    <button type="button" name="trash" class="btn" onclick="btn_delete_internet_record_onclick();">
         <i class="icon-trash"></i>
         Xoá hồ sơ này
     </button>

@@ -31,6 +31,7 @@ if(jQuery)( function() {
 				$('#' + o.menu).addClass('contextMenu');
 				// Simulate a true right click
 				$(this).mousedown( function(e) {
+                                    return false;
 					var evt = e;
 					evt.stopPropagation();
 					$(this).mouseup( function(e) {
@@ -137,7 +138,7 @@ if(jQuery)( function() {
 					$('#' + o.menu).each(function() { $(this).bind('mousedown.disableTextSelect', function() { return false; }); });
 				}
 				// Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
-				$(el).add($('UL.contextMenu')).bind('contextmenu', function() { return false; });
+//				$(el).add($('UL.contextMenu')).bind('contextmenu', function() { return false; });
 				
 			});
 			return $(this);

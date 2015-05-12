@@ -5,9 +5,13 @@
            persist: "location",
            unique: true
        });    
+       $("#browser-public").treeview({
+           persist: "location",
+           unique: true
+       });    
    }
    //hien thi man hinh upload
-   function dsp_upload_onclick()
+   function dsp_upload_onclick(is_public)
    {
        var  tab_selected  = $('#hdn_tab_selected').val();
        var user_id       = $('#hdn_user_share_to_you').val();
@@ -16,7 +20,7 @@
        var get_user_id   = '';
        var get_parent_id = '';
        //media
-       if(tab_selected == '0')
+       if(tab_selected == '0' || tab_selected == '2')
        {
            var parent_folder = $('#hdn_folder_id').val();
        }
@@ -32,8 +36,12 @@
        {
             get_parent_id = '&parent=' + parent_folder;
        }
-       
        var url = $('#controller').val() + $('#hdn_upload_method').val()+ '&pop_win=1'+get_parent_id+get_user_id;
+       if(is_public == '1')
+        {
+             url = $('#controller').val() + $('#hdn_upload_method').val()+ '&pop_win=1'+get_parent_id+get_user_id + '&is_public=1'; 
+        }
+       
        showPopWin(url,800,300,function(respond){
            obj_ret = JSON.parse(respond);
            var folder_id = obj_ret.hdn_folder_id;
@@ -44,11 +52,12 @@
            else
            {
                change_folder(folder_id);
+              
            }
        });
    }
    //tao thu muc
-   function newdir_onclick()
+   function newdir_onclick(is_public)
    {
        var parent_id = $('#hdn_folder_id').val();
        var v_dirname = window.prompt("Nhập tên thư mục","new folder");
@@ -58,7 +67,10 @@
        }
 
        var url = $('#controller').val() + $('#hdn_newdir_method').val();
-
+       if(is_public == '1')
+        {
+            var url = $('#controller').val() + $('#hdn_newdir_method').val() + '&media_public=1';
+        }
        $.ajax({
            type: "POST",
            url: url,
@@ -71,41 +83,79 @@
 
                if(check_success == 'true')
                {
-                   //tao selector den thu muc cha
-                   if(parent_id == '' || parent_id == null)
-                   {
-                       var parent_folder_id = '#browser #folder_0';
-                   }
-                   else
-                   {
-                       var parent_folder_id = '#browser #folder_' + parent_id;
-                   }
-                   var parent_li = $(parent_folder_id).parent().parent();
-                   //kiem tra ul
-                   if($(parent_li).children('ul').length < 1)
-                   {
-                       $(parent_li).attr('class','');
+                    if(is_public == '1' && typeof(is_public) != 'undefined')
+                    {
+                            //media public
+                            //tao selector den thu muc cha
+                           if(parent_id == '' || parent_id == null)
+                           {
+                               var parent_folder_id = '#browser-public #folder_0-public';
+                           }
+                           else
+                           {
+                               var parent_folder_id = '#browser-public #folder_public_' + parent_id;
+                           }
+                           var parent_li = $(parent_folder_id).parent().parent();
+                           //kiem tra ul
+                           if($(parent_li).children('ul').length < 1)
+                           {
+                               $(parent_li).attr('class','');
+                               $(parent_li).find('.hitarea').remove();
+                               $(parent_li).prepend('<div class="hitarea expandable-hitarea"></div>');
+                               $(parent_li).append('<ul></ul>');
+                           }
 
-                       $(parent_li).find('.hitarea').remove();
-                       $(parent_li).prepend('<div class="hitarea expandable-hitarea"></div>');
+                           //tao node moi
+                           var newnode = $('<li class="closed">'  
+                                   + '<span class="folder">'
+                                   +   '<a href="javascript:void(0)" id="folder_public_' + new_id + '" onclick="change_folder('+ new_id +')" >' + v_dirname + '</a>'
+                                   + '</span>'
+                                   + '</li>').appendTo($(parent_li).children('ul'));
 
-                       $(parent_li).append('<ul></ul>');
-                   }
+                           //them node moi
+                           $('#browser-public').treeview({
+                             add: newnode
+                           });  
+                       }
+                       else
+                       {
+                            //tao selector den thu muc cha
+                            if(parent_id == '' || parent_id == null)
+                            {
+                                 parent_folder_id = '#browser #folder_0';
+                            }
+                            else
+                            {
+                                 parent_folder_id = '#browser #folder_' + parent_id;
+                            }
+                             parent_li = $(parent_folder_id).parent().parent();
+                            //kiem tra ul
+                            if($(parent_li).children('ul').length < 1)
+                            {
+                                $(parent_li).attr('class','');
 
-                   //tao node moi
-                   var newnode = $('<li class="closed">'  
-                           + '<span class="folder">'
-                           +   '<a href="javascript:void(0)" id="folder_' + new_id + '" onclick="change_folder('+ new_id +')" >' + v_dirname + '</a>'
-                           + '</span>'
-                           + '</li>').appendTo($(parent_li).children('ul'));
+                                $(parent_li).find('.hitarea').remove();
+                                $(parent_li).prepend('<div class="hitarea expandable-hitarea"></div>');
+                                $(parent_li).append('<ul></ul>');
+                            }
 
-                   //them node moi
-                   $('#browser').treeview({
-                     add: newnode
-                   });
+                            //tao node moi
+                             newnode = $('<li class="closed">'  
+                                    + '<span class="folder">'
+                                    +   '<a href="javascript:void(0)" id="folder_' + new_id + '" onclick="change_folder('+ new_id +')" >' + v_dirname + '</a>'
+                                    + '</span>'
+                                    + '</li>').appendTo($(parent_li).children('ul'));
 
+                            //them node moi
+                            $('#browser').treeview({
+                              add: newnode
+                            });
+                       }
+                   
+                   
                    //reset thu muc
                    change_folder(parent_id);
+                  
                }
                else
                {
@@ -115,6 +165,47 @@
            }
        });
    }
+   
+    /**
+     * Lay danh sach media public root
+     */
+    function change_folder_public(folder_id) 
+    {
+       if(typeof(folder_id) == 'undefined')
+       {
+           folder_id = '';
+       }
+        //tab media public
+        //active folder
+       $('#browser-public li .folder a').removeClass('treeview_active');
+       if(folder_id == '')
+       {
+           $('#folder_0-public').addClass('treeview_active');
+       }
+       else
+       {
+           var html_id = '#folder_public_' + folder_id;
+           $(html_id).addClass('treeview_active');
+       }
+
+       //gan folder id vao hidden
+       $('#hdn_folder_id').val(folder_id);
+       
+        var url = $('#controller').val() + $('#hdn_mof_method').val();
+        var list_content = "#content_media_public";
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:{folder_id:folder_id,is_share:'',user_share:'',is_public:'1'},
+            beforeSend: function() {
+                     img ='<center><img src="' + SITE_ROOT + 'public/images/loading.gif"/></center>';
+                         $(list_content).html(img);
+                 },
+            success: function(respond){
+                    $(list_content).html(respond);
+            }
+        });
+    }
    //thay doi thu muc
    function change_folder(folder_id,grant)
    {
@@ -142,14 +233,14 @@
            //gan folder id vao hidden
            $('#hdn_folder_id').val(folder_id);
 
-
-           var is_share = 0;
+           var is_public  = '0';
+           var is_share   = 0;
            //id cua div list content
            var list_content = "#content_media";
            var user_share = '';
        }
        //neu la share
-       else
+       else if(tab_selected == '1')
        {
            //neu la '' hoac id parent = thu muc cha da share
            if(folder_id == '' || folder_id == $('#hdn_share_folder_id').val())
@@ -182,8 +273,9 @@
                     $(id_btn_delete).hide();
                 }
             }
-            else
+            else 
             {
+                
                 //gan quyen chia se
                 $('#hdn_grant_permit_share').val(grant);
                 arr_grant = grant.split(',');
@@ -195,19 +287,42 @@
             }
            //gan folder share hien tai
            $('#hdn_share_folder_id').val(folder_id);
-
+           is_public = '0';
            is_share = '1';
            //id cua div list content
            list_content = "#content_media_shared";
            user_share = $('#hdn_user_share_to_you').val();
        }
+       else
+       {
+           //tab media public
+            //active folder
+           $('#browser-public li .folder a').removeClass('treeview_active');
+           if(folder_id == '')
+           {
+               $('#folder_0-public').addClass('treeview_active');
+           }
+           else
+           {
+               var html_id = '#folder_public_' + folder_id;
+               $(html_id).addClass('treeview_active');
+           }
 
+           //gan folder id vao hidden
+           $('#hdn_folder_id').val(folder_id);
+           
+           is_public = '1';
+           is_share = '0';
+           //id cua div list content
+           list_content = "#content_media_public";
+           user_share = '';
+       }
        var url = $('#controller').val() + $('#hdn_mof_method').val();
 
        $.ajax({
            type: "POST",
            url: url,
-           data:{folder_id:folder_id,is_share:is_share,user_share:user_share},
+           data:{folder_id:folder_id,is_share:is_share,user_share:user_share,is_public:is_public},
            beforeSend: function() {
                     img ='<center><img src="' + SITE_ROOT + 'public/images/loading.gif"/></center>';
                         $(list_content).html(img);
@@ -219,7 +334,7 @@
    }
 
    //xoa media
-   function btn_media_delete_onclick()
+   function btn_media_delete_onclick(v_public)
    {
        var v_item_id_list = "";
        var error_message = 'Chưa có đối tượng nào được chọn!';
@@ -234,7 +349,7 @@
             var folder_id = $('#hdn_folder_id').val();
        }
        //share
-       else
+       else if(tab_selected == '1')
        {
            //obj list share media in frmMain
            var f = $('#frmMain #content_media_shared');
@@ -243,7 +358,13 @@
            
            user_id = $('#hdn_user_share_to_you').val();
        }
-       
+       else
+        {
+            //obj list media public in frmMain
+             var f = $('#frmMain #content_media_public');
+             //lay thu muc hien hanh
+             var folder_id = $('#hdn_folder_id').val();
+        }
        if (typeof($(f).find('[name="chk"]:checked')) == 'undefined' ){
            alert(error_message);
            return;
@@ -255,13 +376,13 @@
            alert(error_message);
            return;
        }
-
        var url = $('#controller').val() + $('#hdn_delete_method').val();
+       
        if (confirm('Bạn chắc chắn xoá các đối tượng đã chọn?')){
            $.ajax({
                type: 'POST',
                url: url,
-               data: {'hdn_item_id_list':v_item_id_list,user_id:user_id},
+               data: {'hdn_item_id_list':v_item_id_list,user_id:user_id,media_public:'1'},
                success: function(respond){
                    var obj_delete = JSON.parse(respond);
                    var message    = obj_delete.message;
@@ -276,9 +397,21 @@
                    var arr_delete = deleted_id.split(',');
                    for(i=0;i<arr_delete.length;i++)
                    {
-                       var parent_folder_id = '#browser #folder_' + arr_delete[i];
-                       var parent_li = $(parent_folder_id).parent().parent();
-                       $(parent_li).remove();
+                       if(v_public == '1' && typeof(v_public) != 'undefined')
+                       {
+                           //media public
+                            var parent_folder_id = '#browser-public #folder_public_' + arr_delete[i];
+                            var parent_li        = $(parent_folder_id).parent().parent();
+                       }
+                       else
+                       {
+                             parent_folder_id = '#browser #folder_' + arr_delete[i];
+                             parent_li        = $(parent_folder_id).parent().parent();
+                       }
+                      
+                        $(parent_li).remove();
+                      
+                      
                    }
 
                   
@@ -290,14 +423,16 @@
                    else
                    {
                        change_folder(folder_id);
+                   
                    }
                }
            });
        }
    }
    //rename
-   function btn_rename_onclick(v_id)
+   function btn_rename_onclick(v_id,v_public)
    {
+       
        var parent_id = $('#hdn_folder_id').val();
        var v_newname = window.prompt("Nhập tên mới");
        if(v_newname == '' || v_newname == null || typeof(v_newname) == 'undefined')
@@ -306,11 +441,15 @@
        }
 
        var url = $('#controller').val() + $('#hdn_rename_method').val();
-
+        if(typeof(v_public) == 'undefined')
+        {
+            v_public = '';
+        }
+        
        $.ajax({
            type: "POST",
            url: url,
-           data:{v_id:v_id,new_name:v_newname},
+           data:{v_id:v_id,new_name:v_newname,v_public:v_public},
            success: function(message){
                     if(parseInt(message) != 1)
                     {
@@ -323,8 +462,11 @@
                         var select_a = '#folder_' + v_id;
                         $(select_a).html(v_newname);
                         
+                        var select_a_public = '#folder_public_' + v_id;
+                        $(select_a_public).html(v_newname);
                         //reset thu muc
                         change_folder(parent_id);
+                    
                     }
            }
        });

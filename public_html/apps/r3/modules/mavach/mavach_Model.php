@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class mavach_Model extends Model {
@@ -27,25 +9,22 @@ class mavach_Model extends Model {
 
     private function _get_xml_config($record_type_code, $config_type)
 	{
+        define('XML_CONFIG_DIR', SERVER_ROOT . 'apps/r3/xml-config/');
 		if (strtolower($config_type) == 'lookup')
 		{
-			return SERVER_ROOT . 'apps' . DS . 'r3' . DS . 'xml-config' . DS
-			. 'common' . DS . 'record_lookup.xml';
+			return XML_CONFIG_DIR . 'common' . DS . 'record_lookup.xml';
 		}
 
 		if ($config_type == 'list' && $record_type_code == '')
 		{
-		    return SERVER_ROOT . 'apps' . DS . 'r3' . DS . 'xml-config' . DS . 'common' . DS . 'common_list.xml';;
+		    return XML_CONFIG_DIR . 'common' . DS . 'common_list.xml';;
 		}
 
-		$file_path =  SERVER_ROOT . 'apps' . DS . 'r3' . DS . 'xml-config' . DS
-		. $record_type_code . DS . $record_type_code . '_' . $config_type . '.xml';
-
+		$file_path =  XML_CONFIG_DIR . $record_type_code . DS . $record_type_code . '_' . $config_type . '.xml';
 		if (!is_file($file_path))
 		{
-			$record_type_code = preg_replace('/([0-9]+)/', '00', $record_type_code);
-			$file_path = SERVER_ROOT . 'apps' . DS . 'r3' . DS . 'xml-config' . DS
-			. 'common' . DS . $record_type_code . '_' . $config_type . '.xml';
+            $record_type_code =  preg_replace('/([0-9]+[A-Z0-9-_]*)/', '00', $record_type_code);
+			$file_path = XML_CONFIG_DIR . 'common/' . $record_type_code . '_' . $config_type . '.xml';
 		}
 
 		return $file_path;
@@ -206,15 +185,16 @@ class mavach_Model extends Model {
             //Thong tin tien do
             $v_record_type = isset($arr_single_record['C_RECORD_TYPE_CODE'])? $arr_single_record['C_RECORD_TYPE_CODE'] : '';
             
-            if (empty($arr_single_record['C_CLEAR_DATE']))
+            if (strlen($arr_single_record['C_CLEAR_DATE']) == 0)
             {
+                //Chua tra ket qua, lay flow tu file config
                 $dom_step = simplexml_load_file($this->_get_xml_config($v_record_type, 'workflow'));
             }           
             else
             {
+                //Da tra ket qua, lay flow da duoc luu lai trong DB
                 $dom_step = simplexml_load_string($arr_single_record['C_XML_WORKFLOW']);
             }
-            
             $r = $dom_step->xpath('//step/@time');
             $step_days_list = '';
             foreach ($r as $time)
@@ -227,6 +207,61 @@ class mavach_Model extends Model {
             $ret['arr_step_formal_date'] = $arr_step_formal_date;
         }
 
+        return $ret;
+    }
+    
+    /**
+     * lay danh sach ho so, voi thong tin TOI THIEU
+     * @param Int $v_page
+     */
+    public function qry_all_record_min_info($v_page)
+    {
+        //Tong so ban gi
+        $sql = 'Select Count(*) From t_r3_record';
+        $v_total_record = $this->db->GetOne($sql);
+        
+        $v_rows_per_page = 10;
+        $v_start = $v_rows_per_page * ($v_page - 1) + 1;
+        //$v_end   = $v_start + $v_rows_per_page - 1;
+        $v_limit = $v_rows_per_page ;//$v_end - $v_start;
+        
+        //p=
+        
+        
+        $sql = "SELECT 
+                    @rownum:=@rownum + 1 AS RN,
+                    CASE
+                        WHEN (R.C_REJECTED <> 0) THEN 3
+                        WHEN
+                            ((R.C_REJECTED = 0 OR R.C_REJECTED IS NULL)
+                                AND (R.C_CLEAR_DATE IS NOT NULL))
+                        THEN
+                            2
+                        ELSE 1
+                    END AS C_ACTIVITY,
+                    {$v_total_record} AS TOTAL_RECORD,
+                    CAST(R.C_RECEIVE_DATE AS CHAR (19)) AS C_RECEIVE_DATE,
+                    CAST(R.C_RETURN_DATE AS CHAR (19)) AS C_RETURN_DATE,
+                    R.C_XML_PROCESSING,
+                    R.C_REJECTED,
+                    R.C_REJECT_REASON,
+                    R.C_CITIZEN_NAME,
+                    R.C_BIZ_DAYS_EXCEED,
+                    R.C_RECORD_NO
+                FROM
+                    (SELECT 
+                        PK_RECORD,
+                        (SELECT @rownum := {$v_start} - 1)
+                    FROM
+                        t_r3_record
+                        WHERE (C_DELETED = 0 OR C_DELETED IS NULL)
+                    ORDER BY C_RECEIVE_DATE DESC
+                    LIMIT $v_start , $v_limit) RID
+                        LEFT JOIN
+                    t_r3_record R ON RID.PK_RECORD = R.PK_RECORD";
+        $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
+        $ret =  $this->db->CachegetAll($sql);
+        $this->db->SetFetchMode(ADODB_FETCH_BOTH);
         return $ret;
     }
 }

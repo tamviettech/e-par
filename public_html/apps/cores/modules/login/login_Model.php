@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -38,22 +20,8 @@ class login_Model extends Model
         }
 
         $v_login_name = isset($_POST['txt_login_name']) ? $this->replace_bad_char($_POST['txt_login_name']) : null;
-        $v_password   = isset($_POST['txt_password']) ? $this->replace_bad_char($_POST['txt_password']) : null;
+        $v_password   = isset($_POST['hdn_password_md5']) ? $this->replace_bad_char($_POST['hdn_password_md5']) : null;
         
-        
-        //Cookie
-        if (isset($_POST['chk_remember_me']))
-        {
-            Cookie::set('c_secure_login', cookie_password_encode($v_login_name), 0, COOKIE_ROOT);
-            Cookie::set('c_secure_pass', cookie_password_encode($v_password), 0, COOKIE_ROOT);
-        }
-        else
-        {
-            Cookie::set('c_secure_login', NULL, 0, COOKIE_ROOT);
-            Cookie::set('c_secure_pass', NULL, 0, COOKIE_ROOT);
-        }
-
-        $v_password = md5($v_password);
         if ($v_password == NULL)
         {
             echo '<script>alert("Phai nhap [Mat khau]!"); document.location.replace("index.php");</script>\n';
@@ -80,7 +48,7 @@ class login_Model extends Model
             //authenticate the user
             if ($adldap->authenticate($v_login_name, $v_password))
             {
-                $stmt            = 'Select u.PK_USER
+                $stmt = 'Select u.PK_USER
                             ,u.FK_OU
                             ,u.C_NAME as C_USER_NAME
                             ,u.C_LOGIN_NAME
@@ -101,7 +69,7 @@ class login_Model extends Model
         else
         {
             $v_auth_by       = 'WEB';
-            $stmt            = 'Select u.PK_USER
+            $stmt = 'Select u.PK_USER
                             ,u.FK_OU
                             ,u.C_NAME as C_USER_NAME
                             ,u.C_LOGIN_NAME
@@ -110,8 +78,20 @@ class login_Model extends Model
                             ,u.C_JOB_TITLE
                             ,ou.C_NAME as C_OU_NAME
                             ,ou.C_LEVEL as C_OU_LEVEL
+                            ,IFNULL((
+                                SELECT PK_OU
+                                FROM t_cores_ou temp 
+                                WHERE temp.C_INTERNAL_ORDER = LEFT(ou.C_INTERNAL_ORDER, 3)
+                                    AND temp.C_LEVEL=1
+                             ),0) AS ROOT_OU_ID
+                             ,(
+                                Select C_NAME 
+                                FROM t_cores_ou temp 
+                                WHERE temp.C_INTERNAL_ORDER = LEFT(ou.C_INTERNAL_ORDER, 3)
+                                    And temp.C_LEVEL=1
+                             ) As ROOT_OU_NAME   
                     From t_cores_user u Left Join t_cores_ou as ou On u.FK_OU=ou.PK_OU
-                    Where u.C_LOGIN_NAME=? And u.C_PASSWORD=? And u.C_STATUS=1';
+                    Where u.C_LOGIN_NAME=? And u.C_PASSWORD=? And u.C_STATUS = 1';
             $params          = array($v_login_name, $v_password);
             $arr_single_user = $this->db->getRow($stmt, $params);
         }
@@ -132,13 +112,17 @@ class login_Model extends Model
             session::set('is_admin', $arr_single_user['C_IS_ADMIN']);
             session::set('auth_by', $v_auth_by);
             session::set('user_job_title', $arr_single_user['C_JOB_TITLE']);
+            session::set('root_ou_id', $arr_single_user['ROOT_OU_ID']);
+            session::set('root_ou_name', $arr_single_user['ROOT_OU_NAME']);
             
             //User Token
             session::set('user_token', md5(uniqid()));
 
             //Danh sách nhóm mà NSD là thành viên
-            $stmt           = 'Select G.C_CODE
-                    From t_cores_group G Left Join t_cores_user_group UG On G.PK_GROUP=UG.FK_GROUP
+            $stmt = 'Select G.C_CODE
+                    From t_cores_group G 
+                        Left Join t_cores_user_group UG 
+                        On G.PK_GROUP=UG.FK_GROUP
                     Where UG.FK_USER=?';
             $params         = array($arr_single_user['PK_USER']);
             $arr_group_code = $this->db->getCol($stmt, $params);
@@ -191,7 +175,7 @@ class login_Model extends Model
             session::set('arr_function_code', $this->db->getCol($stmt, array($v_user_id, $v_user_id)));
 
             //NSD la can bo cap xa
-            $sql                   = "Select
+            $sql = "Select
                         u.C_LOGIN_NAME
                             ,u.C_NAME
                     From t_cores_user u
@@ -227,25 +211,35 @@ class login_Model extends Model
 	            session::set('arr_all_village', $arr_all_village);
             }
             
-            //set sjacking -> chong loi session jacking
-            $remote_addr = $_SERVER['REMOTE_ADDR'];
-            $user_agent = $_SERVER['HTTP_USER_AGENT'];
-            $signature = md5($remote_addr.$user_agent);
-            session::set('signature',$signature);
+            //set hijacking -> chong loi session jacking
+            session::set('signature', build_signature());
             
             //kiem tra bien back
             $v_back = get_post_var('hdn_back','');
             if($v_back == '')
             {
-                $this->exec_done(SITE_ROOT . build_url('r3/record/'));
+                $this->exec_done(SITE_ROOT . build_url('main/main/'));
             }
             else
             {
                 $this->exec_done(SITE_ROOT . build_url($v_back));
             }
             
+            //Luu mat khau
+            //Cookie
+            if (isset($_POST['chk_remember_me']))
+            {
+                Cookie::set('c_secure_login', cookie_password_encode($v_login_name), 0, COOKIE_ROOT);
+                Cookie::set('c_secure_pass', cookie_password_encode($v_password), 0, COOKIE_ROOT);
+            }
+            else
+            {
+                Cookie::set('c_secure_login', NULL, 0, COOKIE_ROOT);
+                Cookie::set('c_secure_pass', NULL, 0, COOKIE_ROOT);
+            }
+            
             exit;
-        }
+        } //sizeof($arr_single_user) > 0)
         else
         {
             session::destroy();

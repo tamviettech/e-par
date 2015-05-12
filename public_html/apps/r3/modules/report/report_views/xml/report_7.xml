@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td rowspan="2">STT</td>
+            <td rowspan="2">Mã hồ sơ</td>
+            <td rowspan="2">Người nộp</td>
+			<td rowspan="2">Địa chỉ</td>
+			<td rowspan="2">Số điện thoại</td>
+			<td rowspan="2">Ngày tiếp nhận</td>
+			<td rowspan="2">Ngày hẹn trả</td>
+			<td colspan="3">Trả kết quả(đv: ngày)</td>
+        </tr>
+		<tr>
+			<td>Trước hạn</td>
+			<td>Đúng hạn</td>
+			<td>Quá hạn</td>
+		</tr>
+    </head>
     <list>
         <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
-        <item type="text" id="RN" name="TT" size="50" align="right"/>
-        <item type="text" id="C_SPEC_NAME" name="Lĩnh vực" size="300"/>
-        <item type="text" id="C_TOTAL_RECORD" name="Số hồ sơ phải thu [br] phí, lệ phí" size="100" align="right" number_format="true"/>
-        <item type="text" id="C_TOTAL_FEE" name="Lệ phí" size="100" align="right" number_format="true"/>
-        <item type="text" id="C_TOTAL_COST" name="Phí" size="100" align="right" number_format="true"/>
-        <item type="text" id="C_SUM" name="Tổng" size="100" align="right" number_format="true"/>
+        <item type="text" id="RN" name="TT" size="5%" align="center" excel_width="21"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="15%" excel_width="83"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người nộp" size="15%" align="center" excel_width="18"/>
+		<item type="text" id="xml/txtDiaChi" name="Địa chỉ" size="15%" align="center" excel_width="18"/>
+		<item type="text" id="C_RETURN_PHONE_NUMBER" name="Số điện thoại" size="10%" align="center" excel_width="18"/>
+		<item type="text" id="C_RECEIVE_DATE" name="Ngày tiếp nhận" size="10%" align="center" excel_width="18"/>
+		<item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả" size="10%" align="center" excel_width="18"/>
+		
+		<item type="text" id="C_TRA_SOM_HAN" name="Trả sớm hạn" size="7%" align="center" excel_width="18"/>
+		<item type="text" id="C_TRA_DUNG_HAN" name="Trả đúng hạn" size="7%" align="center" excel_width="18"/>
+		<item type="text" id="C_TRA_QUA_HAN" name="Trả quá hạn" size="7%" align="center" excel_width="18"/>
     </list>
-    <total>
-        <item colspan="2" name="Tổng cộng" align="right"/>
-        <item colspan="1" id="C_TOTAL_RECORD" align="right" number_format="true"/>
-        <item colspan="1" id="C_TOTAL_FEE" align="right" number_format="true"/>
-        <item colspan="1" id="C_TOTAL_COST" align="right" number_format="true"/>
-        <item colspan="1" id="C_SUM" align="right" number_format="true"/>
-    </total>
-    <sub_total>
-    </sub_total>
 </report>

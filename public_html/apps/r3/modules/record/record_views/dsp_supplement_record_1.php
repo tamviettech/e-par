@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
@@ -54,7 +36,7 @@ $this->template->display('dsp_header_pop_win.php');
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type); ?>
 
-    <button type="button" name="trash" style="margin-bottom:5px;float: right" class="btn btn-danger" onclick="btn_reject_onclick();">
+    <button type="button" name="trash" style="margin-bottom:5px;float: right" class="btn" onclick="btn_reject_onclick();">
         <i class="icon-ban-circle"></i>
         Từ chối hồ sơ
     </button>
@@ -113,17 +95,11 @@ $this->template->display('dsp_header_pop_win.php');
 
             html = '';
 
-            /*
-             //In phieu biên nhận hồ sơ bổ sung
-             html += '<a href="javascript:void(0)" onclick="print_record_ho_for_citizen(\'' + v_item_id + '\')" class="quick_action" >';
-             html += '<img src="' + SITE_ROOT + 'public/images/print_24x24.png" title="In phiếu biên nhận hồ sơ bổ sung" /></a>';
-             */
-
             //Thong tin tien do
-            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+            html += '<i class="icon-bar-chart"></i></a>';
             //Phiếu hẹn trả mới
-            html += "<a href=\"javascript:void(0)\" onclick=\"reprint_return_paper(" + v_item_id + ")\" class=\"quick_action\"><img src=\"" + SITE_ROOT + "public/images/print_24x24.png\" title=\"In lại phiếu hẹn trả\"></a>";
+            html += "<a title=\"In lại phiếu hẹn trả\" href=\"javascript:void(0)\" onclick=\"reprint_return_paper(" + v_item_id + ")\" class=\"quick_action\"><i class='icon-print'></i></a>";
 
             $(this).html(html);
         });

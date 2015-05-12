@@ -134,6 +134,65 @@
         <item type="Checkbox" value="2" id="THEO_DOI_GIAM_SAT_TOAN_BO_HO_SO" name="" allownull="" validate="" title="Theo dõi, giám sát toàn bộ hồ sơ" label="" view="true"/>
     </line>
     <line label="" cols="1">
+        <item type="Checkbox" value="2" id="THEO_DOI_GIAM_SAT_HO_SO_CUA_PHONG" name="" allownull="" validate="" title="Theo dõi, giám sát hồ sơ của phòng" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
         <item type="Checkbox" value="2" id="QUAN_TRI_SO_THEO_DOI_HO_SO" name="" allownull="" validate="" title="Quản trị sổ theo dõi hồ sơ" label="" view="true"/>
     </line>
+
+     <!--Đánh giá cán bộ-->
+     
+    <line label="Tra cứu thông tin đánh giá cán bộ" cols="1">
+        <item type="Checkbox" value="2" id="TRA_CUU_DANH_GIA_CAN_BO" name="" allownull="" validate="" title="Xem thông tin đánh giá cán bộ" label="" view="true"/>
+    </line>
+    <!--End đánh giá cán bộ--> 
+    
+      <!--Đánh giá cán bộ-->
+     
+    <line label="Kho tài liệu dùng chung" cols="1">
+        <item type="Checkbox" value="2" id="MEDIA_PUBLIC" name="" allownull="" validate="" title="Quản lý kho tài liệu dùng chung" label="" view="true"/>
+    </line>
+    <!--End đánh giá cán bộ--> 
+    
+    <!--Phân quyền báo cáo theo lĩnh vực-->
+    <line label="Báo cáo theo lĩnh vực" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_DT" name="" allownull="" validate="" title="Quản Lý Đô Thị" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_CT" name="" allownull="" validate="" title="Công thương" label="" view="true"/>
+        </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_LD" name="" allownull="" validate="" title="Lao Động Thương Binh Xã Hội" label="" view="true"/>
+        </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_TC" name="" allownull="" validate="" title="Tài Chính Kế Hoạch" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_TN" name="" allownull="" validate="" title="Tài Nguyên Môi Trường" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_TP" name="" allownull="" validate="" title="Tư Pháp" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_KT" name="" allownull="" validate="" title="Kinh Tế Hạ Tầng" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_VH" name="" allownull="" validate="" title="văn Hóa" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_GT" name="" allownull="" validate="" title="Giao Thông" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_NV" name="" allownull="" validate="" title="Nội Vụ" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_PD" name="" allownull="" validate="" title="Phê Duyệt" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_GD" name="" allownull="" validate="" title="Giáo Dục và Đào Tạo" label="" view="true"/>
+    </line>
+    <line label="" cols="1">
+        <item type="Checkbox" value="2" id="BAOCAO_NN" name="" allownull="" validate="" title="Nông Nghiệp và Phát Triển Nông Thôn" label="" view="true"/>
+    </line>
+    <!--End phân quyền báo cáo theo lĩnh vực-->
 </form>

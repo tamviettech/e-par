@@ -1,22 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
@@ -272,7 +253,7 @@ else
                     </div>
                     <div id="group_of_users_action" class="span4 form-actions">
                         <button type="button" name="btn_add_group" class="btn btn-primary" onclick="dsp_all_group_to_add();"><i class="icon-plus icon-group"></i>Thêm nhóm</button>
-                        <button type="button" name="btn_remove_group" class="btn btn-danger" onclick="remove_group_from_user();"><i class="icon-trash"></i>Bỏ nhóm</button>
+                        <button type="button" name="btn_remove_group" class="btn" onclick="remove_group_from_user();"><i class="icon-trash"></i>Bỏ nhóm</button>
                     </div>
                     <div class="clear">&nbsp;</div>
                 </div>

@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php 
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 /**
@@ -604,7 +586,10 @@ class public_service_Model extends Model
                         PK_RECORD_TYPE,
                         C_CODE,
                         C_NAME,
-                        CASE WHEN C_SCOPE  = 3 THEN 'Thủ tục cấp huyện'
+                        CASE 
+                            -- WHEN C_SCOPE  = 3 THEN 'Thủ tục cấp huyện'
+                            WHEN C_SCOPE  = 3 THEN 'Thủ tục cấp Sở'
+                            WHEN C_SCOPE  = 4 THEN 'Thủ tục liên thông'
                             WHEN C_SCOPE   = 1 THEN 'Thủ tục liên thông xã huyện'
                             WHEN C_SCOPE   = 2 THEN 'Thủ tục liên thông huyện xã'
                             ELSE 'Thủ tục cấp xã'
@@ -961,7 +946,9 @@ class public_service_Model extends Model
                                                             , CONCAT(' PK_RECORD_TYPE=\"',PK_RECORD_TYPE,'\" ')
                                                             , CONCAT(' C_CODE=\"',C_CODE,'\" ')
                                                             , CONCAT(' C_SCOPE=\"',CASE
-                                                                                       WHEN C_SCOPE = 3 THEN 'Thủ tục cấp huyện'
+                                                                                       -- WHEN C_SCOPE = 3 THEN 'Thủ tục cấp Huyện'
+                                                                                       WHEN C_SCOPE = 3 THEN 'Thủ tục cấp Sở'
+                                                                                       WHEN C_SCOPE = 4 THEN 'Thủ tục liên thông'
                                                                                        WHEN C_SCOPE = 1 THEN 'Thủ tục liên thông xã huyện'
                                                                                        WHEN C_SCOPE = 2 THEN 'Thủ tục liên thông huyện xã'
                                                                                        ELSE 'Thủ tục cấp xã'

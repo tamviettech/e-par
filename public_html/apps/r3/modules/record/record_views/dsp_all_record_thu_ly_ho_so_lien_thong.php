@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -42,16 +24,30 @@ $this->template->display('dsp_header.php');
     echo $this->hidden('hdn_role',$this->active_role);
 
     echo $this->hidden('record_type_code', $v_record_type_code);
+    
+    //Thu tuc cp bat buoc cap nhat ket qua thu ly khong?
+    if (count($arr_all_record_type) > 0)
+    {
+        $v_next_task_code = $arr_all_record[0]['C_NEXT_TASK_CODE'];
+        $v_require_form = $this->get_require_form($v_record_type_code, $v_next_task_code);
+    }
     ?>
     <?php echo $this->dsp_div_notice($VIEW_DATA['active_role_text'] );?>
     <!-- filter -->
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid commit" value="Hoàn thành thụ lý"
-               onclick="btn_dsp_exec_onclick();" />
+        <?php if (strlen($v_require_form) > 0): ?>
+            <p class="text-warning">
+                Thủ tục bắt buộc nhập kết quả thụ lý. Cần cập nhật kết quả thụ lý đối với từng hồ sơ.
+            </p>
+        <?php else: ?>
+            <button type="button" name="btn_exec" class="btn" onclick="btn_dsp_exec_onclick();" >
+                Hoàn thành thụ lý
+            </button>
+        <?php endif; ?>
     </div>
-    <div class="clear"></div>
+    <div class="clear" style="height: 10px">&nbsp;</div>
 
     <div id="procedure">
         <?php if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list'))): ?>
@@ -59,12 +55,6 @@ $this->template->display('dsp_header.php');
         <?php endif; ?>
     </div>
 	<div><?php echo $this->paging2($arr_all_record);?></div>
-
-    <!--
-    <div class="button-area">
-        <input type="button" name="btn_dsp_exec" class="button commit" value="Hoàn thành thụ lý" onclick="btn_dsp_exec_onclick();" />
-    </div>-->
-
     <!-- Context menu -->
     <ul id="ownerMenu" class="contextMenu">
         <li class="exec">
@@ -128,16 +118,16 @@ $this->template->display('dsp_header.php');
             v_is_owner = $('.adminlist tr[data-item_id="' + v_item_id + '"]').attr('data-owner');
             if (v_is_owner == "1")
             {
-                html += '<a href="javascript:void(0)" onclick="btn_dsp_exec_onclick(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/btn_commit.png" title="Hoàn thành thụ lý" /></a>';
+                html += '<a href="javascript:void(0)" onclick="btn_dsp_exec_onclick(\'' + v_item_id + '\')" class="quick_action" title="Hoàn thành thụ lý">';
+                html += '<i class="icon-ok-sign"></i></a>';
 
-                html += '<a href="javascript:void(0)" onclick="btn_dsp_resend_confirmation_request_records_onclick(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/icon-32-rollback.png" title="Yêu cầu xác nhận lại" /></a>';
+                html += '<a href="javascript:void(0)" onclick="btn_dsp_resend_confirmation_request_records_onclick(\'' + v_item_id + '\')" class="quick_action" title="Yêu cầu xác nhận lại">';
+                html += '<i class="icon-minus-sign"></i></a>';
             }
 
             //Thong tin tien do
-            html += '&nbsp;<a href="javascript:void(0)" onclick="dsp_record_statistics(\'' + v_item_id + '\')" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+            html += '&nbsp;<a href="javascript:void(0)" onclick="dsp_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+            html += '<i class="icon-bar-chart"></i></a>';
 
             $(this).html(html);
         });

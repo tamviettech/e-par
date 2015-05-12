@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -44,6 +26,7 @@ define('_CONST_BAN_GIAO_ROLE', 'BAN_GIAO');
 define('_CONST_RUT_ROLE', 'RUT_HO_SO');
 define('_CONST_BO_SUNG_ROLE', 'BO_SUNG');
 define('_CONST_TRA_KET_QUA_ROLE', 'TRA_KET_QUA');
+define('_CONST_TRA_KET_QUA_LT_ROLE', 'TRA_KET_QUA_LT');
 define('_CONST_IN_PHIEU_TIEP_NHAN_ROLE', 'IN_PHIEU_TIEP_NHAN');
 define('_CONST_CHUYEN_LEN_HUYEN_ROLE', 'CHUYEN_LEN_HUYEN');
 define('_CONST_TRA_HO_SO_VE_XA_ROLE', 'TRA_HO_SO_VE_XA');
@@ -75,6 +58,7 @@ define('_CONST_CHUYEN_LAI_BUOC_TRUOC_ROLE', 'CHUYEN_LAI_BUOC_TRUOC');
 define('_CONST_CHUYEN_HO_SO_LEN_SO_ROLE', 'CHUYEN_HO_SO_LEN_SO');
 define('_CONST_NHAN_HO_SO_TU_SO_ROLE', 'NHAN_HO_SO_TU_SO');
 define('_CONST_FINISH_NO_CHAIN_STEP_TASK', 'FINISH_NO_CHAIN_STEP');
+define('_CONST_TIEP_NHAN_LIEN_THONG_ROLE', 'TIEP_NHAN_LIEN_THONG');
 
 //Sau thue
 define('_CONST_AFTER_TAX_SUFFIX', '_SAU_THUE');
@@ -120,6 +104,7 @@ define('_CONST_VAO_SO_VAN_BAN_NOI_BO_ROLE', 'VAO_SO_VAN_BAN_NOI_BO');
 
 define('_CONST_VAN_BAN_DUOC_CHIA_SE_ROLE', 'VAN_BAN_DUOC_CHIA_SE');
 
+define('_CONTS_MAIL_LOG_DIR', SERVER_ROOT . DS . 'mail_log' . DS);
 define('_CONST_SMTP_SERVER', 'smtp.gmail.com');
 define('_CONST_SMTP_PORT', '465');
 define('_CONST_SMTP_ACCOUNT', 'motcua.tamviettech@gmail.com');
@@ -142,16 +127,17 @@ define('_CONST_RECAPCHA_PRIVATE_KEY', '6LdpjNoSAAAAAB6kCDmrY8RmuysVHTWsr8qxSuQb'
 //Danh muc
 define('_CONST_DANH_MUC_LINH_VUC', 'DANH_MUC_LINH_VUC');
 define('_CONST_DANH_MUC_BAO_CAO', 'DANH_MUC_BAO_CAO');
-
+define('_CONST_DANH_MUC_TIEU_CHI_DANH_GIA', 'DM_TIEU_CHI_DANH_GIA');
 //cho phép upload
 define('EXT_DOCUMENT', 'doc,docx,odt,pdf,txt,rtf');
 define('EXT_SPREADSHEET', 'xls,xlsx,ods,cvs');
+
 /** File đính kèm hồ sơ */
-define('_CONST_RECORD_FILE_ACCEPT', 'pdf');
+define('_CONST_RECORD_FILE_ACCEPT', 'pdf,doc,docx,xls,xlsx,ppt,pptx');
 //File dinh kem mau dang ky
-define('_CONST_TYPE_FILE_ACCEPT', 'doc,pdf');
+define('_CONST_TYPE_FILE_ACCEPT', 'pdf,doc,docx,xls,xlsx,ppt,pptx');
 //ext file media
-define('_CONST_MEDIA_FILE_ACCEPT', 'pdf,jpg,png');
+define('_CONST_MEDIA_FILE_ACCEPT', 'pdf,jpg,png,doc,docx,xls,xlsx,ppt,pptx');
 
 
 //dành cho media

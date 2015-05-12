@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td size="4%" rowspan="2">STT</td>
+            <td size="15%" rowspan="2">Lĩnh Vực</td>
+            <td size="7%" rowspan="2">Tiếp nhận</td>
+            <td size="14%" colspan="2">Đang giải quyết</td>
+            <td size="28%" colspan="4">Đã giải quyết</td>
+            <td size="14%" colspan="2">Tạm Dừng</td>
+            <td size="14%" colspan="2">Hủy hồ sơ</td>
+            <td size="7%" rowspan="2">Tỷ lệ trả sớm và đúng hạn</td>
+        </tr>
+        <tr>
+            <td>Chưa đến hạn</td>
+            <td>Quá hạn</td>
+            
+            <td>Chờ trả</td>
+            <td>Sớm hạn</td>
+            <td>Đúng hạn</td>
+            <td>Quá hạn</td>
+            
+            <td>Bổ sung HS</td>
+            <td>Thực hiện NVTC</td>
+            
+            <td>Từ chối</td>
+            <td>Công dân rút</td>
+        </tr>
+    </head>
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="4%" align="center" excel_width="21"/>
+        <item type="text" id="C_NAME" name="Lĩnh vực"  size="15%" excel_width="83"/>
+        
+        <item type="text" id="C_COUNT_TIEP_NHAN" size="7%" name="Tiếp nhận"  align="center" number_format="true" excel_width="18"/>
+        
+        <item type="text" id="C_COUNT_THU_LY_CHUA_DEN_HAN" size="7%" name="Chưa đến hạn"  align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_THU_LY_QUA_HAN" size="7%" name="Quá hạn"  align="center" number_format="true" excel_width="18"/>
+        
+        <item type="text" id="C_COUNT_CHO_TRA" size="7%" name="Chờ trả"  align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_TRA_SOM_HAN" size="7%" name="Sớm hạn"  align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_TRA_DUNG_HAN" size="7%" name="Đúng hạn"  align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_TRA_QUA_HAN" size="7%" name="Quá hạn" align="center" number_format="true" excel_width="18"/>
+        
+        <item type="text" id="C_COUNT_BO_SUNG" size="7%" name="Bổ sung HS" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_NVTC" size="7%" name="Thực hiện NVTC" align="center" number_format="true" excel_width="18"/>
+        
+        <item type="text" id="C_COUNT_TU_CHOI" size="7%" name="Từ chối" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_CONG_DAN_RUT" size="7%" name="Công dân rút" align="center" number_format="true" excel_width="18"/>
+        
+        <item type="text" id="MATHS" formula="formula_percent" param="C_COUNT_TRA_SOM_HAN,C_COUNT_TRA_DUNG_HAN,C_COUNT_TRA_QUA_HAN" size="7%" name="Tỷ lệ trả sớm và đúng hạn" align="center" number_format="true" excel_width="18"/>
+    </list>
+    <total>
+        <item colspan="2" name="Tổng cộng" align="center"/>
+        <item colspan="1" id="C_COUNT_TIEP_NHAN" align="center"/>
+        
+        <item colspan="1" id="C_COUNT_THU_LY_CHUA_DEN_HAN" align="center"/>
+        <item colspan="1" id="C_COUNT_THU_LY_QUA_HAN" align="center"/>
+        
+        <item colspan="1" id="C_COUNT_CHO_TRA" align="center"/>
+        <item colspan="1" id="C_COUNT_TRA_SOM_HAN" align="center"/>
+        <item colspan="1" id="C_COUNT_TRA_DUNG_HAN" align="center"/>
+        <item colspan="1" id="C_COUNT_TRA_QUA_HAN" align="center"/>
+        
+        <item colspan="1" id="C_COUNT_BO_SUNG" align="center"/>
+        <item colspan="1" id="C_COUNT_NVTC" align="center"/>
+        
+        <item colspan="1" id="C_COUNT_TU_CHOI" align="center"/>
+        <item colspan="1" id="C_COUNT_CONG_DAN_RUT" align="center"/>
+    </total>
+    <sub_total>
+    </sub_total>
+</report>

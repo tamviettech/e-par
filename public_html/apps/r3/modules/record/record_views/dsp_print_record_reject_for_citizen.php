@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <html>
     <head>
@@ -56,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </tr>
                 <tr>
                     <td colspan="2" class="right italic" style="text-align: right;padding:20px 30px 0px 0px;">
-                        <?php echo get_xml_value($dom_unit_info, '/unit/name');?>, ngày <?php echo Date('d-m-Y h:m:i');?>
+                        <i><?php echo get_xml_value($dom_unit_info, '/unit/name');?>, ngày <?php echo Date('d-m-Y h:m:i');?></i>
                     </td>
                 </tr>
                 <tr>
@@ -74,7 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </tr>
                 <tr>
                     <td>
-                        Sau khi kiểm tra hồ sơ, đối chiếu với quy định pháp luật về "<?php echo $arr_single_record['C_RECORD_TYPE_NAME'];?>". <?php echo get_xml_value($dom_unit_info, '/unit/full_name');?><br/> từ chối xét duyệt các hồ sơ của ông/bà.
+                        Sau khi kiểm tra hồ sơ, đối chiếu với quy định pháp luật về "<?php echo $arr_single_record['C_RECORD_TYPE_NAME'];?>". <?php echo get_xml_value($dom_unit_info, '/unit/full_name');?> từ chối xét duyệt các hồ sơ của ông/bà.
                     </td>
                 </tr>
                 
@@ -96,7 +78,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <table border="1" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td class="left" >
-                        <b>Nơi nhận: </b> <br/> - Như trên; <br/>- TT UBND TP; <br/> - Bộ phận "Một cửa"; <br/> - Lưu VT;
+                        <b>Nơi nhận: </b> <br/> - Như trên; <br/> - Bộ phận "Một cửa"; <br/> - Lưu VT;
                     </td>
                     <td style="text-align: center">
                         <b>BỘ PHẬN TIẾP NHẬN VÀ TRẢ KẾT QUẢ</b>

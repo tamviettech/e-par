@@ -1,27 +1,8 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 defined('DS') or die;
 /* @var $this \View */
 $this->template->title = 'Báo cáo tổng hợp';
 $this->template->display('dsp_header.php');
-
 
 function check_vilage_id()
 {
@@ -35,110 +16,114 @@ function check_vilage_id()
         return false;
     }
 }
-
 ?>
+
 <style>
     table td{padding: 3px;}
 </style>
-<form id="frmMain" method="post">
-    <?php
-    echo $this->hidden('controller', $this->get_controller_url());
-    echo $this->hidden('hdn_group_level', '');
-    ?>
-    <table class="no-border" >
-        <tr>
-            <td><b>Đơn vị:</b></td>
-            <td>
-                <select name="sel_group" id="sel_group" onchange="sel_group_onchange(this)">
-                    <?php if(!check_vilage_id()):?>
-                    <option value="">--- Tất cả ---</option>
-                    <?php endif;?>
-                    <?php foreach($arr_all_group as $group_code => $info):?>
-                    <option value="<?php echo $group_code?>" data-level="<?php echo $info['C_LEVEL']?>"><?php echo $info['C_NAME']?></option>
-                    <?php endforeach?>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><b>Thời gian tiếp nhận hồ sơ: </b></td>
-            <td>
-                <?php
-                $arr_rads              = array('m'     => 'Tháng', 'Q'     => 'Quý', 'Y'     => 'Năm'
-                    , '1to6'  => '6 tháng đầu năm', '7to12' => '6 tháng cuối năm');
-                ?>
-                <?php foreach ($arr_rads as $k => $v): ?>
-                    <label class="checkbox inline">
-                        <input 
-                            type="radio" name="rad_type"
-                            id="rad_<?php echo $k ?>" value="<?php echo $k ?>"
-                            onclick="filter.set_type('<?php echo $k ?>')"
-                            />
-                            <?php echo $v; ?>
-                    </label>
-                <?php endforeach; ?>
-            </td>
-        </tr>
-        <tr>
-            <td><b>Chọn năm</b></td>
-            <td>
-                <select name="sel_year" id="sel_year">
-                    <?php for ($i = date('Y'); $i >= 2012; $i--): ?>
-                        <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                    <?php endfor; ?>
-                </select>
-                &nbsp;
-                <select name="sel_month" id="sel_month">
-                    <?php for ($i = 1; $i <= 12; $i++): $selected = date('m') == $i ? 'selected' : '' ?>
-                        <option value="<?php echo $i ?>" <?php echo $selected ?>><?php echo $i ?></option>
-                    <?php endfor; ?>
-                </select>
-            </td>
-        </tr>
-        <tr id="tr_quarter">
-            <td><b>Chọn quý</b></td>
-            <td>
-                <?php
-                $current_month = (int) date('m');
-                switch (true)
-                {
-                    case (in_array($current_month, range(1, 3))):
-                        $quarter = 1;
-                        break;
-                    case (in_array($current_month, range(4, 6))):
-                        $quarter = 2;
-                        break;
-                    case (in_array($current_month, range(7, 9))):
-                        $quarter = 3;
-                        break;
-                    default:
-                        $quarter = 4;
-                } //switch
-                $arr_quarters = array(1 => 'Quý I', 2 => 'Quý II', 3 => 'Quý III', 4 => 'Quý IV');
-                ?>
-                <?php foreach ($arr_quarters as $k => $v): $checked = $quarter == $k ? 'checked' : '' ?>
-                    <label class="checkbox inline">
-                        <input type="radio" name="rad_quarter" <?php echo $checked ?> value="<?php echo $k ?>"/>
-                        <?php echo $v ?>
-                    </label>
-                <?php endforeach; ?>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td class="">
-                <!--button in-->
-                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_onclick();">
-                    <i class="icon-print"></i>
-                    In báo cáo
-                </button>
-            </td>
-        </tr>
-    </table>
+<div class="group">
+      <form id="frmMain" method="post">
+        <div class="widget-head blue">
+            <h3>
+                  <?php echo $repoer_title; ?>
+            </h3>
+        </div>
+         <div class="widget-container" style="min-height: 90px;border: 1px solid #3498DB;">
+            <?php
+            echo $this->hidden('controller', $this->get_controller_url());
+            echo $this->hidden('hdn_group_level', '');
+            ?>
+            <table class="no-border" width="100%" >
+            <tr>
+                <td width="20%"><b>Đơn vị:</b></td>
+                <td>
+                    <select name="sel_group" id="sel_group" onchange="sel_group_onchange(this)">
+                        <?php if(!check_vilage_id()):?>
+                        <option value="">--- Tất cả ---</option>
+                        <?php endif;?>
+                        <?php foreach($arr_all_group as $group_code => $info):?>
+                        <option value="<?php echo $group_code?>" data-level="<?php echo $info['C_LEVEL']?>"><?php echo $info['C_NAME']?></option>
+                        <?php endforeach?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Thời gian tiếp nhận hồ sơ: </b></td>
+                <td>
+                    <?php
+                    $arr_rads              = array('m'     => 'Tháng', 'Q'     => 'Quý', 'Y'     => 'Năm'
+                        , '1to6'  => '6 tháng đầu năm', '7to12' => '6 tháng cuối năm');
+                    ?>
+                    <?php foreach ($arr_rads as $k => $v): ?>
+                        <label class="checkbox inline">
+                            <input 
+                                type="radio" name="rad_type"
+                                id="rad_<?php echo $k ?>" value="<?php echo $k ?>"
+                                onclick="filter.set_type('<?php echo $k ?>')"
+                                />
+                                <?php echo $v; ?>
+                        </label>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Chọn năm</b></td>
+                <td>
+                    <select name="sel_year" id="sel_year">
+                        <?php for ($i = date('Y'); $i >= 2012; $i--): ?>
+                            <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                        <?php endfor; ?>
+                    </select>
+                    &nbsp;
+                    <select name="sel_month" id="sel_month">
+                        <?php for ($i = 1; $i <= 12; $i++): $selected = date('m') == $i ? 'selected' : '' ?>
+                            <option value="<?php echo $i ?>" <?php echo $selected ?>><?php echo $i ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </td>
+            </tr>
+            <tr id="tr_quarter">
+                <td><b>Chọn quý</b></td>
+                <td>
+                    <?php
+                    $current_month = (int) date('m');
+                    switch (true)
+                    {
+                        case (in_array($current_month, range(1, 3))):
+                            $quarter = 1;
+                            break;
+                        case (in_array($current_month, range(4, 6))):
+                            $quarter = 2;
+                            break;
+                        case (in_array($current_month, range(7, 9))):
+                            $quarter = 3;
+                            break;
+                        default:
+                            $quarter = 4;
+                    } //switch
+                    $arr_quarters = array(1 => 'Quý I', 2 => 'Quý II', 3 => 'Quý III', 4 => 'Quý IV');
+                    ?>
+                    <?php foreach ($arr_quarters as $k => $v): $checked = $quarter == $k ? 'checked' : '' ?>
+                        <label class="checkbox inline">
+                            <input type="radio" name="rad_quarter" <?php echo $checked ?> value="<?php echo $k ?>"/>
+                            <?php echo $v ?>
+                        </label>
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="center">
+                    <!--button in-->
+                    <button type="button" name="trash" class="btn" onclick="btn_print_onclick();">
+                        <i class="icon-print"></i>
+                        In báo cáo
+                    </button>
+                </td>
+            </tr>
+        </table>
+        </div>
 </form>
-
-
-
-
 <script type="text/javascript">
 $(document).ready(function(){
     sel_group_onchange($('#sel_group'));
@@ -237,6 +222,6 @@ function sel_group_onchange(group)
     var level = $(group).find(':selected').attr('data-level');
    $('#hdn_group_level').val(level);
 }
-</script>
+</script
 <?php
 $this->template->display('dsp_footer.php');

@@ -69,11 +69,18 @@ class ZREPORT extends TCPDF
         {
             $date = Date('d-m-Y');
         }
-        $this->Cell(0, 20, '', 0, 1, 'R', 0, '', 0);
+        $this->Cell(0, 20, '', 0, 1, 'L', 0, '', 0);
 
-        $this->SetFont('liennd.times', 'Italic', 12);
-        $txt = $name . ', ngày ' . Date('d', strtotime($date)) . ' tháng ' . Date('m', strtotime($date)) . ' năm ' . Date('Y', strtotime($date));
-        $this->Cell(0, 5, $txt, 0, 1, 'R', 0, '', 0);
+        $this->SetFont('liennd.times', 'I', 12);
+//      $txt = $name . ', ngày ' . Date('d', strtotime($date)) . ' tháng ' . Date('m', strtotime($date)) . ' năm ' . Date('Y', strtotime($date));
+//      $this->Cell(0,5, $txt, 0, 1, 'R', 0, '', 0);
+
+//      Huong  : Khong hien thi ten don vi khi bao cao 
+        $txt = 'Ngày ' . Date('d', strtotime($date)) . ' tháng ' . Date('m', strtotime($date)) . ' năm ' . Date('Y', strtotime($date));
+        $this->MultiCell(140, 3, '', 0, 'C', 0, 0, '', '', true);
+        $this->MultiCell(140, 5, $txt, 0, 'C', 0, 0, '', '', true);
+//--        
+        
     }
 
     public function writeHtmlReport($html, $ln = true, $fill = false, $reseth = false, $cell = false, $align = '')

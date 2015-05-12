@@ -1,22 +1,11 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php 
+/**
+ * @copyright	Copyright (C) 2012 Tam Viet Tech. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @author		Ngo Duc Lien <liennd@gmail.com>
+ * @author		Luong Thanh Binh <ltbinh@gmail.com>
+ */
+
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE('ohhh');
@@ -60,18 +49,24 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
     echo $this->hidden('hdn_approval_value', $v_promote);
     ?>
 
-    <div class="panel_color_form">Kết quả thụ lý hồ sơ liên thông</div>
-    <div class="Row">
-        <div class="left-Col">
-            <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
+    <div class="group" style="padding-bottom: 5px; float: left;width: 100%">
+        <div class="widget-head blue">
+            <h3>
+                Kết quả thụ lý hồ sơ liên thông
+            </h3>
         </div>
-        <div class="right-Col">
-            <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
+        <div class="Row">
+            <div class="left-Col">
+                <label for="Loại hồ sơ: ">Loại hồ sơ: </label>
+            </div>
+            <div class="right-Col">
+                <?php echo $v_record_type_code;?> - <?php echo $v_record_type_name;?>
+            </div>
         </div>
     </div>
 
     <!-- Record list -->
-    <table cellpadding="4" cellspacing="0" width="100%" class="list">
+    <table width="100%" class="adminlist table table-bordered table-striped">
         <tr>
             <th>STT</th>
             <th>Mã hồ sơ</th>
@@ -91,8 +86,8 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
     </table>
     <!-- End: Record list -->
 
-    <fieldset style="border: 1px solid;padding-left: 10px">
-        <legend><div class="panel_color_form">Thông tin yêu cầu</div></legend>
+   <fieldset class="default">
+        <legend>Thông tin yêu cầu</legend>
         <table style="width:100%" class="none-border-table">
             <col width="20%"/>
             <col width="80%" />
@@ -115,8 +110,8 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
             </tr>
         </table>
     </fieldset>
-    <fieldset style="border: 1px solid;padding-left: 10px">
-        <legend><div class="panel_color_form">Kết quả giải quyết</div></legend>
+    <fieldset class="default">
+        <legend>Kết quả giải quyết</legend>
         <table style="width:100%" class="none-border-table">
             <col width="20%"/>
             <col width="80%" />
@@ -127,19 +122,23 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
             <tr>
                 <td>Kết quả:</td>
                 <td>
-                    <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>"
-                        value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>" checked="checked""
-                    />
-                    <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>">Đồng ý</label>
+                    <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>">
+                        <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>"
+                            value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT;?>" checked="checked""
+                        />
+                        Đồng ý
+                    </label>
 
-                    <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>"
-                        value="<?php echo _CONST_RECORD_APPROVAL_REJECT;?>"
-                    />
-                    <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>">Từ chối</label>
+                    <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>">
+                        <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT;?>"
+                            value="<?php echo _CONST_RECORD_APPROVAL_REJECT;?>"
+                        />
+                        Từ chối
+                    </label>
                 </td>
             </tr>
             <tr>
-                <td style="vertical-align: top;">Diễn giải:</td>
+                <td style="vertical-align: top;">Diễn giải <span class="required">(*)</span>:</td>
                 <td>
                     <textarea rows="5" cols="120" name="txt_reason"></textarea>
                 </td>
@@ -147,7 +146,6 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
         </table>
     </fieldset>
 
-    <div class="clear">&nbsp;</div>
     <!-- Buttons -->
     <div class="button-area">
         <hr/>
@@ -161,6 +159,12 @@ $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
     function btn_do_approval_onclick()
     {
         var f = document.frmMain;
+        if (trim(f.txt_reason.value) == '')
+        {
+            alert('"Diễn giải không được để trống!');
+            f.txt_reason.focus();
+            return;
+        }
 
         f.submit();
     }

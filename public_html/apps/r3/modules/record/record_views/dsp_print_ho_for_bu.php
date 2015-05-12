@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE();
@@ -39,7 +21,7 @@ $v_ho = get_request_var('ho','0');
         <script src="<?php echo SITE_ROOT;?>public/js/jquery/jquery.min.js" type="text/javascript"></script>
         
         <!--adapter-->
-        <script src="<?php echo SITE_ROOT; ?>public/js/adapter.js" type="text/javascript"></script>
+        <script src="<?php echo SITE_ROOT; ?>public/js/advchat/adapter.js" type="text/javascript"></script>
     </head>
     <body>
         <?php
@@ -279,6 +261,34 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                                                 $v_col_data .= '<li>' . $r[0] . '</li>';
                                             }
                                             $v_col_data .= '</ul>';
+                                        }
+                                        elseif($col_type_xml == 'text_concat')//dang xml concat text
+                                        {
+                                            $arr_index = explode(',', $v_col_id);
+                                            $v_col_data = '';
+                                            foreach($arr_index as $index)
+                                            {
+                                                $v_col_id       = str_replace('xml/', '', $index);
+                                                $r              = $dom_unit_info_xml_data->xpath("/data/item[@id='" . $v_col_id . "']/value");
+                                                $v_data      = sizeof($r) ? $r[0] : '';
+                                                //kiem tra neu la du lieu nam trong public xml dang select option
+                                                $dom_formstruct = simplexml_load_file($v_xml_form_struct_full_path);
+                                                $src_file = xpath($dom_formstruct, "//item[@id='$v_col_id']/@src_file", XPATH_STRING);
+                                                if($src_file != '' && $v_data != '')
+                                                {
+                                                    $v_data = xpath(simplexml_load_file($src_file), "//item[@value='$v_data']/@name",XPATH_STRING);
+                                                }
+                                                if($v_col_data == '')
+                                                {
+                                                    $v_col_data .= $v_data;
+                                                }
+                                                else
+                                                {
+                                                    $v_col_data .= ', ' . $v_data;
+                                                }
+                                                
+                                            }
+                                            $v_col_data = "<pre>$v_col_data</pre>";
                                         }
                                         //dang default: text
                                         else

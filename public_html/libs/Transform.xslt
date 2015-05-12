@@ -86,21 +86,80 @@
 										</td>
 									</xsl:if>
 									<xsl:if test="@cols='3'">
-										<td width="20%" class="text_color">
-											<span class="text_color">
-												<xsl:value-of select="@label"/>
-											</span>
-										</td>
-										<td width="80%" class="text_color" colspan="3" align="left">
-											<xsl:for-each select="item">
-												<xsl:call-template name="find_control">
-													<xsl:with-param name="ControlType">
-														<xsl:value-of select="@type"/>
-													</xsl:with-param>
-												</xsl:call-template>
-											</xsl:for-each>
-										</td>
-									</xsl:if>
+                                                                            <xsl:choose>
+                                                                                <!--Chia 3 cot 1 hang-->
+                                                                                <xsl:when test="@row='3'">
+                                                                                   <td width="10%" class="text_color" colspan="1" align="left">
+                                                                                   </td>
+                                                                                        <xsl:for-each select="item">
+                                                                                            <td width="30%" class="text_color" colspan="1" align="left">
+                                                                                                <xsl:call-template name="find_control">
+
+                                                                                                        <xsl:with-param name="ControlType">
+                                                                                                                <xsl:value-of select="@type"/>
+
+                                                                                                        </xsl:with-param>
+
+                                                                                                </xsl:call-template>
+                                                                                                </td>
+                                                                                        </xsl:for-each>
+                                                                                </xsl:when>
+                                                                                
+                                                                                <!--Chia 2 cot 1 hang-->
+                                                                                <xsl:when test="@row='2'">
+                                                                                   <td width="10%" class="text_color" colspan="1" align="left"></td>
+                                                                                        <xsl:for-each select="item">
+                                                                                            <td width="30%" class="text_color" colspan="1" align="left">
+                                                                                                <xsl:call-template name="find_control">
+
+                                                                                                        <xsl:with-param name="ControlType">
+                                                                                                                <xsl:value-of select="@type"/>
+
+                                                                                                        </xsl:with-param>
+
+                                                                                                </xsl:call-template>
+                                                                                                </td>
+                                                                                        </xsl:for-each>
+                                                                                        <td width="30%" class="text_color" colspan="1" align="left"></td>
+                                                                                </xsl:when>
+                                                                                <!--Chia 1 cot 1 hang-->
+                                                                                <xsl:when test="@row='2'">
+                                                                                   <td width="10%" class="text_color" colspan="1" align="left"></td>
+                                                                                        <xsl:for-each select="item">
+                                                                                            <td width="30%" class="text_color" colspan="1" align="left">
+                                                                                                <xsl:call-template name="find_control">
+
+                                                                                                        <xsl:with-param name="ControlType">
+                                                                                                                <xsl:value-of select="@type"/>
+
+                                                                                                        </xsl:with-param>
+
+                                                                                                </xsl:call-template>
+                                                                                                </td>
+                                                                                        </xsl:for-each>
+                                                                                        <td width="30%" class="text_color" colspan="1" align="left"></td>
+                                                                                        <td width="30%" class="text_color" colspan="1" align="left"></td>
+                                                                                </xsl:when>
+                                                                                
+                                                                                <xsl:otherwise>
+                                                                                    <!--chia 3 hang 1 cot-->
+                                                                                    <td width="20%" class="text_color">
+                                                                                                <span class="text_color">
+                                                                                                        <xsl:value-of select="@label"/>
+                                                                                                </span>
+                                                                                        </td>
+                                                                                        <td width="80%" class="text_color" colspan="3" align="left">
+                                                                                                <xsl:for-each select="item">
+                                                                                                        <xsl:call-template name="find_control">
+                                                                                                                <xsl:with-param name="ControlType">
+                                                                                                                        <xsl:value-of select="@type"/>
+                                                                                                                </xsl:with-param>
+                                                                                                        </xsl:call-template>
+                                                                                                </xsl:for-each>
+                                                                                        </td>
+                                                                                </xsl:otherwise>
+                                                                            </xsl:choose>
+                                                                        </xsl:if>
 								</tr>
 							</table>
 						</td>
@@ -300,12 +359,19 @@
                                 <xsl:if test="@id='ckbTaiLieuKhac'">
                                     <label for="{@id}">
                                         <input type="checkbox" id="{@id}" onclick="Textarea('{@id}','{@id}_div');" onKeyDown="return handleEnter(this, event);" data-name="{@title}" data-xml="yes" data-doc="{@doc}"/>
+                                        <span style="width: 5px;display:inline-block;"></span>
                                         <xsl:value-of select="@title"/>
                                     </label>
                                 </xsl:if>
                                 <xsl:if test="@id!='ckbTaiLieuKhac'">
                                     <label for="{@id}">
-                                        <input type="checkbox" id="{@id}" data-name="{@title}" data-xml="yes" data-doc="{@doc}"/>
+                                        <xsl:if test="@checked">
+                                            <input type="checkbox" id="{@id}" data-name="{@title}" data-xml="yes" data-doc="{@doc}" checked="checked"/>
+                                        </xsl:if>
+                                        <xsl:if test="not(@checked)">
+                                            <input type="checkbox" id="{@id}" data-name="{@title}" data-xml="yes" data-doc="{@doc}"/>
+                                        </xsl:if>
+                                        <span style="width: 5px;display:inline-block;"></span>
                                         <xsl:value-of select="@title"/>
                                     </label>
                                 </xsl:if>
@@ -330,12 +396,12 @@
 <!-- Stylus Studio meta-information - (c) 2004-2009. Progress Software Corporation. All rights reserved.
 
 <metaInformation>
-	<scenarios/>
-	<MapperMetaTag>
-		<MapperInfo srcSchemaPathIsRelative="yes" srcSchemaInterpretAsXML="no" destSchemaPath="" destSchemaRoot="" destSchemaPathIsRelative="yes" destSchemaInterpretAsXML="no"/>
-		<MapperBlockPosition></MapperBlockPosition>
-		<TemplateContext></TemplateContext>
-		<MapperFilter side="source"></MapperFilter>
-	</MapperMetaTag>
+        <scenarios/>
+        <MapperMetaTag>
+                <MapperInfo srcSchemaPathIsRelative="yes" srcSchemaInterpretAsXML="no" destSchemaPath="" destSchemaRoot="" destSchemaPathIsRelative="yes" destSchemaInterpretAsXML="no"/>
+                <MapperBlockPosition></MapperBlockPosition>
+                <TemplateContext></TemplateContext>
+                <MapperFilter side="source"></MapperFilter>
+        </MapperMetaTag>
 </metaInformation>
 -->

@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
 {
     exit('No direct script access allowed');
@@ -100,13 +82,16 @@ if (isset($arr_single_record['PK_RECORD']) && is_array($arr_single_record))
         <form name="frmMain" id="frmMain" action="" method="POST">
             <DIV id="overDiv" style="Z-INDEX: 10000; VISIBILITY: hidden; POSITION: absolute"></DIV>
             <div class="container_24" id="main">
-                <div class="grid_24" id="banner"></div>
-                <div class="grid_24 top-nav-box" id="header">
-                    <div id="date"><?php echo jwDate::vn_day_of_week() . ', ' . date("d/m/Y"); ?></div>
+                <div id="box-header">
+                    <div class="grid_24" id="banner"></div>
+                    <div class="grid_24 top-nav-box" id="header">
+                        <div id="date"><?php echo jwDate::vn_day_of_week() . ', ' . date("d/m/Y"); ?></div>
+                    </div>
+                    <div class="clear">&nbsp;</div>
                 </div>
                 <div class="clear">&nbsp;</div>
                 <div  id="wrapper">
-                    <div >
+                    <div id="box-input-record-no">
                         <div class="edit-box" id="box-search">
                             <div style="width: 96%; padding: 4px;">
                                 <div class="menuLeft" id="menuLeft">
@@ -116,6 +101,7 @@ if (isset($arr_single_record['PK_RECORD']) && is_array($arr_single_record))
                         </div>
                     </div>
                     <div  id="content_right">
+                        <div id="content-show" style="margin-top: 10px">
                         <?php if (isset($arr_single_record_statistic) && sizeof($arr_single_record_statistic) > 0 && is_array($arr_single_record)): ?>
                             <?php
                             echo $this->hidden('controller', $this->get_controller_url());
@@ -323,8 +309,6 @@ if (isset($arr_single_record['PK_RECORD']) && is_array($arr_single_record))
                                     }
                                 });
                             </script>
-                        
-                               
                           <?php 
                             elseif(!is_array($arr_single_record) && isset($arr_single_record)):
                             ?>
@@ -333,6 +317,7 @@ if (isset($arr_single_record['PK_RECORD']) && is_array($arr_single_record))
                                 elseif($v_record_no): ?>
                             Không tìm thấy mã hồ sơ <b><?php echo $v_record_no ?></b>
                         <?php endif; ?>
+                        </div>
                     </div>
                     <!-- #content_right-->
                 </div>
@@ -342,10 +327,68 @@ if (isset($arr_single_record['PK_RECORD']) && is_array($arr_single_record))
                     <div id="footer">
                         R3 - Phần mềm hỗ trợ giải quyết thủ tục hành chính theo cơ chế một cửa </br>
                     </div>
+                    <div class="clear">&nbsp;</div>
                 </div>
                 <div class="clear">&nbsp;</div>
             </div>
             <!-- class="container_24" #main -->
         </form>
+        <div class="clear">&nbsp;</div>
+        <?php if(defined('CONST_MAVACH_SCROLL') && CONST_MAVACH_SCROLL == TRUE): ?>
+        <script>
+        <!--
+            $(function($){
+                $(document).ready(function(){                    
+                    var height_footer       = $('#footer').outerHeight();
+                    var height_header       = $('#box-header').outerHeight();
+                    var box_input_record_no = $('#box-input-record-no').outerHeight() + 20;
+                    var content_right       = $('#content_right').outerHeight();
+                    var window_height       = $(window).outerHeight() - 20; 
+                    var frmMain_height      = $('#frmMain').outerHeight();
+                    scroll_next = true;
+                    var max_scroll = content_right - (window_height - box_input_record_no - height_header - height_footer);
+                    var step_mavach = 1;
+                    if( frmMain_height > window_height)
+                    {
+                        $('body').css('overflow-y','hidden');
+                        var height_remain = content_right - max_scroll;
+                        $('#content_right').height(height_remain);
+                        $('#content_right').css('overflow', "hidden");
+                        setInterval(function(){ scroll_mavach(step_mavach,max_scroll)},<?php echo CONST_MAVACH_LIMIT_TIME_SCROLL ?>);
+                    }
+                    
+                }) ;
+            });
+            function scroll_mavach(step,max_scroll) 
+            {
+                if(typeof step == undefined || parseInt(step) <=0 )
+                {
+                    step = 1;
+                }
+                var scroll_current = $('#content_right').scrollTop();
+                var scroll = 0;
+                if(scroll_current <= 0)
+                {
+                    scroll_next = true;
+                }
+                else if(scroll_current >= max_scroll)
+                {
+                    scroll_next = false;
+                }               
+                if(scroll_next == true)
+                {
+                    scroll = scroll_current + step;
+                    console.log(scroll);
+                }
+                else
+                {
+                    $('#content_right').scrollTop(0);
+                }                
+                $('#content_right').scrollTop(scroll);
+                
+            }
+        -->
+        </script>
+        <?php endif;?>
     </body>
 </html>

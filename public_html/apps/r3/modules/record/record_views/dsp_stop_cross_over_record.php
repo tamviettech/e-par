@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //display header
@@ -60,7 +42,7 @@ $v_reason = '';
         <hr/>
         <button nam="btn_do_approval" class="btn btn-primary" onclick="btn_do_approval_onclick();"><i class="icon-save"></i>Cập nhật</button>        
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-        <button class="btn btn-danger" name="cancel" onclick="<?php echo $v_back_action;?>"><i class="icon-remove"><?php echo __('close window'); ?></i></button>
+        <button class="btn" name="cancel" onclick="<?php echo $v_back_action;?>"><i class="icon-remove"><?php echo __('close window'); ?></i></button>
         
     </div>
 </form>

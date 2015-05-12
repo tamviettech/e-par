@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 
@@ -71,7 +53,7 @@ $v_current_tab               = isset($_REQUEST['hdn_status_tab']) ? $_REQUEST['h
         <div id="all-folder" class="span4">
             <div class="btn-backup-restore" style="margin-bottom: 5px;">
                 <button class="btn btn-primary" type="button" onclick="btn_backup_onclick()">Sao lưu</button>
-                <button class="btn btn-danger" type="button" onclick="btn_show_all_item_onclick();">Danh sách tập tin</button>
+                <button class="btn" type="button" onclick="btn_show_all_item_onclick();">Danh sách tập tin</button>
             </div>
             <!--end button-->
             <div class="widget-head orange" style="display:<?php echo ($v_current_tab == 0) ? 'block;' : 'none'; ?>">
@@ -148,7 +130,7 @@ $v_current_tab               = isset($_REQUEST['hdn_status_tab']) ? $_REQUEST['h
         </div>
 
         <div class="btn_delete_file" style="float: right;margin-top: 5px; display:<?php echo ($v_current_tab == 0) ? 'table;' : 'none'; ?>">
-            <button type="button" class="btn btn-danger" onclick="btn_delete_onclick('chk_item')">
+            <button type="button" class="btn" onclick="btn_delete_onclick('chk_item')">
                 <i class="icon-remove"></i>
                 Xóa tập tin
             </button>

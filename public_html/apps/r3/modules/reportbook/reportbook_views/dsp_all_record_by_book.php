@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 defined('DS') or die();
 
 $this->template->title = isset($arr_single_book['c_name']) ? $arr_single_book['c_name'] : '';
@@ -131,7 +113,7 @@ $v_book_id     = end(explode('/', $v_curent_url));
                             <span class="icon-search"></span>
                             </button>
                              <button data-toggle="dropdown" value="Lọc" class="btn btn-default" onclick="window.location.href = '<?php echo SITE_ROOT;?>r3/reportbook/';" >
-                                 <i class="icon-undo"></i>
+                                 <i class="icon-reply"></i>
                                  Quay lại
                             </button>
                         </div>
@@ -142,13 +124,13 @@ $v_book_id     = end(explode('/', $v_curent_url));
         <br/>
         <?php if(sizeof($arr_all_record) > 0): ?>
         <div id="solid-button" style="margin-bottom: 5px;">
-            <button class="btn btn-info" type="button" 
+            <button class="btn" type="button" 
                     class="solid excel" onclick="btn_export_onclick('xls')">
                 <i class="icon-print"></i> 
                 Kết xuất sổ dưới dạng Excel
             </button>
             
-           <button class="btn btn-info" 
+           <button class="btn" 
                     type="button" class="solid excel" 
                     onclick="btn_export_onclick('cvs')">
                  <i class="icon-print"></i>  
@@ -156,7 +138,7 @@ $v_book_id     = end(explode('/', $v_curent_url));
             </button>
            
             
-            <button class="btn btn-info" 
+            <button class="btn" 
                     type="button" class="solid pdf" 
                     onclick="btn_export_onclick('pdf')">
                  <i class="icon-print"></i>  

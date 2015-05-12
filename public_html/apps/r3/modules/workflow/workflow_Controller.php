@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed'); ?>
 
 <?php
@@ -473,20 +455,25 @@ class workflow_Controller extends Controller
 
     function dsp_switch_user()
     {
-        $VIEW_DATA['user']     = get_request_var('user');
-        $VIEW_DATA['task']     = get_request_var('task');
-        $VIEW_DATA['keywords'] = get_post_var('txt_search');
+        $VIEW_DATA['user']       = get_request_var('user');
+        $VIEW_DATA['task']       = get_request_var('task');
+        $VIEW_DATA['keywords']   = get_post_var('txt_search');
+        $VIEW_DATA['group_code'] = get_request_var('group_code');
+        
         page_calc($v_start, $v_end);
         $v_start               = $v_start - 1;
         $limit                 = $v_end - $v_start;
-
-        $tables = "t_cores_user u Left Outer Join 
-            (Select * from t_r3_user_task Where C_TASK_CODE='{$VIEW_DATA['task']}') ut 
-            On u.C_LOGIN_NAME=ut.C_USER_LOGIN_NAME";
-        $conds  = "u.C_STATUS=1 And ut.PK_USER_TASK Is Null";
+       
+        $tables = ' t_cores_user u
+                        LEFT JOIN t_cores_user_group UG
+                        ON u.PK_USER = UG.FK_USER';
+        $conds  = " u.C_STATUS > 0
+                    And UG.FK_GROUP=(SELECT PK_GROUP FROM t_cores_group WHERE C_CODE='{$VIEW_DATA['group_code']}')
+                    AND u.C_LOGIN_NAME <> '{$VIEW_DATA['user']}'";
+        
         if ($VIEW_DATA['keywords'])
         {
-            $conds .= " And C_NAME Like '%{$VIEW_DATA['keywords']}%'";
+            $conds .= " And u.C_NAME Like '%{$VIEW_DATA['keywords']}%'";
         }
 
         $count = $this->model->db->GetOne("Select Count(*) From $tables Where $conds");
@@ -504,4 +491,43 @@ class workflow_Controller extends Controller
         $this->model->switch_user($task, $dest, $src);
     }
 
+    /**
+     * Hien thi man hinh chon thu tuc de nhận PUSH phân công
+     * @param type $record_type_code
+     */
+    
+    public function dsp_push_assign($record_type_code)
+    {
+        //lấy lĩnh vực
+        $record_type_code = replace_bad_char($record_type_code);
+        $arr_single       = $this->model->qry_single_record_type('', $record_type_code);
+        $v_spec_code      = isset($arr_single['C_SPEC_CODE']) ? $arr_single['C_SPEC_CODE'] : '';
+        //lọc
+        $v_search         = get_post_var('txt_search','');
+
+        //phan trang
+        page_calc($v_start, $v_end);
+        $limit  = $v_end - $v_start + 1;
+        $offset = $v_start - 1;
+        //lấy thủ tục cùng lĩnh vực và đã được phân công
+        $where  = " C_SPEC_CODE='$v_spec_code' 
+                    And C_CODE <> '$record_type_code'
+                    And C_SCOPE = {$arr_single['C_SCOPE']}";
+        if ($v_search != '')
+        {
+            $where .= " And (C_CODE Like '%$v_search%' Or C_NAME Like '%$v_search%')";
+        }
+
+        $arr_spec_record_types = $this->model->qry_all_record_type($where, $limit, $offset);
+
+        $VIEW_DATA['arr_spec_record_types'] = $arr_spec_record_types;
+        $VIEW_DATA['id']                    = $arr_single['PK_RECORD_TYPE'];
+        
+        $this->view->render('dsp_push_assign', $VIEW_DATA);
+    }
+    
+    public function do_push_assign()
+    {
+        $this->model->do_push_assign();
+    }
 }

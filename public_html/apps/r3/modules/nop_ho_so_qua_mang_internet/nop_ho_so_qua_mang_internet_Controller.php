@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
@@ -64,17 +46,20 @@ class nop_ho_so_qua_mang_internet_Controller extends Controller
 
     function main()
     {
-        $this->danh_sach_thu_tuc();
+        $this->nhap_thong_tin();
     }
 
     public function nhap_thong_tin($record_type_id = 0)
     {
+        $this->view->title = 'Đăng ký hồ sơ';
+        $this->view->arr_web_link  = $this->model->qry_all_web_link();
+        
         if (!empty($_POST))
         {
             $VIEW_DATA['response'] = $this->model->do_send();
             if ($VIEW_DATA['response']->success)
             {
-                $this->render('do_send', $VIEW_DATA);
+                $this->view->layout_render('public_service/panel/dsp_layout','do_send', $VIEW_DATA);
                 exit;
             }
         }
@@ -82,6 +67,7 @@ class nop_ho_so_qua_mang_internet_Controller extends Controller
         $VIEW_DATA['active_record_type_id'] = $record_type_id;
         $VIEW_DATA['arr_all_record_type']   = $this->model->qry_all_send_over_internet_record_type(true);
         $VIEW_DATA['action']                = __FUNCTION__;
+        
         foreach ($VIEW_DATA['arr_all_record_type'] as $arr_single_record_type)
         {
             $v_id                                           = $arr_single_record_type['PK_RECORD_TYPE'];
@@ -94,8 +80,9 @@ class nop_ho_so_qua_mang_internet_Controller extends Controller
                 From t_r3_record_type 
                 Where PK_RECORD_TYPE=? 
                 And C_SEND_OVER_INTERNET='1'", array($record_type_id));
-
-            $this->render('form', $VIEW_DATA);
+            
+            $this->view->menu_active = 'dsp_registration_list';
+            $this->view->layout_render('public_service/panel/dsp_layout','form', $VIEW_DATA);
         }
     }
 

@@ -1,23 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-
-<?php
 defined('SERVER_ROOT') or die();
 $rows_per_col = 5;
 array_unshift($arr_all_spec, '<b>--Tất cả lĩnh vực--</b>');
@@ -31,11 +12,11 @@ $v_spec_code  = get_post_var('rad_linh_vuc', 0);
 <form id="frmMain" method="post">
     <table class="no-border">
         <colgroup>
-            <col width="30%">
-            <col width="70%">
+            <col width="25%">
+            <col width="75%">
         </colgroup>
         <tbody>
-            <tr class="list-search">
+            <tr>
                 <td><b>Lĩnh vực:</b></td>
                 <td>
                     <?php if ($arr_all_spec): ?>
@@ -69,10 +50,10 @@ $v_spec_code  = get_post_var('rad_linh_vuc', 0);
                     <?php endif; ?>
                 </td>
             </tr>
-            <tr class="text-search">
+            <tr>
                 <td>
                     <b>
-                        <label for="txt_tu_khoa">Tìm theo Mã hoặc Tên thủ tục: &nbsp;&nbsp;</label>
+                        <label for="txt_tu_khoa">Tìm theo Mã hoặc Tên thủ tục:</label>
                     </b>
                 </td>
                 <td>
@@ -85,10 +66,11 @@ $v_spec_code  = get_post_var('rad_linh_vuc', 0);
             </tr>
         </tbody>
     </table>
+
     <table class="adminlist" style="width: 100%">
         <colgroup>
-            <col width="7%">
-            <col width="93%">
+            <col width="10%">
+            <col width="90%">
         </colgroup>
         <thead>
             <tr>

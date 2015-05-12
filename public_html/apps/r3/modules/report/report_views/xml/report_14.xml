@@ -2,12 +2,12 @@
 <report layout="L"><!--P: Doc, L: Ngang-->
     <list>
         <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
-        <item type="text" id="RN" name="STT" size="40" align="right"/>
-        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="130"/>
-        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="160"/>
-        <item type="text" id="C_RECEIVE_DATE" name="Ngày tiếp nhận" size="150"/>
-        <item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả" size="150"/>
-        <item type="text" id="C_ANNOUNCE_DATE" name="Ngày thông báo bổ sung" size="150"/>
+        <item type="text" id="RN" name="STT" size="40" align="left" excel_width="11"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="130" align="left" excel_width="27"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="160" align="left" excel_width="27"/>
+        <item type="text" id="C_RECEIVE_DATE" name="Ngày tiếp nhận" size="150" align="center" excel_width="17"/>
+        <item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả" size="150" align="center" excel_width="17"/>
+        <item type="text" id="C_ANNOUNCE_DATE" name="Ngày thông báo bổ sung" size="150" align="center" excel_width="17"/>
     </list>
     <total>
     </total>

@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
 {
     exit('No direct script access allowed');
@@ -99,9 +81,36 @@ if ($v_org_return_date != '')
 }
 
 //lay tab selected
-$v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
+$v_tab_selected = isset($_REQUEST['tab']) ? $_REQUEST['tab'] : 'flow';
+
+function count_task($arr_task, $start = 0)
+{
+    $v_rows = 0;
+    $i      = $start;
+    for ($i = $start; $i < count($arr_task); $i++)
+    {
+        $v_task_code = $arr_task[$i]->attributes()->code; //Mã công việc theo quy trình
+        $v_role      = get_role($v_task_code);
+
+        $v_rows++;
+        if ($v_role == _CONST_CHUYEN_HO_SO_LEN_SO_ROLE)
+        {
+            break;
+        }
+    }
+    return $v_rows;
+}
 ?>
-<form name="frmMain" id="frmMain" action="" method="POST" style="background-color: white;">
+<style>
+    .layout,body
+    {
+        background: white;
+    }
+    .table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
+        background-color: white !important;
+    }
+</style>
+<form name="frmMain" id="frmMain" action="" method="POST" style="background-color: white;" enctype="multipart/form-data">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
     echo $this->hidden('hdn_item_id', $v_record_id);
@@ -113,14 +122,15 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
     echo $this->hidden('hdn_delete_method', 'delete_record');
 
     echo $this->hidden('XmlData', $v_xml_data);
+    echo $this->hidden('hdn_add_comment_token', Session::get('add_comment_token'));
     echo $this->user_token();
     ?>
-     <!-- Thong tin chung trong Ho so -->
+    <!-- Thong tin chung trong Ho so -->
     <div class="group" style="padding-bottom: 5px; float: left;width: 100%">
         <div class="widget-head blue">
-                <h3>
-                    Thông tin chung 
-                </h3>
+            <h3>
+                Thông tin chung 
+            </h3>
         </div>
         <style type="text/css">table.none td{border:0px}</style>
         <div class="widget-container" style="border: 1px solid #3498DB">
@@ -192,24 +202,61 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                         <?php endif; ?>
                     </td>
                 </tr>
+                <tr>
+                    <td style="font-weight: bold">
+                        Phí, lệ phí:
+                    </td>
+                    <td>
+                        <?php
+                        $val = '';
+                        if ($arr_single_record_fee['C_FINAL_FEE'] > 0)
+                        {
+                            $val = number_format($arr_single_record_fee['C_FINAL_FEE'], 0, ',', '.');
+                        }
+                        else
+                        {
+                            $v_advance_cost = str_replace(',', '', $arr_single_record_fee['C_ADVANCE_COST']);
+                            $v_advance_cost = str_replace('.', '', $v_advance_cost);
+                            $val            = number_format($v_advance_cost, 0, ',', '.');
+                        }
+                        if ($val)
+                        {
+                            echo $val . "<sup>đ</sup>";
+                        }
+                        ?>
+                    </td>
+                    <td style="font-weight: bold">
+
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
             </table>
             <div id="solid-button">
-                 <!--button in-->
-                 <?php if($v_assistance == 1):?>
-                 <button type="button" name="trash" class="btn btn-info" onclick="btn_print_assistance_form_onclick(<?php echo $v_record_id; ?>);">
-                     <i class="icon-print"></i>
-                     In mẫu hỗ trợ thụ lý
-                 </button>
-                 <?php endif; ?>
+
                 <!--button in-->
-                <button type="button" name="trash" class="btn btn-info" onclick="btn_print_record_form_onclick(<?php echo $v_record_id; ?>);">
+                <button type="button"  name="btn_print1" class="btn btn-sm" onclick="btn_print_record_statistics(<?php echo $v_record_id; ?>);">
+                    <i class="icon-print"></i>
+                    In chi tiết tiến độ xử lý
+                </button>
+                <!--button in-->
+                <!--button in-->
+                <?php if ($v_assistance == 1): ?>
+                    <button  type="button" name="btn_print2" class="btn btn-sm" onclick="btn_print_assistance_form_onclick(<?php echo $v_record_id; ?>);">
+                        <i class="icon-print"></i>
+                        In mẫu hỗ trợ thụ lý
+                    </button>
+                <?php endif; ?>
+                <!--button in-->
+                <button type="button" name="btn_print3" class="btn btn-sm" onclick="btn_print_record_form_onclick(<?php echo $v_record_id; ?>);">
                     <i class="icon-print"></i>
                     In đơn
                 </button>
                 <!--Button close window-->
                 <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-                <button type="button" name="trash" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
-                    <i class="icon-remove"></i>
+                <button type="button" name="trash" class="btn btn-sm" onclick="<?php echo $v_back_action; ?>" >
+                    <i class="icon-reply"></i>
                     <?php echo __('close window'); ?>
                 </button> 
             </div>
@@ -217,43 +264,43 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
     </div>
     <div class="clear">&nbsp;</div>
     <!--tab widget-->
-    <div class="tab-widget" >
+    <div class="tab-widget" id="tab-content">
         <ul class="nav nav-tabs" id="myTab1" >
             <li>
-                <a href="#flow" class="blue"><i class="icon-spinner"></i><span>Tiến độ</span></a>
+                <a href="#flow" class="blue"><i class="icon-time"></i><span>Tiến độ</span></a>
             </li>
             <li>
                 <a href="#comment" class="dark-yellow"><i class="icon-comment"></i><span>Ý kiến / kết quả</span></a>
             </li>
             <li>
-                <a href="#attach" class="bondi-blue"><i class="icon-reorder"></i><span>Tài liệu</span></a>
+                <a href="#attach" class="bondi-blue"><i class="icon-file"></i><span>Tài liệu</span></a>
             </li>
             <li>
-                <a href="#content" class="bondi-blue"><i class="icon-eye-open"></i><span>Xem đơn</span></a>
+                <a href="#content" class="bondi-blue"><i class="icon-list-alt"></i><span>Xem đơn</span></a>
             </li>
             <li>
                 <a href="#step_processing" class=" magenta"><i class="icon-tasks"></i><span>Nhật ký xử lý</span></a>
             </li>
             <!--in mau ho tro thu ly-->
-            <?php if($v_assistance == 1):?>
-            <li>
-                <a href="#print_assistance " class=" magenta"><i class="icon-print"></i><span>In mẫu hỗ trợ thụ lý</span></a>
-            </li>
-            <?php endif;?>
+            <?php if ($v_assistance == 1): ?>
+                <li>
+                    <a href="#print_assistance " class=" magenta"><i class="icon-print"></i><span>In mẫu hỗ trợ thụ lý</span></a>
+                </li>
+            <?php endif; ?>
         </ul>
         <div class="tab-content">
             <!--flow-->
             <div class="tab-pane" id="flow">
                 <?php
-                    //$dom = simplexml_load_file($xml_flow_file_path);
-                    $r     = $dom_flow->xpath("/process");
-                    $proc  = $r[0];
-                    $steps = $proc->step;
+                //$dom = simplexml_load_file($xml_flow_file_path);
+                $r     = $dom_flow->xpath("/process");
+                $proc  = $r[0];
+                $steps = $proc->step;
 
-                    $dom_processing = simplexml_load_string($v_xml_processing);
+                $dom_processing = simplexml_load_string($v_xml_processing);
 
-                    $v_prev_task_finish_datetime  = '';
-                    $v_prev_chain_finish_datetime = '';
+                $v_prev_task_finish_datetime  = '';
+                $v_prev_chain_finish_datetime = '';
                 ?>
                 <div class="step">
                     <div class="clear" style="height: 10px">&nbsp;</div>
@@ -280,34 +327,40 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                             $v_exec_group = $step->attributes()->group;
                             $v_step_name  = $step->attributes()->name;
                             $v_step_time  = $step->attributes()->time;
-                            $tasks        = $step->task;
-                            $v_rows       = count($tasks);
-                            $t            = 0;
+//                            $tasks        = $step->task;
+                            $tasks        = $dom_flow->xpath('//step[position()=' . ($step_order + 1) . ']//task');
+                            $v_rows       = count_task($tasks);
 
-                            $v_is_no_chain_step = $step->attributes()->no_chain;
-                            $v_tr_class         = ($v_is_no_chain_step == 'true') ? ' class="no_chain"' : '';
+//                            $v_rows       = count($tasks);
+                            $t = 0;
+
+                            $v_is_no_chain_step         = $step->attributes()->no_chain;
+                            $v_tr_class                 = ($v_is_no_chain_step == 'true') ? ' class="no_chain"' : '';
                             ?>
                             <tr data-step_order="<?php echo $step_order; ?>">
                                 <td rowspan="<?php echo $v_rows; ?>"><?php echo $v_step_name; ?></td>
-                                
+
                                 <td rowspan="<?php echo $v_rows; ?>" class="left" id="step_begin_date_<?php echo $step_order; ?>">
                                     <?php echo ($v_flow_total_time >= 0) ? $this->break_date_string($this->return_date_by_text(@$arr_step_formal_date[$step_order]['C_BEGIN_DATE'])) : ''; ?>
                                 </td>
-                                
+
                                 <td rowspan="<?php echo $v_rows; ?>" class="center" id="step_time_<?php echo $step_order; ?>"><?php echo ($v_flow_total_time >= 0) ? str_replace('.', ',', $v_step_time) : ''; ?></td>
-                                
-                                
+
+
                                 <td rowspan="<?php echo $v_rows; ?>" id="step_end_date_<?php echo $step_order; ?>">
                                     <?php echo ($v_flow_total_time >= 0) ? $this->break_date_string($this->return_date_by_text(@$arr_step_formal_date[$step_order]['C_END_DATE'])) : ''; ?>
                                 </td>
+
                                 <?php
+                                $task_index                 = 0;
+                                $v_role_chuyen_ho_so_len_so = false;
+
                                 foreach ($tasks as $task):
                                     $v_task_code = $task->attributes()->code; //Mã công việc theo quy trình
                                     $v_task_name = $task->attributes()->name;
                                     $v_task_time = $task->attributes()->time;
                                     $v_next_task = $task->attributes()->next;
-
-                                    $v_role = get_role($v_task_code);
+                                    $v_role      = get_role($v_task_code);
 
                                     //La task dau tien cua step
                                     $v_is_first_task_of_step = count($dom_flow->xpath("//step/task[position()=1][@code='$v_task_code']/@code")) > 0;
@@ -319,7 +372,7 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                                     {
                                         $r = $dom_processing->xpath("//step[contains(@code,'" . _CONST_XET_DUYET_BO_SUNG_ROLE . "')][last()]/datetime");
                                     }
-                                    if (count($r) == 0 OR (date_create($r[0]) < date_create($v_prev_task_finish_datetime) ))
+                                    if (count($r) == 0 OR ( date_create($r[0]) < date_create($v_prev_task_finish_datetime) ))
                                     {
                                         $r = $dom_processing->xpath("//step[@code='$v_task_code'][last()]/datetime");
                                     }
@@ -383,6 +436,23 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                                     <?php if ($t != 0): ?>
                                     <tr data-step_order="<?php echo $step_order; ?>">
                                     <?php endif; ?>
+                                    <?php
+                                    if ($v_role_chuyen_ho_so_len_so == true):
+                                        $v_rows = count_task($tasks, $task_index);
+                                        ?>
+                                        <td rowspan="<?php echo $v_rows; ?>"><?php echo $v_step_name; ?></td>
+
+                                        <td rowspan="<?php echo $v_rows; ?>" class="left" id="step_begin_date_<?php echo $step_order; ?>">
+                                            <?php echo ($v_flow_total_time >= 0) ? $this->break_date_string($this->return_date_by_text(@$arr_step_formal_date[$step_order]['C_BEGIN_DATE'])) : ''; ?>
+                                        </td>
+
+                                        <td rowspan="<?php echo $v_rows; ?>" class="center" id="step_time_<?php echo $step_order; ?>"><?php echo ($v_flow_total_time >= 0) ? str_replace('.', ',', $v_step_time) : ''; ?></td>
+
+
+                                        <td rowspan="<?php echo $v_rows; ?>" id="step_end_date_<?php echo $step_order; ?>">
+                                            <?php echo ($v_flow_total_time >= 0) ? $this->break_date_string($this->return_date_by_text(@$arr_step_formal_date[$step_order]['C_END_DATE'])) : ''; ?>
+                                        </td>
+                                    <?php endif; ?>
                                     <td data-step_order="<?php echo $step_order; ?>" data-task_code="<?php echo $v_task_code; ?>">
                                         <?php echo $v_task_name; ?>
                                         <?php if ($v_is_pause != ''): ?>
@@ -395,7 +465,7 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                                     <td class="center" data-step_order="<?php echo $step_order; ?>"><?php echo jwDate::yyyymmdd_to_ddmmyyyy($v_prev_task_finish_datetime, 1); ?></td>
                                     <td class="center" data-step_order="<?php echo $step_order; ?>">
                                         <?php echo jwDate::yyyymmdd_to_ddmmyyyy($v_task_finish_datetime, 1); ?>
-                                        <?php if ($v_role != _CONST_THU_PHI_ROLE && $v_role != _CONST_TRA_KET_QUA_ROLE && $v_role != _CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE): ?>
+                                        <?php if ($v_role != _CONST_THU_PHI_ROLE && $v_role != _CONST_TRA_KET_QUA_ROLE && $v_role != _CONST_NHAN_BIEN_LAI_NOP_THUE_ROLE && $v_role != _CONST_TRA_KET_QUA_LT_ROLE): ?>
                                             <?php if ($v_is_last_task_of_step && $v_step_finish_datetime_in_fact != ''): ?>
                                                 <br/>
                                                 <?php $v_diff_days_infact = @$arr_step_infact_formal_days_diff[md5($v_task_code)]; ?>
@@ -434,9 +504,58 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                                                 }
                                             }
                                             ?>
-                                        <?php endif; ?>
+                                        <?php endif; //$v_role = _CONST_TRA_KET_QUA_ROLE?>
+                                        <?php
+                                        if ($v_role == _CONST_TRA_KET_QUA_LT_ROLE && $arr_single_record['C_CLEAR_DATE'] != NULL)
+                                        {
+                                            if ($dom_record_result != NULL)
+                                            {
+                                                echo '<br><i><u>Kết quả trả: </u></i>';
+                                                $result = get_xml_value($dom_record_result, '//result');
+                                                echo '<br> <b>- ' . $result;
+                                            }
+                                        }
+                                        ?>
                                     </td>
                                 </tr>
+                                <?php
+                                $v_role_chuyen_ho_so_len_so = false;
+                                if ($v_role == _CONST_CHUYEN_HO_SO_LEN_SO_ROLE)
+                                {
+                                    $v_role_chuyen_ho_so_len_so = true;
+                                    $xpath                      = "//task[@code='" . $v_task_code . "']/@exchange"; //tao xpath de lay thong tin exchange
+                                    $exchange_code              = get_xml_value($dom_flow, $xpath); //lay exchange task code
+
+                                    $xpath             = "//task[@exchange]/@code";
+                                    $arr_exchange_task = $dom_flow->xpath($xpath);
+                                    $index             = 1;
+                                    if (count($arr_exchange_task) > 1)
+                                    {
+                                        for ($i = 0; $i < count($arr_exchange_task); $i++)
+                                        {
+                                            $dom_exchange_task_code                     = $arr_exchange_task[$i];
+                                            if ($dom_exchange_task_code->attributes()->code = $v_task_code)
+                                            {
+                                                $index = $i + 1;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    //lay thong tin tien do tu webservice cua don vi lien thong
+                                    $arr_info  = $arr_all_exchange_unit[$exchange_code];
+                                    $location  = $arr_info['C_LOCATION'];
+                                    $uri       = $arr_info['C_URI'];
+                                    $function  = 'statistics';
+                                    $arr_param = array($v_record_id, $index);
+//                                     $arr_param = array(1,2);
+                                    $client    = new SoapClient(null, array('location' => $location, 'uri' => $uri));
+                                    $result    = $client->__soapCall($function, $arr_param);
+                                    echo $result;
+                                    ?>
+
+                                    <?php
+                                }//end if check role _CONST_CHUYEN_HO_SO_LEN_SO_ROLE
+                                ?>
                                 <?php
                                 $v_prev_task_finish_datetime = $v_task_finish_datetime;
                                 if (strval($step->attributes()->no_chain) != 'true')
@@ -448,21 +567,29 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                                     $v_prev_task_finish_datetime = $v_prev_chain_finish_datetime;
                                 }
                                 ?>
-                            <?php endforeach; //$task?>
+                                <?php
+                                $task_index++;
+                            endforeach; //$task
+                            ?>
                             <?php $t++; ?>
                             <?php $step_order++; ?>
-                        <?php endforeach; //$step ?>
+                        <?php endforeach; //$step  ?>
                     </table>
                 </div>
             </div>
             <!--comment-->
             <div class="tab-pane " id="comment" selected>
+                <?php
+                echo $this->hidden('sid', session_id());
+                echo $this->hidden('user_token', Session::get('user_token'));
+                ?>
                 <div class="clear" style="height: 10px">&nbsp;</div>
                 <table id="tbl_comment" class="adminlist table table-bordered table-striped">
                     <colgroup>
                         <col width="5%" />
-                        <col width="60%" />
+                        <col width="45%" />
                         <col width="20%" />
+                        <col width="15%" />
                         <col width="15%" />
                     </colgroup>
                     <thead>
@@ -471,6 +598,7 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                             <th>Nội dung</th>
                             <th>Người gửi</th>
                             <th>Ngày gửi</th>
+                            <th>File đính kèm</th>
                         </tr>
                     </thead>
                     <?php
@@ -482,6 +610,8 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                         $v_user_job_title = $arr_all_comment[$c]['C_USER_JOB_TITLE'];
                         $v_create_date    = $arr_all_comment[$c]['C_CREATE_DATE'];
                         $v_comment_type   = $arr_all_comment[$c]['C_TYPE'];
+
+                        $v_xml_file = $arr_all_comment[$c]['C_XML_FILE'];
 
                         $v_class = ($v_comment_type == 1) ? ' class="bod_comment"' : '';
                         ?>
@@ -501,25 +631,67 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                             <td>
                                 <?php echo $v_create_date; ?>
                             </td>
+                            <td style="text-align: center">
+                                <?php
+                                if (strlen($v_xml_file) > 0)
+                                {
+                                    $v_xml_file = xml_add_declaration($v_xml_file);
+                                    $dom_file   = simplexml_load_string($v_xml_file);
+                                    $arr_file   = $dom_file->xpath('//file');
+                                    foreach ($arr_file as $file)
+                                    {
+                                        $v_url_file = SITE_ROOT . "uploads" . DS . 'r3' . DS . $file;
+                                        echo "<a target='_blank' href='$v_url_file' title='$file' style='margin-right: 5px;'>
+                                                    <i class='icon-file-alt'></i>
+                                                 </a>";
+                                    }
+                                }
+                                ?>
+                            </td>
                         </tr>
                     <?php endfor; ?>
-                    <?php echo $this->add_empty_rows($c + 1, 5, 4); ?>
+                    <?php echo $this->add_empty_rows($c + 1, 5, 5); ?>
                 </table>
                 <!-- Button -->
-                <div class="button-area">
-                    <?php $a = (Session::get('is_bod_member') == 1) ? 'Thêm ý kiến chỉ đạo' : 'Thêm Ý kiến'; ?>
-                     <!--buton them moi-->
-                    <button type="button" name="addnew" class="btn btn-primary" onclick="btn_add_comment_onclick();">
-                        <i class="icon-plus"></i>
-                        <?php echo $a; ?>
-                    </button>
+                <br>
+                <div class="well">
+                    <div class="Row" style="margin-top: 10px;">
+                        <div class="left-Col" style="width:15%;">
+                            <label>
+                                <?php echo (Session::get('is_bod_member') == 1) ? 'Nội dung ý kiến chỉ đạo mới:' : 'Nội dung ý kiến mới:'; ?>
+                            </label>
+                        </div>
+                        <div class="right-Col">
+                            <textarea style="width: 100%; height: 80px; margin: 0px;margin-left:0px;" rows="2" name="txt_content" id="txt_content" cols="20" maxlength="400"></textarea>  
+                        </div>
+                    </div>
+                    <div class="Row">
+                        <div class="left-Col" style="width:15%;">
+                            <label>Tài liệu đính kèm: </label>
+                        </div>
+                        <div class="right-Col">
+                            <input type="file" style="border: solid #D5D5D5; color: #000000" class="multi accept-<?php echo _CONST_RECORD_FILE_ACCEPT; ?>" name="uploader[]"
+                                   id="File1" accept="<?php echo '.' . str_replace(',', ',.', _CONST_RECORD_FILE_ACCEPT) ?>"/>
+                            <font style="font-weight: normal;">Hệ thống chỉ chấp nhận đuôi file:<?php echo _CONST_RECORD_FILE_ACCEPT ?></font>
+                        </div>
+                    </div>
+                    <div class="button-area">
+                        <?php $a = (Session::get('is_bod_member') == 1) ? 'Thêm ý kiến chỉ đạo' : 'Thêm Ý kiến'; ?>
+                        <!--buton them moi-->
 
-                      <!--button xoa-->
-                    <button type="button" name="trash" class="btn btn-danger" onclick="btn_delete_comment_onclick();">
-                        <i class="icon-trash"></i>
-                        <?php echo 'Xoá ý kiến' ?>
-                    </button>
-                </div>
+                        <button type="button" name="addnew" class="btn btn-primary btn-sm" onclick="btn_add_comment_onclick();">
+                            <i class="icon-plus"></i>
+                            <?php echo $a; ?>
+                        </button>
+                        <?php if (check_permission(_CONST_XOA_Y_KIEN_ROLE, 'R3')): ?>
+                            <!--button xoa-->
+                            <button type="button" name="trash" class="btn btn-sm" onclick="btn_delete_comment_onclick();">
+                                <i class="icon-trash"></i>
+                                <?php echo 'Xoá ý kiến' ?>
+                            </button>
+                        <?php endif; ?>
+                    </div>
+                </div><!--well-->
             </div>
 
             <!--  Tai lieu  -->
@@ -558,7 +730,7 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                                         $v_file_path      = SITE_ROOT . 'uploads/r3/' . $v_file_name;
                                         $v_file_extension = @array_pop(explode('.', $v_file_name));
                                         echo '<img src="' . SITE_ROOT . 'public/images/' . $v_file_extension . '-icon.png" width="16px" height="16px"/>';
-                                        echo '<a href="' . $v_file_path . '" target="_blank">' . $v_file_name . '</a><br/>';
+                                        echo '<a href="' . $v_file_path . '" target="_blank">' . $v_file_name . '</a>';
                                     endforeach;
                                     ?>
                                 <?php endif; ?>
@@ -570,13 +742,13 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                 <!-- Button -->
                 <div class="button-area">
                     <!--buton them moi-->
-                    <button type="button" name="addnew" class="btn btn-primary" onclick="btn_add_doc_onclick();">
+                    <button type="button" name="addnew" class="btn btn-primary btn-sm" onclick="btn_add_doc_onclick();">
                         <i class="icon-plus"></i>
-                        <?php echo 'Thêm tài liệu"'; ?>
+                        <?php echo 'Thêm tài liệu'; ?>
                     </button>
 
-                      <!--button xoa-->
-                    <button type="button" name="trash" class="btn btn-danger" onclick="btn_delete_doc_onclick();">
+                    <!--button xoa-->
+                    <button type="button" name="trash" class="btn btn-sm" onclick="btn_delete_doc_onclick();">
                         <i class="icon-trash"></i>
                         <?php echo 'Xoá tài liệu' ?>
                     </button>
@@ -588,24 +760,23 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                 <div class="clear" style="height: 10px">&nbsp;</div>
                 <div>
                     <!--button in-->
-        <!--            <button type="button" name="trash" class="btn btn-info" onclick="btn_print_record_form_onclick();">
-                        <i class="icon-print"></i>
-                        <?php echo 'In đơn';?>
-                    </button>-->
+                    <!--            <button type="button" name="trash" class="btn" onclick="btn_print_record_form_onclick();">
+                                    <i class="icon-print"></i>
+                    <?php echo 'In đơn'; ?>
+                                </button>-->
                 </div>
                 <div>
-                    <label>File đính kèm:</label>
-                    <?php
-                    if (isset($VIEW_DATA['arr_all_record_file']))
-                    {
+                    <?php if ($VIEW_DATA['arr_all_record_file']): ?>
+                        <label>File đính kèm:</label>
+                        <?php
                         $arr_all_record_file = $VIEW_DATA['arr_all_record_file'];
                         for ($i = 0; $i < sizeof($arr_all_record_file); $i++)
                         {
                             $v_file_id   = $arr_all_record_file[$i]['PK_RECORD_FILE'];
                             $v_file_name = $arr_all_record_file[$i]['C_FILE_NAME'];
                             $v_media_id  = $arr_all_record_file[$i]['FK_MEDIA'];
-                            
-                            if($v_media_id != NULL && $v_media_id != '' && $v_media_id > 0)
+
+                            if ($v_media_id != NULL && $v_media_id != '' && $v_media_id > 0)
                             {
                                 $v_year            = $arr_all_record_file[$i]['C_YEAR'];
                                 $v_month           = $arr_all_record_file[$i]['C_MONTH'];
@@ -613,23 +784,23 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                                 $v_media_file_name = $arr_all_record_file[$i]['C_MEDIA_FILE_NAME'];
                                 $v_file_name       = $arr_all_record_file[$i]['C_NAME'];
                                 $v_file_extension  = $arr_all_record_file[$i]['C_EXT'];
-                                        
+
                                 $v_file_path = CONST_FILE_UPLOAD_LINK . "$v_year/$v_month/$v_day/$v_media_file_name";
                             }
                             else
                             {
-                                $v_file_path = SITE_ROOT . 'uploads/r3/' . $v_file_name;
+                                $v_file_path      = SITE_ROOT . 'uploads/r3/' . $v_file_name;
                                 $v_file_extension = array_pop(explode('.', $v_file_name));
                             }
 
-                            
-                            echo '<br/>&nbsp;&nbsp;<img src="' . SITE_ROOT . 'public/images/' . $v_file_extension . '-icon.png" width="16px" height="16px"/>';
+
+                            echo '&nbsp;&nbsp;<img src="' . SITE_ROOT . 'public/images/' . $v_file_extension . '-icon.png" width="16px" height="16px"/>';
                             echo '<span id="file_' . $v_file_id . '">';
                             echo '<a href="' . $v_file_path . '" target="_blank">' . $v_file_name . '</a><br/>';
                             echo '</span>';
                         }
-                    }
-                    ?>
+                        ?>
+                    <?php endif; ?>
                 </div>
                 <?php echo $this->transform($this->get_xml_config($v_record_type_code, 'form_struct')); ?>
             </div>
@@ -691,210 +862,229 @@ $v_tab_selected = isset($_REQUEST['tab'])?$_REQUEST['tab']:'flow';
                 </table>
             </div>
             <!--in mau ho tro thu lý-->
-             <?php if($v_assistance == 1):; ?>
-            <?php if($this->check_permission(_CONST_THU_LY_ROLE) == TRUE OR $this->check_permission(_CONST_THU_LY_CAP_XA_ROLE) == TRUE):?>
-            <div id="print_assistance">
-                <div class="clear" style="height: 10px">&nbsp;</div>
-                <?php
-                    $v_test_dir = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS
-		    . 'common' . DS . 'auto_lock_unlock.xml';
-                    
-                    
-                    $v_file_ext_config = $this->get_xml_config($v_record_type_code, 'ext_config');
-                    if(file_exists($v_file_ext_config))
-                    {
-                        $dom = simplexml_load_file($v_file_ext_config);
-                        $x_path = '//assistance/item';
-                        $r = $dom->xpath($x_path);
-                    }
-                    else
-                    {
-                        echo 'Chưa có mẫu hỗ trợ thụ lý';
-                    }
-                ?>
-                <div class="Row">
-                    <div class="left-Col">Chọn mẫu hỗ trợ thụ lý</div>
-                    <div class="right-Col">
-                        <select id="sel_assistance" name="sel_assistance">
-                            <?php for($i=0;$i<count($r);$i++):
-                                    $v_file_dir = $r[$i]->attributes()->file;
-                                    $v_file_name = $r[$i]->attributes()->name;
-                            ?>
-                            <option value="<?php echo $v_file_dir?>"><?php echo $v_file_name?></option>
-                            <?php endfor;?>
-                        </select>
+            <?php if ($v_assistance == 1): ?>
+                <?php if ($this->check_permission(_CONST_THU_LY_ROLE) == TRUE OR $this->check_permission(_CONST_THU_LY_CAP_XA_ROLE) == TRUE): ?>
+                    <div id="print_assistance">
+                        <div class="clear" style="height: 10px">&nbsp;</div>
+                        <?php
+                        $v_test_dir = SERVER_ROOT . 'apps' . DS . $this->app_name . DS . 'xml-config' . DS . 'common' . DS . 'auto_lock_unlock.xml';
+
+                        $v_file_ext_config = $this->get_xml_config($v_record_type_code, 'ext_config');
+                        if (file_exists($v_file_ext_config))
+                        {
+                            $dom    = simplexml_load_file($v_file_ext_config);
+                            $x_path = '//assistance/item';
+                            $r      = $dom->xpath($x_path);
+                        }
+                        else
+                        {
+                            echo 'Chưa có mẫu hỗ trợ thụ lý';
+                        }
+                        ?>
+                        <div class="Row">
+                            <div class="left-Col">Chọn mẫu hỗ trợ thụ lý</div>
+                            <div class="right-Col">
+                                <select id="sel_assistance" name="sel_assistance">
+                                    <?php
+                                    for ($i = 0; $i < count($r); $i++):
+                                        $v_file_dir  = $r[$i]->attributes()->file;
+                                        $v_file_name = $r[$i]->attributes()->name;
+                                        ?>
+                                        <option value="<?php echo $v_file_dir ?>"><?php echo $v_file_name ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <!--button area-->
+                        <?php if ($v_assistance == 1):; ?>
+                            <div class="button-area">
+                                <!--button in-->
+                                <button type="button" name="trash" class="btn btn-sm" onclick="btn_print_assistance_form_onclick(<?php echo $v_record_id; ?>);">
+                                    <i class="icon-print"></i>
+                                    In mẫu hỗ trợ thụ lý
+                                </button>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                </div>
-                <!--button area-->
-                <?php if($v_assistance == 1):; ?>
-                <div class="button-area">
-                    <!--button in-->
-                    <button type="button" name="trash" class="btn btn-info" onclick="btn_print_assistance_form_onclick(<?php echo $v_record_id; ?>);">
-                        <i class="icon-print"></i>
-                        In mẫu hỗ trợ thụ lý
-                    </button>
-                </div>
-                <?php endif;?>
-            </div>
-            <?php endif;?>
-             <?php endif; ?>
+                <?php endif; ?>
+            <?php endif; ?>
             <!--End in mau ho tro thu ly-->
         </div>
     </div>
     <!--solid button-->
-     <div class="clear" style="height: 10px">&nbsp;</div>
-     <div id="solid-button">
+    <div class="clear" style="height: 10px">&nbsp;</div>
+    <div id="solid-button">
         <!--Button close window-->
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-        <button type="button" name="trash" class="btn btn-danger" onclick="<?php echo $v_back_action; ?>" >
-            <i class="icon-remove"></i>
+        <button type="button" name="trash" class="btn btn-sm" onclick="<?php echo $v_back_action; ?>" >
+            <i class="icon-reply"></i>
             <?php echo __('close window'); ?>
         </button> 
     </div>
 </form>
 <script>
-    $(function () {
-        $('#myTab1 a[href="#<?php echo $v_tab_selected?>"]').tab('show')
-    })
-    
-    $(document).ready(function() {
-        //Fill data
-        var formHelper = new DynamicFormHelper('', '', document.frmMain);
-        formHelper.BindXmlData();
+                        var f = document.frmMain;
+                        $(function () {
+                            $('#myTab1 a[href="#<?php echo $v_tab_selected ?>"]').tab('show');
 
-        try {
-            $("#txtName").focus();
-        } catch (e) {
-            ;
-        }
-        //menu record statistic
-        //show_id  = $('#menu_record_statistics li a:eq(<?php echo $v_tab_selected?>)').attr('href');
-        //select_function(show_id);
-    });
+                        })
 
-    function btn_add_comment_onclick()
-    {
-        var url = '<?php echo $this->get_controller_url(); ?>dsp_add_comment/' + $("#hdn_item_id").val()
-                + '/&hdn_item_id=' + $("#hdn_item_id").val()
-                + '&pop_win=1&tab=comment';
-        showPopWin(url, 500, 300, null, true);
-    }
+                        $(document).ready(function () {
+                            //Fill data
+                            var formHelper = new DynamicFormHelper('', '', document.frmMain);
+                            formHelper.BindXmlData();
 
-    function btn_delete_comment_onclick()
-    {
-        //Lay danh sach da chon
-        var tbl_s = "#tbl_comment input[name='chk_comment']";
-        if (confirm('Bạn chắc chắn xoá ý kiến?'))
-        {
-            $(tbl_s).each(function(index) {
-                if ($(this).is(':checked'))
-                {
-                    v_comment_id = $(this).val();
-                    v_created_by = $(this).attr('data-user');
-                    v_user_token = '<?php echo Session::get('user_token');?>';
+                            try {
+                                $("#txtName").focus();
+                            } catch (e) {
+                                ;
+                            }
+                            //menu record statistic
+                            //show_id  = $('#menu_record_statistics li a:eq(<?php echo $v_tab_selected ?>)').attr('href');
+                            //select_function(show_id);
+                        });
 
-                    $.ajax({
-                        url: '<?php echo $this->get_controller_url(); ?>do_delete_comment',
-                        type: "POST",
-                        data: {comment_id: v_comment_id
-                                    , user_code: v_created_by
-                                    , user_token: v_user_token
-                        },
-                        dataType: "json"
-                    });
-                    tr_s = "#tbl_comment tr[data-cid='c_" + v_comment_id + "']";
-                    $(tr_s).remove();
-                }
-            });
-        }
-    }
+                        function btn_add_comment_onclick()
+                        {
+                            var v_content = trim(f.txt_content.value);
 
-    function btn_add_doc_onclick()
-    {
-        var url = '<?php echo $this->get_controller_url(); ?>dsp_add_doc/' + $("#hdn_item_id").val()
-                + '/&hdn_item_id=' + $("#hdn_item_id").val()
-                + '&pop_win=1';
-        showPopWin(url, 800, 500, null, true);
-    }
+                            if (v_content == '')
+                            {
+                                alert('Vui lòng nhập nội dung ý kiến!');
+                                f.txt_content.focus();
+                                return false;
+                            }
+                            $('#frmMain').attr('action', '<?php echo $this->get_controller_url(); ?>do_add_comment');
+                            $('#frmMain').submit();
+                        }
 
-    function btn_delete_doc_onclick()
-    {
-        //var v_doc_id_list = get_select
-        //Lay danh sach da chon
-        var tbl_s = "#tbl_doc input[name='chk_doc']";
-        if (confirm('Bạn chắc chắn xoá các tài liệu đã chọn?'))
-        {
-            $(tbl_s).each(function(index) {
-                if ($(this).is(':checked'))
-                {
-                    v_doc_id = $(this).val();
-                    v_created_by = $(this).attr('data-user');
-                    v_user_token = $("#user_token").val();
+                        function btn_delete_comment_onclick()
+                        {
+                            //Lay danh sach da chon
+                            var tbl_s = "#tbl_comment input[name='chk_comment']";
+                            if ($('#tbl_comment input[name="chk_comment"]').filter(':checked').length < 1)
+                            {
+                                alert('Bạn phải chọn ý kiếm cần xóa !!!');
+                                return false;
+                            }
 
-                    $.ajax({
-                        url: '<?php echo $this->get_controller_url(); ?>do_delete_doc',
-                        type: "POST",
-                        data: {doc_id: v_doc_id
-                                    , user_code: v_created_by
-                                    ,user_token:v_user_token
-                        },
-                        dataType: "json"
-                    });
-                    tr_s = "#tbl_doc tr[data-did='d_" + v_doc_id + "']";
-                    $(tr_s).remove();
-                }
-            });
-        }
-    }
-    //in mau don
-    function btn_print_record_form_onclick(record_id)
-    {
-        var v_url = '<?php echo $this->get_controller_url(); ?>dsp_print_record_form/' + record_id;
-        showPopWin(v_url, 800, 500);
+                            if (confirm('Bạn chắc chắn xoá ý kiến?'))
+                            {
+                                $(tbl_s).each(function (index) {
+                                    if ($(this).is(':checked'))
+                                    {
+                                        v_comment_id = $(this).val();
+                                        v_created_by = $(this).attr('data-user');
+                                        v_user_token = '<?php echo Session::get('user_token'); ?>';
 
-    }
-    //in mau ho tro thu ly
-    function btn_print_assistance_form_onclick(record_id)
-    {
-        var v_file_assistance_template = $('#sel_assistance').val();
-        var v_url = '<?php echo $this->get_controller_url(); ?>dsp_print_assistance_form/' + record_id + '&tpl_file_dir=' + v_file_assistance_template;
-        showPopWin(v_url, 800, 500);
-    }
-    
-    //menu_record_statistics
-    $('#menu_record_statistics li a').click(function(e)
-    {
-        e.preventDefault();
-        show_id = $(this).attr('href');
-        select_function(show_id);
-        
-        
-    });
-    //chon chuc nang
-    function select_function(show_id)
-    {
-        //an tat ca div
-        selector = '#menu_record_statistics li a';
-        hide_all_div(selector);
-        
-        //hien thi div
-        $(show_id).show();
-        //tao current function
-        selector_current = selector + '[href="'+show_id+'"]';
-        $(selector_current).parent('li').append('<div class="active-menu">&nbsp;</div>');
-    }
-    
-    //an tat ca cac div
-    function hide_all_div(selector)
-    {
-        $(selector).each(function(){
-           //an div
-           id = $(this).attr('href');
-           $(id).hide();
-           //xoa current menu(gach chan mau do)
-           $('.active-menu').remove();
-        });
-    }
+                                        $.ajax({
+                                            url: '<?php echo $this->get_controller_url(); ?>do_delete_comment',
+                                            type: "POST",
+                                            data: {comment_id: v_comment_id
+                                                , user_code: v_created_by
+                                                , user_token: v_user_token
+                                            },
+                                            dataType: "json"
+                                        });
+                                        tr_s = "#tbl_comment tr[data-cid='c_" + v_comment_id + "']";
+                                        $(tr_s).remove();
+                                    }
+                                });
+                            }
+                        }
+
+                        function btn_add_doc_onclick()
+                        {
+                            var url = '<?php echo $this->get_controller_url(); ?>dsp_add_doc/' + $("#hdn_item_id").val()
+                                    + '/&hdn_item_id=' + $("#hdn_item_id").val()
+                                    + '&pop_win=1';
+                            showPopWin(url, 800, 500, null, true);
+                        }
+
+                        function btn_delete_doc_onclick()
+                        {
+                            //var v_doc_id_list = get_select
+                            //Lay danh sach da chon
+                            var tbl_s = "#tbl_doc input[name='chk_doc']";
+                            if (confirm('Bạn chắc chắn xoá các tài liệu đã chọn?'))
+                            {
+                                $(tbl_s).each(function (index) {
+                                    if ($(this).is(':checked'))
+                                    {
+                                        v_doc_id = $(this).val();
+                                        v_created_by = $(this).attr('data-user');
+                                        v_user_token = $("#user_token").val();
+
+                                        $.ajax({
+                                            url: '<?php echo $this->get_controller_url(); ?>do_delete_doc',
+                                            type: "POST",
+                                            data: {doc_id: v_doc_id
+                                                , user_code: v_created_by
+                                                , user_token: v_user_token
+                                            },
+                                            dataType: "json"
+                                        });
+                                        tr_s = "#tbl_doc tr[data-did='d_" + v_doc_id + "']";
+                                        $(tr_s).remove();
+                                    }
+                                });
+                            }
+                        }
+                        //in mau don
+                        function btn_print_record_form_onclick(record_id)
+                        {
+                            var v_url = '<?php echo $this->get_controller_url(); ?>dsp_print_record_form/' + record_id;
+                            showPopWin(v_url, 800, 500);
+
+                        }
+                        //in mau ho tro thu ly
+                        function btn_print_assistance_form_onclick(record_id)
+                        {
+                            var v_file_assistance_template = $('#sel_assistance').val();
+                            var v_url = '<?php echo $this->get_controller_url(); ?>dsp_print_assistance_form/' + record_id + '&tpl_file_dir=' + v_file_assistance_template;
+                            showPopWin(v_url, 800, 500);
+                        }
+
+                        //menu_record_statistics
+                        $('#menu_record_statistics li a').click(function (e)
+                        {
+                            e.preventDefault();
+                            show_id = $(this).attr('href');
+                            select_function(show_id);
+
+
+                        });
+                        //chon chuc nang
+                        function select_function(show_id)
+                        {
+                            //an tat ca div
+                            selector = '#menu_record_statistics li a';
+                            hide_all_div(selector);
+
+                            //hien thi div
+                            $(show_id).show();
+                            //tao current function
+                            selector_current = selector + '[href="' + show_id + '"]';
+                            $(selector_current).parent('li').append('<div class="active-menu">&nbsp;</div>');
+                        }
+
+                        //an tat ca cac div
+                        function hide_all_div(selector)
+                        {
+                            $(selector).each(function () {
+                                //an div
+                                id = $(this).attr('href');
+                                $(id).hide();
+                                //xoa current menu(gach chan mau do)
+                                $('.active-menu').remove();
+                            });
+                        }
+                        //In chi tiet tien do xu ly
+                        function btn_print_record_statistics(record_id)
+                        {
+                            var v_url = $("#controller").val() + 'statistics/' + record_id + '&hdn_item_id=' + record_id + '&pop_win=1' + '&print_record_satistic=1';
+                            showPopWin(v_url, 800, 500);
+                        }
 </script>
 <?php
 $this->template->display('dsp_footer' . $v_pop_win . '.php');

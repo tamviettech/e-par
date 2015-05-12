@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td rowspan="2">Tên đơn vị/Phòng ban</td>
+			<td rowspan="2">Tổng số</td>
+            <td colspan="6">Thụ lý hồ sơ</td>
+        </tr>
+        <tr>
+            <td>Vượt tiến độ</td>
+            <td>Tỷ lệ</td>
+			
+			<td>Đúng tiến độ</td>
+            <td>Tỷ lệ</td>
+			
+			<td>Chậm tiến độ</td>
+            <td>Tỷ lệ</td>
+        </tr>
+    </head>
     <list>
         <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
-        <item type="text" id="RN" name="TT" size="50" align="right"/>
-        <item type="text" id="C_GROUP_NAME" name="Phòng ban" size="300" />
-        <item type="text" id="C_COUNT_RECEIVED" name="Tiếp nhận" size="100" align="right" />
-        <item type="text" id="C_COUNT_PROCESSING" name="Đang giải quyết" size="100" align="right" />
-        <item type="text" id="C_COUNT_DELAYED" name="Chậm tiến độ" size="100" align="right" />
-        <item type="text" id="C_COUNT_OVERTIME" name="Quá hạn" size="100" align="right" />
+        <item type="text" id="C_NAME" name="Lĩnh vực" size="600" excel_width="83"/>
+        
+        <item type="text" id="MATHS" formula="formula_total" param="C_COUNT_VUOT_TIEN_DO,C_COUNT_DUNG_TIEN_DO,C_COUNT_CHAM_TIEN_DO" name="Tổng số" size="100" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_VUOT_TIEN_DO" name="Tiếp nhận" size="100" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="MATHS" formula="formula_percent" param="C_COUNT_VUOT_TIEN_DO,C_COUNT_VUOT_TIEN_DO,C_COUNT_DUNG_TIEN_DO,C_COUNT_CHAM_TIEN_DO" name="Tỷ lệ" size="100" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_DUNG_TIEN_DO" name="Tiếp nhận" size="100" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="MATHS" formula="formula_percent" param="C_COUNT_DUNG_TIEN_DO,C_COUNT_VUOT_TIEN_DO,C_COUNT_DUNG_TIEN_DO,C_COUNT_CHAM_TIEN_DO" name="Tỷ lệ" size="100" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="C_COUNT_CHAM_TIEN_DO" name="Tiếp nhận" size="100" align="center" number_format="true" excel_width="18"/>
+        <item type="text" id="MATHS" formula="formula_percent" param="C_COUNT_CHAM_TIEN_DO,C_COUNT_VUOT_TIEN_DO,C_COUNT_DUNG_TIEN_DO,C_COUNT_CHAM_TIEN_DO" name="Tỷ lệ" size="100" align="center" number_format="true" excel_width="18"/>
     </list>
-    <total>
-        <item colspan="2" name="Tổng cộng" align="right"/>
-        <item colspan="1" id="C_COUNT_RECEIVED" align="right"/>
-        <item colspan="1" id="C_COUNT_PROCESSING" align="right"/>
-        <item colspan="1" id="C_COUNT_DELAYED" align="right"/>
-        <item colspan="1" id="C_COUNT_OVERTIME" align="right"/>
-    </total>
-    <sub_total>
-
-    </sub_total>
 </report>

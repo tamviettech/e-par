@@ -1,21 +1,4 @@
-<?php
-/**
 
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php 
 
        $this->title                        = isset($arr_single_article['C_TITLE']) ? $arr_single_article['C_TITLE'] : '';
@@ -146,7 +129,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 $v_url       = build_url_article($v_cat_slug, $v_art_slug, $v_cat_id, $v_art_id);
             ?>
             <li><a href="<?php echo $v_url; ?>"><?php echo $v_art_title; ?></a></li>
+            
             <?php endfor; ?>
+            <?php if(isset($arr_all_article_khac) && sizeof($arr_all_article_khac) >0):?>
+            <li style="background: none; font-size: 1.1em;font-weight: bold; margin-left: -10px; margin-top: 10px">Các tin khác</li>
+            <?php
+            for ($i = 0; $i <count($arr_all_article_khac); $i ++):
+                $v_art_title = $arr_all_article_khac[$i]['C_TITLE'];
+                $v_art_id    = $arr_all_article_khac[$i]['PK_ARTICLE'];
+                $v_art_slug  = $arr_all_article_khac[$i]['C_SLUG_ARTICLE'];
+                $v_cat_slug  = $arr_all_article_khac[$i]['C_SLUG_CAT'];
+                $v_cat_id    = $arr_all_article_khac[$i]['C_CAT_ID'];
+                $v_url       = build_url_article($v_cat_slug, $v_art_slug, $v_cat_id, $v_art_id);
+            ?>
+            <li><a href="<?php echo $v_url; ?>"><?php echo $v_art_title; ?></a></li>
+            <?php endfor; ?>
+            <?php endif ;?>
             </ul>
         </div>
     <?php endif; ?>

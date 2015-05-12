@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -49,25 +31,23 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid transfer" value="Nhận thông báo thuế"
-               onclick="btn_receive_tax_onclick();" />
-        <input type="button" class="solid print" value="In Phiếu"
-               onclick="print_record_ho_for_bu();" />
+        <button type="button" name="btn_receive_tax" class="btn btn-primary" onclick="btn_receive_tax_onclick();" ><i class="icon-exchange"></i>Nhận thông báo thuế</button>
+        <button type="button" name="btn_print" class="btn" onclick="print_record_ho_for_bu();" ><i class="icon-print"></i>In Phiếu</button>
     </div>
     <div class="clear"></div>
 
     <div id="procedure">
         <?php
-        if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list')))
-        {
-            echo $this->render_form_display_all_record($arr_all_record, FALSE);
-        }
+            if ($this->load_abs_xml($this->get_xml_config($v_record_type_code, 'list')))
+            {
+                echo $this->render_form_display_all_record($arr_all_record, FALSE);
+            }
         ?>
     </div>
     <div><?php echo $this->paging2($arr_all_record);?></div>
     <div class="button-area">
-        <input type="button" name="btn_receive_tax" class="button transfer" value="Nhận thông báo thuế" onclick="btn_receive_tax_onclick();"/>
-        <input type="button" name="btn_print" class="button print" value="In Phiếu" onclick="print_record_ho_for_bu();"/>
+        <button type="button" name="btn_receive_tax" class="btn btn-primary" onclick="btn_receive_tax_onclick();" ><i class="icon-exchange"></i>Nhận thông báo thuế</button>
+        <button type="button" name="btn_print" class="btn" onclick="print_record_ho_for_bu();" ><i class="icon-print"></i>In Phiếu</button>
     </div>
 
     <!-- Context menu -->
@@ -106,8 +86,8 @@ $this->template->display('dsp_header.php');
             html = '';
         
             //Thong tin tien do
-            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\');" class="quick_action" >';
-            html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" /></a>';
+            html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\');" class="quick_action" title="Xem tiến độ">';
+            html += '<i class="icon-bar-chart"></i> /></a>';
         
             $(this).html(html);
         });

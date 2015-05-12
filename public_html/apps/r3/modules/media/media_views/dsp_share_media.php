@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) { exit('No direct script access allowed');}
 //info of media
 $media_id   = $arr_info_of_media['PK_MEDIA'];
@@ -106,7 +88,7 @@ $user_active = isset($arr_all_user_shared[0]['FK_USER'])?$arr_all_user_shared[0]
                         </div>
                         <?php endif;?>
                         <button type="button" name="btn_add_user" class="btn btn-primary input-medium" onclick="dsp_all_user_to_add();"><i class="icon-plus icon-user"></i><?php echo __('add user to group');?></button>
-                        <button type="button" name="btn_remove_user" class="btn btn-danger input-medium" onclick="remove_user_from_group();"><i class="icon-trash"></i><?php echo __('remove user from group')?></button>
+                        <button type="button" name="btn_remove_user" class="btn input-medium" onclick="remove_user_from_group();"><i class="icon-trash"></i><?php echo __('remove user from group')?></button>
                     </div>
                 </div>
                 <div class="clear">&nbsp;</div>
@@ -115,7 +97,7 @@ $user_active = isset($arr_all_user_shared[0]['FK_USER'])?$arr_all_user_shared[0]
             <div class="form-actions" style="text-align: center;">
                 <button type="button" name="btn_update_group" class="btn btn-primary" onclick="btn_update_group_onclick();"><i class="icon-save"></i><?php echo __('update');?></button>
                 <?php $v_back_action = 'try{window.parent.hidePopWin();}catch(e){window.close();};';?>
-                <button type="button" class="btn btn-danger" onclick="<?php echo $v_back_action;?>"><i class="icon-remove"></i>Đóng cửa sổ</button>
+                <button type="button" class="btn" onclick="<?php echo $v_back_action;?>"><i class="icon-remove"></i>Đóng cửa sổ</button>
             </div>
         </div><!-- /.row-fluid -->
     </form>
@@ -160,8 +142,8 @@ $user_active = isset($arr_all_user_shared[0]['FK_USER'])?$arr_all_user_shared[0]
 
                 v_icon_file_name = (v_user_status > 0) ? 'icon-16-user.png' : 'icon-16-user-inactive.png';
                 html += '<td>';
-                html += '<img src="<?php echo $this->template_directory;?>images/' + v_icon_file_name + '" border="0" align="absmiddle" />';
-                html += '<label for="user_' + v_user_id + '">' + v_user_name + '</label>';
+                html += '<label for="user_' + v_user_id + '"><img src="<?php echo $this->template_directory;?>images/' + v_icon_file_name + '" border="0" align="absmiddle" />';
+                html += v_user_name + '</label>';
                 html += '</td></tr>';
                 $('#tbl_user_in_group').append(html);
             }
@@ -191,7 +173,7 @@ $user_active = isset($arr_all_user_shared[0]['FK_USER'])?$arr_all_user_shared[0]
     //hien thi man hinh tat ca NSD
     function dsp_all_user_to_add()
     {
-        var url = $('#controller').val() + $('#hdn_all_user_method').val() + '&pop_win=1';
+        var url = $('#controller').val() + $('#hdn_all_user_method').val() + QS +'pop_win=1';
         showPopWin(url, 450, 350, add_user);
     }
     //bo NSD

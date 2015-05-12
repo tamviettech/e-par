@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <item value="" name="--Chọn xã/phường--" />
+    <item value="PHUONG_YEN_THINH" name="Phường Yên Thịnh" />
+    <item value="PHUONG_YEN_NINH" name="Phường Yên Ninh" />
+    <item value="PHUONG_MINH_TAN" name="Phường Minh Tân" />
+    <item value="PHUONG_NGUYEN_THAI_HOC" name="Phường Nguyễn Thái Học" />
+    <item value="PHUONG_DONG_TAM" name="Phường Đồng Tâm" />
+    <item value="PHUONG_NGUYEN_PHUC" name="Phường Nguyễn Phúc" />
+    <item value="PHUONG_HONG_HA" name="Phường Hồng Hà" />
+    <item value="XA_MINH_BAO" name="Xã Minh Bảo" />
+    <item value="XA_NAM_CUONG" name="Xã Nam Cường" />
+    <item value="XA_TUY_LOC" name="Xã Tuy Lộc" />
+    <item value="XA_TAN_THINH" name="Xã Tân Thịnh" />
+    <item value="XA_VAN_PHU" name="Xã Văn Phú" />
+    <item value="XA_VAN_TIEN" name="Xã Văn Tiến" />
+    <item value="XA_PHU_LOC" name="Xã Phúc Lộc" />
+    <item value="XA_AU_LAU" name="Xã Âu Lâu" />
+    <item value="XA_GIOI_PHIEN" name="Xã Giới Phiên" />
+    <item value="XA_HOP_MINH" name="Xã Hợp Minh" />
+</root>

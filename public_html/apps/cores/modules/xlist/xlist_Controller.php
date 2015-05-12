@@ -1,26 +1,10 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 class xlist_Controller extends Controller {
 
+   /** @var \xlist_Model */
+    
     function __construct()
     {
         
@@ -105,20 +89,22 @@ class xlist_Controller extends Controller {
     }
 
     //List
-    public function check_existing_list_code()
+    public function check_existing_list_code($arg)
     {
         //Kiem tra quyen
         (Session::get('is_admin') == 1) Or die($this->access_denied());
-
-        echo $this->model->check_existing_list_code();
+        
+        list($v_list_code, $v_listtype_id, $v_list_id) = explode(_CONST_LIST_DELIM, $arg);
+        echo $this->model->check_existing_list_code($v_list_code, $v_listtype_id, $v_list_id);
     }
 
-    public function check_existing_list_name()
+    public function check_existing_list_name($arg)
     {
         //Kiem tra quyen
         (Session::get('is_admin') == 1) Or die($this->access_denied());
 
-        echo $this->model->check_existing_list_name();
+        list($v_list_name, $v_listtype_id, $v_list_id) = explode(_CONST_LIST_DELIM, $arg);
+        echo $this->model->check_existing_list_name($v_list_name, $v_listtype_id, $v_list_id);
     }
 
     public function dsp_all_list()

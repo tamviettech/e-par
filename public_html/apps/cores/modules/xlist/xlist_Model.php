@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <?php
 class xlist_Model extends Model {
@@ -158,12 +140,15 @@ class xlist_Model extends Model {
     public function update_listtype() {
 
         $v_listtype_id        = get_post_var('hdn_item_id');
-        $v_listtype_code      = get_post_var('txt_code');
-        $v_listtype_name      = get_post_var('txt_name');
+        $v_listtype_code      = trim(get_post_var('txt_code',''));
+        $v_listtype_name      = trim(get_post_var('txt_name',''));
         $v_xml_file_name      = get_post_var('txt_xml_file_name');
         $v_order              = get_post_var('txt_order');
         $v_status             = isset($_POST['chk_status']) ? 1 : 0;
         $v_save_and_addnew    = isset($_POST['chk_save_and_addnew']) ? 1 : 0;
+        
+        //Luu dieu kien loc
+        $arr_filter = get_filter_condition(array('txt_filter', 'sel_goto_page','sel_rows_per_page'));
         
         //Kiem tra trung ma, ten
         $stmt = 'Select Count(*) From t_cores_listtype Where PK_LISTTYPE <>? And (C_CODE=? Or C_NAME=?)';
@@ -227,11 +212,12 @@ class xlist_Model extends Model {
 
             } //endif $v_listtype_id
 
-        $this->ReOrder('t_cores_listtype','PK_LISTTYPE','C_ORDER', $v_listtype_id, $v_order);
+            $this->ReOrder('t_cores_listtype','PK_LISTTYPE','C_ORDER', $v_listtype_id, $v_order);
+        }
+        else
+        {
+            $this->exec_fail($this->goback_url, 'Mã hoặc tên đối tượng đã tồn tại',$arr_filter);
         }//end Kiem tra trung ten, ma
-
-        //Luu dieu kien loc
-        $arr_filter = get_filter_condition(array('txt_filter', 'sel_goto_page','sel_rows_per_page'));
 
         if ($v_save_and_addnew > 0)
         {
@@ -419,9 +405,9 @@ class xlist_Model extends Model {
 
         $v_list_id      = get_post_var('hdn_item_id',0);
         $v_listtype_id  = get_post_var('sel_listtype_filter',0);
-        $v_list_code    = get_post_var('txt_code');
-        $v_list_name    = get_post_var('txt_name');
-        $v_order        = get_post_var('txt_order');
+        $v_list_code    = trim(get_post_var('txt_code',''));
+        $v_list_name    = trim(get_post_var('txt_name',''));
+        $v_order        = get_post_var('txt_order',1);
         $v_status       = isset($_POST['chk_status']) ? 1 : 0;
         $v_xml_data     = isset($_POST['XmlData']) ? $_POST['XmlData'] : '<root/>';
 
@@ -443,22 +429,22 @@ class xlist_Model extends Model {
                 . " And PK_LIST <> $v_list_id";        
         $count_exist_code  = $this->db->GetOne($sql,$v_list_name);
         
-        
         //Luu dieu kien loc
         $v_filter = isset($_POST['txt_filter']) ? $_POST['txt_filter'] : '';
         $v_page = isset($_POST['sel_goto_page']) ? replace_bad_char($_POST['sel_goto_page']) : 1;
         $v_rows_per_page = isset($_POST['sel_rows_per_page']) ? replace_bad_char($_POST['sel_rows_per_page']) : _CONST_DEFAULT_ROWS_PER_PAGE;
 
-        $arr_filter = get_filter_condition(array(
-                                                'sel_listtype_filter'
-                                                ,'txt_filter'
-                                                ,'sel_goto_page'
-                                                ,'sel_rows_per_page'
-                                            )
-                        );
+        $arr_filter = get_filter_condition(
+                        array(
+                                'sel_listtype_filter'
+                                ,'txt_filter'
+                                ,'sel_goto_page'
+                                ,'sel_rows_per_page'
+                                ,'hdn_item_id'
+                        ));
         
         //Khong trung ten + khong trung ma thi update
-        if ( $count_exist_name + $count_exist_code == 0)
+        if ( ($count_exist_name + $count_exist_code) == 0)
         {
             if ($v_list_id > 0) 
             {
@@ -486,7 +472,6 @@ class xlist_Model extends Model {
                             C_XML_DATA,
                             C_ORDER,
                             C_STATUS
-
                         ) values (
                             $v_listtype_id,
                             '$v_list_code',
@@ -513,7 +498,7 @@ class xlist_Model extends Model {
         }
         else
         {
-            $this->exec_fail($this->goforward_url, 'Mã hoặc tên đối tượng đã tồn tại!', $arr_filter);
+            $this->exec_fail($this->goback_url, 'Mã hoặc tên đối tượng đã tồn tại!', $arr_filter);
         }
             
         if ($v_save_and_addnew > 0) 
@@ -552,8 +537,6 @@ class xlist_Model extends Model {
 			$this->db->Execute($sql);
         }
 
-
-
         //Luu dieu kien loc
         $v_filter = isset($_POST['txt_filter']) ? $_POST['txt_filter'] : '';
         $v_listtype_id = isset($_POST['sel_listtype_filter']) ? $_POST['sel_listtype_filter'] : '0';
@@ -568,5 +551,4 @@ class xlist_Model extends Model {
 
         $this->exec_done($this->goback_url, $arr_filter);
     } //end func delete_list()
-
 }

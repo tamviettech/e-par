@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
 {
     exit('No direct script access allowed');
@@ -35,58 +17,82 @@ $v_record_id = isset($_REQUEST['hdn_item_id']) ? $_REQUEST['hdn_item_id'] : 0;
 
 ($v_record_id > 0) OR DIE('Thao tác sai');
 ?>
+
+<style>
+    td{
+        vertical-align: middle;
+        height: 30px;
+        padding: 5px;
+    }
+    td input[type="text"]{
+        margin-bottom: 0;
+    }
+</style>
+
 <script src="<?php echo SITE_ROOT; ?>public/js/jquery/jquery.iframe-post-form.js" type="text/javascript"></script>
-<form name="frmMain" id="frmMain" method="POST" action="<?php echo $this->get_controller_url(); ?>do_add_doc" enctype="multipart/form-data">
-    <?php echo $this->hidden('hdn_item_id', $v_record_id); ?>
-    <?php echo $this->hidden('hdn_update_method', 'do_add_doc'); ?>
-    <?php echo $this->hidden('XmlData', ''); ?>
-    <?php echo $this->hidden('controller', $this->get_controller_url()); ?>
-    <?php echo $this->user_token(); ?>
-    <table class="none-border-table" width="100%">
-        <tr>
-            <td>Số ký hiệu:<span class="required">(*)</span></td>
-            <td>
-                <input name="txt_record_doc_no" id="txt_record_doc_no" maxlength="50" style="width:200px"
-                       type="text" value="" data-allownull="no" data-validate="text" data-name="Số ký hiệu:" data-xml="no" data-doc="no" />
-            </td>
-            <td>Nơi ban hành:</td>
-            <td>
-                <input  name="txt_issuer" id="txt_issuer"
-                        style="width:200px" type="text" value="" data-allownull="yes"
-                        data-validate="text" data-name="Nơi ban hành" data-xml="no" data-doc="no" />
-            </td>
-        </tr>
-        <tr>
-            <td>Tên tài liệu:<span class="required">(*)</span></td>
-            <td colspan="3">
-                <input  name="txt_description" id="txt_description"
-                        style="width:580px" type="text" value="" data-allownull="no"
-                        data-validate="text" data-name="Tên tài liệu" data-xml="no" data-doc="no" />
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4">Nội dung:</td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                <textarea style="width:89%;height:100px;" rows="2"
-                          name="txt_content" id="txt_content" cols="20" maxlength="400"
-                          ></textarea>
-            </td>
-        </tr>
-    </table>
-    <div class="Row">
-        <label>Tài liệu đính kèm</label>
-        <input type="file" style="border: solid #D5D5D5; color: #000000" class="multi accept-<?php echo _CONST_RECORD_FILE_ACCEPT; ?>" name="uploader[]"
-               id="File1" />
-        <font style="font-weight: normal;">Hệ thống chỉ chấp nhận đuôi file:<?php echo _CONST_RECORD_FILE_ACCEPT ?></font><br/>
-    </div>
-    <div class="clear">&nbsp;</div>
-    <!-- Buttons -->
-    <div class="button-area">
-        <input type="button" name="btn_do_add_doc" class="button save" value="Cập nhật" onclick="btn_do_add_doc_onclick();" />
-        <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-        <input type="button" name="cancel" class="button close" value="<?php echo __('close window'); ?>" onclick="<?php echo $v_back_action; ?>"/>
+
+<form name="frmMain" id="frmMain" method="POST" action="<?php echo $this->get_controller_url(); ?>do_add_doc" 
+      enctype="multipart/form-data">
+          <?php echo $this->hidden('hdn_item_id', $v_record_id); ?>
+          <?php echo $this->hidden('hdn_update_method', 'do_add_doc'); ?>
+          <?php echo $this->hidden('XmlData', ''); ?>
+          <?php echo $this->hidden('controller', $this->get_controller_url()); ?>
+          <?php echo $this->user_token(); ?>
+    <div class="well">
+        <table class="none-border-table" width="100%">
+            <tr>
+                <td>Số ký hiệu<span class="required">(*)</span>:</td>
+                <td>
+                    <input name="txt_record_doc_no" id="txt_record_doc_no" maxlength="50" style="width:100%"
+                           type="text" value="" data-allownull="no" data-validate="text" data-name="Số ký hiệu:" data-xml="no" data-doc="no" />
+                </td>
+                <td>Nơi ban hành:</td>
+                <td>
+                    <input  name="txt_issuer" id="txt_issuer"
+                            style="width:100%" type="text" value="" data-allownull="yes"
+                            data-validate="text" data-name="Nơi ban hành" data-xml="no" data-doc="no" />
+                </td>
+            </tr>
+            <tr>
+                <td>Tên tài liệu <span class="required">(*)</span>:</td>
+                <td colspan="3">
+                    <input  name="txt_description" id="txt_description"
+                            style="width:100%" type="text" value="" data-allownull="no"
+                            data-validate="text" data-name="Tên tài liệu" data-xml="no" data-doc="no" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">Nội dung:</td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <textarea style="width:100%;box-sizing:border-box;height:100px;" rows="2"
+                              name="txt_content" id="txt_content" cols="20" maxlength="400"
+                              ></textarea>
+                </td>
+            </tr>
+        </table>
+        <div class="Row">
+            <label>Tài liệu đính kèm</label>
+            <input type="file" style="border: solid #D5D5D5; color: #000000" class="multi accept-<?php echo _CONST_RECORD_FILE_ACCEPT; ?>" name="uploader[]"
+                   id="File1" accept="<?php echo '.' . str_replace(',', ',.', _CONST_RECORD_FILE_ACCEPT) ?>"/>
+            <font style="font-weight: normal;">Hệ thống chỉ chấp nhận đuôi file:
+            <span style="color:red"><?php echo _CONST_RECORD_FILE_ACCEPT ?></span>
+            </font><br/>
+        </div>
+        <div class="clear">&nbsp;</div>
+        <!-- Buttons -->
+        <div class="button-area">
+            <button type="button" name="trash" class="btn btn-primary" onclick="btn_do_add_doc_onclick();" >
+                <i class="icon-save"></i>
+                Cập nhật
+            </button>
+            <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
+            <button type="button" name="cancel" class="btn" onclick="<?php echo $v_back_action; ?>">
+                <i class="icon-remove"></i>
+                Đóng cửa sổ        
+            </button>
+        </div>
     </div>
 </form>
 <script>

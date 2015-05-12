@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) { exit('No direct script access allowed');} ?>
 <?php
 //display header
@@ -192,7 +174,7 @@ else
     }
     function check_code(){
         if (f.txt_code.value != ''){
-            v_url = f.controller.value + 'check_existing_listtype_code/&code=' + f.txt_code.value + '&listtype_id=' + listtype_id;
+            v_url = f.controller.value + 'check_existing_listtype_code/&code=' + trim(f.txt_code.value) + '&listtype_id=' + listtype_id;
             $.getJSON(v_url, function(json) {
                 if (json.count > 0){
                     show_error('txt_code','Mã loại danh mục đã tồn tai!');
@@ -205,7 +187,7 @@ else
 
     function check_name(){
         if (f.txt_name.value != ''){
-        	v_url = f.controller.value + 'check_existing_listtype_name/&name=' + f.txt_name.value + '&listtype_id=' + listtype_id;
+        	v_url = f.controller.value + 'check_existing_listtype_name/&name=' + trim(f.txt_name.value) + '&listtype_id=' + listtype_id;
             $.getJSON(v_url, function(json) {
                 if (json.count > 0){
                     show_error('txt_name','Tên loại danh mục đã tồn tai!');

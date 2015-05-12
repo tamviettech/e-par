@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report layout="L"><!--P: Doc, L: Ngang-->
+    <head>
+        <tr>
+            <td >STT</td>
+            <td >Mã hồ sơ</td>
+            <td >Người nộp</td>
+			<td >Địa chỉ</td>
+			<td >Số điện thoại</td>
+			<td >Ngày tiếp nhận</td>
+			<td >Ngày hẹn trả</td>
+			<td >Quá hạn(đv: ngày)</td>
+        </tr>
+    </head>
+    <list>
+        <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
+        <item type="text" id="RN" name="TT" size="5%" align="center" excel_width="21"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="19%" excel_width="83"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người nộp" size="19%" align="center" excel_width="18"/>
+		<item type="text" id="xml/txtDiaChi" name="Địa chỉ" size="20%" align="center" excel_width="18"/>
+		<item type="text" id="C_RETURN_PHONE_NUMBER" name="Số điện thoại" size="10%" align="center" excel_width="18"/>
+		<item type="text" id="C_RECEIVE_DATE" name="Ngày tiếp nhận" size="10%" align="center" excel_width="18"/>
+		<item type="text" id="C_RETURN_DATE" name="Ngày hẹn trả" size="10%" align="center" excel_width="18"/>
+		
+		<item type="text" id="C_COUNT_QUA_HAN" name="Trả quá hạn" size="7%" align="center" excel_width="18"/>
+    </list>
+</report>

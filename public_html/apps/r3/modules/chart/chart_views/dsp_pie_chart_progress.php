@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //header
@@ -23,18 +5,21 @@ $this->template->title = 'Biểu đồ tiến độ';
 $this->template->display('dsp_header_pop_win.php');
 
 ?>
+<style>
+    /*.flot-y-axis .flot-tick-label.tickLabel{left:-15px !important}*/
+    .width_50
+    {
+        width: 50px;
+        display: inline-table !important;
+    }
+</style>
+<script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.flot.js"></script>
 <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.flot.selection.js"></script>
-<script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/excanvas.js"></script>
 <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.flot.pie.js"></script>
 <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.flot.stack.js"></script>
-<script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.flot.time.js"></script>
 <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.flot.tooltip.js"></script>
 <script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/jquery.flot.resize.js"></script>
-<script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/accordion.nav.js"></script>
-<script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/custom.js"></script>
-<script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/respond.min.js"></script>
-<script src="<?php echo SITE_ROOT; ?>public/themes/bootstrap/js/ios-orientationchange-fix.js"></script>
 
 <script>
 $(document).ready(function (){
@@ -45,9 +30,9 @@ $(document).ready(function (){
 //xu ly select year
 function sel_year_onclick(seleted)
 {
-    year = $(seleted).val();
+    var year = $(seleted).val();
     
-    func = $(seleted).find('option:selected').attr('data-function');
+    var func = $(seleted).find('option:selected').attr('data-function');
     
     //goi ham theo data-function cua option dc chon
     window[func](year);
@@ -64,10 +49,9 @@ function create_recevice_respond_bar_chart(year)
     $.ajax({
         url: "<?php echo $this->get_controller_url() . 'arp_get_record_receive_respond/';?>" + year,
         success: function(res){
-            obj = jQuery.parseJSON(res);
-            TIEP_NHAN = obj.TIEP_NHAN;
-            DA_TRA    = obj.DA_TRA;
-            
+            var obj = jQuery.parseJSON(res);
+            var TIEP_NHAN = obj.TIEP_NHAN;
+            var DA_TRA    = obj.DA_TRA;
             var data_da_tra = [
                 [34, get_val_of_obj(DA_TRA,12,0)],
                 [31, get_val_of_obj(DA_TRA,11,0)],
@@ -151,15 +135,28 @@ function create_recevice_respond_bar_chart(year)
             ];
             var options = {
                 xaxis: {
-                    ticks: ticks
+                    ticks: ticks,
+                    axisLabelPadding: 10
                 },
+                tooltip: true,
                 series: {
                     shadowSize: 0
                 },
+                grid: {
+                    hoverable: true,
+                    clickable: true,
+                    borderWidth: 1,
+                    autoHighlight: true,
+                    
+                    labelMargin: 20
+                },
                 colors: ["#b086c3", "#ea701b"],
-                tooltip: true,
                 tooltipOpts: {
-                    defaultTheme: false
+                    defaultTheme: false,
+                    content: function(label,xval,yval){
+                        var content = "%s: " + xval + ' hồ sơ';
+                        return content;
+                    }
                 },
                 legend: {
                     labelBoxBorderColor: "#000000",
@@ -182,48 +179,62 @@ function create_progress_pie_chart(year)
     $.ajax({
         url: "<?php echo $this->get_controller_url() . 'arp_get_record_progress/';?>" + year,
         success: function(res){
-            obj = jQuery.parseJSON(res);
-            
+            var obj = jQuery.parseJSON(res);
             //tong so ban ghi
-            total_record = obj.C_TOTAL_RECORD;
+            var total_record = obj.C_TOTAL_RECORD;
             
             //tinh % dang xu ly - cham tien do
-            dxl_cham = (obj.C_COUNT_CHUA_TRA_CHAM_TIEN_DO/total_record)*100;
-            dxl_cham = Math.round(dxl_cham);
+            var dxl_cham = (obj.C_COUNT_CHUA_TRA_CHAM_TIEN_DO/total_record)*100;
+            var dxl_cham = Math.round(dxl_cham);
             //tinh % dang xu ly - chua den han
-            dxl_chua_den_han = (obj.C_COUNT_CHUA_TRA_CHUA_DEN_HAN/total_record)*100;
-            dxl_chua_den_han = Math.round(dxl_chua_den_han);
+            var dxl_chua_den_han = (obj.C_COUNT_CHUA_TRA_CHUA_DEN_HAN/total_record)*100;
+            var dxl_chua_den_han = Math.round(dxl_chua_den_han);
             //tinh % da tra - dung han
-            dt_som_han = (obj.C_COUNT_DA_TRA_SOM_HAN/total_record)*100;
-            dt_som_han = Math.round(dt_som_han);
+            var dt_som_han = (obj.C_COUNT_DA_TRA_SOM_HAN/total_record)*100;
+            var dt_som_han = Math.round(dt_som_han);
             //tinh % da tra - dung han
-            dt_dung_han = (obj.C_COUNT_DA_TRA_DUNG_HAN/total_record)*100;
-            dt_dung_han = Math.round(dt_dung_han);
+            var dt_dung_han = (obj.C_COUNT_DA_TRA_DUNG_HAN/total_record)*100;
+            var dt_dung_han = Math.round(dt_dung_han);
             //tinh % da tra - cham han
-            dt_cham_han = 100 - (dxl_cham + dxl_chua_den_han + dt_som_han + dt_dung_han);
+            var dt_cham_han = 100 - (dxl_cham + dxl_chua_den_han + dt_som_han + dt_dung_han);
             
-            
-            
+//             var dxl_cham         = obj.C_COUNT_CHUA_TRA_CHAM_TIEN_DO;
+//             var dxl_chua_den_han = obj.C_COUNT_CHUA_TRA_CHUA_DEN_HAN;
+//             var dt_som_han       = obj.C_COUNT_DA_TRA_SOM_HAN;
+//             var dt_dung_han      = obj.C_COUNT_DA_TRA_DUNG_HAN;
+//             var dt_cham_han      = total_record - (dxl_cham + dxl_chua_den_han + dt_som_han + dt_dung_han);
+            var value_tra_cham = parseInt(total_record) - (parseInt(obj.C_COUNT_DA_TRA_DUNG_HAN) + parseInt(obj.C_COUNT_DA_TRA_SOM_HAN) + parseInt(obj.C_COUNT_CHUA_TRA_CHUA_DEN_HAN) + parseInt(obj.C_COUNT_CHUA_TRA_CHAM_TIEN_DO));
+			
             var data = [{
-                    label: "Đang xử lý - Chậm tiến độ",
+                    label: "Đang xử lý - Quá hạn",
                     data: dxl_cham,
-                    color: '#DA3610'
+                    value: obj.C_COUNT_CHUA_TRA_CHAM_TIEN_DO,
+                    color: '#DA3610',
+                    note: 'Hồ sơ đang xử lý quá hạn so với ngày hẹn trả'
                 }, {
                     label: "Đang xử lý - Chưa đến hạn",
                     data: dxl_chua_den_han,
-                    color: '#3498DB'
+                    value: obj.C_COUNT_CHUA_TRA_CHUA_DEN_HAN,
+                    color: '#3498DB',
+                    note: 'Hồ sơ đang xử lý chưa đến hạn so với ngày hẹn trả'
                 }, {
                     label: "Đã trả - Sớm hạn",
                     data: dt_som_han,
-                    color: '#4DA74D'
+                    value: obj.C_COUNT_DA_TRA_SOM_HAN,
+                    color: '#4DA74D',
+                    note: 'Hồ sơ đã trả sớm hạn so với ngày hẹn trả'
                 },  {
                     label: "Đã trả - Đúng hạn",
                     data: dt_dung_han,
-                    color: '#AFD8F8'
+                    value: obj.C_COUNT_DA_TRA_DUNG_HAN,
+                    color: '#AFD8F8',
+                    note: 'Hồ sơ đã trả đúng hạn so với ngày hẹn trả'
                 },  {
                     label: "Đã trả - Chậm hạn",
                     data: dt_cham_han,
-                    color: '#EDC240'
+                    value: value_tra_cham,
+                    color: '#EDC240',
+                    note: 'Hồ sơ đã trả chậm hạn so với ngày hẹn trả'
                 }
             ];
             
@@ -231,8 +242,20 @@ function create_progress_pie_chart(year)
                     series: {
                         pie: {
                             show: true,
-                            
                         },
+                    },
+                   tooltip: true,
+                    grid: {
+                        hoverable: true,
+                        clickable: true,
+                        borderWidth: 1
+                    },
+                    tooltipOpts: {
+                        defaultTheme: false,
+                        content: function(label,xval,yval){
+                            var content = "%s: " + xval + '%';
+                            return content;
+                        }
                     },
                     legend: {
                         show: false
@@ -240,8 +263,34 @@ function create_progress_pie_chart(year)
                 };
                 
             $.plot($("#pie-chart #pie-chartContainer"), data, options);
+            show_chart_info($('#pie_chart_info'),data)
         }
       });
+}
+function show_chart_info(div_note,data)
+{
+    var label = '';
+    var color = '';
+    var note = '';
+    var value  = '';
+    for (var key in data)
+    {
+        label = data[key].label;
+        color = data[key].color;
+        value = number_format(parseInt(data[key].value),0);
+        note = data[key].note;
+        if(note != '' && parseInt(data[key].data) > 0)
+        {
+            $(div_note).append('<div><label class="width_50" style="background-color: '+color+'">&nbsp;</label>&nbsp;'+value+' - '+note+'</div>');
+        }
+    }
+}
+function number_format(n,d)
+{
+    var number = String(n.toFixed(d).replace('.',','));
+    return number.replace(/./g, function(c, i, a) {
+                return i > 0 && c !== "," && (a.length - i) % 3 === 0 ? "." + c : c;
+            });
 }
 function get_val_of_obj(obj,val_name,default_val)
 {
@@ -311,6 +360,8 @@ function show_chart_onclick(chart_type)
                     <div id="pie-chart" class="pie-chart" style="background: white">
                         <div id="pie-chartContainer" style="width: 100%;height:400px; text-align: left;">
                         </div>
+                        <div id="pie_chart_info">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -340,7 +391,6 @@ function show_chart_onclick(chart_type)
             <div class="content-widgets">
                 <div>
                     <div class="widget-header-block">
-
                         <h4 class="widget-header">Biểu đồ Tiếp nhận - Đã trả</h4>
                     </div>
                     <div>
@@ -381,13 +431,13 @@ function show_chart_onclick(chart_type)
     <!--menu chart-->
     <div class="span2" id="chart-type">
         <!--button pie chart-->
-        <button class="btn btn-danger" type="button" onclick="show_chart_onclick(this)">
+        <button class="btn" type="button" onclick="show_chart_onclick(this)">
             <i class="icon-bar-chart"></i>
             Tiến độ xử lý hồ sơ
         </button>
         <div class="clear" style="height: 5px;"></div>
         <!--button bar chart-->
-        <button class="btn btn-info" type="button" onclick="show_chart_onclick(this)">
+        <button class="btn" type="button" onclick="show_chart_onclick(this)">
             <i class="icon-bar-chart"></i>
             Tiếp nhận-Trả kết quả
         </button>

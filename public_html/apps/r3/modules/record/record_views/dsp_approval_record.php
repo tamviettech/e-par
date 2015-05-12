@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 if (!defined('SERVER_ROOT'))
     exit('No direct script access allowed');
 $v_count_record = count($VIEW_DATA['arr_all_record']);
@@ -101,7 +83,7 @@ if ($v_promote == '')
     $v_promote = _CONST_RECORD_APPROVAL_ACCEPT;
 }
 ?>
-<form name="frmMain" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_approval_record">
+<form name="frmMain" class="div-slimscroll" method="post" id="frmMain" action="<?php echo $this->get_controller_url(); ?>do_approval_record">
     <?php
     echo $this->hidden('controller', $this->get_controller_url());
 
@@ -140,30 +122,50 @@ if ($v_promote == '')
             <?php echo $v_record_type_code; ?> - <?php echo $v_record_type_name; ?>
         </div>
     </div>
-
     <!-- Record list -->
     <div id="record_list">
-        <table style="width: 100%;" class="adminlist table table-bordered table-striped">
-            <tr>
+        <table style="width: 100%;" class="adminlist table table-bordered table-striped thead">
+            <colgroup>
+                <col width="5%">
+                <col width="*">
+                <col width="15%">
+                <col width="20%">
+                <col width="15%">
+                <col width="15%">
+            </colgroup>
+            <thead>
                 <th>STT</th>
                 <th>Mã hồ sơ</th>
                 <th>Người đăng ký</th>
                 <th>Ngày tiếp nhận</th>
                 <th>Ngày hẹn trả</th>
                 <th>Cán bộ thụ lý</th>
-            </tr>
-            <?php for ($i = 0; $i < count($arr_all_record); $i++): ?>
-                <tr id="tr_<?php echo $i; ?>" class="tr_data">
-                    <td class="right"><?php echo ($i + 1); ?></td>
-                    <td id="td_record_no_<?php echo $i; ?>"><?php echo $arr_all_record[$i]['C_RECORD_NO']; ?></td>
-                    <td id="td_citizen_name_<?php echo $i; ?>"><?php echo $arr_all_record[$i]['C_CITIZEN_NAME']; ?></td>
-                    <td id="td_receive_date_<?php echo $i; ?>"><?php echo $this->break_date_string(jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE)); ?></td>
-                    <td id="td_return_date_<?php echo $i; ?>"><?php echo $this->break_date_string($this->return_date_by_text($arr_all_record[$i]['C_RETURN_DATE'])); ?></td>
-                    <td id="td_user_exec_<?php echo $i; ?>"><?php echo get_xml_value(simplexml_load_string($arr_all_record[$i]['C_XML_PROCESSING']), "//step[contains(@code,'::THU_LY')][last()]/user_name"); ?></td>
-                </tr>
-            <?php endfor; ?>
+            </thead>
         </table>
+        <div id="box-slimscroll" class="dsp_approval_record">
+            <table style="width: 100%;" class="adminlist table table-bordered table-striped">
+                <colgroup>
+                    <col width="5%">
+                    <col width="*">
+                    <col width="15%">
+                    <col width="20%">
+                    <col width="15%">
+                    <col width="15%">
+                </colgroup>
+                <?php for ($i = 0; $i < count($arr_all_record); $i++): ?>
+                    <tr id="tr_<?php echo $i; ?>" class="tr_data">
+                        <td class="right"><?php echo ($i + 1); ?></td>
+                        <td id="td_record_no_<?php echo $i; ?>"><?php echo $arr_all_record[$i]['C_RECORD_NO']; ?></td>
+                        <td id="td_citizen_name_<?php echo $i; ?>"><?php echo $arr_all_record[$i]['C_CITIZEN_NAME']; ?></td>
+                        <td id="td_receive_date_<?php echo $i; ?>"><?php echo $this->break_date_string(jwDate::yyyymmdd_to_ddmmyyyy($arr_all_record[$i]['C_RECEIVE_DATE'], TRUE)); ?></td>
+                        <td id="td_return_date_<?php echo $i; ?>"><?php echo $this->break_date_string($this->return_date_by_text($arr_all_record[$i]['C_RETURN_DATE'])); ?></td>
+                        <td id="td_user_exec_<?php echo $i; ?>"><?php echo get_xml_value(simplexml_load_string($arr_all_record[$i]['C_XML_PROCESSING']), "//step[contains(@code,'::THU_LY')][last()]/user_name"); ?></td>
+                    </tr>
+                <?php endfor; ?>
+            </table>
+        </div>
     </div>
+    <div class="clear" style="height: 10px"></div>
     <!-- End: Record list -->
     <div class="widget-head bondi-blue">
         <h3>Xét duyệt hồ sơ</h3>
@@ -173,25 +175,25 @@ if ($v_promote == '')
             Kết quả:
         </div>
         <div class="right-Col">
-            
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>">
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>" class="checkbox inline" style="padding-left: 0px">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_ACCEPT; ?>"
                    onclick="rad_approval_onclick(this.value)"
                    <?php echo ($v_promote == _CONST_RECORD_APPROVAL_ACCEPT) ? ' checked' : ''; ?>
                    />
-            Phê duyệt hồ sơ</label>
+            Phê duyệt hồ sơ
+            </label>
 
             
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>" class="approval-reexec">
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>" class="checkbox inline approval-reexec">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_REEXEC; ?>"
                    onclick="rad_approval_onclick(this.value)"
                    />
-            Trả lại, yêu cầu thụ lý</label>
+            Yêu cầu thụ lý lại</label>
 
             
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>" class="approval-supplement">
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>" class="checkbox inline approval-supplement">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_SUPPLEMENT; ?>"
                    onclick="rad_approval_onclick(this.value)"
@@ -200,7 +202,7 @@ if ($v_promote == '')
             Yêu cầu bổ sung hồ sơ</label>
 
             
-            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>" class="approval-reject">
+            <label for="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>" class="checkbox inline approval-reject">
             <input type="radio" name="rad_approval" id="rad_<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
                    value="<?php echo _CONST_RECORD_APPROVAL_REJECT; ?>"
                    onclick="rad_approval_onclick(this.value)"
@@ -209,22 +211,21 @@ if ($v_promote == '')
             Từ chối hồ sơ</label>
         </div>
     </div>
-
+    <div class="clear" style="height: 10px;"></div>
     <div id="divFee" class="Row">
         <?php if (intval($v_fee) > 0): ?>
             <div class="Row">
                 <div class="left-Col">
-                    Phí:<span class="required">*</span>
+                    Phí<span class="required">(*)</span>:
                 </div>
                 <div class="right-Col">
                     <input type="text" name="txt_fee" id="txt_fee"
-                           size="8" maxlength="10" class="span12"
-                           value="<?php echo $v_fee; ?>"/> (đ)
+                           size="8" maxlength="10" value="<?php echo $v_fee; ?>"/> (đ)
                 </div>
             </div>
             <div class="Row">
                 <div class="left-Col">
-                    <span id="spanLyDo">Diễn giải:</span> <span class="required">*</span>
+                    <span id="spanLyDo">Diễn giải <span class="required">(*)</span>:</span> 
                 </div>
                 <div class="right-Col">
                     <textarea style="width:100%;height:100px;" rows="2"
@@ -238,25 +239,26 @@ if ($v_promote == '')
             <div id="divLead" class="Row" <?php echo ($v_promote != _CONST_RECORD_APPROVAL_ACCEPT) ? ' style="display: none;"' : ''; ?>>
                 <div class="left-Col">
                     <?php if (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_THU_PHI_ROLE . '$/', $v_next_task_code)): ?>
-                        <label>Cán bộ thu phí <span class="required">*</span></label>
+                        <label>Cán bộ thu phí <span class="required">(*)</span>:</label>
                     <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_TRA_KET_QUA_ROLE . '$/', $v_next_task_code)): ?>
-                        <label>Cán bộ trả kết quả:<span class="required">*</span></label>
+                        <label>Cán bộ trả kết quả <span class="required">(*)</span>:</label>
                     <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_THU_LY_ROLE . '$/', $v_next_task_code)): ?>
-                        <label>Cán bộ thụ lý:<span class="required">*</span></label>
+                        <label>Cán bộ thụ lý <span class="required">(*)</span>:</label>
+                    <?php elseif (preg_match('/' . _CONST_XML_RTT_DELIM . _CONST_NOP_HO_SO_SANG_CHI_CUC_THUE_ROLE . '$/', $v_next_task_code)): ?>
+                        <label>Cán bộ thuế <span class="required">(*)</span>:</label>
                     <?php else: ?>
-                        <label>Lãnh đạo ký duyệt:<span class="required">*</span></label>
+                        <label>Chuyển hồ sơ đến <span class="required">(*)</span>:</label>
                     <?php endif; ?>
                 </div>
                 <div class="right-Col">
-                        <?php for ($i = 0; $i < count($arr_all_next_user); $i++): ?>
-                                
-                                <label for="rad_signer_<?php echo $i; ?>">
-                                    <input type="radio" value="<?php echo $arr_all_next_user[$i]['C_USER_LOGIN_NAME']; ?>"
-                                    id="rad_signer_<?php echo $i; ?>" name="rad_signer"
-                                    <?php echo ($i == 0) ? ' checked' : ''; ?> />
-                                    <?php echo $arr_all_next_user[$i]['C_NAME']; ?> <i>(<?php echo $arr_all_next_user[$i]['C_JOB_TITLE']; ?>)</i>
-                                </label>
-                        <?php endfor; ?>
+                    <?php for ($i = 0; $i < count($arr_all_next_user); $i++): ?>
+                        <label for="rad_signer_<?php echo $i; ?>">
+                            <input type="radio" value="<?php echo $arr_all_next_user[$i]['C_USER_LOGIN_NAME']; ?>"
+                            id="rad_signer_<?php echo $i; ?>" name="rad_signer"
+                            <?php echo ($i == 0) ? ' checked' : ''; ?> />
+                            <?php echo $arr_all_next_user[$i]['C_NAME']; ?> <i>(<?php echo $arr_all_next_user[$i]['C_JOB_TITLE']; ?>)</i>
+                        </label>
+                    <?php endfor; ?>
                 </div>
             </div>
         <?php endif; ?>
@@ -266,7 +268,7 @@ if ($v_promote == '')
             <div class="Row">
                 <div class="left-Col">&nbsp;</div>
                 <div class="right-Col">
-                    <input type="button" class="btn btn-success" value="In phiếu bàn giao" name="btn_print_record_list_to_handover_back" onclick="btn_print_record_list_to_handover_back_onclick();" />
+                    <input type="button" class="btn" value="In phiếu bàn giao" name="btn_print_record_list_to_handover_back" onclick="btn_print_record_list_to_handover_back_onclick();" />
                 </div>
             </div>
         <?php else: ?>
@@ -283,7 +285,7 @@ if ($v_promote == '')
 
     <div id="divNote" class="Row" <?php echo ($v_promote == _CONST_RECORD_APPROVAL_ACCEPT) ? ' style="display: none;"' : ''; ?>>
         <div class="left-Col">
-            <span id="spanLyDo">Lý do:</span> <span class="required">*</span>
+            <span id="spanLyDo">Lý do <span class="required">(*)</span>:</span> 
         </div>
         <div class="right-Col">
             <textarea style="width:100%;height:100px;" rows="3"
@@ -294,14 +296,14 @@ if ($v_promote == '')
     <div id="print_reject" class="Row" <?php echo ($v_promote == _CONST_RECORD_APPROVAL_REJECT) ? '' : ' style="display: none;"'; ?>>
         <div class="left-Col">&nbsp;</div>
         <div class="right-Col">
-            <input type="button" class="btn btn-success" value="In phiếu từ chối" name="btn_print_supplement_request" onclick="btn_print_reject_onclick();" />
+            <input type="button" class="btn" value="In phiếu từ chối" name="btn_print_supplement_request" onclick="btn_print_reject_onclick();" />
         </div>
     </div>
 
     <!-- Sau khi bo sung -->
     <div id="divAfterSupplement" class="Row" <?php echo ($v_promote != _CONST_RECORD_APPROVAL_SUPPLEMENT) ? ' style="display: none;"' : ''; ?>>
         <div class="left-Col">
-            <span id="spanLyDo">Sau khi bổ sung:</span> <span class="required">*</span>
+            <span id="spanLyDo">Sau khi bổ sung <span class="required">(*)</span>:
         </div>
         <div class="right-Col">
             
@@ -317,7 +319,7 @@ if ($v_promote == '')
 
         <div class="left-Col">&nbsp;</div>
         <div class="right-Col">
-            <input type="button" class="btn btn-success" value="In phiếu yêu cầu bổ sung" name="btn_print_supplement_request" onclick="btn_print_supplement_request_onclick();" />
+            <input type="button" class="btn" value="In phiếu yêu cầu bổ sung" name="btn_print_supplement_request" onclick="btn_print_supplement_request_onclick();" />
         </div>
     </div>
 
@@ -330,7 +332,7 @@ if ($v_promote == '')
             <?php echo __('update'); ?>
         </button>
         <?php $v_back_action = ($v_pop_win === '') ? 'btn_back_onclick();' : 'try{window.parent.hidePopWin();}catch(e){window.close();};'; ?>
-        <button type="button" name="cancel" class="btn btn-danger" onclick="<?php echo $v_back_action;?>" >
+        <button type="button" name="cancel" class="btn" onclick="<?php echo $v_back_action;?>" >
             <i class="icon-remove"></i>
             <?php echo __('close window'); ?>
         </button> 

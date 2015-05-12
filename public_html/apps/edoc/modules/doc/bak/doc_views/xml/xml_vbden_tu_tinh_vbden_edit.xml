@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <line label="" cols="1">
+		<item type="Checkbox" value="cho_phep_tra_cuu_cong_khai" id="cho_phep_tra_cuu_cong_khai" name="" allownull="" validate="" title="Cho phép tra cứu công khai" label="" view="true"/>
+	</line>
+<line label="Thông tin công văn đến" cols="1">
+<item type="TextboxDate" id="doc_ngay_den" name="Ngày đến" allownull="yes" validate="date" label="Ngày đến" defaul_value="current-date()" css="" view="true"/>
+</line>
+	<line label="" cols="2">
+		<item type="TextboxDocSEQ" seq_name="SEQ_INCOMMING_DOC" id="doc_so_den" name="Số" allownull="no" validate="text" label="Số đến:" defaul_value="" size="20" css="" view="true"/>
+		<item type="Textbox" id="doc_so_ky_hieu" name="Số công văn" allownull="no" validate="text" label="Số công văn:" defaul_value="" size="30" css="" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="doc_noi_gui" name="Nơi gửi" allownull="yes" validate="text" label="Nơi gửi:" defaul_value="" size="30" css="" view="true"/>
+	<item type="TextboxDate" id="doc_ngay_van_ban" name="Ngày tháng của văn bản" allownull="yes" validate="date" label="Ngày tháng của văn bản" defaul_value="" css="" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txt_nguoi_ky" name="Người ký" allownull="yes" validate="text" label="Người ký:" defaul_value="" size="30" css="" view="true"/>
+		<item type="TextboxDate" id="txt_ngay_ky" name="Ngày ký" allownull="yes" validate="date" label="Ngày ký:" defaul_value="" css="" view="true"/>
+	</line>
+	<line label="" cols="2">
+		<item type="DropDownList" id="ddl_linh_vuc" name="Lĩnh vực" allownull="yes" validate="ddli" label="Thuộc lĩnh vực" defaul_value="0" src_file="public/xml/xml_linh_vuc_hanh_chinh.xml" view="true"/>
+		<item type="Textbox" id="doc_noi_nhan" name="Nơi nhận" allownull="yes" validate="text" label="Nơi nhận" defaul_value="" size="30" css="" view="true" />		
+	</line>
+	<line label="" cols="2">
+		<item type="Textbox" id="txt_so_ban" name="Số bản" allownull="yes" validate="number" label="Số bản:" defaul_value="1" size="10" css="" view="true" Even="inputInt(this)"/>
+		<item type="Textbox" id="txt_so_trang" name="Số trang" allownull="yes" validate="number" label="Số trang:" defaul_value="" size="10" css="" view="true" Even="inputInt(this)"/>		
+	</line>
+	
+	<line label="" cols="1">
+		<item type="TextboxArea" id="doc_trich_yeu" name="Trích yếu" allownull="no" validate="text" label="Trích yếu:" defaul_value="" size="79" css="" view="true"/>
+	</line>
+</form>

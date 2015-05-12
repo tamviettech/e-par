@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');?>
 <?php
 
@@ -37,13 +19,14 @@ class View{
     public $url_layout;
 
     function __construct($app, $module) {
-        $this->app_name = $app;
-        $this->module_name = $module;
-        $this->template_directory = SITE_ROOT . 'apps/' . $app . '/';
-        $this->image_directory = $this->template_directory . 'images/';
-
         //Savant3
         $this->template = new Savant3();
+        
+        $this->app_name = $this->template->app_name = $app;
+        $this->module_name = $this->template->module_name = $module;
+        $this->template_directory = SITE_ROOT . 'apps/' . $app . '/';
+        $this->image_directory = $this->template_directory . 'images/';
+        
         //load local javascript
         $this->local_js = $this->template->local_js = SITE_ROOT . 'apps/' . $app . '/modules/' . $module . '/' . $module . '_views/js_' . $module . '.js';
         $this->template->controller_url = $this->get_controller_url();
@@ -523,4 +506,183 @@ class View{
                break;
        }
    }
+   
+   /**
+    * Build menu cho tung app
+    * @param strng $xml_file_path Duong dan tuyet doi den file menu.xml
+    * @param string $app_name ma ung dung (app)
+    */
+   public static function build_app_menu($xml_file_path, $app_name)
+   {
+        echo '<ul class="nav">';
+        if (file_exists($xml_file_path))
+        {
+            $dom_menu = simplexml_load_file($xml_file_path);
+            $menus = $dom_menu->xpath("//menu");
+
+            mvc_url_parse($app, $module, $function, $function_args);
+
+            foreach ($menus as $menu) 
+            {
+                $v_text = $menu->owner->text;
+                $v_icon = $menu->owner->icon;
+                $v_req  = $menu->owner->req;
+                $v_url = ($menu->owner->url == '') ? 'javascript:void(0)' : SITE_ROOT . build_url($menu->owner->url);
+                $v_active_module_name = $menu->owner->active_module_name;
+                
+                //Submenu
+                $sub_menu_obj = $menu->sub_menu;
+                $arr_all_item = $sub_menu_obj->item;
+
+                //Có 1 trong cac quyen co sub-menu se hien thi menu cha
+                $v_permitted = (strlen($v_req) == 0) ? TRUE : check_permission($v_req, $app_name);
+
+                $v_count_item = 0;
+                $v_active = '';
+                if ( ($menu->owner->active_app_name == $app) OR ($menu->owner->active_module_name == $module) )
+                {
+                    $v_active = ' active';
+                }
+                if(count($menu->sub_menu->item) > 0)
+                {
+                    foreach ($menu->sub_menu->item as $item)
+                    {
+                        $v_item_req = $item->req;
+
+                        $v_permitted = $v_permitted OR check_permission($v_item_req, $app_name);
+                        $v_count_item += check_permission($v_item_req, $app_name)? 1 : 0;
+
+                        if ( ($item->active_app_name == $app) OR ($item->active_module_name == $module) )
+                        {
+                            $v_active = ' active';
+                        }
+                    }
+                }
+                $v_permitted = $v_permitted OR (Session::get('is_admin') > 0);
+                if ($v_permitted == TRUE)
+                {
+                    ?>
+                    <li class="dropdown <?php echo $v_active;?>" data-module="<?php echo $v_active_module_name?>">
+                        <?php if ($v_count_item > 0): ?>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo $v_url;?>">
+                                <i class="<?php echo $v_icon;?>"></i><?php echo $v_text;?>
+                                <b class="icon-angle-down"></b>
+                            </a>
+                        <?php else: ?>
+                            <a href="<?php echo $v_url;?>"><i class="<?php echo $v_icon;?>"></i><?php echo $v_text;?></a>
+                        <?php endif;?>
+                        <!-- menu cap 2 -->
+                        <?php if ($v_count_item > 0): ?>
+                            <div class="dropdown-menu">
+                                <ul>
+                                    <?php foreach ($menu->sub_menu->item as $item):?> 
+                                        <?php
+                                        $v_item_text = trim($item->text);
+                                        $v_item_icon = trim($item->icon) != '' ? trim($item->icon) : 'icon-file-alt';
+                                        $v_item_req  = trim($item->req);
+                                        
+                                        $v_item_url  = trim($item->url);
+                                        if ($v_item_url == '')
+                                        {
+                                            $v_item_url = 'javascript:void(0);';
+                                        }
+                                        elseif ( ! preg_match('/^http:/', $v_item_url))
+                                        {
+                                            $v_item_url = SITE_ROOT . $v_item_url;
+                                        }
+                                        //$v_item_url  = ($item->url == '') ? 'javascript:void(0)' : SITE_ROOT . ($item->url);
+                                        ?>
+                                        <?php if (check_permission($v_item_req, $app_name)): ?>
+                                            <li>
+                                                <a href="<?php echo $v_item_url;?>">
+                                                    <i class="<?php echo $v_item_icon;?>"></i>
+                                                    <?php echo $v_item_text;?>
+                                                </a>
+                                            </li>
+                                        <?php endif;?>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                    </li>
+                    <?php
+                }//if ($v_permitted == TRUE)
+            }//foreach ($menus
+        }//file_exists
+        else
+        {
+            echo '<li></li>';
+        }
+        echo '</ul>';
+    }//end func build_app_menu
+    
+    public static function build_user_profile_menu($xml_file_path, $app_name)
+    {
+        if (Session::get('login_name') == NULL)
+        {
+            return FALSE;
+        }
+        ?>
+        <div class="btn-group">
+            <div class="dropdown">
+                <a data-toggle="dropdown" class="btn dropdown-toggle" href="javascript:void(0);">
+                    <i class="icon-user"></i>
+                        <?php echo Session::get('user_name'); ?> 
+                    <i class="icon-th" style="font-size: 14px; margin-left: 5px;"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <ul>
+                        <?php if (session::get('auth_by') != 'AD'): ?>
+                            <?php $v_change_password_url = SITE_ROOT . build_url('cores/user/dsp_change_password'); ?>
+                            <li>
+                                <a href="javascript:void(0)" onclick="showPopWin('<?php echo $v_change_password_url; ?>' , 500,400, null);">
+                                    <i class="icon-lock"></i> Đổi mật khẩu
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        <li><a href="<?php echo SITE_ROOT?>logout.php"><i class="icon-signout"></i> Đăng thoát</a></li>
+                        <?php 
+                        if (file_exists($xml_file_path))
+                        {
+                            $dom_menu = simplexml_load_file($xml_file_path);
+                            $items = $dom_menu->xpath("//profile/item");
+                            foreach ($items as $item)
+                            {
+                                $v_item_text = trim($item->text);
+                                $v_item_icon = trim($item->icon) != '' ? $item->icon : 'icon-file-alt';
+                                $v_item_req  = $item->req;
+                                
+                                $v_item_url  = trim($item->url);
+                                if ($v_item_url == '')
+                                {
+                                    $v_item_url = 'javascript:void(0);';
+                                }
+                                if ( ! preg_match('/^http:/', $v_item_url))
+                                {
+                                    $v_item_url = SITE_ROOT . $v_item_url;
+                                }
+                                
+                                $v_permitted = ($v_item_req == '') OR (check_permission($v_item_req, $app_name));
+                                if ($v_permitted)
+                                {
+                                    ?>
+                                    <li>
+                                        <a href="<?php echo $v_item_url;?>">
+                                            <i class="<?php echo $v_item_icon;?>"></i>
+                                            <?php echo $v_item_text;?>
+                                        </a>
+                                    </li><?php
+                                }//if permitted
+                            }//end foreach
+                        }//if file_exists
+                        ?>
+                    </ul>
+                </div>
+                <a class="btn btn-notification" href="<?php echo SITE_ROOT?>logout.php" title="Đăng thoát">
+                    <i class="icon-signout"></i>
+                </a>
+            </div>
+        </div>
+        <?php
+    } //end func build_user_profile_menu
 }

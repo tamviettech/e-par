@@ -742,6 +742,10 @@ input[type="checkbox"] {
     padding: 0;
     width: auto
 }
+.notify-tip
+{
+    padding: 1px 5px;
+}
 #box-name-message a {
     color: #5C7C92;
     text-decoration: none;
@@ -1041,4 +1045,62 @@ td.no_chain_step{background-color: whitesmoke;}
     line-height: 1.2em;
     overflow: hidden;
     position: relative;
+}
+
+.icon-TRA_CUU
+{
+  background-position: -48px 0 !important;
+}
+.icon-TRA_CUU:before{ content: "\f002"; }
+.icon-Y_KIEN_LANH_DAO:before{ content: "\f02e"; }
+.icon-TRA_CUU_HO_SO_LIEN_THONG:before{ content: "\f00e"; }
+.icon-TRA_CUU_HO_SO_TAI_XA:before{ content: "\f00e"; }
+.icon-BAO_CAO:before{ content: "\f0c5"; }
+.icon-TIEP_NHAN:before{ content: "\f055"; }
+.icon-BAN_GIAO:before{ content: "\f0ec"; }
+.icon-BO_SUNG:before{ content: "\f044"; }
+
+#liveboard #quoc-huy img
+{
+    max-height: 60px;
+}
+.promote-reject {
+    text-decoration: line-through;
+    color: #F00;
+}
+.btn.btn-sm{
+    padding: 3px 6px;
+}
+.tab-widget .tab-content{
+    border:none;
+}
+.chosen-container{
+    margin-bottom: 10px;
+}
+.chosen-container-single .chosen-single{
+    border-radius: 0;
+    background: none;
+    height: 22px;
+    line-height: 22px;
+    box-shadow: none;
+    font-size: 12px;
+}
+.chosen-drop{
+    font-size: 12px;
+}
+label{
+    display: inline-block;
+}
+.quick_action a{
+    display:inline-block;
+    width: 35px;
+    height: 35px;
+    font-size: 25px;
+    line-height: 35px;
+    text-align:center;
+    text-decoration:none;
+    margin:0;
+}
+.quick_action a:hover{
+    background: #e1e1e1;
 }

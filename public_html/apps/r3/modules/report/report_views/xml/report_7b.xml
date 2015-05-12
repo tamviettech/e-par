@@ -2,14 +2,14 @@
 <report layout="L"><!--P: Doc, L: Ngang-->
     <list>
         <!-- Độ rộng cột trong báo cáo tính bằng pixel -->
-        <item type="text" id="RN" name="TT" size="50" align="right"/>
-        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="120"/>
-        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="150" />
-        <item type="text" id="C_CHARGE_DATE" name="Ngày thu" size="120"  />
-        <item type="text" id="C_FINAL_FEE" name="Lệ phí" size="80" align="right" number_format="true"/>
-        <item type="text" id="C_COST" name="Phí" size="80" align="right" number_format="true"/>
-        <item type="text" id="C_SUM" name="Tổng" size="80" align="right" number_format="true"/>
-        <item type="text" id="C_FEE_DESCRIPTION" name="Diễn giải" size="100" />
+        <item type="text" id="RN" name="TT" size="50" align="center" excel_width="11"/>
+        <item type="text" id="C_RECORD_NO" name="Mã hồ sơ" size="120" excel_width="27"/>
+        <item type="text" id="C_CITIZEN_NAME" name="Người đăng ký" size="150" excel_width="27"/>
+        <item type="text" id="C_CHARGE_DATE" name="Ngày thu" size="120"  align="center" excel_width="17"/>
+        <item type="text" id="C_FINAL_FEE" name="Lệ phí" size="80" align="center" number_format="true" excel_width="17"/>
+        <item type="text" id="C_COST" name="Phí" size="80" align="center" number_format="true" excel_width="17"/>
+        <item type="text" id="C_SUM" name="Tổng" size="80" align="center" number_format="true" excel_width="17"/>
+        <item type="text" id="C_FEE_DESCRIPTION" name="Diễn giải" size="100" align="center" excel_width="17"/>
     </list>
     <total>
         <item colspan="4" name="Tổng cộng" align="right"/>

@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -51,7 +33,7 @@ $this->template->display('dsp_header.php');
 
     <div id="solid-button">
          <!--button xet duyet-->
-        <button type="button" name="trash" class="btn btn-success" onclick="btn_sign_onclick();">
+        <button type="button" name="trash" class="btn" onclick="btn_sign_onclick();">
             <i class="icon-ok-sign"></i>
             Ký duyệt
         </button>
@@ -68,7 +50,7 @@ $this->template->display('dsp_header.php');
     </div>
     <div><?php echo $this->paging2($arr_all_record);?></div>
     <div class="button-area">
-        <button class="btn btn-success" onclick="btn_sign_onclick();" name="trash" type="button">
+        <button class="btn" onclick="btn_sign_onclick();" name="trash" type="button">
             <i class="icon-ok-sign"></i>
             Ký duyệt
         </button>
@@ -111,12 +93,12 @@ $this->template->display('dsp_header.php');
                 html = '';
 
                 //Phe duyet
-                html += '<a href="javascript:void(0)" onclick="btn_sign_onclick(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/btn_sign_16x16.png" title="Ký duyệt hồ sơ" /></a>';
+                html += '<a href="javascript:void(0)" onclick="btn_sign_onclick(\'' + v_item_id + '\')" class="quick_action"  title="Ký duyệt hồ sơ">';
+                html += '<i class="icon-edit"></i></a>';
 
                 //Thong tin tien do
-                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" >';
-                html += '<img src="' + SITE_ROOT + 'public/images/statistics-16x16.png" title="Xem tiến độ" s/></a>';
+                html += '<a href="javascript:void(0)" onclick="dsp_single_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+                html += '<i class="icon-bar-chart"></i></a>';
 
                 $(this).html(html);
             });
@@ -152,6 +134,6 @@ $this->template->display('dsp_header.php');
         }
 
     }
-
+    
 </script>
 <?php $this->template->display('dsp_footer.php');

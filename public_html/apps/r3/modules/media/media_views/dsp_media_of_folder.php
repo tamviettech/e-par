@@ -1,38 +1,14 @@
 <?php
-/**
 
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 ?>
+
 <table width="100%" class="adminlist table table-bordered table-striped">
     <col width="5%" />
     <col width="50%" />
     <col width="15%" />
     <col width="15%" />
     <col width="*" />
-    <thead>
-        <tr>
-            <th>
-                <input type="checkbox" name="chk_check_all" onclick="toggle_check_all(this,this.form.chk);"/>
-            </th>
-            <th>Tên</th>
-            <th>Loại</th>
-            <th>Ngày khởi tạo</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
+    
     <!--quay lai 1 thu muc-->
     <?php if($parent_folder_id != '-1'):?>
     <tr>
@@ -58,13 +34,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             $v_type        = $arr_media['C_TYPE'];
             $v_file_name   = $arr_media['C_FILE_NAME'];
             $v_shared      = $arr_media['C_SHARED'];
-            
+            $v_public      = $arr_media['C_PUBLIC'];
             
             //tao link file
             $v_year = $arr_media['C_YEAR'];
             $v_month = $arr_media['C_MONTH'];
             $v_day = $arr_media['C_DAY'];
             $v_file_link = CONST_FILE_UPLOAD_LINK . "$v_year/$v_month/$v_day/$v_file_name";
+            if($v_public == 1) 
+            {
+                continue;
+            }
     ?>
     <tr>
         <td>
@@ -125,15 +105,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <?php endforeach;?>
 </table>
 
-<div class="control-group" class="media-btn-delete" style="float: right;margin-top: 5px;">
-    <!--upload-->
-    <button class="btn btn-primary" type="button" style="margin-bottom: 3px;" onclick="dsp_upload_onclick();">
-        <i class="icon-upload"></i>
-        Tải lên
-    </button>
-    <!--xoa-->
-    <button class="btn btn-danger" type="button" style="margin-bottom: 3px;" onclick="btn_media_delete_onclick();">
-        <i class="icon-trash"></i>
-        Xóa
-    </button>
-</div>

@@ -1,28 +1,10 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <div class="navbar navbar-inverse top-nav">
     <div class="navbar-inner">
         <div class="container">
             <span class="home-link">
                 <a href="<?php echo SITE_ROOT;?>" class="icon-home"></a>
             </span>
-            
+            <span style="line-height: 50px;color: white;font-size: 14px;font-weight: bold;float: left"> <?php echo Session::get('ou_name'); ?></span>
             <div class="nav-collapse">
                 <ul class="nav">
                     <?php if (session::get('is_admin') > 0 OR check_permission('QUAN_TRI_BACKUP_RESTORE', 'CORES')): ?>
@@ -30,7 +12,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <a data-toggle="dropdown" class="dropdown-toggle" href="javascript:;"><i class=" icon-cogs"></i>Quản trị hệ thống<b class="icon-angle-down"></b></a>
                             <div class="dropdown-menu">
                                 <ul>
-                                   <?php if (session::get('is_admin') > 0):; ?>
+                                   <?php if (session::get('is_admin') > 0): ?>
                                     <li>
                                         <a href="<?php echo SITE_ROOT . build_url('cores/xlist/');?>"><i class=" icon-file-alt"></i>Loại danh mục</a>
                                     </li>
@@ -84,10 +66,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         <?php endif; ?>
                     </li>
+                    
+                    <!--Hiển thị nếu có quyển xem đánh giá cán bộ-->
+                    <?php if(check_permission('TRA_CUU_DANH_GIA_CAN_BO', 'R3')): ;?>
+                    <li class="dropdown <?php echo ($this->active_menu == 'cadre_evaluation') ? ' active  ': '';?>">
+                        <a href="<?php echo SITE_ROOT . build_url('r3/cadre_evaluation/dsp_all_report');?>"><i class="icon-thumbs-up"></i>Tra cứu đánh giá cán bộ</a>
+                    </li>
+                    <?php endif; ?>
+                    
               </ul>
+                 
             </div>       
             
-                   
             <div class="btn-toolbar pull-right notification-nav">
                 <?php if (Session::get('login_name') !== NULL): ?>
                     <div class="btn-group">
@@ -95,18 +85,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <a data-toggle="dropdown" class="btn dropdown-toggle" href="javascript:void(0);">
                                 <i class="icon-user"></i>
                                     <?php echo Session::get('user_name'); ?> 
-                                <b class="icon-angle-down"></b>
+                                <i class="icon-th" style="font-size: 14px; margin-left: 5px;"></i>
                             </a>
                             <div class="dropdown-menu">
                                 <ul>
-                                <?php if (session::get('auth_by') != 'AD'): ?>
-                                    <?php $v_change_password_url = SITE_ROOT . build_url('cores/user/dsp_change_password'); ?>
-                                    <li>
-                                        <a href="javascript:void(0)" onclick="showPopWin('<?php echo $v_change_password_url; ?>' , 500,400, null);">
-                                            <i class="icon-lock"></i> Đổi mật khẩu
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
+                                    <?php if (session::get('auth_by') != 'AD'): ?>
+                                        <?php $v_change_password_url = SITE_ROOT . build_url('cores/user/dsp_change_password'); ?>
+                                        <li>
+                                            <a href="javascript:void(0)" onclick="showPopWin('<?php echo $v_change_password_url; ?>' , 500,400, null);">
+                                                <i class="icon-lock"></i> Đổi mật khẩu
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
                                     <li><a href="<?php echo SITE_ROOT?>logout.php"><i class="icon-signout"></i> Đăng thoát</a></li>
                                     <li>
                                         <a href="<?php echo SITE_ROOT . build_url('r3/mapping');?>">
@@ -115,14 +105,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </li>
                                 </ul>
                             </div>
-
-                                <a class="btn btn-notification" href="<?php echo SITE_ROOT?>logout.php" title="Đăng thoát">
-                                    <i class="icon-signout"></i>
+                            <a class="btn btn-notification" href="<?php echo SITE_ROOT?>logout.php" title="Đăng thoát">
+                                <i class="icon-signout"></i>
                             </a>
                         </div>
-				<?php endif;?>
                     </div>
+                <?php endif;?>
+            </div>
         </div>
     </div>
-</div>
 </div>

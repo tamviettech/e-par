@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 //View data
@@ -49,8 +31,11 @@ $this->template->display('dsp_header.php');
     <?php $this->dsp_div_filter($v_record_type_code, $arr_all_record_type);?>
 
     <div id="solid-button">
-        <input type="button" class="solid transfer" value="Chuyển"
-               onclick="do_send_forward_onclick();" />
+        <button type="button" name="trash" class="btn btn-primary" onclick="do_send_forward_onclick();" accesskey="2">
+            <i class="icon-exchange"></i>
+            Chuyển hồ sơ lên sở
+        </button>
+        <div class="clear" style="height: 10px;"></div>
     </div>
     <div class="clear"></div>
     <div id="procedure">
@@ -63,7 +48,10 @@ $this->template->display('dsp_header.php');
     </div>
     <div><?php echo $this->paging2($arr_all_record);?></div>
     <div class="button-area">
-        <input type="button" name="do_action" class="button transfer" value="Chuyển" onclick="do_send_forward_onclick();"/>
+        <button type="button" name="trash" class="btn btn-primary" onclick="do_send_forward_onclick();" accesskey="2">
+            <i class="icon-exchange"></i>
+            Chuyển hồ sơ lên sở
+        </button>
     </div>
 
     <!-- Context menu -->
@@ -93,6 +81,29 @@ $this->template->display('dsp_header.php');
                     break;
             }
         });
+        //Quick action
+        <?php if (strtoupper($this->active_role) == _CONST_CHUYEN_HO_SO_LEN_SO_ROLE): ?>
+            $('.adminlist tr[role="presentation"] td[role="action"] .quick_action').each(function(index) {
+                v_item_id =   $(this).attr('data-item_id');
+
+                html = '';
+
+                //Hoan thanh thu ly
+                //Thong tin tien do
+                v_is_owner = $('.adminlist tr[data-item_id="' + v_item_id + '"]').attr('data-owner');
+                if (v_is_owner == "1")
+                {
+                    html += '<a href="javascript:void(0)" onclick="do_send_forward_onclick(\'' + v_item_id + '\')" class="quick_action" title="Chuyển hồ sơ lên sở">';
+                    html += '<i class="icon-mail-forward"></i></a>';
+                }
+                
+                //Thong tin tien do
+                html += '&nbsp;<a href="javascript:void(0)" onclick="dsp_record_statistics(\'' + v_item_id + '\')" class="quick_action" title="Xem tiến độ">';
+                html += '<i class="icon-bar-chart"></i></a>';
+
+                $(this).html(html);
+            });
+        <?php endif;?>
     });
 
     function do_send_forward_onclick(record_id)

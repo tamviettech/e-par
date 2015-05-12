@@ -1,22 +1,4 @@
 <?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
-<?php
 
 //Frag function
 
@@ -31,7 +13,25 @@ function replace_bad_char($str)
 
     return $str;
 }
+function call_soap_service($client,$function,$arr_param = array(),$recursive = false,$index=0)
+{
+    $result = $client->__soapCall($function, $arr_param);
 
+    if($result == true)
+    {
+        return $result;
+    }
+    else if($index <= 5 && $recursive == true && $result !== true)
+    {
+        $index++;
+        return call_soap_service($client,$function,$arr_param,$recursive,$index);
+    }
+    else
+    {
+        return false;
+    }
+
+}
 /**
  * 
  * @return bool Giờ hiện tại trong giờ hành  chính không
@@ -465,4 +465,79 @@ function cookie_password_decode($encrypted_password_string)
     }
     
     return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5(CONST_COOKIE_PASSWORD_ENCODE_KEY), base64_decode($encrypted_password_string), MCRYPT_MODE_CBC, md5(md5(CONST_COOKIE_PASSWORD_ENCODE_KEY))), "\0");
+}
+
+/**
+ * Rut gon mot chuoi theo so ky tu can hien thi
+ * @param string $text 
+ * @param int $word_count So ky tu con lai sau khi rut gon
+ * @return string Mang da rut gon
+ */
+function get_leftmost_words($text, $word_count)
+{
+    $s            = chr(32);
+    $text         = preg_replace('/\s+/u', $s, $text);
+    $arr_all_word = explode($s, $text);
+    $ret          = '';
+    if(count($arr_all_word) > $word_count)
+    {
+        for ($i = 0; $i < $word_count - 1; $i++)
+        {
+            if (isset($arr_all_word[$i]))
+            {
+                $ret .= $arr_all_word[$i] . $s;
+            }
+            else
+            {
+                return $ret;
+            }
+        }
+        return $ret . '...';
+    }
+    else
+    {
+        return $text;
+    }
+
+}
+
+/*
+ * Tao chuoi signature chong loi Session Hijacking
+ */
+function build_signature()
+{
+    return md5($_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']);
+}
+
+
+function unicode_to_composite($str){
+    ///unicode
+    $unicode= preg_split( "/\,/", 'á,à,ả,ã,ạ,ă,ắ,ằ,ẳ,ẵ,ặ,â,ấ,ầ,ẩ,ẫ,ậ,é,è,ẻ,ẽ,ẹ,ê,ế,ề,ể,ễ,ệ,í,ì,ỉ,ĩ,ị,ó,ò,ỏ,õ,ọ,ô,ố,ồ,ổ,ỗ,ộ,ơ,ớ,ờ,ở,ỡ,ợ,ú,ù,ủ,ũ,ụ,ư,ứ,ừ,ử,ữ,ự,ý,ỳ,ỷ,ỹ,ỵ,đ,Á,À,Ả,Ã,Ạ,Ă,Ắ,Ằ,Ẳ,Ẵ,Ặ,Â,Ấ,Ầ,Ẩ,Ẫ,Ậ,É,È,Ẻ,Ẽ,Ẹ,Ê,Ế,Ề,Ể,Ễ,Ệ,Í,Ì,Ỉ,Ĩ,Ị,Ó,Ò,Ỏ,Õ,Ọ,Ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ơ,Ớ,Ờ,Ở,Ỡ,Ợ,Ú,Ù,Ủ,Ũ,Ụ,Ư,Ứ,Ừ,Ử,Ữ,Ự,Ý,Ỳ,Ỷ,Ỹ,Ỵ,Đ');
+
+    //unicode to hop
+    $composite 	= preg_split( "/\,/", 'á,à,ả,ã,ạ,ă,ắ,ằ,ẳ,ẵ,ặ,â,ấ,ầ,ẩ,ẫ,ậ,é,è,ẻ,ẽ,ẹ,ê,ế,ề,ể,ễ,ệ,í,ì,ỉ,ĩ,ị,ó,ò,ỏ,õ,ọ,ô,ố,ồ,ổ,ỗ,ộ,ơ,ớ,ờ,ở,ỡ,ợ,ú,ù,ủ,ũ,ụ,ư,ứ,ừ,ử,ữ,ự,ý,ỳ,ỷ,ỹ,ỵ,đ,Á,À,Ả,Ã,Ạ,Ă,Ắ,Ằ,Ẳ,Ẵ,Ặ,Â,Ấ,Ầ,Ẩ,Ẫ,Ậ,É,È,Ẻ,Ẽ,Ẹ,Ê,Ế,Ề,Ể,Ễ,Ệ,Í,Ì,Ỉ,Ĩ,Ị,Ó,Ò,Ỏ,Õ,Ọ,Ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ơ,Ớ,Ờ,Ở,Ỡ,Ợ,Ú,Ù,Ủ,Ũ,Ụ,Ư,Ứ,Ừ,Ử,Ữ,Ự,Ý,Ỳ,Ỷ,Ỹ,Ỵ,Đ');
+
+    foreach( $unicode as $key => $val) $ret_str[$val]= $composite[$key];
+
+    return strtr( $str, $ret_str);
+}
+
+
+function utf8_to_composite($str){
+    ///unicode
+    $utf8 = preg_split( "/\,/", 'Ã¡,Ã ,áº£,Ã£,áº¡,Äƒ,áº¯,áº±,áº³,áºµ,áº·,Ã¢,áº¥,áº§,áº©,áº«,áº­,Ã©,Ã¨,áº»,áº½,áº¹,Ãª,áº¿,á»,á»ƒ,á»…,á»‡,Ã­,Ã¬,á»‰,Ä©,á»‹,Ã³,Ã²,á»,Ãµ,á»,Ã´,á»‘,á»“,á»•,á»—,á»™,Æ¡,á»›,á»,á»Ÿ,á»¡,á»£,Ãº,Ã¹,á»§,Å©,á»¥,Æ°,á»©,á»«,á»­,á»¯,á»±,Ã½,á»³,á»·,á»¹,á»µ,Ä‘,Ã,Ã€,áº¢,Ãƒ,áº ,Ä‚,áº®,áº°,áº²,áº´,áº¶,Ã‚,áº¤,áº¦,áº¨,áºª,áº¬,Ã‰,Ãˆ,áºº,áº¼,áº¸,ÃŠ,áº¾,á»€,á»‚,á»„,á»†,Ã,ÃŒ,á»ˆ,Ä¨,á»Š,Ã“,Ã’,á»Ž,Ã•,á»Œ,Ã”,á»,á»’,á»”,á»–,á»˜,Æ ,á»š,á»œ,á»ž,á» ,á»¢,Ãš,Ã™,á»¦,Å¨,á»¤,Æ¯,á»¨,á»ª,á»¬,á»®,á»°,Ã,á»²,á»¶,á»¸,á»´,Ä');
+
+    //unicode to hop
+    $composite 	= preg_split( "/\,/", 'á,à,ả,ã,ạ,ă,ắ,ằ,ẳ,ẵ,ặ,â,ấ,ầ,ẩ,ẫ,ậ,é,è,ẻ,ẽ,ẹ,ê,ế,ề,ể,ễ,ệ,í,ì,ỉ,ĩ,ị,ó,ò,ỏ,õ,ọ,ô,ố,ồ,ổ,ỗ,ộ,ơ,ớ,ờ,ở,ỡ,ợ,ú,ù,ủ,ũ,ụ,ư,ứ,ừ,ử,ữ,ự,ý,ỳ,ỷ,ỹ,ỵ,đ,Á,À,Ả,Ã,Ạ,Ă,Ắ,Ằ,Ẳ,Ẵ,Ặ,Â,Ấ,Ầ,Ẩ,Ẫ,Ậ,É,È,Ẻ,Ẽ,Ẹ,Ê,Ế,Ề,Ể,Ễ,Ệ,Í,Ì,Ỉ,Ĩ,Ị,Ó,Ò,Ỏ,Õ,Ọ,Ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ơ,Ớ,Ờ,Ở,Ỡ,Ợ,Ú,Ù,Ủ,Ũ,Ụ,Ư,Ứ,Ừ,Ử,Ữ,Ự,Ý,Ỳ,Ỷ,Ỹ,Ỵ,Đ');
+
+//        foreach( $composite as $key => $val) $ret_str[ $val]= $utf8[ $key];
+    foreach( $utf8 as $key => $val) $ret_str[ $val]= $composite[ $key];
+
+    return strtr( $str, $ret_str);
+}
+
+function change_format_date($to,$from,$cur_date)
+{
+    $date = date_create_from_format($to, $cur_date);
+    return date_format($date, $from);
 }

@@ -1,21 +1,3 @@
-<?php
-/**
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-?>
 <?php if (!defined('SERVER_ROOT')) exit('No direct script access allowed');
 
 count($VIEW_DATA['arr_all_record']) > 0 OR DIE();
@@ -36,7 +18,7 @@ $v_xml_ho_for_bu_template_file   = $this->get_xml_config($arr_single_task_info['
         <link rel="stylesheet" href="<?php echo SITE_ROOT;?>public/css/printer.css" type="text/css" media="all" />
         <script src="<?php echo SITE_ROOT;?>public/js/jquery/jquery.min.js" type="text/javascript"></script>
     </head>
-    <body contenteditable>
+    <body>
         <div class="print-button">
             <input type="button" value="In trang" onclick="window.print(); return false;" />
             <input type="button" value="Đóng cửa sổ" onclick="window.parent.hidePopWin()" />
@@ -75,7 +57,7 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
         </tr>
         <tr>
             <td colspan="2" class="report-title">
-                <span class="title-1">GIẤY BÀN GIAO HỒ SƠ<br/>GIỮA CÁC PHÒNG CHUYÊN MÔN</span><br/>
+                <span class="title-1">GIẤY BÀN GIAO HỒ SƠ<br/>
                 <span class="title-2"><?php echo $distribute;?></span>
             </td>
         </tr>
@@ -252,7 +234,5 @@ function create_handover_info($report_data, $distribute = '(Liên 1: Lưu)', $v_
                 <strong><?php echo get_xml_value($dom_unit_info, '/unit/supervisor');?></strong>
             </td>
         </tr>
-		
-		
     </table><?php
 }
