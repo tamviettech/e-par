@@ -1,3 +1,15 @@
+E-PAR 3.0.0.2, 2015-05-12
+------------------------
+- Cập nhật giao diện:
++ Điều chỉnh giao diện model dialog
++ Điều chỉnh giao diện tra cứu
++ Tự động xác định thành phần hồ sơ khi thêm mới hồ sơ
++ Điều chỉnh mầu cho button
++ Tăng tốc độ chuyển trang
++ Cho phép nhiều định dạng đính kèm: pdf,doc,docx,xls,xlsx
++ Điều chỉnh "button style"" ở danh sách hồ sơ
++ Bổ sung chức năng tìm kiếm khi chọn thủ tục
+
 E-PAR 1.0.0.2, 2013-08-13
 ------------------------
 - Khắc phục các lỗi của phiên bản 1.0.0.1
