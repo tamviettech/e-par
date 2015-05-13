@@ -133,11 +133,11 @@ define('EXT_DOCUMENT', 'doc,docx,odt,pdf,txt,rtf');
 define('EXT_SPREADSHEET', 'xls,xlsx,ods,cvs');
 
 /** File đính kèm hồ sơ */
-define('_CONST_RECORD_FILE_ACCEPT', 'pdf,doc,docx,xls,xlsx,ppt,pptx');
+define('_CONST_RECORD_FILE_ACCEPT', 'pdf,odt,fodt,doc,docx,ods,fods,xls,xlsx,odp,fodp,ppt,pptx');
 //File dinh kem mau dang ky
-define('_CONST_TYPE_FILE_ACCEPT', 'pdf,doc,docx,xls,xlsx,ppt,pptx');
+define('_CONST_TYPE_FILE_ACCEPT', 'pdf,odt,fodt,doc,docx,ods,fods,xls,xlsx,odp,fodp,ppt,pptx');
 //ext file media
-define('_CONST_MEDIA_FILE_ACCEPT', 'pdf,jpg,png,doc,docx,xls,xlsx,ppt,pptx');
+define('_CONST_MEDIA_FILE_ACCEPT', 'pdf,odt,fodt,doc,docx,ods,fods,xls,xlsx,odp,fodp,ppt,pptx');
 
 
 //dành cho media
