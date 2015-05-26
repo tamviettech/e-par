@@ -1,9 +1,0 @@
-- Các thẻ quy định đặt đúng tên khi khao báo mỗi loại văn bản:
-
-doc_noi_gui: Nơi gửi
-doc_noi_nhan: Nơi nhận
-doc_ngay_den: Ngày đến
-doc_ngay_di: Ngày đi
-doc_so_ky_hieu: Số ký hiệu
-doc_trich_yeu: Trích yếu
-doc_ky_bao_cao: Kỳ báo cáo
